@@ -1,37 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/pages/admin_choice_boards.dart';
 
-// This widget is the root of the admin interface
-class AdminInterface extends StatelessWidget {
-  const AdminInterface({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Admin Home',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
-      home: const AdminHome(),
-    );
-  }
-}
-
-// The home page of the admin interface
-class AdminHome extends StatelessWidget {
-  const AdminHome({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-        ),
-        drawer: const NavigationDrawer(),
-      );
-}
-
-// The side-menu of the admin's UI (should be moved to another file)
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({Key? key}) : super(key: key);
+// The side-menu of the admin's UI
+class AdminSideMenu extends StatelessWidget {
+  const AdminSideMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Drawer(
@@ -59,10 +31,10 @@ class NavigationDrawer extends StatelessWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.photo_size_select_actual_outlined),
-              title: const Text('Card Boards'),
+              title: const Text('Choice boards'),
               onTap: () =>
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const AdminHome(),
+                builder: (context) => const AdminChoiceBoards(),
               )),
             ),
             ListTile(
