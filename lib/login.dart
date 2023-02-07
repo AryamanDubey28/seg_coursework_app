@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -10,6 +11,24 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  //email and password controllers
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  //sign users in using Firebase method
+  Future signIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim());
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,24 +40,24 @@ class _LogInState extends State<LogIn> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 //top icon or logo
-                Icon(
+                const Icon(
                   Icons.waving_hand_outlined, //temp hello icon
                   size: 90,
                 ),
 
                 //Welcoming text
-                Text(
+                const Text(
                   "Hello There",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 72),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   "Welcome Back!",
                   style: TextStyle(fontSize: 44),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 45,
                 ),
                 // email textfield
@@ -52,6 +71,7 @@ class _LogInState extends State<LogIn> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Email",
@@ -61,7 +81,7 @@ class _LogInState extends State<LogIn> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
 
@@ -77,6 +97,7 @@ class _LogInState extends State<LogIn> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20.0),
                       child: TextField(
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -94,19 +115,22 @@ class _LogInState extends State<LogIn> {
                 //sign in button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 400),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                        color: Colors.deepPurple[400],
-                        borderRadius: BorderRadius.circular(30)),
-                    child: Center(
-                        child: Text(
-                      "Sign In",
-                      style: TextStyle(
-                          fontSize: 32,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    )),
+                  child: GestureDetector(
+                    onTap: signIn,
+                    child: Container(
+                      padding: EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                          color: Colors.deepPurple[400],
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Center(
+                          child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                            fontSize: 32,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      )),
+                    ),
                   ),
                 ),
                 SizedBox(
