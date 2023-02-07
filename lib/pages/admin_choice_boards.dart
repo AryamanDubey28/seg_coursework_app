@@ -10,8 +10,6 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
 // Button to delete category
 // Button to delete item
-// Button to edit category
-// Button to edit item
 // Button to add category
 // Button to add item
 
@@ -138,6 +136,28 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
+  /// Builds the edit button depending on if it's an item or a category
+  IconButton buildEditButton({bool isCategory = false}) {
+    const editIcon = Icon(
+      Icons.edit,
+      color: Color.fromARGB(255, 0, 76, 153),
+    );
+
+    if (isCategory) {
+      return IconButton(
+        onPressed: editCategory,
+        icon: editIcon,
+        alignment: Alignment.centerRight,
+      );
+    } else {
+      return IconButton(
+        onPressed: editItem,
+        icon: editIcon,
+        padding: const EdgeInsets.only(right: 45),
+      );
+    }
+  }
+
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
@@ -160,6 +180,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
+              buildEditButton(isCategory: true),
             ],
           )),
       children: category.items
@@ -176,6 +197,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   },
                 ),
                 title: Text(item.name),
+                trailing: buildEditButton(),
               )))
           .toList());
 
@@ -196,4 +218,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       categories.insert(newCategoryIndex, selectedCategory);
     });
   }
+
+  /// redirects to the item edit page (to be implemented)
+  void editItem() {}
+
+  /// redirects to the category edit page (to be implemented)
+  void editCategory() {}
 }
