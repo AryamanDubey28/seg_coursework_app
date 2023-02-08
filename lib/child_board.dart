@@ -15,6 +15,7 @@ class _ChildBoards extends State<ChildBoards>
 
   late AnimationController animationController;
   Animation<Matrix4>? animation;
+  bool back = false;
 
   @override
   void initState() {
@@ -40,49 +41,65 @@ class _ChildBoards extends State<ChildBoards>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView.builder(
-          itemCount: 6,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3),
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTapDown: (details) => tapDownDetails = details,
-                onTap: () {
-                  final position = tapDownDetails!.localPosition;
+      backgroundColor: Colors.pink,
+      appBar: AppBar(
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        title: IconButton(
+            hoverColor: Colors.transparent,
+            onPressed: () {
+              back = !back;
+            },
+            icon: const Icon(Icons.arrow_back_rounded)),
+      ),
+      body: Center(
+        widthFactor: 100,
+        heightFactor: 100,
+        child: GridView.builder(
+            itemCount: 6,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3),
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  onTapDown: (details) => tapDownDetails = details,
+                  onTap: () {
+                    final position = tapDownDetails!.localPosition;
 
-                  const double scale = 1.5;
-                  final x = -position.dx * (scale - 1);
-                  final y = -position.dy * (scale - 1);
-                  final zoomed = Matrix4.identity()
-                    ..translate(x, y)
-                    ..scale(scale);
+                    const double scale = 1.5;
+                    final x = -position.dx * (scale - 1);
+                    final y = -position.dy * (scale - 1);
+                    final zoomed = Matrix4.identity()
+                      ..translate(x, y)
+                      ..scale(scale);
 
-                  final end = controller.value.isIdentity()
-                      ? zoomed
-                      : Matrix4.identity();
+                    final end = controller.value.isIdentity()
+                        ? zoomed
+                        : Matrix4.identity();
 
-                  animation = Matrix4Tween(begin: controller.value, end: end)
-                      .animate(CurveTween(curve: Curves.easeOut)
-                          .animate(animationController));
+                    animation = Matrix4Tween(begin: controller.value, end: end)
+                        .animate(CurveTween(curve: Curves.easeOut)
+                            .animate(animationController));
 
-                  animationController.forward(from: 0);
-                },
-                child: InteractiveViewer(
-                  clipBehavior: Clip.none,
-                  transformationController: controller,
-                  scaleEnabled: false,
-                  panEnabled: false,
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    color: Colors.blue,
+                    animationController.forward(from: 0);
+                  },
+                  child: InteractiveViewer(
+                    clipBehavior: Clip.none,
+                    transformationController: controller,
+                    scaleEnabled: false,
+                    panEnabled: false,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 }
