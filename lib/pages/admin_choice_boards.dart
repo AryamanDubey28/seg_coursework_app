@@ -8,8 +8,6 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// Button to add category
-// Button to add item
 // Add cards behind the pictures
 
 class AdminChoiceBoards extends StatefulWidget {
@@ -86,26 +84,29 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Edit Choice Boards'),
+      appBar: AppBar(
+        title: const Text('Edit Choice Boards'),
+      ),
+      drawer: const AdminSideMenu(),
+      floatingActionButton: buildAddButton(isCategory: true),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      body: DragAndDropLists(
+        listPadding: const EdgeInsets.all(30),
+        listInnerDecoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20)),
+        children: categories,
+        itemDivider: const Divider(
+          thickness: 2,
+          height: 2,
+          color: Colors.black12,
         ),
-        drawer: const AdminSideMenu(),
-        body: DragAndDropLists(
-          listPadding: const EdgeInsets.all(30),
-          listInnerDecoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(20)),
-          children: categories,
-          itemDivider: const Divider(
-            thickness: 2,
-            height: 2,
-            color: Colors.black12,
-          ),
-          listDragHandle: buildDragHandle(isCategory: true),
-          itemDragHandle: buildDragHandle(),
-          onItemReorder: onReorderCategoryItem,
-          onListReorder: onReorderCategory,
-        ));
+        listDragHandle: buildDragHandle(isCategory: true),
+        itemDragHandle: buildDragHandle(),
+        onItemReorder: onReorderCategoryItem,
+        onListReorder: onReorderCategory,
+      ),
+    );
   }
 
   /// Builds the dragging icon depending on if it's an item or a category
@@ -157,6 +158,36 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
+  /// Builds the add button depending on if it's an item or a category
+  TextButton buildAddButton({bool isCategory = false}) {
+    const addIcon = Icon(
+      Icons.add,
+    );
+    const contentColor = MaterialStatePropertyAll(Colors.white);
+
+    if (isCategory) {
+      return TextButton.icon(
+        onPressed: addCategory,
+        icon: addIcon,
+        label: const Text("Add a category"),
+        style: const ButtonStyle(
+            foregroundColor: contentColor,
+            backgroundColor:
+                MaterialStatePropertyAll(Color.fromARGB(255, 80, 141, 93))),
+      );
+    } else {
+      return TextButton.icon(
+        onPressed: addItem,
+        icon: addIcon,
+        label: const Text("Add an item"),
+        style: const ButtonStyle(
+            foregroundColor: contentColor,
+            backgroundColor:
+                MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
+      );
+    }
+  }
+
   /// Builds the delete button
   IconButton buildDeleteButton() {
     const deleteIcon = Icon(
@@ -194,6 +225,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               ),
               buildEditButton(isCategory: true),
               buildDeleteButton(),
+              const Spacer(),
+              buildAddButton(),
+              const Padding(padding: EdgeInsets.only(right: 35))
             ],
           )),
       children: category.items
@@ -249,4 +283,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
   /// deletes the category (to be implemented)
   void deleteCategory() {}
+
+  /// redirects to the item add page (to be implemented)
+  void addItem() {}
+
+  /// redirects to the category add page (to be implemented)
+  void addCategory() {}
 }
