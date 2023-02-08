@@ -8,10 +8,9 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// Button to delete category
-// Button to delete item
 // Button to add category
 // Button to add item
+// Add cards behind the pictures
 
 class AdminChoiceBoards extends StatefulWidget {
   const AdminChoiceBoards({Key? key}) : super(key: key);
@@ -158,6 +157,19 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
+  /// Builds the delete button
+  IconButton buildDeleteButton() {
+    const deleteIcon = Icon(
+      Icons.delete,
+      color: Colors.red,
+    );
+
+    return IconButton(
+      onPressed: deleteCategory,
+      icon: deleteIcon,
+    );
+  }
+
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
@@ -181,6 +193,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               buildEditButton(isCategory: true),
+              buildDeleteButton(),
             ],
           )),
       children: category.items
@@ -197,7 +210,13 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   },
                 ),
                 title: Text(item.name),
-                trailing: buildEditButton(),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    buildDeleteButton(),
+                    buildEditButton(),
+                  ],
+                ),
               )))
           .toList());
 
@@ -224,4 +243,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
   /// redirects to the category edit page (to be implemented)
   void editCategory() {}
+
+  /// deletes the item (to be implemented)
+  void deleteItem() {}
+
+  /// deletes the category (to be implemented)
+  void deleteCategory() {}
 }
