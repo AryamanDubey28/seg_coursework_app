@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/child_board_interface.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ChildInterface());
 }
 
 class MyApp extends StatelessWidget {
