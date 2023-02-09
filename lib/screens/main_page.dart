@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/home_page.dart';
-import 'package:seg_coursework_app/login.dart';
+import 'package:seg_coursework_app/screens/home_page.dart';
+import 'package:seg_coursework_app/screens/authenticate/login.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -14,10 +14,10 @@ class MainPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             //if we are trying to sign in and snapshot contains user data, we are logged in
-            return HomePage();
+            return const HomePage();
           } else {
             //snapshot does not contain user data therefore, not logged in
-            return LogIn();
+            return const LogIn();
           }
         },
       ),

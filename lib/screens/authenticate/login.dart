@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'registration_screen.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -108,7 +109,7 @@ class _LogInState extends State<LogIn> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 35,
                 ),
 
@@ -122,7 +123,7 @@ class _LogInState extends State<LogIn> {
                       decoration: BoxDecoration(
                           color: Colors.deepPurple[400],
                           borderRadius: BorderRadius.circular(30)),
-                      child: Center(
+                      child: const Center(
                           child: Text(
                         "Sign In",
                         style: TextStyle(
@@ -138,20 +139,30 @@ class _LogInState extends State<LogIn> {
                 ),
 
                 //not a memeber button
-                Text(
+                const Text(
                   "Not a member?",
                   style: TextStyle(fontSize: 24),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 7,
                 ),
-                Text(
-                  "Register Now!",
-                  style: TextStyle(
-                      color: Colors.blue,
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                    textStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 24),
-                )
+                      fontSize: 20,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const RegistrationPage(),
+                      ),
+                    );
+                  },
+                  child: Text("Register Now!"),
+                ),
               ],
             ),
           ),
