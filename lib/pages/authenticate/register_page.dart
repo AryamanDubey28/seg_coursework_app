@@ -1,35 +1,48 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/screens/home_page.dart';
 import '../../widgets/my_text_field.dart';
 
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+class RegisterPage extends StatefulWidget {
+  final VoidCallback showLoginPage;
+
+  const RegisterPage({
+    super.key,
+    required this.showLoginPage,
+  });
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
 
   Future signUp() async {
-    UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    if (passwordConfirmed()) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+    } else {
+      print("Passwords didn't match");
+    }
+  }
+
+  bool passwordConfirmed() {
+    return (_passwordController.text.trim() ==
+        _passwordConfirmationController.text.trim());
   }
 
   @override
   void dispose() {
-    super.dispose();
     _emailController.dispose();
     _nameController.dispose();
     _passwordConfirmationController.dispose();
     _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,7 +59,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            widget.showLoginPage();
           },
         ),
       ),
@@ -135,7 +148,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          widget.showLoginPage();
                         },
                         child: Text(
                           "Go Back",

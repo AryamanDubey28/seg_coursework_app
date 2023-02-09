@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'registration_screen.dart';
+import 'register_page.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({Key? key}) : super(key: key);
+  final VoidCallback showRegisterPage;
+  const LogIn({
+    Key? key,
+    required this.showRegisterPage,
+  }) : super(key: key);
 
   @override
   State<LogIn> createState() => _LogInState();
@@ -155,11 +157,7 @@ class _LogInState extends State<LogIn> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const RegistrationPage(),
-                      ),
-                    );
+                    widget.showRegisterPage();
                   },
                   child: Text("Register Now!"),
                 ),
