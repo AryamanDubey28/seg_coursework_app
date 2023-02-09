@@ -8,32 +8,41 @@ class ChildBoards extends StatefulWidget {
   State<ChildBoards> createState() => _ChildBoards();
 }
 
-class _ChildBoards extends State<ChildBoards>
-    with SingleTickerProviderStateMixin {
-  late TransformationController controller;
+class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
+  late List<TransformationController> controllers;
+  late List<AnimationController> animationControllers;
+  late List<Image> images;
   TapDownDetails? tapDownDetails;
 
-  late AnimationController animationController;
   Animation<Matrix4>? animation;
   bool back = false;
+  String categoryName = "Category Name";
 
   @override
   void initState() {
     super.initState();
-    controller = TransformationController();
-
-    animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    )..addListener(() {
-        controller.value = animation!.value;
-      });
+    controllers = List<TransformationController>.generate(
+        5, (index) => TransformationController());
+    animationControllers = List<AnimationController>.generate(
+        5, (index) => AnimationController(vsync: this));
+    //images.length
+    for (var i = 0; i < 5; i++) {
+      animationControllers[i] = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 300),
+      )..addListener(() {
+          controllers[i].value = animation!.value;
+        });
+    }
   }
 
   @override
   void dispose() {
-    controller.dispose();
-    animationController.dispose();
+    //images.length
+    for (var i = 0; i < 5; i++) {
+      controllers[i].dispose();
+      animationControllers[i].dispose();
+    }
 
     super.dispose();
   }
@@ -92,8 +101,8 @@ class _ChildBoards extends State<ChildBoards>
                   const SizedBox(
                     width: 30,
                   ),
-                  const Text(
-                    "Category Name",
+                  Text(
+                    categoryName,
                     textAlign: TextAlign.right,
                     textScaleFactor: 2,
                   ),
@@ -105,7 +114,8 @@ class _ChildBoards extends State<ChildBoards>
             child: GridView.builder(
                 padding: const EdgeInsets.all(8.0),
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 10,
+                //images.length
+                itemCount: 5,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 5),
                 itemBuilder: (context, index) {
@@ -123,20 +133,20 @@ class _ChildBoards extends State<ChildBoards>
                           ..translate(x, y)
                           ..scale(scale);
 
-                        final end = controller.value.isIdentity()
+                        final end = controllers[index].value.isIdentity()
                             ? zoomed
                             : Matrix4.identity();
 
-                        animation =
-                            Matrix4Tween(begin: controller.value, end: end)
-                                .animate(CurveTween(curve: Curves.easeOut)
-                                    .animate(animationController));
+                        animation = Matrix4Tween(
+                                begin: controllers[index].value, end: end)
+                            .animate(CurveTween(curve: Curves.easeOut)
+                                .animate(animationControllers[index]));
 
-                        animationController.forward(from: 0);
+                        animationControllers[index].forward(from: 0);
                       },
                       child: InteractiveViewer(
                         clipBehavior: Clip.none,
-                        transformationController: controller,
+                        transformationController: controllers[index],
                         scaleEnabled: false,
                         panEnabled: false,
                         child: Container(
