@@ -8,8 +8,6 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// Add cards behind the pictures
-
 class AdminChoiceBoards extends StatefulWidget {
   const AdminChoiceBoards({Key? key}) : super(key: key);
 
@@ -121,7 +119,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       return DragHandle(
         verticalAlignment: DragHandleVerticalAlignment.top,
         child: Container(
-          padding: const EdgeInsets.only(right: 10, top: 30),
+          padding: const EdgeInsets.only(right: 10, top: 45),
           child: dragIcon,
         ),
       );
@@ -207,15 +205,24 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Image.network(
-                category.imageUrl,
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-                errorBuilder: (BuildContext context, Object exception,
-                    StackTrace? stackTrace) {
-                  return const Text('!Error loading image!');
-                },
+              Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 5,
+                margin: const EdgeInsets.all(10),
+                child: Image.network(
+                  category.imageUrl,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace? stackTrace) {
+                    return const Text('!Error loading image!');
+                  },
+                ),
               ),
               const Padding(padding: EdgeInsets.all(8)),
               Text(
@@ -233,15 +240,23 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       children: category.items
           .map((item) => DragAndDropItem(
                   child: ListTile(
-                leading: Image.network(
-                  item.imageUrl,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object exception,
-                      StackTrace? stackTrace) {
-                    return const Text('!Error loading image!');
-                  },
+                leading: Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  elevation: 5,
+                  child: Image.network(
+                    item.imageUrl,
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return const Text('!Error loading image!');
+                    },
+                  ),
                 ),
                 title: Text(item.name),
                 trailing: Row(
