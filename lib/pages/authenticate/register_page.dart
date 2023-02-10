@@ -145,35 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     isPassword: true,
                   ),
                   SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 35.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return ForgotPasswordPage();
-                              }),
-                            );
-                          },
-                          child: Text(
-                            "Forgot password?",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
+                    height:25,
                   ),
                   SizedBox(
                     height: 88,
@@ -195,7 +167,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 30,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
