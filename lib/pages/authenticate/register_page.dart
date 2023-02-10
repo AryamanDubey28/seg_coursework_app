@@ -23,19 +23,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future signUp() async {
     if (passwordConfirmed()) {
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return Center(child: CircularProgressIndicator());
-      //     });
-
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Center(child: CircularProgressIndicator());
+          });
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+        Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
-        // Navigator.of(context).pop();
+        Navigator.of(context).pop();
         print(e);
         showDialog(
             context: context,
@@ -45,8 +45,6 @@ class _RegisterPageState extends State<RegisterPage> {
               );
             });
       }
-
-      // Navigator.of(context).pop();
 
       addUserDetails(_nameController.text.trim(), _emailController.text.trim());
     } else {
