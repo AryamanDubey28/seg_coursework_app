@@ -1,6 +1,6 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:seg_coursework_app/pages/authenticate/login.dart';
+import 'package:seg_coursework_app/pages/authenticate/login_page.dart';
 import 'package:seg_coursework_app/pages/authenticate/register_page.dart';
 
 class AuthPage extends StatefulWidget {

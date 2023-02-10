@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
+import '../forgot_password_page.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
@@ -26,9 +27,13 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-    } else {
-      print("Passwords didn't match");
+
+      addUserDetails(_nameController.text.trim(), _emailController.text.trim());
     }
+  }
+
+  void addUserDetails(String name, String email) async {
+    // await FirebaseFirestore.
   }
 
   bool passwordConfirmed() {
@@ -112,8 +117,36 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _passwordConfirmationController,
                     isPassword: true,
                   ),
-                  const SizedBox(
-                    height: 35,
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return ForgotPasswordPage() ;
+                              }),
+                            );
+                          },
+                          child: Text(
+                            "Forgot password?",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   SizedBox(
                     height: 88,

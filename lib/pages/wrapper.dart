@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/home_page.dart'; 
+import 'package:seg_coursework_app/pages/home_page.dart';
 import 'authenticate/auth.dart';
 
-class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+class Wrapper extends StatelessWidget {
+  const Wrapper({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
