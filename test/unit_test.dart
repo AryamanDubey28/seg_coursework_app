@@ -21,4 +21,25 @@ void main() async {
     print("email = $userEmail which should be equal to aryaman@test.com");
     expect(userEmail, "aryaman@test.com");
   });
+
+  test("Testing incorrect details do not log in", () async {
+    final user = MockUser(
+      isAnonymous: false,
+      uid: '',
+      email: '',
+      displayName: 'Tester1',
+    );
+    String response = "";
+    try {
+      final auth = MockFirebaseAuth(mockUser: user);
+      final result =
+          await auth.signInWithEmailAndPassword(email: "", password: "");
+      final _user = await result.user;
+      final userEmail = _user!.email;
+      //print("logged in as $userEmail");
+    } on FirebaseAuthException {
+      print("authentication exception occurred");
+      response = "unsuccessful";
+    }
+  });
 }

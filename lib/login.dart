@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:seg_coursework_app/forgot_password_page.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -17,9 +18,22 @@ class _LogInState extends State<LogIn> {
 
   //sign users in using Firebase method
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                'This user either does not exist or the password is incorrect. Try again or click Forgot Password or register again',
+                style: TextStyle(fontSize: 24),
+              ),
+            );
+          });
+    }
   }
 
   @override
@@ -108,8 +122,26 @@ class _LogInState extends State<LogIn> {
                   ),
                 ),
 
+                //forgot password
                 SizedBox(
-                  height: 35,
+                  height: 15,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ForgotPasswordPage();
+                    }));
+                  },
+                  child: Text("Forgot Password?",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                ),
+
+                SizedBox(
+                  height: 15,
                 ),
 
                 //sign in button
