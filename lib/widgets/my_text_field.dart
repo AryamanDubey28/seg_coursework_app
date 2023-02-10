@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MyTextField extends StatelessWidget {
+class MyTextField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
   final bool isPassword;
@@ -13,6 +13,19 @@ class MyTextField extends StatelessWidget {
   });
 
   @override
+  State<MyTextField> createState() => _MyTextFieldState();
+}
+
+class _MyTextFieldState extends State<MyTextField> {
+  bool passwordVisible=false;
+      
+  @override
+  void initState(){
+    super.initState();
+    passwordVisible=true;
+  }    
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -23,23 +36,36 @@ class MyTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(15)),
         child: Padding(
           padding: const EdgeInsets.only(left: 20.0),
-          child: isPassword == false
+          child: widget.isPassword == false
               ? TextField(
-                  controller: controller,
+                  controller: widget.controller,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: hint,
+                    hintText: widget.hint,
                   ),
                 )
               : TextField(
-                  obscureText: true,
+                  obscureText: !passwordVisible,
                   enableSuggestions: false,
                   autocorrect: false,
-                  controller: controller,
+                  controller: widget.controller,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: hint,
+                    hintText: widget.hint,
+                    suffixIcon: IconButton(
+                      icon: Icon(passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () {
+                        setState(
+                          () {
+                            passwordVisible = !passwordVisible;
+                          },
+                        );
+                      },
+                    ),
                   ),
+                  
                 ),
         ),
       ),
