@@ -23,12 +23,29 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future signUp() async {
     if (passwordConfirmed()) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Center(child: CircularProgressIndicator());
+          });
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
+      Navigator.of(context).pop();
+
       addUserDetails(_nameController.text.trim(), _emailController.text.trim());
+      
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                  'Password confirmation did not match. Please try again.'),
+            );
+          });
     }
   }
 
@@ -130,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) {
-                                return ForgotPasswordPage() ;
+                                return ForgotPasswordPage();
                               }),
                             );
                           },
