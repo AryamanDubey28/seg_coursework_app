@@ -22,14 +22,30 @@ class _LogInState extends State<LogIn> {
   //sign users in using Firebase method
   Future signIn() async {
     showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+              child: CircularProgressIndicator(
+            color: Colors.deepPurple[400],
+          ));
+        });
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim()
+      );
+      Navigator.of(context).pop();
+    } on FirebaseAuthException catch (e) {
+      Navigator.of(context).pop();
+      print(e);
+      showDialog(
           context: context,
           builder: (context) {
-            return Center(child: CircularProgressIndicator());
+            return AlertDialog(
+              content: Text(e.message.toString()),
+            );
           });
-          
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim());
+    }
 
     Navigator.of(context).pop();
   }
@@ -58,7 +74,7 @@ class _LogInState extends State<LogIn> {
                     Icons.waving_hand_outlined, //temp hello icon
                     size: 90,
                   ),
-            
+
                   //Welcoming text
                   const Text(
                     "Hello There",
@@ -94,13 +110,13 @@ class _LogInState extends State<LogIn> {
                       ),
                     ),
                   ),
-            
+
                   const SizedBox(
                     height: 15,
                   ),
-            
+
                   //password textfield
-            
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Container(
@@ -121,39 +137,39 @@ class _LogInState extends State<LogIn> {
                       ),
                     ),
                   ),
-            
+
                   SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 35.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return ForgotPasswordPage();
-                                }),
-                              );
-                            },
-                            child: Text(
-                              "Forgot password?",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return ForgotPasswordPage();
+                              }),
+                            );
+                          },
+                          child: Text(
+                            "Forgot password?",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-            
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+
                   //sign in button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 200),
@@ -178,7 +194,7 @@ class _LogInState extends State<LogIn> {
                   SizedBox(
                     height: 30,
                   ),
-            
+
                   //not a memeber button
                   const Text(
                     "Not a member?",

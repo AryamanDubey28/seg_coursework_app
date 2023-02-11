@@ -42,7 +42,6 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
         Navigator.of(context).pop();
-        print(e);
         showDialog(
             context: context,
             builder: (context) {
