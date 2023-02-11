@@ -22,7 +22,7 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   void initState(){
     super.initState();
-    passwordVisible=true;
+    passwordVisible=false;
   }    
 
   @override

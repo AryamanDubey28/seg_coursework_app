@@ -1,7 +1,11 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
-import '../forgot_password_page.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
@@ -16,7 +20,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
@@ -26,7 +29,10 @@ class _RegisterPageState extends State<RegisterPage> {
       showDialog(
           context: context,
           builder: (context) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: CircularProgressIndicator(
+              color: Colors.deepPurple[400],
+            ));
           });
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -45,8 +51,6 @@ class _RegisterPageState extends State<RegisterPage> {
               );
             });
       }
-
-      addUserDetails(_nameController.text.trim(), _emailController.text.trim());
     } else {
       showDialog(
           context: context,
@@ -59,10 +63,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void addUserDetails(String name, String email) async {
-    // await FirebaseFirestore.
-  }
-
   bool passwordConfirmed() {
     return (_passwordController.text.trim() ==
         _passwordConfirmationController.text.trim());
@@ -71,7 +71,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     _emailController.dispose();
-    _nameController.dispose();
     _passwordConfirmationController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -117,10 +116,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(
                     height: 35,
                   ),
-                  MyTextField(
-                    hint: "Name",
-                    controller: _nameController,
-                  ),
                   const SizedBox(
                     height: 15,
                   ),
@@ -145,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     isPassword: true,
                   ),
                   SizedBox(
-                    height:25,
+                    height: 25,
                   ),
                   SizedBox(
                     height: 88,

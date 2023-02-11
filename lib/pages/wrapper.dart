@@ -6,6 +6,8 @@ import 'authenticate/auth.dart';
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
 
+  Stream<User?> get user => FirebaseAuth.instance.authStateChanges();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
