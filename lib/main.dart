@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 
 import 'widgets/picture_grid.dart';
 import 'widgets/visual_timetable.dart';
@@ -52,26 +53,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 300;
-  List imagesURL = [];
-  List filledImagesURL = [
-    "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
-    "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
-    "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg",
-    "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325",
-    "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg",
+  List<ImageDetails> imagesList = [];
+  List<ImageDetails> filledImagesList = [
+    ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
+    ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
+    ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
+    ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
+    ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
   ];
 
-  void updateImagesList(String imageURL) {
+  void updateImagesList(ImageDetails image) {
     setState(() {
-      if (imagesURL.length < 5) {
-        imagesURL.add(imageURL);
+      if (imagesList.length < 5) {
+        imagesList.add(image);
       }
     });
   }
 
   void popImagesList(int index) {
     setState(() {
-      imagesURL.removeAt(index);
+      imagesList.removeAt(index);
     });
   }
 
@@ -100,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 200,
               alignment: Alignment.center,
               child: TimetableList(
-                imagesURL: imagesURL,
+                imagesList: imagesList,
                 popImagesList: popImagesList
               ),
             )
@@ -109,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             flex: 3,
             child: PictureGrid(
-              imagesURL: filledImagesURL, 
+              imagesList: filledImagesList, 
               updateImagesList: updateImagesList
             ),
           ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 
 class PictureGrid extends StatelessWidget {
-  const PictureGrid({super.key, required this.imagesURL, required this.updateImagesList});
+  const PictureGrid({super.key, required this.imagesList, required this.updateImagesList});
 
-  final List imagesURL;
+  final List<ImageDetails> imagesList;
   final Function updateImagesList;
 
   @override
@@ -19,11 +20,11 @@ class PictureGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            updateImagesList(imagesURL[index]);
+            updateImagesList(imagesList[index]);
           },
           child: Card(
             child: ImageSquare(
-              imageURL: imagesURL[index],
+              image: imagesList[index],
               width: 150,
               height: 150,
             ),

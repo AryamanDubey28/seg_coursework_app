@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 
 class TimetableBlock extends StatelessWidget {
-  const TimetableBlock({super.key, required this.imageURL, required this.height, required this.width});
+  const TimetableBlock({super.key, required this.image, required this.height, required this.width});
 
-  final String imageURL;
+  final ImageDetails image;
   final double height;
   final double width;
 
@@ -12,7 +13,7 @@ class TimetableBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget> [
-        ImageSquare(imageURL: imageURL, height: height, width: width,),
+        ImageSquare(image: image, height: height, width: width,),
         const Icon(
           Icons.arrow_right_alt_sharp,
           size: 50,

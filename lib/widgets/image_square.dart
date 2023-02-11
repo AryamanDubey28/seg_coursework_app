@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 
 class ImageSquare extends StatelessWidget {
-  const ImageSquare({super.key, required this.imageURL, required this.height, required this.width});
+  const ImageSquare({super.key, required this.image, required this.height, required this.width});
 
-  final String imageURL;
+  final ImageDetails image;
   final double height;
   final double width;
 
@@ -17,7 +18,7 @@ class ImageSquare extends StatelessWidget {
         border: Border.all(color: Colors.grey, width: 5),
         image: DecorationImage(
           fit: BoxFit.fill,
-          image: NetworkImage(imageURL)
+          image: NetworkImage(image.imageUrl)
         )
       ),
       // child: Image.network(imageURL),
