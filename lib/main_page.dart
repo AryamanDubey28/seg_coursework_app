@@ -6,6 +6,8 @@ import 'package:seg_coursework_app/login.dart';
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
 
+  Stream<User?> get user => FirebaseAuth.instance.authStateChanges();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
