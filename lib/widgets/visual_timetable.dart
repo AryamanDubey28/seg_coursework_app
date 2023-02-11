@@ -24,7 +24,14 @@ class TimetableList extends StatelessWidget {
           },
           child: Row(
             children: <Widget>[
-              ImageSquare(image: imagesList[index], height: 150, width: 150,),
+              Tooltip(
+                message: imagesList[index].name,
+                child: ImageSquare(
+                  image: imagesList[index],
+                  height: 150, 
+                  width: 150,
+                ),
+              ),
               if (index != imagesList.length - 1)
                 Icon(Icons.arrow_right),
             ],

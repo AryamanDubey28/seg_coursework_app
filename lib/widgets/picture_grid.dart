@@ -22,11 +22,14 @@ class PictureGrid extends StatelessWidget {
           onTap: () {
             updateImagesList(imagesList[index]);
           },
-          child: Card(
-            child: ImageSquare(
-              image: imagesList[index],
-              width: 150,
-              height: 150,
+          child: Tooltip(
+            message: imagesList[index].name,
+            child: Card(
+              child: ImageSquare(
+                image: imagesList[index],
+                width: 150,
+                height: 150,
+              ),
             ),
           ),
         );
