@@ -1,3 +1,5 @@
+/// A model which holds classes to make draggable categories of card boards
+
 class DraggableList {
   final String title;
   final String imageUrl;

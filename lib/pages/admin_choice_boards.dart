@@ -17,8 +17,14 @@ class AdminChoiceBoards extends StatefulWidget {
 
 /// The page for admins to edit choice boards
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
-  // To be deleted
-  final List<DraggableList> testCategories = [
+  late List<DragAndDropList> categories;
+
+  _AdminChoiceBoards() {
+    categories = devCategories.map(buildCategory).toList();
+  }
+
+  // These are added to test while development (TO BE DELETED)
+  final List<DraggableList> devCategories = [
     DraggableList(
         title: "Breakfast",
         imageUrl:
@@ -71,14 +77,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         ]),
   ];
 
-  late List<DragAndDropList> categories;
-
-  @override
-  void initState() {
-    super.initState();
-    categories = testCategories.map(buildCategory).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,6 +115,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
     if (isCategory) {
       return DragHandle(
+        key: const Key("categoryDrag"),
         verticalAlignment: DragHandleVerticalAlignment.top,
         child: Container(
           padding: const EdgeInsets.only(right: 10, top: 45),
@@ -125,6 +124,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       );
     } else {
       return DragHandle(
+        key: const Key("itemDrag"),
         verticalAlignment: DragHandleVerticalAlignment.center,
         child: Container(
           padding: const EdgeInsets.only(right: 10),
@@ -143,12 +143,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
     if (isCategory) {
       return IconButton(
+        key: const Key("editCategoryButton"),
         onPressed: editCategory,
         icon: editIcon,
         alignment: Alignment.centerRight,
       );
     } else {
       return IconButton(
+        key: const Key("editItemButton"),
         onPressed: editItem,
         icon: editIcon,
         padding: const EdgeInsets.only(right: 45),
@@ -165,6 +167,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
     if (isCategory) {
       return TextButton.icon(
+        key: const Key("addCategoryButton"),
         onPressed: addCategory,
         icon: addIcon,
         label: const Text("Add a category"),
@@ -175,6 +178,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       );
     } else {
       return TextButton.icon(
+        key: const Key("addItemButton"),
         onPressed: addItem,
         icon: addIcon,
         label: const Text("Add an item"),
@@ -194,6 +198,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     );
 
     return IconButton(
+      key: const Key("deleteButton"),
       onPressed: deleteCategory,
       icon: deleteIcon,
     );
@@ -202,6 +207,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
+          key: const Key("categoryHeader"),
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
@@ -214,6 +220,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 elevation: 5,
                 margin: const EdgeInsets.all(10),
                 child: Image.network(
+                  key: const Key("categoryImage"),
                   category.imageUrl,
                   width: 80,
                   height: 80,
@@ -226,6 +233,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               ),
               const Padding(padding: EdgeInsets.all(8)),
               Text(
+                key: const Key("categoryTitle"),
                 category.title,
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -240,6 +248,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       children: category.items
           .map((item) => DragAndDropItem(
                   child: ListTile(
+                key: const Key("categoryItem"),
                 leading: Card(
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -248,6 +257,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   ),
                   elevation: 5,
                   child: Image.network(
+                    key: const Key("itemImage"),
                     item.imageUrl,
                     width: 70,
                     height: 70,
@@ -258,7 +268,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                     },
                   ),
                 ),
-                title: Text(item.name),
+                title: Text(
+                  item.name,
+                  key: const Key("itemTitle"),
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

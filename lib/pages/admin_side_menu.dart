@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin_choice_boards.dart';
 
-// The side-menu of the admin's UI
+/// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
   const AdminSideMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Drawer(
+        key: const Key("adminSideMenu"),
         child: SingleChildScrollView(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
