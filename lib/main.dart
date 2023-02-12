@@ -53,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 300;
+  bool isGridVisible = true;
   List<ImageDetails> imagesList = [];
   List<ImageDetails> filledImagesList = [
     ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
@@ -67,18 +68,25 @@ class _MyHomePageState extends State<MyHomePage> {
       if (imagesList.length < 5) {
         imagesList.add(image);
       }
+      if (imagesList.length >= 5)
+      {
+        isGridVisible = false;
+      }
     });
   }
 
   void popImagesList(int index) {
     setState(() {
       imagesList.removeAt(index);
+      if (imagesList.length < 5) {
+        isGridVisible = true;
+      }
     });
   }
 
-  void _incrementCounter() {
+  void _toggleGrid() {
     setState(() {
-      _counter++;
+      isGridVisible = !isGridVisible;
     });
   }
 
@@ -109,24 +117,31 @@ class _MyHomePageState extends State<MyHomePage> {
           const Divider(height: 100,),
           Expanded(
             flex: 3,
-            child: PictureGrid(
-              imagesList: filledImagesList, 
-              updateImagesList: updateImagesList
+            child: Visibility(
+              visible: isGridVisible,
+              child: PictureGrid(
+                imagesList: filledImagesList, 
+                updateImagesList: updateImagesList
+              ),
             ),
           ),
-          const Text(
-            'You have pushed the button this many times:',
-          ),
-          Text(
-            '$_counter',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
+          // const Text(
+          //   'You have pushed the button this many times:',
+          // ),
+          // Text(
+          //   '$_counter',
+          //   style: Theme.of(context).textTheme.headlineMedium,
+          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.accessibility_new_rounded),
+        backgroundColor: isGridVisible ? Colors.red : Colors.white,
+        onPressed: _toggleGrid,
+        tooltip: 'Show/Hide',
+        child: Icon(
+          isGridVisible ? Icons.hide_image_outlined : Icons.image,
+          color: isGridVisible ? Colors.white : Colors.red, 
+          ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
