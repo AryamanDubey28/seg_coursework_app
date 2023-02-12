@@ -31,6 +31,7 @@ class AdminSideMenu extends StatelessWidget {
         child: Wrap(
           children: [
             ListTile(
+              key: const Key("choiceBoards"),
               leading: const Icon(Icons.photo_size_select_actual_outlined),
               title: const Text('Choice boards'),
               onTap: () =>
@@ -39,15 +40,18 @@ class AdminSideMenu extends StatelessWidget {
               )),
             ),
             ListTile(
+                key: const Key("visualTimetable"),
                 leading: const Icon(Icons.event),
                 title: const Text('Visual Timetable'),
                 onTap: () {}),
             ListTile(
+              key: const Key("childMode"),
               leading: const Icon(Icons.child_care),
               title: const Text('Activate Child Mode'),
               onTap: () {},
             ),
             ListTile(
+              key: const Key("appColours"),
               leading: const Icon(Icons.color_lens_outlined),
               title: const Text('Edit App Colours'),
               onTap: () {},
@@ -56,11 +60,13 @@ class AdminSideMenu extends StatelessWidget {
               color: Colors.black54,
             ),
             ListTile(
+              key: const Key("accountDetails"),
               leading: const Icon(Icons.account_box_outlined),
               title: const Text('Edit Account Details'),
               onTap: () {},
             ),
             ListTile(
+              key: const Key("logout"),
               leading: const Icon(Icons.logout_outlined),
               title: const Text('Log out'),
               onTap: () {},

@@ -23,7 +23,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     categories = devCategories.map(buildCategory).toList();
   }
 
-  // These are added to test while development (TO BE DELETED)
+  // These are added to test while development
+  // They will later be supplied from the database (TO BE DELETED)
   final List<DraggableList> devCategories = [
     DraggableList(
         title: "Breakfast",
