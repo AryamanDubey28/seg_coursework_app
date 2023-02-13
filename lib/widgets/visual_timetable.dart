@@ -28,12 +28,10 @@ class TimetableList extends StatelessWidget {
                 message: imagesList[index].name,
                 child: ImageSquare(
                   image: imagesList[index],
-                  height: 150, 
-                  width: 150,
                 ),
               ),
               if (index != imagesList.length - 1)
-                Icon(Icons.arrow_right),
+                const Icon(Icons.arrow_right),
             ],
           ),
         );

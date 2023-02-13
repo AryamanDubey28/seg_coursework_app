@@ -13,7 +13,7 @@ class TimetableBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget> [
-        ImageSquare(image: image, height: height, width: width,),
+        ImageSquare(image: image,),
         const Icon(
           Icons.arrow_right_alt_sharp,
           size: 50,

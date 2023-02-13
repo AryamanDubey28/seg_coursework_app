@@ -13,9 +13,12 @@ class PictureGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: 5,
+      itemCount: imagesList.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5
+          crossAxisCount: 4,
+          childAspectRatio: 4/3,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
           ),
       itemBuilder: (context, index) {
         return GestureDetector(
@@ -24,12 +27,8 @@ class PictureGrid extends StatelessWidget {
           },
           child: Tooltip(
             message: imagesList[index].name,
-            child: Card(
-              child: ImageSquare(
-                image: imagesList[index],
-                width: 150,
-                height: 150,
-              ),
+            child: ImageSquare(
+              image: imagesList[index],
             ),
           ),
         );

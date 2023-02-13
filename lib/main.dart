@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.red,
+        scaffoldBackgroundColor: Colors.white,
       ),
       home: const MyHomePage(title: 'Flutter Demo UnHome Page'),
     );
@@ -61,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
     ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
     ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
+    ImageDetails(name: "Burger", imageUrl: "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg"),
   ];
 
   void updateImagesList(ImageDetails image) {
@@ -103,9 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
         
         children: <Widget>[
           Expanded(
-            flex: 2,
+            flex: 4,
             child: Container(
-              width: 850,
+              width: 1100,
               height: 200,
               alignment: Alignment.center,
               child: TimetableList(
@@ -114,9 +116,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             )
           ),
-          const Divider(height: 100,),
+          const Divider(height: 50,),
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Visibility(
               visible: isGridVisible,
               child: PictureGrid(
