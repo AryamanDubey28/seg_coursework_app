@@ -14,6 +14,11 @@ service cloud.firestore {
       return request.resource.data.keys().hasAll(['title', 'userId', 'illustration','rank']) && request.resource.data.title is string && request.resource.data.title.size() < 100 && request.resource.data.illustration is string && request.resource.data.rank is number && request.resource.data.rank>=0
     }
 
+    function workflowFieldsAreValid()
+    {
+      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration']) && request.resource.data.title is string && request.resource.data.title.size() < 100 && request.resource.data.illustration is string 
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
@@ -28,6 +33,12 @@ service cloud.firestore {
       allow read: if (request.auth.uid != null && resource.data.userId == request.auth.uid);
       allow create: if (request.auth.uid != null && request.resource.data.userId == request.auth.uid && categoryFieldsAreValid());
       allow update: if (request.auth.uid != null && resource.data.userId == request.auth.uid && categoryFieldsAreValid());
+    }
+
+    match /workflows/{workflowId} {
+      allow read: if (request.auth.uid != null && resource.data.userId == request.auth.uid);
+      allow create: if (request.auth.uid != null && request.resource.data.userId == request.auth.uid && workflowFieldsAreValid());
+      allow update: if (request.auth.uid != null && resource.data.userId == request.auth.uid && workflowFieldsAreValid());
     }
 
     match /users/{userId} {
