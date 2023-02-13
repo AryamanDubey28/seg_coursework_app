@@ -1,8 +1,11 @@
 class Item {
-  final String name;
-  final String illustration;
+  String name;
+  String illustration;
 
-  Item({required this.name, required this.illustration});
+  Item(name, illustration) {
+    this.name = name;
+    this.illustration = illustration;
+  }
 
   Map<String, dynamic> toMap() {
     return {
