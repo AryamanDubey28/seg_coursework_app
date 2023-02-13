@@ -1,9 +1,4 @@
-import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
 
@@ -102,6 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
+                    key: Key("account_circle_icon"),
                     Icons.account_circle_sharp,
                     size: 90,
                   ),
@@ -113,12 +109,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 35,
-                  ),
-                  const SizedBox(
-                    height: 15,
+                    height: 50,
                   ),
                   MyTextField(
+                    key: Key('email_text_field'),
                     hint: "Email",
                     controller: _emailController,
                   ),
@@ -126,6 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 15,
                   ),
                   MyTextField(
+                    key: Key('pass_text_field'),
                     hint: "Password",
                     controller: _passwordController,
                     isPassword: true,
@@ -134,6 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 15,
                   ),
                   MyTextField(
+                    key: Key('pass_conf_text_field'),
                     hint: "Password Confirmation",
                     controller: _passwordConfirmationController,
                     isPassword: true,
@@ -145,6 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 88,
                     width: 566,
                     child: ElevatedButton(
+                      key: Key('sign_up_button'),
                       style: ElevatedButton.styleFrom(
                         textStyle: TextStyle(
                           fontSize: 32,
@@ -178,6 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         child: Text(
                           "Go Back",
+                          key: Key("go_back_button"),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,

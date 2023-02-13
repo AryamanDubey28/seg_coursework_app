@@ -204,6 +204,7 @@ class _LogInState extends State<LogIn> {
                     height: 7,
                   ),
                   TextButton(
+                    key: Key('create_account'),
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.blue,
                       textStyle: const TextStyle(
