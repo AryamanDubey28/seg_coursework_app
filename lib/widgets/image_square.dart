@@ -10,20 +10,19 @@ class ImageSquare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        width: width,
-        height: height,
-        // padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          // border: Border.all(color: Colors.white, width: 5),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(image.imageUrl)
-          )
-        ),
-        // child: Image.network(imageURL),
+    return Container(
+      width: width,
+      height: height,
+      // padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+        border: Border.all(color: Colors.black, width: 2),
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(image.imageUrl)
+        )
       ),
+      // child: Image.network(imageURL),
     );
   }
 }

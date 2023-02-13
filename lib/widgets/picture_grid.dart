@@ -17,8 +17,8 @@ class PictureGrid extends StatelessWidget {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
           childAspectRatio: 4/3,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
+          mainAxisSpacing: 3,
+          crossAxisSpacing: 3,
           ),
       itemBuilder: (context, index) {
         return GestureDetector(
