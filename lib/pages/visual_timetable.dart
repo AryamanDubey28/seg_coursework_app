@@ -66,6 +66,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   @override
   Widget build(BuildContext context) {
+    var timetableList = TimetableList(
+      imagesList: imagesList,
+      popImagesList: popImagesList
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text("Visual Timetable"),
@@ -74,20 +78,17 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            flex: 4,
+            flex: 5,
             child: Container(
               width: 1100,
               height: 200,
               alignment: Alignment.center,
-              child: TimetableList(
-                imagesList: imagesList,
-                popImagesList: popImagesList
-              ),
+              child: timetableList,
             )
           ),
-          const Divider(height: 50, thickness: 1),
+          Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,),
           Expanded(
-            flex: 5,
+            flex: isGridVisible ? 5 : 0,
             child: Visibility(
               visible: isGridVisible,
               child: PictureGrid(

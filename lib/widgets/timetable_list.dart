@@ -9,6 +9,11 @@ class TimetableList extends StatelessWidget {
   final List<ImageDetails> imagesList;
   final Function popImagesList;
 
+  List<ImageDetails> getImagesList()
+  {
+    return imagesList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
