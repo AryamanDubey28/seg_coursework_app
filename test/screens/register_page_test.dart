@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:seg_coursework_app/pages/authenticate/register_page.dart';
-import 'package:seg_coursework_app/widgets/my_text_field.dart';
 
 void main() {
   testWidgets("Register page has all components", (WidgetTester tester) async {

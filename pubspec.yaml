@@ -37,10 +37,13 @@ dependencies:
   firebase_core: ^2.4.1
   firebase_auth: ^4.2.5
   firebase_database: ^10.0.10
-  mockito: ^5.3.2
   rxdart: ^0.27.7
   firebase_auth_mocks: ^0.9.3
   cloud_firestore: ^4.3.2
+  drag_and_drop_lists: ^0.3.3
+  cached_network_image: ^3.2.3
+  mockito: ^5.3.2
+  network_image_mock: ^2.1.1
 
 dev_dependencies:
   integration_test:

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/home_page.dart';
+import 'package:seg_coursework_app/pages/admin_interface.dart';
 
 Future<void> addDelay() async {
   await Future<void>.delayed(Duration(milliseconds: 1000));
@@ -36,20 +36,13 @@ void main() {
       await tester.enterText(passConfField, "Password123,");
       await tester.pumpAndSettle();
 
-
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-
-      expect(find.byType(HomePage), findsOneWidget);
+      expect(find.byType(AdminInterface), findsOneWidget);
 
       final auth = FirebaseAuth.instance;
       auth.currentUser!.delete();
-
-      final signOutButton = find.byKey(Key('sign_out_button'));
-
-      await tester.tap(signOutButton);
-      await tester.pumpAndSettle();
     });
 
     testWidgets("Testing invalid sign up", (tester) async {
@@ -85,10 +78,12 @@ void main() {
       await tester.pumpAndSettle();
 
       await addDelay();
-      
-      expect(find.byType(HomePage), findsNothing);
+
+      expect(find.byType(AdminInterface), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.text("Password confirmation did not match. Please try again."), findsOneWidget);
+      expect(
+          find.text("Password confirmation did not match. Please try again."),
+          findsOneWidget);
     });
   });
 }
