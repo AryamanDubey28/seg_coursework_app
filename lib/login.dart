@@ -4,6 +4,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:seg_coursework_app/Auth.dart';
 import 'package:seg_coursework_app/forgot_password_page.dart';
+import 'package:seg_coursework_app/my_text_field.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -40,6 +41,7 @@ class _LogInState extends State<LogIn> {
           context: context,
           builder: (context) {
             return AlertDialog(
+              key: Key('incorrect_email_or_password_dialog'),
               content: Text(
                 'This user either does not exist or the password is incorrect. Try again or click Forgot Password or register again',
                 style: TextStyle(fontSize: 24),
@@ -88,52 +90,61 @@ class _LogInState extends State<LogIn> {
                   height: 45,
                 ),
                 // email textfield
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Email",
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                MyTextField(
+                    key: Key('email_text_field'),
+                    hint: "Email",
+                    controller: _emailController),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //         color: Colors.grey[100],
+                //         border: Border.all(color: Colors.white),
+                //         borderRadius: BorderRadius.circular(15)),
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(left: 20.0),
+                //       child: TextField(
+                //         controller: _emailController,
+                //         decoration: InputDecoration(
+                //           border: InputBorder.none,
+                //           hintText: "Email",
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 const SizedBox(
                   height: 15,
                 ),
 
                 //password textfield
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Password",
-                        ),
-                      ),
-                    ),
-                  ),
+                MyTextField(
+                  key: Key('password_text_field'),
+                  hint: "Password",
+                  controller: _passwordController,
+                  isPassword: true,
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //         color: Colors.grey[100],
+                //         border: Border.all(color: Colors.white),
+                //         borderRadius: BorderRadius.circular(15)),
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(left: 20.0),
+                //       child: TextField(
+                //         controller: _passwordController,
+                //         obscureText: true,
+                //         decoration: InputDecoration(
+                //           border: InputBorder.none,
+                //           hintText: "Password",
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 //forgot password
                 SizedBox(
@@ -161,6 +172,7 @@ class _LogInState extends State<LogIn> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 400),
                   child: GestureDetector(
+                    key: Key('sign_in_button'),
                     onTap: signIn,
                     child: Container(
                       padding: EdgeInsets.all(25),
@@ -178,6 +190,7 @@ class _LogInState extends State<LogIn> {
                     ),
                   ),
                 ),
+
                 SizedBox(
                   height: 30,
                 ),
