@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
 
 import '../models/image_details.dart';
 import '../widgets/picture_grid.dart';
@@ -23,7 +24,21 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
     ImageDetails(name: "Burger", imageUrl: "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg"),
   ];
+  ListOfListsOfImageDetails listOfTimetables = ListOfListsOfImageDetails(listOfLists: []);
+  // List<List<ImageDetails>> listOfTimetables = [];
 
+  List<ImageDetails> deepCopy(List<ImageDetails> list) {
+  List<ImageDetails> copy = [];
+  for (ImageDetails image in list) {
+    copy.add(
+      ImageDetails(
+      name: image.name,
+      imageUrl: image.imageUrl
+      )
+    );
+  }
+  return copy;
+}
 
   void updateImagesList(ImageDetails image) {
     setState(() {
@@ -64,15 +79,57 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     );
   }
 
+  IconButton buildIconButton(TimetableList timetableList)
+  {
+    IconButton temp = IconButton(
+      icon: const Icon(
+        Icons.add,
+        color: Colors.teal,),
+      onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
+      
+    );
+    return temp;
+  }
+
+  void addTimetableToListOfLists(List<ImageDetails> imagesList) {
+    setState(() {
+      bool isAdded = listOfTimetables.addList(deepCopy(imagesList));
+      showSnackBarMessage(isAdded);
+    });
+  }
+
+  void showSnackBarMessage(bool isAdded) {
+  if(isAdded)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Timetable added successfully.")
+        ),
+      );
+    }
+    else
+    {
+      listOfTimetables.printList();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Timetable is already stored.")
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var timetableList = TimetableList(
+    TimetableList timetableList = TimetableList(
       imagesList: imagesList,
       popImagesList: popImagesList
     );
     return Scaffold(
       appBar: AppBar(
         title: const Text("Visual Timetable"),
+        actions: <Widget> [
+          IconButton(onPressed: () {}, icon: Icon(Icons.wallet))
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -86,6 +143,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
               child: timetableList,
             )
           ),
+          (timetableList.imagesList.length >= 2) ?
+          Center(
+            child: buildIconButton(timetableList)
+          ) : SizedBox(),
           Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,),
           Expanded(
             flex: isGridVisible ? 5 : 0,
@@ -102,4 +163,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       floatingActionButton: buildFloatingActionButton(),
     );
   }
+  
+  
 }
