@@ -6,18 +6,19 @@ service cloud.firestore {
     // the vailidity of the userId is to be tested in another part of the rule.
     function itemFieldsAreValid()
     {
-      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration']) && request.resource.data.name is string && request.resource.data.name.size() < 100 && request.resource.data.illustration is string 
+      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration']) && request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration']) && request.resource.data.name is string && request.resource.data.name.size() < 100 && request.resource.data.illustration is string 
     }
 
     function categoryFieldsAreValid()
     {
-      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration','rank']) && request.resource.data.title is string && request.resource.data.title.size() < 100 && request.resource.data.illustration is string && request.resource.data.rank is number && request.resource.data.rank>=0
+      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration','rank']) && request.resource.data.keys().toSet().hasOnly(['title', 'userId', 'illustration','rank']) && request.resource.data.title is string && request.resource.data.title.size() < 100 && request.resource.data.illustration is string && request.resource.data.rank is number && request.resource.data.rank>=0
     }
 
     function workflowFieldsAreValid()
     {
-      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration']) && request.resource.data.title is string && request.resource.data.title.size() < 100 && request.resource.data.illustration is string 
+      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration']) && request.resource.data.keys().toSet().hasOnly(['title', 'userId', 'illustration']) && request.resource.data.title is string && request.resource.data.title.size() < 100 && request.resource.data.illustration is string 
     }
+    
 
     match /{document=**} {
       allow read, write: if false;
