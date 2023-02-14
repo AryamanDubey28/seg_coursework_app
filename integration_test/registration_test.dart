@@ -5,53 +5,94 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
+import 'package:seg_coursework_app/pages/home_page.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
-Future<void> addDelay(int ms) async {
-  await Future<void>.delayed(Duration(milliseconds: ms));
+Future<void> addDelay() async {
+  await Future<void>.delayed(Duration(milliseconds: 1000));
 }
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group("registration tests", () {
-    testWidgets("input correct email and password, verify connection",
-        (tester) async {
+    testWidgets("Testing valid sign up", (tester) async {
       app.main();
-
       await tester.pumpAndSettle();
-
-      await addDelay(2000);
 
       final createAccountButton = find.byKey(Key('create_account'));
 
       await tester.tap(createAccountButton);
-
       await tester.pumpAndSettle();
-      await addDelay(2000);
 
       final emailField = find.byKey(Key('email_text_field'));
       final passwordField = find.byKey(Key('pass_text_field'));
       final passConfField = find.byKey(Key('pass_conf_text_field'));
       final signUpButton = find.byKey(Key('sign_up_button'));
 
-      await tester.enterText(
-          emailField, "testemailaddressfortesting@gmail.com");
-      await tester.enterText(passwordField, "Password123,");
-      await tester.enterText(passConfField, "Password123,");
-      await addDelay(2000);
-
-      await tester.tap(signUpButton);
-
+      await tester.enterText(emailField, "emailaddressfortesting@gmail.com");
       await tester.pumpAndSettle();
 
-      await addDelay(2000);
-      
-      expect(find.text("Signed in as: testemailaddressfortesting@gmail.com"),
-          findsOneWidget);
+      await tester.enterText(passwordField, "Password123,");
+      await tester.pumpAndSettle();
+
+      await tester.enterText(passConfField, "Password123,");
+      await tester.pumpAndSettle();
+
+
+      await tester.tap(signUpButton);
+      await tester.pumpAndSettle();
+
+
+      expect(find.byType(HomePage), findsOneWidget);
 
       final auth = FirebaseAuth.instance;
       auth.currentUser!.delete();
-      auth.signOut();
+
+      final signOutButton = find.byKey(Key('sign_out_button'));
+
+      await tester.tap(signOutButton);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets("Testing invalid sign up", (tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      await addDelay();
+
+      final createAccountButton = find.byKey(Key('create_account'));
+
+      await tester.tap(createAccountButton);
+      await tester.pumpAndSettle();
+
+      await addDelay();
+
+      final emailField = find.byKey(Key('email_text_field'));
+      final passwordField = find.byKey(Key('pass_text_field'));
+      final passConfField = find.byKey(Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(Key('sign_up_button'));
+
+      await tester.enterText(emailField, "emailaddressfortesting@gmail.com");
+      await tester.pumpAndSettle();
+
+      await tester.enterText(passwordField, "Password123,");
+      await tester.pumpAndSettle();
+
+      await tester.enterText(passConfField, "WrongPassword");
+      await tester.pumpAndSettle();
+
+      await addDelay();
+
+      await tester.tap(signUpButton);
+      await tester.pumpAndSettle();
+
+      await addDelay();
+      
+      expect(find.byType(HomePage), findsNothing);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Password confirmation did not match. Please try again."), findsOneWidget);
     });
   });
 }

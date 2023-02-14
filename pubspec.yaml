@@ -42,6 +42,7 @@ dependencies:
   firebase_auth_mocks: ^0.9.3
   cloud_firestore: ^4.3.2
   fake_cloud_firestore: ^2.3.0+3
+  path_provider: ^2.0.12
 
 dev_dependencies:
   integration_test:
