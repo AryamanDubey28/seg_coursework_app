@@ -39,6 +39,16 @@ class ListOfListsOfImageDetails {
     return listOfLists;
   }
 
+  int length()
+  {
+    return listOfLists.length;
+  }
+
+  List<ImageDetails> operator[](int index)
+  {
+    return listOfLists[index];
+  }
+
   void printList()
   {
     for(int i = 0 ; i < listOfLists.length ; i++)

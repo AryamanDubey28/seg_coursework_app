@@ -4,6 +4,7 @@ import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
 import '../models/image_details.dart';
 import '../widgets/picture_grid.dart';
 import '../widgets/timetable_list.dart';
+import 'all_saved_timetables.dart';
 
 class VisualTimeTable extends StatefulWidget {
   const VisualTimeTable({super.key});
@@ -128,7 +129,15 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       appBar: AppBar(
         title: const Text("Visual Timetable"),
         actions: <Widget> [
-          IconButton(onPressed: () {}, icon: Icon(Icons.wallet))
+          IconButton(onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AllSavedTimetables(listOfTimetables: listOfTimetables),
+              ),
+            );
+          }, 
+          icon: Icon(Icons.list))
         ],
       ),
       body: Column(
