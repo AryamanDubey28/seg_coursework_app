@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
           ),
           //button to sign out
           MaterialButton(
+            key: Key('sign_out_button'),
             onPressed: () {
               FirebaseAuth.instance.signOut();
             },
