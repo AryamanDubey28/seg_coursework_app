@@ -28,13 +28,14 @@ class _LogInState extends State<LogIn> {
 
   //sign users in using Firebase method
   Future signIn() async {
-    try {
-      await auth.signIn(
-          _emailController.text.trim(), _passwordController.text.trim());
-      // await FirebaseAuth.instance.signInWithEmailAndPassword(
-      //     email: _emailController.text.trim(),
-      //     password: _passwordController.text.trim());
-    } on FirebaseAuthException catch (e) {
+    final result = await auth.signIn(
+        _emailController.text.trim(), _passwordController.text.trim());
+
+    print(result);
+    // await FirebaseAuth.instance.signInWithEmailAndPassword(
+    //     email: _emailController.text.trim(),
+    //     password: _passwordController.text.trim());
+    if (result != "Success") {
       showDialog(
           context: context,
           builder: (context) {

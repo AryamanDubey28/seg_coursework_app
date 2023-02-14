@@ -22,6 +22,9 @@ class Auth {
 
   Future<String?> signIn(String email, String password) async {
     try {
+      if (!validEmail(email)) {
+        return "Unsuccessful";
+      }
       await auth.signInWithEmailAndPassword(
           email: email.trim(), password: password.trim());
       return "Success";
@@ -41,5 +44,11 @@ class Auth {
     } catch (e) {
       rethrow;
     }
+  }
+
+  bool validEmail(String email) {
+    return RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
   }
 }

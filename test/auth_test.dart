@@ -24,14 +24,6 @@ void main() {
 
   tearDown(() {});
 
-  // test("emit occurs", () async {
-  //   expectLater(auth.user, emitsInOrder([_mockUser]));
-  // });
-
-  // when(mockFirebaseAuth.createUserWithEmailAndPassword(
-  //         email: "test@test.com", password: "Password123"))
-  //     .thenReturn(expected);
-
   test("create account", () async {
     print("creating dummy account");
     expect(await auth.createAccount("test@test.com", "Password123"), "Success");
@@ -42,8 +34,8 @@ void main() {
     expect(await auth.signIn("test@test.com", "Password123"), "Success");
   });
 
-  test("incorrect sign in", () async {
+  test("incorrect email", () async {
     print("signing in account should fail");
-    expect(await auth.signIn("t@test.com", "Pass123"), "Unsuccessful");
+    expect(await auth.signIn("test.com", "Password123"), "Unsuccessful");
   });
 }
