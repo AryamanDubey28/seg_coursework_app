@@ -17,5 +17,8 @@ class RankedItem extends Item {
     return {'name': name, 'illustration': illustration, 'rank': rank};
   }
 
-  RankedItem.fromMap(Map<String, dynamic> addressMap) : rank = addressMap["rank"],super(name: addressMap["name"], illustration: addressMap["illustration"])
+  RankedItem.fromMap(Map<String, dynamic> addressMap)
+      : rank = addressMap["rank"],
+        super(
+            name: addressMap["name"], illustration: addressMap["illustration"]);
 }
