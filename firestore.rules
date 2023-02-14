@@ -38,6 +38,9 @@ service cloud.firestore {
       request.resource.data.illustration is string 
     }
 
+    // Ranked items qualify items stored under the categoryItems or workflowItems paths. They must have a name,
+    // an illustration, a userId, and a rank field. Name is a string of length <100. Illustration is a string.
+    // Rank is a number that is equal to or greater than 0. The validity of the userId is to be tested in other parts of the rule.
     function rankedItemFieldsAreValid()
     {
       return request.resource.data.keys().hasAll(['name', 'userId', 'illustration','rank']) && 
@@ -56,62 +59,58 @@ service cloud.firestore {
 
     match /items/{itemId} {
       allow read: if (request.auth.uid != null && 
-      resource.data.userId == request.auth.uid);
+        resource.data.userId == request.auth.uid);
       
       allow create: if (request.auth.uid != null && 
-      request.resource.data.userId == request.auth.uid && 
-      itemFieldsAreValid());
+        request.resource.data.userId == request.auth.uid && 
+        itemFieldsAreValid());
       
       allow update: if (request.auth.uid != null && 
-      resource.data.userId == request.auth.uid && 
-      itemFieldsAreValid());
+        resource.data.userId == request.auth.uid && 
+        itemFieldsAreValid());
     }
 
     match /categories/{categoryId} {
       allow read: if (request.auth.uid != null && 
-      resource.data.userId == request.auth.uid);
+        resource.data.userId == request.auth.uid);
       
       allow create: if (request.auth.uid != null && 
-      request.resource.data.userId == request.auth.uid && 
-      categoryFieldsAreValid());
+        request.resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
       
       allow update: if (request.auth.uid != null && 
-      resource.data.userId == request.auth.uid && 
-      categoryFieldsAreValid());
+        resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
     }
 
     match /workflows/{workflowId} {
       allow read: if (request.auth.uid != null && 
-      resource.data.userId == request.auth.uid);
+        resource.data.userId == request.auth.uid);
 
       allow create: if (request.auth.uid != null && 
-      request.resource.data.userId == request.auth.uid && 
-      workflowFieldsAreValid());
+        request.resource.data.userId == request.auth.uid && 
+        workflowFieldsAreValid());
 
       allow update: if (request.auth.uid != null && 
-      resource.data.userId == request.auth.uid && 
-      workflowFieldsAreValid());
+        resource.data.userId == request.auth.uid && 
+        workflowFieldsAreValid());
     }
 
-  function differentKey()
-    {
-      return request.resource.data.diff(resource.data).addedKeys()
-    }
     match /categoryItems/{categoryId} {
       allow read: if (request.auth.uid != null && 
-      get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
 
       allow create: if (request.auth.uid != null && 
-      get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
-      request.resource.data.userId == request.auth.uid && 
-      exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
-      rankedItemFieldsAreValid());
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
+        rankedItemFieldsAreValid());
 
       allow update: if (request.auth.uid != null && 
-      get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
-      request.resource.data.userId == request.auth.uid && 
-      exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) &&
-      rankedItemFieldsAreValid());
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) &&
+        rankedItemFieldsAreValid());
 
       match /items/{itemID} {
         allow read: if (request.auth.uid != null && 
@@ -133,19 +132,19 @@ service cloud.firestore {
 
     match /workflowItems/{workflowId} {
       allow read: if (request.auth.uid != null && 
-      get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
+        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
 
       allow create: if (request.auth.uid != null && 
-      get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
-      request.resource.data.userId == request.auth.uid && 
-      exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
-      rankedItemFieldsAreValid());
+        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
+        rankedItemFieldsAreValid());
 
       allow update: if (request.auth.uid != null && 
-      get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
-      request.resource.data.userId == request.auth.uid && 
-      exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) &&
-      rankedItemFieldsAreValid());
+        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) &&
+        rankedItemFieldsAreValid());
 
       match /items/{itemID} {
         allow read: if (request.auth.uid != null && 
