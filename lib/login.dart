@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:seg_coursework_app/Auth.dart';
 import 'package:seg_coursework_app/forgot_password_page.dart';
 
 class LogIn extends StatefulWidget {
@@ -15,13 +16,24 @@ class _LogInState extends State<LogIn> {
   //email and password controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final Auth auth;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    auth = Auth(auth: firebaseAuth);
+  }
 
   //sign users in using Firebase method
   Future signIn() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
+      await auth.signIn(
+          _emailController.text.trim(), _passwordController.text.trim());
+      // await FirebaseAuth.instance.signInWithEmailAndPassword(
+      //     email: _emailController.text.trim(),
+      //     password: _passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
       showDialog(
           context: context,
