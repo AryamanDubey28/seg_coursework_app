@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:indexed/indexed.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 
 class ChildBoards extends StatefulWidget {
@@ -50,21 +49,19 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         imageUrl:
             "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
   ];
-  late List<int> onTapIndexes;
   TapDownDetails? tapDownDetails;
-
   Animation<Matrix4>? animation;
   bool back = false;
 
   @override
   void initState() {
     super.initState();
-    onTapIndexes = List<int>.generate(images.length, (index) => 1);
+    //set up controllers
     controllers = List<TransformationController>.generate(
         images.length, (index) => TransformationController());
+    //set up animation controllers
     animationControllers = List<AnimationController>.generate(
         images.length, (index) => AnimationController(vsync: this));
-    //images.length
     for (var i = 0; i < images.length; i++) {
       animationControllers[i] = AnimationController(
         vsync: this,
@@ -77,7 +74,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    //images.length
     for (var i = 0; i < images.length; i++) {
       controllers[i].dispose();
       animationControllers[i].dispose();
@@ -94,138 +90,156 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         widthFactor: MediaQuery.of(context).size.width,
         heightFactor: MediaQuery.of(context).size.height,
         child: Column(children: [
+          //box for spacing
           const SizedBox(
             height: 30,
           ),
-          Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                  color: Colors.red, borderRadius: BorderRadius.circular(8)),
-              child: Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.all(8.0),
-                    height: 80,
-                    width: 80,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 3),
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(100)),
-                    child: IconButton(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.all(8.0),
-                        iconSize: 50,
-                        splashColor: Colors.blue.shade900,
-                        hoverColor: Colors.transparent,
-                        onPressed: () {
-                          back = !back;
-                        },
-                        icon: const Icon(Icons.arrow_back_rounded)),
-                  ),
-                  const SizedBox(
-                    width: 470,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(8.0),
-                    height: 90,
-                    width: 90,
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 3),
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            categoryImage.imageUrl,
-                          ),
-                          fit: BoxFit.cover,
-                        )),
-                  ),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  Text(
-                    categoryImage.name,
-                    textAlign: TextAlign.right,
-                    textScaleFactor: 2,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          mainImages(),
+          getTopMenu(),
+          getMainImages(),
         ]),
       ),
     );
   }
 
-  Expanded mainImages() {
+  Padding getTopMenu() {
+    return Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: Container(
+        key: const Key("boardMenu"),
+        alignment: Alignment.center,
+        margin: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+            color: Colors.red, borderRadius: BorderRadius.circular(8)),
+        child: Row(
+          children: [
+            getBackButton(),
+            //box for spacing
+            const SizedBox(
+              width: 30,
+            ),
+            getCategoryImage(),
+            //box for spacing
+            const SizedBox(
+              width: 30,
+            ),
+            getCategoryTitle(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Text getCategoryTitle() {
+    return Text(
+      key: const Key("categoryTitle"),
+      categoryImage.name,
+      textAlign: TextAlign.right,
+      textScaleFactor: 2,
+    );
+  }
+
+  Container getCategoryImage() {
+    return Container(
+      key: const Key("categoryImage"),
+      margin: const EdgeInsets.all(8.0),
+      height: 90,
+      width: 90,
+      decoration: BoxDecoration(
+          border: Border.all(width: 3),
+          borderRadius: BorderRadius.circular(8),
+          image: DecorationImage(
+            image: NetworkImage(
+              categoryImage.imageUrl,
+            ),
+            fit: BoxFit.cover,
+          )),
+    );
+  }
+
+  Container getBackButton() {
+    return Container(
+      key: const Key("backButton"),
+      margin: const EdgeInsets.all(8.0),
+      height: 80,
+      width: 80,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          border: Border.all(width: 3),
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(100)),
+      child: IconButton(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.all(8.0),
+          iconSize: 50,
+          splashColor: Colors.blue.shade900,
+          hoverColor: Colors.transparent,
+          onPressed: () {
+            back = !back;
+          },
+          icon: const Icon(Icons.arrow_back_rounded)),
+    );
+  }
+
+  Expanded getMainImages() {
     return Expanded(
-      child: Indexer(
-        children: [
-          GridView.builder(
-              padding: const EdgeInsets.all(8.0),
-              physics: const NeverScrollableScrollPhysics(),
-              //images.length
-              itemCount: images.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5),
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: GestureDetector(
-                    onTapDown: (details) => tapDownDetails = details,
-                    onTap: () {
-                      onTapIndexes[index] = 10;
-                      final position = tapDownDetails!.localPosition;
+      child: GridView.builder(
+          key: const Key("mainGridOfPictures"),
+          padding: const EdgeInsets.all(8.0),
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: images.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5),
+          itemBuilder: (context, index) {
+            return getClickableImage(index);
+          }),
+    );
+  }
 
-                      const double scale = 1.5;
-                      final x = -position.dx * (scale - 1);
-                      final y = -position.dy * (scale - 1);
-                      final zoomed = Matrix4.identity()
-                        ..translate(x, y)
-                        ..scale(scale);
+  Padding getClickableImage(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: GestureDetector(
+        onTapDown: (details) => tapDownDetails = details,
+        onTap: () {
+          final position = tapDownDetails!.localPosition;
 
-                      final end = controllers[index].value.isIdentity()
-                          ? zoomed
-                          : Matrix4.identity();
+          const double scale = 1.5;
+          final x = -position.dx * (scale - 1);
+          final y = -position.dy * (scale - 1);
+          final zoomed = Matrix4.identity()
+            ..translate(x, y)
+            ..scale(scale);
 
-                      animation = Matrix4Tween(
-                              begin: controllers[index].value, end: end)
-                          .animate(CurveTween(curve: Curves.easeOut)
-                              .animate(animationControllers[index]));
+          final end = controllers[index].value.isIdentity()
+              ? zoomed
+              : Matrix4.identity();
 
-                      animationControllers[index].forward(from: 0);
-                    },
-                    child: Indexed(
-                      index: onTapIndexes[index],
-                      child: InteractiveViewer(
-                        clipBehavior: Clip.none,
-                        transformationController: controllers[index],
-                        scaleEnabled: false,
-                        panEnabled: false,
-                        child: Container(
-                          margin: const EdgeInsets.all(5.0),
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 3),
-                              borderRadius: BorderRadius.circular(8),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  images[index].imageUrl,
-                                ),
-                                fit: BoxFit.cover,
-                              )),
-                        ),
-                      ),
-                    ),
+          animation = Matrix4Tween(begin: controllers[index].value, end: end)
+              .animate(CurveTween(curve: Curves.easeOut)
+                  .animate(animationControllers[index]));
+
+          animationControllers[index].forward(from: 0);
+        },
+        child: InteractiveViewer(
+          clipBehavior: Clip.none,
+          transformationController: controllers[index],
+          scaleEnabled: false,
+          panEnabled: false,
+          child: Container(
+            margin: const EdgeInsets.all(5.0),
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                border: Border.all(width: 3),
+                borderRadius: BorderRadius.circular(8),
+                image: DecorationImage(
+                  image: NetworkImage(
+                    images[index].imageUrl,
                   ),
-                );
-              }),
-        ],
+                  fit: BoxFit.cover,
+                )),
+          ),
+        ),
       ),
     );
   }
