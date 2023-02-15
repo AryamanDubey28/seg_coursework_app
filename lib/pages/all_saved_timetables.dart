@@ -4,6 +4,9 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 
+import '../models/image_details.dart';
+import '../widgets/timetable_row.dart';
+
 class AllSavedTimetables extends StatelessWidget {
   const AllSavedTimetables({super.key, required this.listOfTimetables});
   final ListOfListsOfImageDetails listOfTimetables;
@@ -21,20 +24,15 @@ class AllSavedTimetables extends StatelessWidget {
       body: ListView.builder(
         itemCount: listOfTimetables.length(),
         itemBuilder: (context, index) {
-          return Container(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: listOfTimetables[index].length,
-              itemBuilder: (context, subIndex) {
-                return ImageSquare(
-                  image: listOfTimetables[index][subIndex],
-                );
-              },
-            ),
+          return Column(
+            children: [
+              TimetableRow(listOfImages: listOfTimetables[index]),
+              const SizedBox(height: 5,),
+            ],
           );
         },
       ),
     );
   }
 }
+
