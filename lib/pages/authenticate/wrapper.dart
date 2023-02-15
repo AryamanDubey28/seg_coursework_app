@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'authenticate/auth.dart';
-import 'package:seg_coursework_app/pages/admin_interface.dart';
-
+import 'toggleAuth.dart';
+import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -20,7 +19,7 @@ class Wrapper extends StatelessWidget {
             return const AdminInterface();
           } else {
             //snapshot does not contain user data therefore, not logged in
-            return const AuthPage();
+            return const ToggleAuth();
           }
         },
       ),

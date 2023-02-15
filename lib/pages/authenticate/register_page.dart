@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'Auth.dart';
 import '../../widgets/my_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -18,6 +19,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
+  late final Auth auth;
+
 
   Future signUp() async {
     if (passwordConfirmed()) {

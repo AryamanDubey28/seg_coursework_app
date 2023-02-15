@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/admin_interface.dart';
+import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 
 Future<void> addDelay() async {
   await Future<void>.delayed(Duration(milliseconds: 1000));
@@ -48,8 +48,6 @@ void main() {
     testWidgets("Testing invalid sign up", (tester) async {
       app.main();
       await tester.pumpAndSettle();
-
-      await addDelay();
 
       final createAccountButton = find.byKey(Key('create_account'));
 
