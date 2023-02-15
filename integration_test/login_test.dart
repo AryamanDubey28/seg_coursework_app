@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -16,17 +15,17 @@ void main() {
 
       await Future.delayed(Duration(seconds: 2));
 
-      final Finder email_field = find.byKey(Key('email_text_field'));
-      final Finder password_field = find.byKey(Key('password_text_field'));
-      final Finder sign_in_button = find.byKey(Key('sign_in_button'));
+      final Finder emailField = find.byKey(Key('email_text_field'));
+      final Finder passwordField = find.byKey(Key('password_text_field'));
+      final Finder signInButton = find.byKey(Key('sign_in_button'));
 
-      await tester.enterText(email_field, 'test@gmail.com');
+      await tester.enterText(emailField, 'test@gmail.com');
       await tester.pumpAndSettle();
-      await tester.enterText(password_field, "Password123");
+      await tester.enterText(passwordField, "Password123");
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(sign_in_button);
+      await tester.tap(signInButton);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 

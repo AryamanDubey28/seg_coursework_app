@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class Auth {
   late final FirebaseAuth auth;
@@ -28,7 +27,7 @@ class Auth {
       await auth.signInWithEmailAndPassword(
           email: email.trim(), password: password.trim());
       return "Success";
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       return "Unsuccessful";
     } catch (e) {
       rethrow;

@@ -13,7 +13,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _emailController.dispose();
   }
@@ -33,7 +32,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             );
           });
     } on FirebaseAuthException catch (e) {
-      print(e);
       showDialog(
           context: context,
           builder: (context) {
@@ -86,11 +84,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           //button
           MaterialButton(
             onPressed: passwordReset,
+            color: Colors.deepPurple[300],
             child: Text(
               "Reset Password",
               style: TextStyle(fontSize: 24, color: Colors.white),
             ),
-            color: Colors.deepPurple[300],
           )
         ],
       ),

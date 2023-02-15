@@ -181,7 +181,7 @@ class _LogInState extends State<LogIn> {
                           foregroundColor: Colors.blue,
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 24,
                           ),
                         ),
                         onPressed: () {
