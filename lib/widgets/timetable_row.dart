@@ -6,15 +6,18 @@ import 'image_square.dart';
 class TimetableRow extends StatelessWidget {
   const TimetableRow({
     super.key,
-    required this.listOfImages,
+    required this.listOfImages, required this.unsaveList,
   });
 
   final List<ImageDetails> listOfImages;
+  final Function unsaveList;
 
   IconButton buildDeleteIconButton()
   {
     return IconButton(
-      onPressed: (){}, 
+      onPressed: (){
+        unsaveList(listOfImages);
+      }, 
       icon: const Icon(
         Icons.delete, 
         color: Colors.teal,
@@ -38,11 +41,11 @@ class TimetableRow extends StatelessWidget {
               itemBuilder: (context, subIndex) {
                 return Row(
                   children: [
+                    const SizedBox(width: 5,),
                     ImageSquare(
                       image: listOfImages[subIndex], 
                       width: MediaQuery.of(context).size.width/6,
                     ),
-                    const SizedBox(width: 5,)
                   ],
                 );
               },  

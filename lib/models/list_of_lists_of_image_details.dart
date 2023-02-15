@@ -60,4 +60,9 @@ class ListOfListsOfImageDetails {
       }
     }
   }
+
+  void remove(List<ImageDetails> list)
+  {
+    listOfLists.remove(list);
+  }
 }
