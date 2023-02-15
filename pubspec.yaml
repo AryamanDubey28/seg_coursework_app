@@ -40,6 +40,9 @@ dependencies:
   mockito: ^5.3.2
   rxdart: ^0.27.7
   firebase_auth_mocks: ^0.9.3
+  drag_and_drop_lists: ^0.3.3
+  cached_network_image: ^3.2.3
+  network_image_mock: ^2.1.1
 
 dev_dependencies:
   flutter_test:
