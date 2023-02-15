@@ -2,7 +2,8 @@ import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'child_menu_model.dart';
-export 'child_menu_model.dart';
+
+// TODO: modularise code into subwidgets
 
 class ChildMenuWidget extends StatefulWidget {
   const ChildMenuWidget({Key? key}) : super(key: key);
