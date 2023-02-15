@@ -6,7 +6,7 @@ import 'package:page_transition/page_transition.dart';
 import '../flutter_flow_theme.dart';
 
 import '../../index.dart';
-import '../../main.dart';
+import 'package:seg_coursework_app/main.dart';
 import '../lat_lng.dart';
 import '../place.dart';
 import 'serialization_util.dart';
