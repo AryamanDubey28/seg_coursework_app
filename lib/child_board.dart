@@ -220,6 +220,14 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
                 ),
                 fit: BoxFit.cover,
               )),
+          child: const Positioned(
+            right: 0.0,
+            bottom: 0.0,
+            child: Icon(
+              Icons.highlight_remove,
+              size: 70,
+            ),
+          ),
         ),
       ),
     );
