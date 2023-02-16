@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'Auth.dart';
 import '../../widgets/my_text_field.dart';
 
@@ -20,7 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
-  late final Auth auth;
 
   Future signUp() async {
     if (passwordConfirmed()) {
@@ -33,10 +33,9 @@ class _RegisterPageState extends State<RegisterPage> {
             ));
           });
       try {
-        auth = Auth(auth: FirebaseAuth.instance);
-        await auth.createAccount(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
         );
         Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
@@ -54,9 +53,8 @@ class _RegisterPageState extends State<RegisterPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text(
-                  'Password confirmation did not match. Please try again.'),
-            );
+                content: Text(
+                    'Password confirmation did not match. Please try again.'));
           });
     }
   }
