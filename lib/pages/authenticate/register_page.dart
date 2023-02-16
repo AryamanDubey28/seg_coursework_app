@@ -21,6 +21,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordConfirmationController = TextEditingController();
   late final Auth auth;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    auth = Auth(auth: firebaseAuth);
+  }
 
   Future signUp() async {
     if (passwordConfirmed()) {
@@ -33,9 +40,9 @@ class _RegisterPageState extends State<RegisterPage> {
             ));
           });
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
+        await auth.createAccount(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
         );
         Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
