@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'pages/visual_timetable_interface.dart';
+import 'package:seg_coursework_app/pages/admin_interface.dart';
 
 void main() {
-  runApp(const VisualTimetableInterface());
+  runApp(const AdminInterface());
 }

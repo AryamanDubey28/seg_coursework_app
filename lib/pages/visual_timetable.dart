@@ -4,6 +4,7 @@ import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
 import '../models/image_details.dart';
 import '../widgets/picture_grid.dart';
 import '../widgets/timetable_list.dart';
+import 'admin_side_menu.dart';
 import 'all_saved_timetables.dart';
 
 class VisualTimeTable extends StatefulWidget {
@@ -147,6 +148,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
           ),
         ],
       ),
+      drawer: const AdminSideMenu(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
