@@ -71,6 +71,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
+      heroTag: "hideShowButton",
       key: const Key("hideShowButton"),
       backgroundColor: isGridVisible ? Colors.teal : Colors.white,
       onPressed: _toggleGrid,
@@ -82,11 +83,14 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     );
   }
 
-  IconButton buildAddButton(TimetableList timetableList)
+  FloatingActionButton buildAddButton(TimetableList timetableList)
   {
-    IconButton temp = IconButton(
+    FloatingActionButton temp = FloatingActionButton(
+      heroTag: "addToListOfListsButton",
       key: const Key("addToListOfListsButton"),
-      icon: const Icon(
+      backgroundColor: Colors.white,
+      tooltip: 'Save List',
+      child: const Icon(
         Icons.add,
         color: Colors.teal,),
       onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
@@ -113,7 +117,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     }
     else
     {
-      listOfTimetables.printList();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Timetable is already stored.")
@@ -131,6 +134,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     );
 
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
         title: const Text("Visual Timetable"),
         actions: <Widget> [
@@ -161,11 +165,8 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
               child: timetableList,
             )
           ),
-          (timetableList.imagesList.length >= 2) ?
-          Center(
-            child: buildAddButton(timetableList)
-          ) : const SizedBox(),
-          Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,),
+          // if (timetableList.imagesList.length >= 2) buildAddButton(timetableList),
+          isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,) : const SizedBox(),
           Expanded(
             flex: isGridVisible ? 5 : 0,
             child: Visibility(
@@ -178,7 +179,21 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
           ),
         ],
       ),
-      floatingActionButton: buildFloatingActionButton(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Stack(
+          children: [
+            if (timetableList.imagesList.length >= 2) Align(
+              alignment: Alignment.bottomLeft,
+              child: buildAddButton(timetableList),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: buildFloatingActionButton(),
+            ),
+          ],
+        ),
+      ),
     );
   }
   
