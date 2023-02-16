@@ -15,40 +15,49 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
-          "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg");
+          "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
+      available: true);
   final List<ClickableImage> images = [
     ClickableImage(
         name: "Toast",
         imageUrl:
-            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
+            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
+        available: false),
     ClickableImage(
         name: "Fruits",
         imageUrl:
-            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
+            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
+        available: true),
     ClickableImage(
         name: "Football",
         imageUrl:
-            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
+            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg",
+        available: false),
     ClickableImage(
         name: "Boxing",
         imageUrl:
-            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
+            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325",
+        available: true),
     ClickableImage(
         name: "Swimming",
         imageUrl:
-            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
+            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg",
+        available: false),
     ClickableImage(
         name: "Butter chicken",
         imageUrl:
-            "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"),
+            "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg",
+        available: false),
     ClickableImage(
         name: "Fish and chips",
         imageUrl:
-            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
+            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg",
+        available: true),
     ClickableImage(
         name: "burgers",
         imageUrl:
-            "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
+            "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg",
+        available: true),
   ];
   TapDownDetails? tapDownDetails;
   Animation<Matrix4>? animation;
@@ -208,28 +217,45 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         blurBackgroundColor: Colors.black54,
         duration: const Duration(milliseconds: 100),
         child: Container(
-          margin: const EdgeInsets.all(5.0),
-          height: 30,
-          width: 30,
-          decoration: BoxDecoration(
-              border: Border.all(width: 3),
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: NetworkImage(
-                  images[index].imageUrl,
-                ),
-                fit: BoxFit.cover,
+            margin: const EdgeInsets.all(5.0),
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+                border: Border.all(width: 3),
+                borderRadius: BorderRadius.circular(8),
+                image: DecorationImage(
+                  image: NetworkImage(
+                    images[index].imageUrl,
+                  ),
+                  fit: BoxFit.cover,
+                )),
+            child: images[index].available ? makeUnavailable() : null),
+      ),
+    );
+  }
+
+  Stack makeUnavailable() {
+    return Stack(
+      children: const <Widget>[
+        Positioned(
+          left: 25.0,
+          bottom: 0,
+          child: Text('Unavailable',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12.0,
               )),
-          child: const Positioned(
-            right: 0.0,
-            bottom: 0.0,
-            child: Icon(
-              Icons.highlight_remove,
-              size: 70,
-            ),
+        ),
+        Positioned(
+          left: 25.0,
+          bottom: 10.0,
+          child: Icon(
+            Icons.highlight_remove,
+            size: 70,
+            color: Colors.red,
           ),
         ),
-      ),
+      ],
     );
   }
 }
