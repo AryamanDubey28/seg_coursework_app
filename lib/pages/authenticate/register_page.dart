@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'Auth.dart';
 import '../../widgets/my_text_field.dart';
@@ -21,14 +22,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordConfirmationController = TextEditingController();
   late final Auth auth;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    auth = Auth(auth: firebaseAuth);
-  }
-
   Future signUp() async {
     if (passwordConfirmed()) {
       showDialog(
@@ -40,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ));
           });
       try {
+        auth = Auth(auth: FirebaseAuth.instance);
         await auth.createAccount(
           _emailController.text.trim(),
           _passwordController.text.trim(),
