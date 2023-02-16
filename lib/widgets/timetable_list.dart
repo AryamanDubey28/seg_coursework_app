@@ -30,6 +30,7 @@ class TimetableList extends StatelessWidget {
               Tooltip(
                 message: imagesList[index].name,
                 child: ImageSquare(
+                  key: Key('timetableImage$index'),
                   image: imagesList[index],
                 ),
               ),

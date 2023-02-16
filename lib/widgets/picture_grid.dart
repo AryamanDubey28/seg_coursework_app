@@ -28,6 +28,7 @@ class PictureGrid extends StatelessWidget {
           child: Tooltip(
             message: imagesList[index].name,
             child: ImageSquare(
+              key: Key('gridImage$index'),
               image: imagesList[index],
             ),
           ),

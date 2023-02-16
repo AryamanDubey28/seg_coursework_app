@@ -16,10 +16,10 @@ class AllSavedTimetables extends StatefulWidget {
 }
 
 class _AllSavedTimetablesState extends State<AllSavedTimetables> {
-  void unsaveList(List<ImageDetails> list)
+  void unsaveList(int index)
   {
     setState(() {
-      widget.listOfTimetables.remove(list);
+      widget.listOfTimetables.removeAt(index);
     });
   }
 
@@ -29,6 +29,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
       appBar: AppBar(
         title: const Text('All Saved Timetables'),
         leading: IconButton(
+          key: const Key("backButton"),
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
@@ -40,8 +41,10 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
             children: [
               const SizedBox(height: 5,),
               TimetableRow(
+                key: Key("timetableRow$index"),
                 listOfImages: widget.listOfTimetables[index],
                 unsaveList: unsaveList,
+                index: index,
               ),
             ],
           );

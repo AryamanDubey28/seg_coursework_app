@@ -61,8 +61,8 @@ class ListOfListsOfImageDetails {
     }
   }
 
-  void remove(List<ImageDetails> list)
+  void removeAt(int index)
   {
-    listOfLists.remove(list);
+    listOfLists.removeAt(index);
   }
 }

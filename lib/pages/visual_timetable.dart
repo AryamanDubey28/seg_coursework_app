@@ -23,7 +23,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
     ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
     ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
-    ImageDetails(name: "Burger", imageUrl: "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg"),
+    ImageDetails(name: "Fish and chips", imageUrl: "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
   ];
   ListOfListsOfImageDetails listOfTimetables = ListOfListsOfImageDetails(listOfLists: []);
   // List<List<ImageDetails>> listOfTimetables = [];
@@ -70,6 +70,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
+      key: const Key("hideShowButton"),
       backgroundColor: isGridVisible ? Colors.teal : Colors.white,
       onPressed: _toggleGrid,
       tooltip: 'Show/Hide',
@@ -80,9 +81,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     );
   }
 
-  IconButton buildIconButton(TimetableList timetableList)
+  IconButton buildAddButton(TimetableList timetableList)
   {
     IconButton temp = IconButton(
+      key: const Key("addToListOfListsButton"),
       icon: const Icon(
         Icons.add,
         color: Colors.teal,),
@@ -122,22 +124,27 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   @override
   Widget build(BuildContext context) {
     TimetableList timetableList = TimetableList(
+      key: const Key("timetableList"),
       imagesList: imagesList,
       popImagesList: popImagesList
     );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Visual Timetable"),
         actions: <Widget> [
-          IconButton(onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AllSavedTimetables(listOfTimetables: listOfTimetables),
-              ),
-            );
-          }, 
-          icon: Icon(Icons.list))
+          IconButton(
+            key: const Key("allTimetablesButton"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllSavedTimetables(listOfTimetables: listOfTimetables),
+                ),
+              );
+            }, 
+          icon: const Icon(Icons.list)
+          ),
         ],
       ),
       body: Column(
@@ -154,8 +161,8 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
           ),
           (timetableList.imagesList.length >= 2) ?
           Center(
-            child: buildIconButton(timetableList)
-          ) : SizedBox(),
+            child: buildAddButton(timetableList)
+          ) : const SizedBox(),
           Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,),
           Expanded(
             flex: isGridVisible ? 5 : 0,

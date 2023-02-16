@@ -5,18 +5,23 @@ import 'image_square.dart';
 
 class TimetableRow extends StatelessWidget {
   const TimetableRow({
-    super.key,
-    required this.listOfImages, required this.unsaveList,
-  });
+  Key? key,
+  required this.listOfImages,
+  required this.unsaveList,
+  required this.index,
+}) : super(key: key);
 
   final List<ImageDetails> listOfImages;
   final Function unsaveList;
+  final int index;
 
   IconButton buildDeleteIconButton()
   {
     return IconButton(
+      key: Key("deleteButton$index"),
       onPressed: (){
-        unsaveList(listOfImages);
+
+        unsaveList(index);
       }, 
       icon: const Icon(
         Icons.delete, 
@@ -42,9 +47,13 @@ class TimetableRow extends StatelessWidget {
                 return Row(
                   children: [
                     const SizedBox(width: 5,),
-                    ImageSquare(
-                      image: listOfImages[subIndex], 
-                      width: MediaQuery.of(context).size.width/6,
+                    Tooltip(
+                      message: listOfImages[subIndex].name,
+                      child: ImageSquare(
+                        key: Key('timetableImage$subIndex'),
+                        image: listOfImages[subIndex], 
+                        width: MediaQuery.of(context).size.width/6,
+                      ),
                     ),
                   ],
                 );

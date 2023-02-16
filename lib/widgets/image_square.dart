@@ -17,12 +17,16 @@ class ImageSquare extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5)),
         border: Border.all(color: Colors.black, width: 2),
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(image.imageUrl)
-        )
       ),
-      // child: Image.network(imageURL),
+      child: Image.network(
+        image.imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (BuildContext context, Object exception,
+            StackTrace? stackTrace) {
+          return Text('!Error loading image! $exception');
+        },
+      ),
     );
+      // child: Image.network(imageURL),
   }
 }
