@@ -9,9 +9,10 @@ class ChildBoards extends StatefulWidget {
   State<ChildBoards> createState() => _ChildBoards();
 }
 
+/// The page is for the child to select choice boards
 class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
-  late List<TransformationController> controllers;
-  late List<AnimationController> animationControllers;
+  // These are added to test while development
+  // They will later be supplied from the database (TO BE DELETED)
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
@@ -50,39 +51,13 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         imageUrl:
             "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
   ];
-  TapDownDetails? tapDownDetails;
-  Animation<Matrix4>? animation;
-  bool back = false;
 
   @override
   void initState() {
     super.initState();
-    //set up controllers
-    controllers = List<TransformationController>.generate(
-        images.length, (index) => TransformationController());
-    //set up animation controllers
-    animationControllers = List<AnimationController>.generate(
-        images.length, (index) => AnimationController(vsync: this));
-    for (var i = 0; i < images.length; i++) {
-      animationControllers[i] = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300),
-      )..addListener(() {
-          controllers[i].value = animation!.value;
-        });
-    }
   }
 
-  @override
-  void dispose() {
-    for (var i = 0; i < images.length; i++) {
-      controllers[i].dispose();
-      animationControllers[i].dispose();
-    }
-
-    super.dispose();
-  }
-
+  // Method used to build main body
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +77,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Method used to get top menu which has back button, category name and image
   Padding getTopMenu() {
     return Padding(
       padding: const EdgeInsets.all(18.0),
@@ -130,6 +106,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns category title that shows on menu
   Text getCategoryTitle() {
     return Text(
       key: const Key("categoryTitle"),
@@ -139,6 +116,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns category image that shows on menu
   Container getCategoryImage() {
     return Container(
       key: const Key("categoryImage"),
@@ -157,6 +135,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns round back button that shows on menu
   Container getBackButton() {
     return Container(
       key: const Key("backButton"),
@@ -174,13 +153,12 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           iconSize: 50,
           splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
-          onPressed: () {
-            back = !back;
-          },
+          onPressed: () {},
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
 
+  // Returns a GridView of clickable images that blur background on click
   Expanded getMainImages() {
     return Expanded(
       child: GridView.builder(
@@ -196,9 +174,11 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns one image that on click blurs the background
   Padding getClickableImage(int index) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
+      // Focused menu holder gives the blured background on click
       child: FocusedMenuHolder(
         openWithTap: true,
         onPressed: () {},
