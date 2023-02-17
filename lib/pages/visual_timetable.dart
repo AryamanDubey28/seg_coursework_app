@@ -172,11 +172,17 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         children: <Widget>[
           Expanded(
             flex: 5,
-            child: Container(
-              width: 1100,
-              height: 200,
-              alignment: Alignment.center,
-              child: timetableList,
+            child: Center(
+              child: Container(
+                //width here is set depending on the screen size. 6/6 represents the whole screen
+                // 5/6 allows it to be centered and have a bit of padding on the left and right side.
+                // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
+                //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
+                width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
+                height: 200,
+                alignment: Alignment.center,
+                child: Align(alignment: Alignment.center ,child: timetableList),
+              ),
             )
           ),
           isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,) : const SizedBox(),

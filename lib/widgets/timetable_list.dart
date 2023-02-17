@@ -31,13 +31,16 @@ class TimetableList extends StatelessWidget {
               Tooltip(
                 message: imagesList[index].name,
                 child: ImageSquare(
+                  //This width is set to make the image less wide than 1/5 of the screen.
+                  width: MediaQuery.of(context).size.width/6,
                   key: Key('timetableImage$index'),
                   image: imagesList[index],
                 ),
               ),
               //this is to prevent showing an arrow after the last image.
               if (index != imagesList.length - 1)
-                const Icon(Icons.arrow_right),
+                //size is set to this arbitrary number to scale the arrows as the screen gets bigger.
+                Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35),
             ],
           ),
         );
