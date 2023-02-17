@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/admin_interface.dart';
+import 'package:seg_coursework_app/pages/child_board_interface.dart';
 
 void main() {
-  runApp(const AdminInterface());
+  runApp(const ChildInterface());
 }
