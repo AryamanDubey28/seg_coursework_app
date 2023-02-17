@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
-
 import '../models/image_details.dart';
 import '../widgets/picture_grid.dart';
 import '../widgets/timetable_list.dart';
@@ -14,10 +13,14 @@ class VisualTimeTable extends StatefulWidget {
   State<VisualTimeTable> createState() => _VisualTimeTableState();
 }
 
+/// The page for the admin to show the choice boards and make a timetable from that
 class _VisualTimeTableState extends State<VisualTimeTable> {
 
   bool isGridVisible = true;
+  //The images that will be fed into the timetable. (No pictures are chosen by default.)
   List<ImageDetails> imagesList = [];
+  //The images that will be fed into the PictureGrid (the choice board.)
+  //To be deleted and fetched from the database.
   List<ImageDetails> filledImagesList = [
     ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
     ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
@@ -26,9 +29,12 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
     ImageDetails(name: "Fish and chips", imageUrl: "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
   ];
-  ListOfListsOfImageDetails listOfTimetables = ListOfListsOfImageDetails(listOfLists: []);
-  // List<List<ImageDetails>> listOfTimetables = [];
 
+  //The list that holds the saved timetables
+  ListOfListsOfImageDetails savedTimetables = ListOfListsOfImageDetails(listOfLists: []);
+
+
+  ///This makes a deep copy of a list to be saved in the savedTimetables 
   List<ImageDetails> deepCopy(List<ImageDetails> list) {
   List<ImageDetails> copy = [];
   for (ImageDetails image in list) {
@@ -42,6 +48,8 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   return copy;
 }
 
+  ///This function is supplied to the PictureGrid and it adds the chosen image to the Timetable builder
+  ///and hides the PictureGrid when 5 images are chosen for the Timetable
   void updateImagesList(ImageDetails image) {
     setState(() {
       if (imagesList.length < 5) {
@@ -54,6 +62,8 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     });
   }
 
+  ///This function is supplied to the Timetable and it removes the chosen image from the Timetable builder
+  ///and shows the PictureGrid when less than 5 images are chosen for the Timetable
   void popImagesList(int index) {
     setState(() {
       imagesList.removeAt(index);
@@ -63,13 +73,15 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     });
   }
 
+  ///This function hides/shows the grid when the hide/show FloatingActionButton is pressed.
   void _toggleGrid() {
     setState(() {
       isGridVisible = !isGridVisible;
     });
   }
 
-  FloatingActionButton buildFloatingActionButton() {
+  ///This function returns a hide/show button (for the PictureGrid.)
+  FloatingActionButton buildHideButton() {
     return FloatingActionButton(
       heroTag: "hideShowButton",
       key: const Key("hideShowButton"),
@@ -83,9 +95,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     );
   }
 
+  ///This function returns a button that saves the timetable to a list of timetables.
   FloatingActionButton buildAddButton(TimetableList timetableList)
   {
-    FloatingActionButton temp = FloatingActionButton(
+    return FloatingActionButton(
       heroTag: "addToListOfListsButton",
       key: const Key("addToListOfListsButton"),
       backgroundColor: Colors.white,
@@ -96,22 +109,23 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
       
     );
-    return temp;
   }
 
+  ///This function saves a timetable into the list of timetables.
   void addTimetableToListOfLists(List<ImageDetails> imagesList) {
     setState(() {
-      bool isAdded = listOfTimetables.addList(deepCopy(imagesList));
+      bool isAdded = savedTimetables.addList(deepCopy(imagesList));
       showSnackBarMessage(isAdded);
     });
   }
 
+  ///This function shows a message at the bottom of the screen when the admin attempts to save a timetable.
   void showSnackBarMessage(bool isAdded) {
   if(isAdded)
     {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Timetable added successfully.")
+          content: Text("Timetable saved successfully.")
         ),
       );
     }
@@ -119,7 +133,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Timetable is already stored.")
+          content: Text("Timetable is already saved.")
         ),
       );
     }
@@ -144,7 +158,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AllSavedTimetables(listOfTimetables: listOfTimetables),
+                  builder: (context) => AllSavedTimetables(savedTimetables: savedTimetables),
                 ),
               );
             }, 
@@ -165,9 +179,9 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
               child: timetableList,
             )
           ),
-          // if (timetableList.imagesList.length >= 2) buildAddButton(timetableList),
           isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,) : const SizedBox(),
           Expanded(
+            //This will make the timetable bigger if the PictureGrid is not visible
             flex: isGridVisible ? 5 : 0,
             child: Visibility(
               visible: isGridVisible,
@@ -179,23 +193,24 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
           ),
         ],
       ),
+
+      //This is to add two floatingActionButtons and allign them to the corners of the screen.
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8),
         child: Stack(
           children: [
+            //This makes sure that a timetable can't be saved if it has one or no elements.
             if (timetableList.imagesList.length >= 2) Align(
               alignment: Alignment.bottomLeft,
               child: buildAddButton(timetableList),
             ),
             Align(
               alignment: Alignment.bottomRight,
-              child: buildFloatingActionButton(),
+              child: buildHideButton(),
             ),
           ],
         ),
       ),
     );
   }
-  
-  
 }

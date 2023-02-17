@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 
-
+///This widget builds a timetable with the arrows to be shown in the visual timetable page.
+///Not to be confused with TimetableRow which is shown in the all saved timetables page.
 class TimetableList extends StatelessWidget {
   const TimetableList({super.key, required this.imagesList, required this.popImagesList});
 
   final List<ImageDetails> imagesList;
   final Function popImagesList;
 
+  // This function returns the list of images already saved in the timetable.
   List<ImageDetails> getImagesList()
   {
     return imagesList;
@@ -20,7 +22,6 @@ class TimetableList extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: imagesList.length,
       itemBuilder: (context, index) {
-        //ADD ON TAP HERE
         return GestureDetector(
           onTap: () {
             popImagesList(index);
@@ -34,6 +35,7 @@ class TimetableList extends StatelessWidget {
                   image: imagesList[index],
                 ),
               ),
+              //this is to prevent showing an arrow after the last image.
               if (index != imagesList.length - 1)
                 const Icon(Icons.arrow_right),
             ],

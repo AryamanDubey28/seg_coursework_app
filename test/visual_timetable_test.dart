@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/main.dart';
 import 'package:seg_coursework_app/pages/visual_timetable_interface.dart';
 import 'package:seg_coursework_app/widgets/picture_grid.dart';
 
@@ -25,7 +24,6 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const VisualTimetableInterface());
 
-    // Verify that our PictureGrid is shown by default
     expect(find.byKey(const ValueKey("allTimetablesButton")), findsOneWidget);
       });
   });

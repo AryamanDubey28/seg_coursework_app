@@ -1,12 +1,14 @@
 
 import 'image_details.dart';
 
+///This model allows for easy handling of saved timetables.
 class ListOfListsOfImageDetails {
   List<List<ImageDetails>> listOfLists;
 
   ListOfListsOfImageDetails({required this.listOfLists});
 
 
+  ///This method checks if a timetable is already saved in the saved timetables list
   bool existsIn(List<ImageDetails> other)
   {
     for(List<ImageDetails> list in listOfLists)
@@ -27,6 +29,8 @@ class ListOfListsOfImageDetails {
     return true;
   }
 
+  ///This method attempts to save a timetable in the list of timetables.
+  ///Returns false if it's already saved. Saves the timetable and returns true if not.
   bool addList(List<ImageDetails> list)
   {
     if(existsIn(list)) return false;
@@ -49,6 +53,7 @@ class ListOfListsOfImageDetails {
     return listOfLists[index];
   }
 
+  //Prints the list for debug purposes. Delete later.
   void printList()
   {
     for(int i = 0 ; i < listOfLists.length ; i++)

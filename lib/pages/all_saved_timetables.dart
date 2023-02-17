@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
-
-import '../models/image_details.dart';
 import '../widgets/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
-  const AllSavedTimetables({super.key, required this.listOfTimetables});
-  final ListOfListsOfImageDetails listOfTimetables;
+  const AllSavedTimetables({super.key, required this.savedTimetables});
+  final ListOfListsOfImageDetails savedTimetables;
 
   @override
   State<AllSavedTimetables> createState() => _AllSavedTimetablesState();
 }
 
+/// The page for the admin to see all the saved timetables and be able to delete unwanted ones.
 class _AllSavedTimetablesState extends State<AllSavedTimetables> {
+
+  ///This function is fed into the TimetableRow and will unsave the timetable from the list of saved timetables.
   void unsaveList(int index)
   {
     setState(() {
-      widget.listOfTimetables.removeAt(index);
+      widget.savedTimetables.removeAt(index);
     });
   }
 
@@ -35,14 +33,14 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
         ),
       ),
       body: ListView.builder(
-        itemCount: widget.listOfTimetables.length(),
+        itemCount: widget.savedTimetables.length(),
         itemBuilder: (context, index) {
           return Column(
             children: [
               const SizedBox(height: 5,),
               TimetableRow(
                 key: Key("timetableRow$index"),
-                listOfImages: widget.listOfTimetables[index],
+                listOfImages: widget.savedTimetables[index],
                 unsaveList: unsaveList,
                 index: index,
               ),

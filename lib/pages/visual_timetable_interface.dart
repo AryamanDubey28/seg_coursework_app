@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/visual_timetable.dart';
 
+// This widget is the root of the visual timetable interface
 class VisualTimetableInterface extends StatelessWidget {
   const VisualTimetableInterface({super.key});
 

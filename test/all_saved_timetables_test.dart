@@ -1,18 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/main.dart';
 import 'package:seg_coursework_app/pages/all_saved_timetables.dart';
 import 'package:seg_coursework_app/pages/visual_timetable_interface.dart';
-import 'package:seg_coursework_app/widgets/picture_grid.dart';
 
-// class TestNavigatorObserver extends NavigatorObserver {
-//   @override
-//   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-//     super.didPush(route, previousRoute);
-//     // print('Pushed route: ${route.settings.name}');
-//   }
-// }
 
 void main() {
 

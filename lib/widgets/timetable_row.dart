@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
 import '../models/image_details.dart';
 import 'image_square.dart';
 
+///This widget builds a timetable but without the arrows to be shown in the all saved timetables page.
+///Not to be confused with TimetableList which is shown in the main visual timetable page.
 class TimetableRow extends StatelessWidget {
   const TimetableRow({
   Key? key,
@@ -15,7 +16,8 @@ class TimetableRow extends StatelessWidget {
   final Function unsaveList;
   final int index;
 
-  IconButton buildDeleteIconButton()
+  ///This returns a delete button to unsave a list from the list of saved timetables.
+  IconButton buildDeleteButton()
   {
     return IconButton(
       key: Key("deleteButton$index"),
@@ -34,7 +36,6 @@ class TimetableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      // color: Colors.amber,
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,13 +46,15 @@ class TimetableRow extends StatelessWidget {
               itemCount: listOfImages.length,
               itemBuilder: (context, subIndex) {
                 return Row(
-                  children: [
+                  children: <Widget>[
                     const SizedBox(width: 5,),
                     Tooltip(
                       message: listOfImages[subIndex].name,
                       child: ImageSquare(
                         key: Key('timetableImage$subIndex'),
                         image: listOfImages[subIndex], 
+                        //The width here is set to make sure the row isn't bigger than the screen and to make sure
+                        //there is room for the delete button.
                         width: MediaQuery.of(context).size.width/6,
                       ),
                     ),
@@ -60,7 +63,7 @@ class TimetableRow extends StatelessWidget {
               },  
             ),
           ),
-          buildDeleteIconButton(),
+          buildDeleteButton(),
           const SizedBox(width: 15,)
         ],
       ),
