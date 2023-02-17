@@ -209,6 +209,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: FocusedMenuHolder(
+        key: const Key("clickableImage"),
         openWithTap: true,
         onPressed: () {},
         menuItems: const [],
@@ -236,6 +237,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
 
   Stack makeUnavailable() {
     return Stack(
+      key: const Key("unavailableImage"),
       children: const <Widget>[
         Positioned(
           left: 25.0,
