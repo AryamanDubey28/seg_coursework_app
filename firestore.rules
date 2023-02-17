@@ -2,15 +2,17 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Items must have a userId, a name, and an illustration field. Name is a string of length <100. 
-    // Illustration is a string. The vailidity of the userId is to be tested in another part of the rule.
+    // Items must have a userId, a name, an illustration field, and an is_available field. Name is a string of length <100. 
+    // Illustration is a string. is_available is a boolean. The vailidity of the userId is to be tested in another 
+    //part of the rule.
     function itemFieldsAreValid()
     {
-      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration']) && 
-      request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration']) && 
+      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration','is_available']) && 
+      request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration','is_available']) && 
       request.resource.data.name is string && 
       request.resource.data.name.size() < 100 && 
-      request.resource.data.illustration is string 
+      request.resource.data.illustration is string &&
+      request.resource.data.is_available is bool
     }
 
     // Categories must have a userId, a title, an illustration, and a rank field. Title is a string of length <100.
@@ -43,13 +45,14 @@ service cloud.firestore {
     // Rank is a number that is equal to or greater than 0. The validity of the userId is to be tested in other parts of the rule.
     function rankedItemFieldsAreValid()
     {
-      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration','rank']) && 
-      request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration','rank']) && 
+      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration','rank','is_available']) && 
+      request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration','rank','is_available']) && 
       request.resource.data.name is string && 
       request.resource.data.name.size() < 100 && 
       request.resource.data.illustration is string && 
       request.resource.data.rank is number && 
-      request.resource.data.rank>=0
+      request.resource.data.rank>=0 &&
+      request.resource.data.is_available is bool
     }
     
 
