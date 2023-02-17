@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/visual_timetable_interface.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
@@ -43,7 +44,11 @@ class AdminSideMenu extends StatelessWidget {
                 key: const Key("visualTimetable"),
                 leading: const Icon(Icons.event),
                 title: const Text('Visual Timetable'),
-                onTap: () {}),
+                onTap: () =>
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const VisualTimetableInterface(),
+              )),
+            ),
             ListTile(
               key: const Key("childMode"),
               leading: const Icon(Icons.child_care),
