@@ -1,0 +1,172 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Items must have a userId, a name, an illustration field, and an is_available field. Name is a string of length <100. 
+    // Illustration is a string. is_available is a boolean. The vailidity of the userId is to be tested in another 
+    //part of the rule.
+    function itemFieldsAreValid()
+    {
+      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration','is_available']) && 
+      request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration','is_available']) && 
+      request.resource.data.name is string && 
+      request.resource.data.name.size() < 100 && 
+      request.resource.data.illustration is string &&
+      request.resource.data.is_available is bool
+    }
+
+    // Categories must have a userId, a title, an illustration, and a rank field. Title is a string of length <100.
+    // Illustration is a string. Rank is a number greater than or equal to 0. The validity of the userId is to be 
+    // tested in other parts of the rule.
+    function categoryFieldsAreValid()
+    {
+      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration','rank']) && 
+      request.resource.data.keys().toSet().hasOnly(['title', 'userId', 'illustration','rank']) && 
+      request.resource.data.title is string && 
+      request.resource.data.title.size() < 100 && 
+      request.resource.data.illustration is string && 
+      request.resource.data.rank is number && 
+      request.resource.data.rank>=0
+    }
+
+    // Workflows must have a userId, a title, and an illustration field. Title is a string of length <100.
+    // Illustration is a string. The validity of the userId is to be tested in other parts of the rule.
+    function workflowFieldsAreValid()
+    {
+      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration']) && 
+      request.resource.data.keys().toSet().hasOnly(['title', 'userId', 'illustration']) && 
+      request.resource.data.title is string && 
+      request.resource.data.title.size() < 100 && 
+      request.resource.data.illustration is string 
+    }
+
+    // Ranked items qualify items stored under the categoryItems or workflowItems paths. They must have a name,
+    // an illustration, a userId, an is_available field, and a rank field. Name is a string of length <100. 
+    // Illustration is a string. Rank is a number that is equal to or greater than 0. is_available is a boolean.
+    // The validity of the userId is to be tested in other parts of the rule.
+    function rankedItemFieldsAreValid()
+    {
+      return request.resource.data.keys().hasAll(['name', 'userId', 'illustration','rank','is_available']) && 
+      request.resource.data.keys().toSet().hasOnly(['name', 'userId', 'illustration','rank','is_available']) && 
+      request.resource.data.name is string && 
+      request.resource.data.name.size() < 100 && 
+      request.resource.data.illustration is string && 
+      request.resource.data.rank is number && 
+      request.resource.data.rank>=0 &&
+      request.resource.data.is_available is bool
+    }
+    
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /items/{itemId} {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        itemFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        itemFieldsAreValid());
+    }
+
+    match /categories/{categoryId} {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
+    }
+
+    match /workflows/{workflowId} {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        workflowFieldsAreValid());
+
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        workflowFieldsAreValid());
+    }
+
+    match /categoryItems/{categoryId} {
+      allow read: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
+
+      allow create: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
+        rankedItemFieldsAreValid());
+
+      allow update: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) &&
+        rankedItemFieldsAreValid());
+
+      match /items/{itemID} {
+        allow read: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
+
+        allow create: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
+          request.resource.data.userId == request.auth.uid && 
+          exists(/databases/$(database)/documents/items/$(itemID)) && 
+          rankedItemFieldsAreValid());
+
+        allow update: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
+          request.resource.data.userId == request.auth.uid && 
+          exists(/databases/$(database)/documents/items/$(itemID)) &&
+          rankedItemFieldsAreValid());
+      }
+    }
+
+    match /workflowItems/{workflowId} {
+      allow read: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
+
+      allow create: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
+        rankedItemFieldsAreValid());
+
+      allow update: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
+        request.resource.data.userId == request.auth.uid && 
+        exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) &&
+        rankedItemFieldsAreValid());
+
+      match /items/{itemID} {
+        allow read: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
+
+        allow create: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
+          request.resource.data.userId == request.auth.uid && 
+          exists(/databases/$(database)/documents/items/$(itemID)) && 
+          rankedItemFieldsAreValid());
+
+        allow update: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
+          request.resource.data.userId == request.auth.uid && 
+          exists(/databases/$(database)/documents/items/$(itemID)) &&
+          rankedItemFieldsAreValid());
+      }
+    }
+  }
+}
+

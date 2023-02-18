@@ -31,6 +31,8 @@ void main() {
 
       expect(find.byType(AdminInterface), findsOneWidget);
     });
+    
+    // Need to figure out how to press on side menu drawer to access log out button
 
     // testWidgets(
     //     "input incorrect email and password verify error message pops up",
