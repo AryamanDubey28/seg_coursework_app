@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:focused_menu/focused_menu.dart';
+import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 
 class ChildBoards extends StatefulWidget {
   const ChildBoards({Key? key}) : super(key: key);
@@ -9,89 +9,64 @@ class ChildBoards extends StatefulWidget {
   State<ChildBoards> createState() => _ChildBoards();
 }
 
+/// The page is for the child to select choice boards
 class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
-  late List<TransformationController> controllers;
-  late List<AnimationController> animationControllers;
+  // These are added to test while development
+  // They will later be supplied from the database (TO BE DELETED)
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
           "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
-      available: true);
+      is_available: true);
   final List<ClickableImage> images = [
     ClickableImage(
         name: "Toast",
         imageUrl:
             "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
-        available: false),
+        is_available: false),
     ClickableImage(
         name: "Fruits",
         imageUrl:
             "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
-        available: true),
+        is_available: true),
     ClickableImage(
         name: "Football",
         imageUrl:
             "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg",
-        available: false),
+        is_available: false),
     ClickableImage(
         name: "Boxing",
         imageUrl:
             "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325",
-        available: true),
+        is_available: true),
     ClickableImage(
         name: "Swimming",
         imageUrl:
             "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg",
-        available: false),
+        is_available: false),
     ClickableImage(
         name: "Butter chicken",
         imageUrl:
             "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg",
-        available: false),
+        is_available: false),
     ClickableImage(
         name: "Fish and chips",
         imageUrl:
             "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg",
-        available: true),
+        is_available: true),
     ClickableImage(
         name: "burgers",
         imageUrl:
             "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg",
-        available: true),
+        is_available: true),
   ];
-  TapDownDetails? tapDownDetails;
-  Animation<Matrix4>? animation;
-  bool back = false;
 
   @override
   void initState() {
     super.initState();
-    //set up controllers
-    controllers = List<TransformationController>.generate(
-        images.length, (index) => TransformationController());
-    //set up animation controllers
-    animationControllers = List<AnimationController>.generate(
-        images.length, (index) => AnimationController(vsync: this));
-    for (var i = 0; i < images.length; i++) {
-      animationControllers[i] = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300),
-      )..addListener(() {
-          controllers[i].value = animation!.value;
-        });
-    }
   }
 
-  @override
-  void dispose() {
-    for (var i = 0; i < images.length; i++) {
-      controllers[i].dispose();
-      animationControllers[i].dispose();
-    }
-
-    super.dispose();
-  }
-
+  // Method used to build main body
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,12 +80,14 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             height: 30,
           ),
           getTopMenu(),
-          getMainImages(),
+          //this method is imported from clickable_image_grid in widgets
+          getMainImages(images),
         ]),
       ),
     );
   }
 
+  // Method used to get top menu which has back button, category name and image
   Padding getTopMenu() {
     return Padding(
       padding: const EdgeInsets.all(18.0),
@@ -139,6 +116,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns category title that shows on menu
   Text getCategoryTitle() {
     return Text(
       key: const Key("categoryTitle"),
@@ -148,6 +126,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns category image that shows on menu
   Container getCategoryImage() {
     return Container(
       key: const Key("categoryImage"),
@@ -166,6 +145,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
+  // Returns round back button that shows on menu
   Container getBackButton() {
     return Container(
       key: const Key("backButton"),
@@ -183,81 +163,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           iconSize: 50,
           splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
-          onPressed: () {
-            back = !back;
-          },
+          onPressed: () {},
           icon: const Icon(Icons.arrow_back_rounded)),
-    );
-  }
-
-  Expanded getMainImages() {
-    return Expanded(
-      child: GridView.builder(
-          key: const Key("mainGridOfPictures"),
-          padding: const EdgeInsets.all(8.0),
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: images.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5, childAspectRatio: 4 / 3),
-          itemBuilder: (context, index) {
-            return getClickableImage(index);
-          }),
-    );
-  }
-
-  Padding getClickableImage(int index) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: FocusedMenuHolder(
-        key: const Key("clickableImage"),
-        openWithTap: true,
-        onPressed: () {},
-        menuItems: const [],
-        blurSize: 5.0,
-        menuItemExtent: 45,
-        blurBackgroundColor: Colors.black54,
-        duration: const Duration(milliseconds: 100),
-        child: Container(
-            margin: const EdgeInsets.all(5.0),
-            height: 30,
-            width: 30,
-            decoration: BoxDecoration(
-                border: Border.all(width: 3),
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    images[index].imageUrl,
-                  ),
-                  fit: BoxFit.cover,
-                )),
-            child: images[index].available ? makeUnavailable() : null),
-      ),
-    );
-  }
-
-  Stack makeUnavailable() {
-    return Stack(
-      key: const Key("unavailableImage"),
-      children: const <Widget>[
-        Positioned(
-          left: 25.0,
-          bottom: 0,
-          child: Text('Unavailable',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12.0,
-              )),
-        ),
-        Positioned(
-          left: 25.0,
-          bottom: 10.0,
-          child: Icon(
-            Icons.highlight_remove,
-            size: 70,
-            color: Colors.red,
-          ),
-        ),
-      ],
     );
   }
 }
