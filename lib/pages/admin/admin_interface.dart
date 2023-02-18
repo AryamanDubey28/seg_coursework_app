@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 
 // This widget is the root of the admin interface
 class AdminInterface extends StatelessWidget {

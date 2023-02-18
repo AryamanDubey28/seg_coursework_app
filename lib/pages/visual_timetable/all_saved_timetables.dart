@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
-import '../widgets/timetable_row.dart';
+import '../../widgets/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
   const AllSavedTimetables({super.key, required this.savedTimetables});

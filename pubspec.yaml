@@ -38,17 +38,20 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.4.1
   firebase_auth: ^4.2.5
-  mockito: ^5.3.2
   rxdart: ^0.27.7
   firebase_auth_mocks: ^0.9.3
+  cloud_firestore: ^4.3.2
   focused_menu: ^1.0.5
   drag_and_drop_lists: ^0.3.3
   cached_network_image: ^3.2.3
   network_image_mock: ^2.1.1
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
+  test:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -56,6 +59,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

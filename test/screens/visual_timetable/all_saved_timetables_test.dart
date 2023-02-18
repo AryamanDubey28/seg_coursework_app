@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/pages/all_saved_timetables.dart';
-import 'package:seg_coursework_app/pages/visual_timetable_interface.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/all_saved_timetables.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable_interface.dart';
 
 
 void main() {
