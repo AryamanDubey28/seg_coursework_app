@@ -14,6 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      // Create column of rows (categories)
+      // Note, until connected to backend, categoryTitle and images take placeholder data
       home: CustomizableColumn(rowConfigs: [
         {
           'categoryTitle': 'Category 1',
