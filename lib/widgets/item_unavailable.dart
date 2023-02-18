@@ -1,25 +1,26 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
+// Widget created when an item is unavailable
+
+//Blur image and display unavailable red icon
 Stack makeUnavailable() {
   return Stack(
     key: const Key("unavailableImage"),
-    children: const <Widget>[
-      Positioned(
-        left: 25.0,
-        bottom: 0,
-        child: Text('Unavailable',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12.0,
-            )),
-      ),
-      Positioned(
-        left: 25.0,
-        bottom: 10.0,
-        child: Icon(
-          Icons.highlight_remove,
-          size: 70,
-          color: Colors.red,
+    children: <Widget>[
+      ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.grey.withOpacity(0.1),
+            child: Icon(
+              Icons.highlight_remove,
+              size: 100,
+              color: Colors.red,
+            ),
+          ),
         ),
       ),
     ],
