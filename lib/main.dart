@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/child_menu/child_menu_widget.dart';
+import 'package:seg_coursework_app/pages/child_menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +12,44 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Flutter Demo',
-      home: ChildMenuWidget(),
+      home: CustomizableColumn(rowConfigs: [
+        {
+          'categoryTitle': 'Category 1',
+          'images': [
+            Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+            Image.network('https://via.placeholder.com/110'),
+            Image.network('https://via.placeholder.com/110'),
+            Image.network('https://via.placeholder.com/110'),
+          ],
+        },
+        {
+          'categoryTitle': 'Category 2',
+          'images': [
+            Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+            Image.network('https://via.placeholder.com/110'),
+            Image.network('https://via.placeholder.com/110'),
+          ],
+        },
+        {
+          'categoryTitle': 'Category 3',
+          'images': [
+            Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+            Image.network('https://via.placeholder.com/110'),
+            Image.network('https://via.placeholder.com/110'),
+            Image.network('https://via.placeholder.com/110'),
+            Image.network('https://via.placeholder.com/110'),
+          ],
+        },
+        {
+          'categoryTitle': 'Category 4',
+          'images': [
+            Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+            Image.network('https://via.placeholder.com/110'),
+          ],
+        },
+      ]),
     );
   }
 }
