@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "items": {
+      "$item_id": {
+        ".read": true,
+        ".write": "auth.uid == data.child('user_id').val()",
+        ".validate": "newData.child('name').isString() && newData.child('name').val().length <100 && newData.child('illustration').isString() && root.child('users').child(newData.child('user_id').val()).exists()"
+      }
+    }
+  }
+}

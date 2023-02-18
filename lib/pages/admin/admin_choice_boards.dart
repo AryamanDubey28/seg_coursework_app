@@ -35,6 +35,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: Key('app_bar'),
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
