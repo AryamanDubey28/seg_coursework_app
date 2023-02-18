@@ -79,9 +79,7 @@ void main() {
 
       expect(find.byType(AdminInterface), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text("Password confirmation did not match. Please try again."),
-          findsOneWidget);
+      expect(find.text("Password confirmation did not match. Please try again."), findsOneWidget);
     });
   });
 }
