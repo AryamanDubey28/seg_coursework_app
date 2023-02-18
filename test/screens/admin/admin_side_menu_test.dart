@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/pages/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/admin_side_menu.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 
 void main() {
   testWidgets("Menu has all the buttons", (WidgetTester tester) async {

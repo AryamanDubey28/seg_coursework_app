@@ -346,3 +346,5 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,dart,macos,windows
+macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+macos/Flutter/ephemeral/flutter_export_environment.sh

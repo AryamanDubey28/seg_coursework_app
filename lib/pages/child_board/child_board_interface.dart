@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/child_board.dart';
+import 'child_board.dart';
 
 // Create pages for all the menu items
 
