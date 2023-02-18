@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/widgets/hero_dialog_route.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:seg_coursework_app/pages/admin/add_choice_board_item.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -314,8 +316,12 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// deletes the category (to be implemented)
   void deleteCategory() {}
 
-  /// redirects to the item add page (to be implemented)
-  void addItem() {}
+  /// opens the add item popup
+  void addItem() {
+    Navigator.of(context).push(HeroDialogRoute(builder: (context) {
+      return const AddChoiceBoardItem();
+    }));
+  }
 
   /// redirects to the category add page (to be implemented)
   void addCategory() {}

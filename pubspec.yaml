@@ -45,6 +45,7 @@ dependencies:
   drag_and_drop_lists: ^0.3.3
   cached_network_image: ^3.2.3
   network_image_mock: ^2.1.1
+  popup_card: ^0.1.0
 
 dev_dependencies:
   integration_test:
