@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:seg_coursework_app/pages/child_board_interface.dart';
-import 'package:seg_coursework_app/pages/visual_timetable_interface.dart';
+import '../child_board/child_board_interface.dart';
+import '../visual_timetable/visual_timetable_interface.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
