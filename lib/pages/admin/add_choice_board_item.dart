@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 
-// Add an item to the database
 // Figure out how to connect the upload/take picture api
+// Refactor the ScaffoldMessenger into a an external method
+// create categoryItems
+// add comments
 
 /// Popup card to add a new item to a category.
 class AddChoiceBoardItem extends StatelessWidget {
@@ -76,19 +81,43 @@ class AddChoiceBoardItem extends StatelessWidget {
 
   void createNewItem(String? name, String? imageUrl,
       {required BuildContext context}) {
-    late Text shownText;
-
     if (name!.isEmpty || imageUrl!.isEmpty) {
-      shownText = Text("A field or more is missing!");
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text("A field or more is missing!"),
+            );
+          });
     } else {
-      shownText = Text("Name: $name \nImage: $imageUrl");
+      addItem(name: name, imageUrl: imageUrl, context: context);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const AdminChoiceBoards(),
+      ));
     }
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: shownText,
-          );
-        });
+  }
+
+  Future<void> addItem(
+      {required String name,
+      required String imageUrl,
+      required BuildContext context}) {
+    CollectionReference items = FirebaseFirestore.instance.collection('items');
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    return items
+        .add({
+          'illustration': imageUrl,
+          'is_available': true,
+          'name': name,
+          'userid': auth.currentUser!.uid
+        })
+        .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("$name added successfully.")),
+            ))
+        .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content:
+                      Text("An error occurred while trying to add $name!")),
+            ));
   }
 }
