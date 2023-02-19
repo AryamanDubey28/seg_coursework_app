@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
+// Add an item to the database
+// Figure out how to connect the upload/take picture api
+
 /// Popup card to add a new item to a category.
 class AddChoiceBoardItem extends StatelessWidget {
-  const AddChoiceBoardItem({Key? key}) : super(key: key);
+  AddChoiceBoardItem({Key? key}) : super(key: key);
+
+  // controllers to retrieve the user input
+  final itemNameController = TextEditingController();
+  final itemImageUrlController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,8 @@ class AddChoiceBoardItem extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const TextField(
+                    TextField(
+                      controller: itemNameController,
                       decoration: InputDecoration(
                         hintText: "item's name",
                         border: InputBorder.none,
@@ -33,7 +41,8 @@ class AddChoiceBoardItem extends StatelessWidget {
                       color: Colors.black38,
                       thickness: 0.2,
                     ),
-                    const TextField(
+                    TextField(
+                      controller: itemImageUrlController,
                       decoration: InputDecoration(
                         hintText: 'Image URL',
                         border: InputBorder.none,
@@ -46,7 +55,8 @@ class AddChoiceBoardItem extends StatelessWidget {
                     ),
                     TextButton.icon(
                         key: const Key("createItemButton"),
-                        onPressed: () {},
+                        onPressed: () => createNewItem(itemNameController.text,
+                            itemImageUrlController.text, context: context),
                         icon: Icon(Icons.add),
                         label: const Text("Create new item"),
                         style: const ButtonStyle(
@@ -62,5 +72,23 @@ class AddChoiceBoardItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void createNewItem(String? name, String? imageUrl,
+      {required BuildContext context}) {
+    late Text shownText;
+
+    if (name!.isEmpty || imageUrl!.isEmpty) {
+      shownText = Text("A field or more is missing!");
+    } else {
+      shownText = Text("Name: $name \nImage: $imageUrl");
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: shownText,
+          );
+        });
   }
 }

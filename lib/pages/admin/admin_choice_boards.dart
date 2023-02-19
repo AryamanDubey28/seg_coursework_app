@@ -319,7 +319,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// opens the add item popup
   void addItem() {
     Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-      return const AddChoiceBoardItem();
+      return AddChoiceBoardItem();
     }));
   }
 
