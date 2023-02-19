@@ -11,7 +11,7 @@ Stack makeUnavailable() {
     children: <Widget>[
       ClipRRect(
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
           child: Container(
             alignment: Alignment.center,
             color: Colors.grey.withOpacity(0.1),
