@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable_interface.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 
 class ChildBoards extends StatefulWidget {
@@ -158,13 +159,17 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           color: Color.fromARGB(255, 0, 76, 153),
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.all(8.0),
-          iconSize: 50,
-          splashColor: Colors.blue.shade900,
-          hoverColor: Colors.transparent,
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back_rounded)),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.all(8.0),
+        iconSize: 50,
+        splashColor: Colors.blue.shade900,
+        hoverColor: Colors.transparent,
+        icon: const Icon(Icons.arrow_back_rounded),
+        onPressed: () =>
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const VisualTimetableInterface(),
+        )),
+      ),
     );
   }
 }
