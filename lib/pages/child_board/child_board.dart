@@ -96,7 +96,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         alignment: Alignment.center,
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            color: Colors.red, borderRadius: BorderRadius.circular(8)),
+            color: Colors.teal, borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
             getBackButton(),
@@ -155,7 +155,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       alignment: Alignment.center,
       decoration: BoxDecoration(
           border: Border.all(width: 3),
-          color: Colors.blue,
+          color: Color.fromARGB(255, 0, 76, 153),
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(
           alignment: Alignment.centerLeft,
