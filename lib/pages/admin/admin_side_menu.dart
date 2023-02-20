@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../child_board/child_board_interface.dart';
 import '../visual_timetable/visual_timetable_interface.dart';
+import 'package:seg_coursework_app/pages/child_menu.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
@@ -37,8 +37,7 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("choiceBoards"),
               leading: const Icon(Icons.photo_size_select_actual_outlined),
               title: const Text('Choice boards'),
-              onTap: () =>
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+              onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const AdminChoiceBoards(),
               )),
             ),
@@ -46,8 +45,7 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("visualTimetable"),
               leading: const Icon(Icons.event),
               title: const Text('Visual Timetable'),
-              onTap: () =>
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+              onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const VisualTimetableInterface(),
               )),
             ),
@@ -55,9 +53,37 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("childMode"),
               leading: const Icon(Icons.child_care),
               title: const Text('Activate Child Mode'),
-              onTap: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) => const ChildInterface())),
+              onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => CustomizableColumn(rowConfigs: [
+                  {
+                    'categoryTitle': 'Category 1',
+                    'images': [
+                      Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+                      Image.network('https://via.placeholder.com/110'),
+                      Image.network('https://via.placeholder.com/110'),
+                      Image.network('https://via.placeholder.com/110'),
+                    ],
+                  },
+                  {
+                    'categoryTitle': 'Category 2',
+                    'images': [
+                      Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+                      Image.network('https://via.placeholder.com/110'),
+                      Image.network('https://via.placeholder.com/110'),
+                    ],
+                  },
+                  {
+                    'categoryTitle': 'Category 3',
+                    'images': [
+                      Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
+                      Image.network('https://via.placeholder.com/110'),
+                      Image.network('https://via.placeholder.com/110'),
+                      Image.network('https://via.placeholder.com/110'),
+                      Image.network('https://via.placeholder.com/110'),
+                    ],
+                  },
+                ]),
+              )),
             ),
             ListTile(
               key: const Key("appColours"),

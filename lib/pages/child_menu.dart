@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'child_board/child_board_interface.dart';
 
 // The child menu is formed essentially by creating a column of rows,
 // with rowConfigs outlining the category's title and images
@@ -13,15 +14,18 @@ class CustomizableColumn extends StatelessWidget {
   // Construct a column of rows using category title and images
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       itemBuilder: (context, index) {
-        return new Container(
+        return Container(
             child: CustomizableRow(
           categoryTitle: rowConfigs[index]['categoryTitle'],
           images: rowConfigs[index]['images'],
         ));
       },
       itemCount: rowConfigs.length,
+      separatorBuilder: (context, index) {
+        return Divider(height: 2);
+      },
     );
   }
 }
@@ -79,7 +83,7 @@ class CustomizableRow extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
                         child: Text(
                           categoryTitle,
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -130,8 +134,8 @@ class CustomizableRow extends StatelessWidget {
           ),
         ),
         onTap: () {
-          // PLACEHOLDER. REDIRECT TO OTHER PAGE
-          print("${categoryTitle} tapped");
+          // PLACEHOLDER.
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const ChildInterface()));
         },
       ),
     );
