@@ -3,6 +3,7 @@ import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../child_board/child_board_interface.dart';
 import '../visual_timetable/visual_timetable_interface.dart';
+import '../account_manipulations/edit_account.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
@@ -72,7 +73,10 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("accountDetails"),
               leading: const Icon(Icons.account_box_outlined),
               title: const Text('Edit Account Details'),
-              onTap: () {},
+              onTap: () =>
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const EditAccountPage(),
+              )),
             ),
             ListTile(
               key: const Key("logout"),

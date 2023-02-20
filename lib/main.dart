@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'pages/authenticate/wrapper.dart';
+import 'pages/account_manipulations/edit_account.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Wrapper(),
+      home: EditAccountPage(),
     );
   }
 }
