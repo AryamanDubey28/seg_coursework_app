@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:integration_test/integration_test.dart';
+//import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
 import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 
@@ -10,7 +10,7 @@ Future<void> addDelay() async {
 }
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group("registration tests", () {
     testWidgets("Testing valid sign up", (tester) async {
