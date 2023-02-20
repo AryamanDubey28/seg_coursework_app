@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-// Save the uploaded image to the database
 // Refactor the ScaffoldMessenger into a an external method
 // create categoryItems
 // add comments
 
 /// The logic behind the upload/take picture library is made
 /// with the help of: https://youtu.be/MSv38jO4EJk
+/// and https://youtu.be/u52TWx41oU4
 
 class AddChoiceBoardItem extends StatefulWidget {
   const AddChoiceBoardItem({Key? key}) : super(key: key);
@@ -21,9 +22,9 @@ class AddChoiceBoardItem extends StatefulWidget {
   State<AddChoiceBoardItem> createState() => _AddChoiceBoardItem();
 }
 
-/// Popup card to add a new item to a category.
+/// A Popup card to add a new item to a category.
 class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
-  File? selectedImage;
+  File? selectedImage; // hold the currently selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
 
@@ -44,9 +45,9 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  // page contents
+                  // page (Hero) contents
                   children: [
-                    // shows the selected image
+                    // shows the currently selected image
                     Card(
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -100,9 +101,9 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     // submit to database button
                     TextButton.icon(
                         key: const Key("createItemButton"),
-                        onPressed: () => createNewItem(
-                            itemNameController.text, selectedImage?.path,
-                            context: context),
+                        onPressed: () => handleSavingItemToFirestore(
+                            image: selectedImage,
+                            itemName: itemNameController.text),
                         icon: Icon(Icons.add),
                         label: const Text("Create new item"),
                         style: const ButtonStyle(
@@ -120,57 +121,57 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     );
   }
 
-  TextButton buildImageButton(
-      {required Text label, required Icon icon, required VoidCallback method}) {
-    return TextButton.icon(
-        onPressed: method,
-        icon: icon,
-        label: label,
-        style: const ButtonStyle(
-            alignment: Alignment.centerLeft,
-            minimumSize: MaterialStatePropertyAll(Size(200, 20)),
-            foregroundColor: MaterialStatePropertyAll(Colors.white),
-            backgroundColor: MaterialStatePropertyAll(Colors.black54)));
+  /// Given an item's image and name,
+  /// - upload the image to the cloud storage
+  /// - create a new item with the uploaded image's Url in Firestore
+  /// - Take the user back to the Choice Boards page
+  void handleSavingItemToFirestore(
+      {required File? image, required String? itemName}) async {
+    if (itemName!.isEmpty || image == null) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text("A field or more are missing!"),
+            );
+          });
+    } else {
+      String? imageUrl = await uploadImageToCloud(image);
+      if (imageUrl != null) {
+        addItem(name: itemName, imageUrl: imageUrl, context: context);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const AdminChoiceBoards(),
+        ));
+      }
+    }
   }
 
-  Future pickImage({required ImageSource source}) async {
+  /// Take an image and upload it to the cloud storage with
+  /// a unique name. Return the URL of the image from the cloud
+  Future<String?> uploadImageToCloud(File image) async {
+    String uniqueName = DateTime.now().millisecondsSinceEpoch.toString();
+    // A reference to the image from the cloud's root directory
+    Reference imageRef =
+        FirebaseStorage.instance.ref().child('images').child(uniqueName);
     try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageFile = File(image.path);
-      setState(() => selectedImage = imageFile);
-    } on PlatformException catch (e) {
+      await imageRef.putFile(image);
+      return await imageRef.getDownloadURL();
+    } on Exception catch (e) {
       print(e);
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               content: Text(
-                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
+                  "An error occurred while uploading the image to the cloud"),
             );
           });
+      return null;
     }
   }
 
-  void createNewItem(String? name, String? imageUrl,
-      {required BuildContext context}) {
-    if (name!.isEmpty || imageUrl == null) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("A field or more is missing!"),
-            );
-          });
-    } else {
-      addItem(name: name, imageUrl: imageUrl, context: context);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const AdminChoiceBoards(),
-      ));
-    }
-  }
-
+  /// Add an entry to the 'items' collection in Firestore with
+  /// the given item information. Also, show an update message to the user
   Future<void> addItem(
       {required String name,
       required String imageUrl,
@@ -193,5 +194,43 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   content:
                       Text("An error occurred while trying to add $name!")),
             ));
+  }
+
+  /// Build a standard button style for the two buttons asking for either
+  /// uploading or taking an image
+  TextButton buildImageButton(
+      {required Text label, required Icon icon, required VoidCallback method}) {
+    return TextButton.icon(
+        onPressed: method,
+        icon: icon,
+        label: label,
+        style: const ButtonStyle(
+            alignment: Alignment.centerLeft,
+            minimumSize: MaterialStatePropertyAll(Size(200, 20)),
+            foregroundColor: MaterialStatePropertyAll(Colors.white),
+            backgroundColor: MaterialStatePropertyAll(Colors.black54)));
+  }
+
+  /// Enable the user to either upload or take an image depending on
+  /// the source argument. Update the [selectedImage] with the user
+  /// provided image
+  Future pickImage({required ImageSource source}) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageFile = File(image.path);
+      setState(() => selectedImage = imageFile);
+    } on PlatformException catch (e) {
+      print(e);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
+            );
+          });
+    }
   }
 }
