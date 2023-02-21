@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/category_image.dart';
-import '../../widgets/category_image_row.dart';
-import '../../widgets/category_title.dart';
-import '../child_board/child_board_interface.dart';
 import 'customizable_row.dart';
 
 // The child menu is formed essentially by creating a column of rows,
