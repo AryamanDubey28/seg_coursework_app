@@ -7,8 +7,6 @@ import 'customizable_row.dart';
 //
 
 class CustomizableColumn extends StatelessWidget {
-  // const CustomizableColumn({Key? key, required this.rowConfigs}) : super(key: key);
-
   // List of categories, their titles, and images within them
   final List<Map<String, dynamic>> rowConfigs = [
     {
