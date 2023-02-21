@@ -25,14 +25,8 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
-.flutter-plugins
-.flutter-plugins 2
-.flutter-plugins 3
-.flutter-plugins 4
-.flutter-plugins-dependencies
-.flutter-plugins-dependencies 2
-.flutter-plugins-dependencies 3
-.flutter-plugins-dependencies 4
+.flutter-plugins*
+.flutter-plugins-dependencies*
 .packages
 .pub-cache/
 .pub/
@@ -102,11 +96,11 @@ lib/generated_plugin_registrant.dart
 #pubspec.lock
 
 # Android related
-**/android/**/gradle-wrapper.jar
+**/android/**/gradle-wrapper*.jar
 **/android/.gradle
 **/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
+**/android/gradlew*
+**/android/gradlew*.bat
 **/android/key.properties
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
@@ -132,11 +126,11 @@ lib/generated_plugin_registrant.dart
 **/ios/Flutter/App.framework
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
-**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/Generated*.xcconfig
 **/ios/Flutter/app.flx
 **/ios/Flutter/app.zip
 **/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/flutter_export_environment*.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
