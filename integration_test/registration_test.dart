@@ -10,7 +10,7 @@ Future<void> addDelay() async {
 }
 
 void main() {
-  //IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  // IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group("registration tests", () {
     testWidgets("Testing valid sign up", (tester) async {
