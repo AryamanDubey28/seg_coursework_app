@@ -54,35 +54,7 @@ class AdminSideMenu extends StatelessWidget {
               leading: const Icon(Icons.child_care),
               title: const Text('Activate Child Mode'),
               onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => CustomizableColumn(rowConfigs: [
-                  {
-                    'categoryTitle': 'Category 1',
-                    'images': [
-                      Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
-                      Image.network('https://via.placeholder.com/110'),
-                      Image.network('https://via.placeholder.com/110'),
-                      Image.network('https://via.placeholder.com/110'),
-                    ],
-                  },
-                  {
-                    'categoryTitle': 'Category 2',
-                    'images': [
-                      Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
-                      Image.network('https://via.placeholder.com/110'),
-                      Image.network('https://via.placeholder.com/110'),
-                    ],
-                  },
-                  {
-                    'categoryTitle': 'Category 3',
-                    'images': [
-                      Image.network('https://via.placeholder.com/110', fit: BoxFit.fill),
-                      Image.network('https://via.placeholder.com/110'),
-                      Image.network('https://via.placeholder.com/110'),
-                      Image.network('https://via.placeholder.com/110'),
-                      Image.network('https://via.placeholder.com/110'),
-                    ],
-                  },
-                ]),
+                builder: (context) => CustomizableColumn(),
               )),
             ),
             ListTile(
