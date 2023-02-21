@@ -7,24 +7,7 @@ import 'package:seg_coursework_app/pages/child_menu.dart';
 void main() {
   testWidgets('Test containers', (tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: CustomizableColumn(rowConfigs: [
-        {
-          'categoryTitle': 'Category 1',
-          'images': [new Image.asset("test/assets/test_image.png")],
-        },
-        {
-          'categoryTitle': 'Category 2',
-          'images': [new Image.asset("test/assets/test_image.png")],
-        },
-        {
-          'categoryTitle': 'Category 3',
-          'images': [new Image.asset("test/assets/test_image.png")],
-        },
-        {
-          'categoryTitle': 'Category 4',
-          'images': [new Image.asset("test/assets/test_image.png")],
-        },
-      ]),
+      home: CustomizableColumn(),
     ));
 
     expect(find.byType(CustomizableColumn), findsOneWidget);
