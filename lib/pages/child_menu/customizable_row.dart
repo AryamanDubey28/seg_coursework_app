@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../widgets/category_image.dart';
 import '../../widgets/category_row.dart';
 import '../../widgets/category_title.dart';

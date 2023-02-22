@@ -12,7 +12,7 @@ class CustomizableColumn extends StatelessWidget {
     {
       'categoryTitle': 'Category 1',
       'images': [
-        Image.asset("test/assets/test_image.png", fit: BoxFit.fill),
+        Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
@@ -21,7 +21,7 @@ class CustomizableColumn extends StatelessWidget {
     {
       'categoryTitle': 'Category 2',
       'images': [
-        Image.asset("test/assets/test_image.png", fit: BoxFit.fill),
+        Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
@@ -31,7 +31,7 @@ class CustomizableColumn extends StatelessWidget {
     {
       'categoryTitle': 'Category 3',
       'images': [
-        Image.asset("test/assets/test_image.png", fit: BoxFit.fill),
+        Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
       ],
     },
