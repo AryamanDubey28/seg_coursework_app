@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
-import '../admin/admin_choice_boards.dart';
+import 'admin_choice_boards.dart';
 
 class EditAccountPage extends StatefulWidget {
   const EditAccountPage({

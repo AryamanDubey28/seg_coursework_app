@@ -61,6 +61,20 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+
+    match /items {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        itemFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        itemFieldsAreValid());
+    }
+
     match /items/{itemId} {
       allow read: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
@@ -169,4 +183,3 @@ service cloud.firestore {
     }
   }
 }
-
