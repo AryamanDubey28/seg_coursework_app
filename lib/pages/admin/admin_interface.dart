@@ -11,6 +11,7 @@ class AdminInterface extends StatelessWidget {
       title: 'Admin Interface',
       theme: ThemeData(
         primarySwatch: Colors.teal,
+        scaffoldBackgroundColor: Colors.teal[100],
       ),
       home: const AdminChoiceBoards(),
     );

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable_interface.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/widgets/picture_grid.dart';
 
 void main() {
   testWidgets('PictureGrid is shown by default', (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       // Verify that our PictureGrid is shown by default
       expect(find.byType(PictureGrid), findsOneWidget);
@@ -19,7 +19,7 @@ void main() {
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       expect(find.byKey(const ValueKey("allTimetablesButton")), findsOneWidget);
     });
@@ -30,7 +30,7 @@ void main() {
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pump();
@@ -48,7 +48,7 @@ void main() {
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       await tester.tap(find.byKey(const ValueKey("gridImage1")));
       await tester.pump();
@@ -72,7 +72,7 @@ void main() {
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       await tester.tap(find.byKey(const ValueKey("gridImage1")));
       await tester.pump();
@@ -103,7 +103,7 @@ void main() {
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       expect(
           find.byKey(const ValueKey("addToListOfListsButton")), findsNothing);
@@ -127,7 +127,7 @@ void main() {
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       // Build our app and trigger a frame.
-      await tester.pumpWidget(const VisualTimetableInterface());
+      await tester.pumpWidget(const MaterialApp(home:VisualTimeTable()));
 
       expect(
           find.byKey(const ValueKey("addToListOfListsButton")), findsNothing);
