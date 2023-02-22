@@ -88,7 +88,33 @@ service cloud.firestore {
         itemFieldsAreValid());
     }
 
+    match /categories {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
+    }
+
     match /categories/{categoryId} {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        categoryFieldsAreValid());
+    }
+
+    match /workflows {
       allow read: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
       

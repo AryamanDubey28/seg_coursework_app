@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
 import 'admin_choice_boards.dart';
+import '../authenticate/auth.dart';
 
 class EditAccountPage extends StatefulWidget {
   const EditAccountPage({
@@ -17,9 +21,34 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  late final Auth authentitcationHelper;
+  late final FirebaseAuth firebaseAuthentication;
+  late Future<String> _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    firebaseAuthentication = FirebaseAuth.instance;
+    authentitcationHelper = Auth(auth: firebaseAuthentication);
+    _currentUser = authentitcationHelper.getCurrentUserEmail();
+  }
 
   Future commit_changes() async {
+    print("IN FUNCTION");
     if (_emailEditController.text.trim() != "") {
+      print("IN EMAIL FUNCTION");
+      User? firebaseUser = await firebaseAuthentication.currentUser;
+      if (firebaseUser != null) {
+        print("USER NOT NULL");
+        var message;
+        firebaseUser
+            .updateEmail(_emailEditController.text.trim())
+            .then(
+              (value) => message = 'Success',
+            )
+            .catchError((onError) => message = 'error');
+        print(message);
+      }
     } else if (_currentPasswordController.text.trim() != "") {}
     // if (passwordConfirmed()) {
     //   showDialog(
@@ -91,87 +120,107 @@ class EditAccountPageState extends State<EditAccountPage> {
           child: SingleChildScrollView(
             child: SizedBox(
               width: 1000,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Edit your details",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 72,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  MyTextField(
-                    key: Key('change_email_field'),
-                    hint: "Email",
-                    controller: _emailEditController,
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    "Change password",
-                    style: TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  MyTextField(
-                    key: Key('current_password_input'),
-                    hint: "Current password",
-                    controller: _currentPasswordController,
-                    isPassword: true,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  MyTextField(
-                    key: Key('new_password_input'),
-                    hint: "New password",
-                    controller: _newPasswordController,
-                    isPassword: true,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  MyTextField(
-                    key: Key('confirm_new_password'),
-                    hint: "Password confirmation",
-                    controller: _confirmPasswordController,
-                    isPassword: true,
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  SizedBox(
-                    height: 88,
-                    width: 566,
-                    child: ElevatedButton(
-                      key: Key('confirm button'),
-                      style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.deepPurple[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      onPressed: commit_changes,
-                      child: Text("Confirm Changes"),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                ],
+              child: FutureBuilder<String>(
+                future: _currentUser,
+                builder: (
+                  BuildContext context,
+                  AsyncSnapshot<String> snapshot,
+                ) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return const Text('Error');
+                    } else if (snapshot.hasData) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Edit your details",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 72,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          MyTextField(
+                            key: Key('change_email_field'),
+                            hint: snapshot.data as String,
+                            controller: _emailEditController,
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Text(
+                            "Change password",
+                            style: TextStyle(
+                              fontSize: 30,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          MyTextField(
+                            key: Key('current_password_input'),
+                            hint: "Current password",
+                            controller: _currentPasswordController,
+                            isPassword: true,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          MyTextField(
+                            key: Key('new_password_input'),
+                            hint: "New password",
+                            controller: _newPasswordController,
+                            isPassword: true,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          MyTextField(
+                            key: Key('confirm_new_password'),
+                            hint: "Password confirmation",
+                            controller: _confirmPasswordController,
+                            isPassword: true,
+                          ),
+                          SizedBox(
+                            height: 25,
+                          ),
+                          SizedBox(
+                            height: 88,
+                            width: 566,
+                            child: ElevatedButton(
+                              key: Key('confirm button'),
+                              style: ElevatedButton.styleFrom(
+                                textStyle: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.deepPurple[400],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              onPressed: commit_changes,
+                              child: Text("Confirm Changes"),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const Text('Empty data');
+                    }
+                  } else {
+                    return Text('State: ${snapshot.connectionState}');
+                  }
+                },
               ),
             ),
           ),

@@ -19,6 +19,15 @@ class Auth {
     }
   }
 
+  Future<String> getCurrentUserEmail() async {
+    var user_email = await auth.currentUser!.email;
+    if (user_email != null) {
+      return user_email;
+    } else {
+      return "";
+    }
+  }
+
   Future<String?> signIn(String email, String password) async {
     try {
       if (!validEmail(email)) {
