@@ -7,9 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-// Refactor the ScaffoldMessenger into a an external method
+// handle errors related to adding items to firestore
 // create categoryItems
-// add comments
 
 /// The logic behind the upload/take picture library is made
 /// with the help of: https://youtu.be/MSv38jO4EJk
@@ -75,11 +74,11 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
-                    buildImageButton(
+                    _buildImageButton(
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
                         method: () => pickImage(source: ImageSource.gallery)),
-                    buildImageButton(
+                    _buildImageButton(
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
                         method: () => pickImage(source: ImageSource.camera)),
@@ -136,20 +135,27 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             );
           });
     } else {
-      String? imageUrl = await uploadImageToCloud(image);
+      String? imageUrl = await uploadImageToCloud(image, itemName);
       if (imageUrl != null) {
-        addItem(name: itemName, imageUrl: imageUrl, context: context);
+        await createItem(name: itemName, imageUrl: imageUrl);
+        await createCategoryItem(name: itemName, imageUrl: imageUrl);
+        // go back to choice boards page
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => const AdminChoiceBoards(),
         ));
+        // update message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("$itemName added successfully.")),
+        );
       }
     }
   }
 
   /// Take an image and upload it to the cloud storage with
   /// a unique name. Return the URL of the image from the cloud
-  Future<String?> uploadImageToCloud(File image) async {
-    String uniqueName = DateTime.now().millisecondsSinceEpoch.toString();
+  Future<String?> uploadImageToCloud(File image, String itemName) async {
+    String uniqueName =
+        itemName + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
     Reference imageRef =
         FirebaseStorage.instance.ref().child('images').child(uniqueName);
@@ -170,35 +176,43 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     }
   }
 
-  /// Add an entry to the 'items' collection in Firestore with
-  /// the given item information. Also, show an update message to the user
-  Future<void> addItem(
-      {required String name,
-      required String imageUrl,
-      required BuildContext context}) {
+  /// Add a new entry to the 'items' collection in Firestore with
+  /// the given item information.
+  Future<void> createItem({required String name, required String imageUrl}) {
     CollectionReference items = FirebaseFirestore.instance.collection('items');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
-    return items
-        .add({
-          'illustration': imageUrl,
-          'is_available': true,
-          'name': name,
-          'userid': auth.currentUser!.uid
-        })
-        .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("$name added successfully.")),
-            ))
-        .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content:
-                      Text("An error occurred while trying to add $name!")),
-            ));
+    return items.add({
+      'illustration': imageUrl,
+      'is_available': true,
+      'name': name,
+      'userid': auth.currentUser!.uid
+    }).catchError((error) => AlertDialog(
+          content:
+              Text("An error occurred when communicating with the database"),
+        ));
+  }
+
+  ///
+  Future<void> createCategoryItem(
+      {required String name, required String imageUrl}) {
+    // Change category id
+    CollectionReference categoryItems = FirebaseFirestore.instance
+        .collection('categoryItems/ZnmiMJofCYuLRrUAx0yI/items/');
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    return categoryItems.add({
+      'illustration': imageUrl,
+      'is_available': true,
+      'name': name,
+      'rank': 1,
+      'userid': auth.currentUser!.uid
+    }).catchError((error) => print(error));
   }
 
   /// Build a standard button style for the two buttons asking for either
   /// uploading or taking an image
-  TextButton buildImageButton(
+  TextButton _buildImageButton(
       {required Text label, required Icon icon, required VoidCallback method}) {
     return TextButton.icon(
         onPressed: method,
