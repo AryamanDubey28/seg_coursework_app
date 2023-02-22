@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/category_image.dart';
-import '../../widgets/category_image_row.dart';
-import '../../widgets/category_title.dart';
-import '../child_board/child_board_interface.dart';
 import 'customizable_row.dart';
 
 // The child menu is formed essentially by creating a column of rows,
@@ -11,14 +7,12 @@ import 'customizable_row.dart';
 //
 
 class CustomizableColumn extends StatelessWidget {
-  // const CustomizableColumn({Key? key, required this.rowConfigs}) : super(key: key);
-
   // List of categories, their titles, and images within them
   final List<Map<String, dynamic>> rowConfigs = [
     {
       'categoryTitle': 'Category 1',
       'images': [
-        Image.asset("test/assets/test_image.png", fit: BoxFit.fill),
+        Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
@@ -27,7 +21,7 @@ class CustomizableColumn extends StatelessWidget {
     {
       'categoryTitle': 'Category 2',
       'images': [
-        Image.asset("test/assets/test_image.png", fit: BoxFit.fill),
+        Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
@@ -37,7 +31,7 @@ class CustomizableColumn extends StatelessWidget {
     {
       'categoryTitle': 'Category 3',
       'images': [
-        Image.asset("test/assets/test_image.png", fit: BoxFit.fill),
+        Image.asset("test/assets/test_image.png"),
         Image.asset("test/assets/test_image.png"),
       ],
     },

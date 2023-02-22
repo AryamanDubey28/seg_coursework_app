@@ -27,7 +27,7 @@ class CategoryImage extends StatelessWidget {
               ),
               image: DecorationImage(
                 image: imageLarge.image,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../widgets/category_image.dart';
-import '../../widgets/category_image_row.dart';
+import '../../widgets/category_row.dart';
 import '../../widgets/category_title.dart';
 import '../child_board/child_board_interface.dart';
 
