@@ -61,7 +61,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      // backgroundColor: Colors.grey.shade200,
       body: Center(
         widthFactor: MediaQuery.of(context).size.width,
         heightFactor: MediaQuery.of(context).size.height,
