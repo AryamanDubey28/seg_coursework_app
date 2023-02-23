@@ -242,8 +242,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              buildEditButton(isCategory: true),
               buildDeleteButton(),
+              buildEditButton(isCategory: true),
               const Spacer(),
               buildAddButton(),
               const Padding(padding: EdgeInsets.only(right: 35))
