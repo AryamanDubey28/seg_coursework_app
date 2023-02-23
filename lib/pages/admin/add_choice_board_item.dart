@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-// Check why I get permission denied
 // create categoryItems
 
 /// The logic behind the upload/take picture library is made
@@ -138,12 +137,13 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       String? imageUrl = await uploadImageToCloud(image, itemName);
       if (imageUrl != null) {
         try {
-          await createItem(name: itemName, imageUrl: imageUrl);
+          String itemId = await createItem(name: itemName, imageUrl: imageUrl);
           // Make category id not hardcoded
           await createCategoryItem(
               name: itemName,
               imageUrl: imageUrl,
-              categoryId: "Oltxa2Fu42PAkTGSN8Qg");
+              categoryId: "Oltxa2Fu42PAkTGSN8Qg",
+              itemId: itemId);
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const AdminChoiceBoards(),
@@ -191,36 +191,42 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   }
 
   /// Add a new entry to the 'items' collection in Firestore with
-  /// the given item information.
-  Future createItem({required String name, required String imageUrl}) async {
+  /// the given item information. Return the created item's id
+  Future<String> createItem(
+      {required String name, required String imageUrl}) async {
     CollectionReference items = FirebaseFirestore.instance.collection('items');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
-    return items.add({
-      'name': name,
-      'illustration': imageUrl,
-      'is_available': true,
-      'userId': auth.currentUser!.uid
-    }).catchError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
+    return items
+        .add({
+          'name': name,
+          'illustration': imageUrl,
+          'is_available': true,
+          'userId': auth.currentUser!.uid
+        })
+        .then((item) => item.id)
+        .catchError((error, stackTrace) {
+          return throw FirebaseException(plugin: stackTrace.toString());
+        });
   }
 
   /// Add a new entry to the 'categoryItems' collection in Firestore with
   /// the given item and category information.
+  /// Note: the categoryItem will have the same id as the item
   Future createCategoryItem(
       {required String name,
       required String imageUrl,
-      required String categoryId}) async {
+      required String categoryId,
+      required String itemId}) async {
     CollectionReference categoryItems = FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items/');
+        .collection('categoryItems/$categoryId/items');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
-    return categoryItems.add({
+    return categoryItems.doc(itemId).set({
       'illustration': imageUrl,
       'is_available': true,
       'name': name,
-      'rank': 1,
+      'rank': 0,
       'userId': auth.currentUser!.uid
     }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
