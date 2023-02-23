@@ -154,7 +154,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           iconSize: 50,
           splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }

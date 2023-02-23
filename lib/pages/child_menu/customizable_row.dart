@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/pages/child_board/child_board.dart';
 import '../../widgets/category_image.dart';
 import '../../widgets/category_row.dart';
 import '../../widgets/category_title.dart';
-import '../child_board/child_board_interface.dart';
 
 class CustomizableRow extends StatelessWidget {
   final String categoryTitle; // e.g. Breakfast
@@ -39,7 +39,7 @@ class CustomizableRow extends StatelessWidget {
         ),
         onTap: () {
           // PLACEHOLDER.
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const ChildInterface()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildBoards()));
         },
       ),
     );
