@@ -139,7 +139,11 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       if (imageUrl != null) {
         try {
           await createItem(name: itemName, imageUrl: imageUrl);
-          await createCategoryItem(name: itemName, imageUrl: imageUrl);
+          // Make category id not hardcoded
+          await createCategoryItem(
+              name: itemName,
+              imageUrl: imageUrl,
+              categoryId: "Oltxa2Fu42PAkTGSN8Qg");
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const AdminChoiceBoards(),
@@ -196,7 +200,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       'name': name,
       'illustration': imageUrl,
       'is_available': true,
-      'userid': auth.currentUser!.uid
+      'userId': auth.currentUser!.uid
     }).catchError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
@@ -205,10 +209,11 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   /// Add a new entry to the 'categoryItems' collection in Firestore with
   /// the given item and category information.
   Future createCategoryItem(
-      {required String name, required String imageUrl}) async {
-    // Make category id not hardcoded
+      {required String name,
+      required String imageUrl,
+      required String categoryId}) async {
     CollectionReference categoryItems = FirebaseFirestore.instance
-        .collection('categoryItems/ZnmiMJofCYuLRrUAx0yI/items/');
+        .collection('categoryItems/$categoryId/items/');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
     return categoryItems.add({
@@ -216,7 +221,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       'is_available': true,
       'name': name,
       'rank': 1,
-      'userid': auth.currentUser!.uid
+      'userId': auth.currentUser!.uid
     }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
