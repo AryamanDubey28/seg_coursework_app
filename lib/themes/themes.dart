@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/theme_details.dart';
+
+final defaultTheme = ThemeDetails(name: "Default theme", themeData: ThemeData(
+  primarySwatch: Colors.teal,
+  scaffoldBackgroundColor: Colors.teal[100],
+));
+
+final redTheme = ThemeDetails(name: "Red theme", themeData: ThemeData());
 
 class CustomTheme with ChangeNotifier
 {
-  //idk if late should be here but leave it for now
-  late ThemeData _themeData;
+  ThemeData _themeData = defaultTheme.themeData;
 
-  ThemeData get getTheme => _themeData;
+  ThemeData getTheme() => _themeData;
 
-  setTheme(ThemeData themeData)
+  List<ThemeDetails> getThemes()
   {
-    _themeData = themeData;
+    return [defaultTheme, redTheme];
+  }
+
+  setTheme(ThemeDetails themeDetails) async
+  {
+    _themeData = themeDetails.themeData;
     notifyListeners();
   }
 
-  static ThemeData get defaultTheme {
-    return ThemeData();
-  }
+  // static ThemeData get defaultTheme {
+  //   return ThemeData(
+  //     primarySwatch: Colors.teal,
+  //     scaffoldBackgroundColor: Colors.teal[100],
+  //   );
+  // }
 
-  static ThemeData get tealTheme {
-    return ThemeData();
-  }
+  // static ThemeData get tealTheme {
+  //   return ThemeData();
+  // }
 }
