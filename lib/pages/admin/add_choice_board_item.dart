@@ -7,14 +7,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-// create categoryItems
+// make categoryItem rank softcoded
 
 /// The logic behind the upload/take picture library is made
 /// with the help of: https://youtu.be/MSv38jO4EJk
 /// and https://youtu.be/u52TWx41oU4
 
 class AddChoiceBoardItem extends StatefulWidget {
-  const AddChoiceBoardItem({Key? key}) : super(key: key);
+  final String categoryId;
+  const AddChoiceBoardItem({Key? key, required this.categoryId})
+      : super(key: key);
 
   @override
   State<AddChoiceBoardItem> createState() => _AddChoiceBoardItem();
@@ -138,11 +140,10 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       if (imageUrl != null) {
         try {
           String itemId = await createItem(name: itemName, imageUrl: imageUrl);
-          // Make category id not hardcoded
           await createCategoryItem(
               name: itemName,
               imageUrl: imageUrl,
-              categoryId: "Oltxa2Fu42PAkTGSN8Qg",
+              categoryId: widget.categoryId,
               itemId: itemId);
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
