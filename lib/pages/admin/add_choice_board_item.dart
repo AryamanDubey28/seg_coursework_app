@@ -7,8 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-// make categoryItem rank softcoded
-
 /// The logic behind the upload/take picture library is made
 /// with the help of: https://youtu.be/MSv38jO4EJk
 /// and https://youtu.be/u52TWx41oU4
@@ -124,6 +122,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   /// Given an item's image and name,
   /// - upload the image to the cloud storage
   /// - create a new item with the uploaded image's Url in Firestore
+  /// - create a new categoryItem entry in the selected category
   /// - Take the user back to the Choice Boards page
   void handleSavingItemToFirestore(
       {required File? image, required String? itemName}) async {
@@ -154,6 +153,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             SnackBar(content: Text("$itemName added successfully.")),
           );
         } catch (e) {
+          print(e);
           showDialog(
               context: context,
               builder: (context) {
@@ -227,11 +227,20 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       'illustration': imageUrl,
       'is_available': true,
       'name': name,
-      'rank': 0,
+      'rank': await getNewCategoryItemRank(categoryId: categoryId),
       'userId': auth.currentUser!.uid
     }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
+  }
+
+  /// Return an appropriate rank for a new categoryItem in the
+  /// given category (one more than the highest rank or zero if empty)
+  Future<int> getNewCategoryItemRank({required String categoryId}) async {
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('categoryItems/$categoryId/items')
+        .get();
+    return querySnapshot.size;
   }
 
   /// Build a standard button style for the two buttons asking for either
