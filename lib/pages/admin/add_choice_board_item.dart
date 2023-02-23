@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-// handle errors related to adding items to firestore
+// Check why I get permission denied
 // create categoryItems
 
 /// The logic behind the upload/take picture library is made
@@ -137,16 +137,26 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     } else {
       String? imageUrl = await uploadImageToCloud(image, itemName);
       if (imageUrl != null) {
-        await createItem(name: itemName, imageUrl: imageUrl);
-        await createCategoryItem(name: itemName, imageUrl: imageUrl);
-        // go back to choice boards page
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const AdminChoiceBoards(),
-        ));
-        // update message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("$itemName added successfully.")),
-        );
+        try {
+          await createItem(name: itemName, imageUrl: imageUrl);
+          await createCategoryItem(name: itemName, imageUrl: imageUrl);
+          // go back to choice boards page
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const AdminChoiceBoards(),
+          ));
+          // update message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("$itemName added successfully.")),
+          );
+        } catch (e) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                    content: Text(
+                        'An error occurred while communicating with the database'));
+              });
+        }
       }
     }
   }
@@ -162,8 +172,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     try {
       await imageRef.putFile(image);
       return await imageRef.getDownloadURL();
-    } on Exception catch (e) {
-      print(e);
+    } on FirebaseException catch (error) {
+      print(error);
       showDialog(
           context: context,
           builder: (context) {
@@ -178,25 +188,25 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
 
   /// Add a new entry to the 'items' collection in Firestore with
   /// the given item information.
-  Future<void> createItem({required String name, required String imageUrl}) {
+  Future createItem({required String name, required String imageUrl}) async {
     CollectionReference items = FirebaseFirestore.instance.collection('items');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
     return items.add({
+      'name': name,
       'illustration': imageUrl,
       'is_available': true,
-      'name': name,
       'userid': auth.currentUser!.uid
-    }).catchError((error) => AlertDialog(
-          content:
-              Text("An error occurred when communicating with the database"),
-        ));
+    }).catchError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
   }
 
-  ///
-  Future<void> createCategoryItem(
-      {required String name, required String imageUrl}) {
-    // Change category id
+  /// Add a new entry to the 'categoryItems' collection in Firestore with
+  /// the given item and category information.
+  Future createCategoryItem(
+      {required String name, required String imageUrl}) async {
+    // Make category id not hardcoded
     CollectionReference categoryItems = FirebaseFirestore.instance
         .collection('categoryItems/ZnmiMJofCYuLRrUAx0yI/items/');
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -207,7 +217,9 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       'name': name,
       'rank': 1,
       'userid': auth.currentUser!.uid
-    }).catchError((error) => print(error));
+    }).onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
   }
 
   /// Build a standard button style for the two buttons asking for either
