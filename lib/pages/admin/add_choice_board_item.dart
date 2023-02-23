@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
 /// The logic behind the upload/take picture library is made
 /// with the help of: https://youtu.be/MSv38jO4EJk
@@ -73,14 +74,15 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
-                    _buildImageButton(
+                    PickImageButton(
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
-                        method: () => pickImage(source: ImageSource.gallery)),
-                    _buildImageButton(
+                        onPressed: () =>
+                            pickImage(source: ImageSource.gallery)),
+                    PickImageButton(
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
-                        method: () => pickImage(source: ImageSource.camera)),
+                        onPressed: () => pickImage(source: ImageSource.camera)),
                     const SizedBox(height: 20),
                     // field to enter the item name
                     TextField(
@@ -241,21 +243,6 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
         .collection('categoryItems/$categoryId/items')
         .get();
     return querySnapshot.size;
-  }
-
-  /// Build a standard button style for the two buttons asking for either
-  /// uploading or taking an image
-  TextButton _buildImageButton(
-      {required Text label, required Icon icon, required VoidCallback method}) {
-    return TextButton.icon(
-        onPressed: method,
-        icon: icon,
-        label: label,
-        style: const ButtonStyle(
-            alignment: Alignment.centerLeft,
-            minimumSize: MaterialStatePropertyAll(Size(200, 20)),
-            foregroundColor: MaterialStatePropertyAll(Colors.white),
-            backgroundColor: MaterialStatePropertyAll(Colors.black54)));
   }
 
   /// Enable the user to either upload or take an image depending on
