@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
 import 'admin_choice_boards.dart';
 import '../authenticate/auth.dart';
+import './admin_side_menu.dart';
 
 class EditAccountPage extends StatefulWidget {
   const EditAccountPage({
@@ -23,67 +24,59 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
   late final FirebaseAuth firebaseAuthentication;
-  late Future<String> _currentUser;
 
   @override
   void initState() {
     super.initState();
     firebaseAuthentication = FirebaseAuth.instance;
     authentitcationHelper = Auth(auth: firebaseAuthentication);
-    _currentUser = authentitcationHelper.getCurrentUserEmail();
   }
 
   Future commit_changes() async {
-    print("IN FUNCTION");
     if (_emailEditController.text.trim() != "") {
-      print("IN EMAIL FUNCTION");
       User? firebaseUser = await firebaseAuthentication.currentUser;
       if (firebaseUser != null) {
-        print("USER NOT NULL");
         var message;
-        firebaseUser
-            .updateEmail(_emailEditController.text.trim())
-            .then(
-              (value) => message = 'Success',
-            )
-            .catchError((onError) => message = 'error');
-        print(message);
+        try {
+          await firebaseUser.updateEmail(_emailEditController.text.trim());
+          print("EMAIL - SUCCESS");
+        } on FirebaseAuthException catch (e) {
+          print("EMAIL - LOG IN AGAIN");
+          print(e.message);
+        } catch (e) {
+          print("EMAIL - LOG IN AGAIN");
+          rethrow;
+        }
       }
-    } else if (_currentPasswordController.text.trim() != "") {}
-    // if (passwordConfirmed()) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (context) {
-    //         return Center(
-    //             child: CircularProgressIndicator(
-    //           color: Colors.deepPurple[400],
-    //         ));
-    //       });
-    //   try {
-    //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-    //       email: _emailController.text.trim(),
-    //       password: _passwordController.text.trim(),
-    //     );
-    //     Navigator.of(context).pop();
-    //   } on FirebaseAuthException catch (e) {
-    //     Navigator.of(context).pop();
-    //     showDialog(
-    //         context: context,
-    //         builder: (context) {
-    //           return AlertDialog(
-    //             content: Text(e.message.toString()),
-    //           );
-    //         });
-    //   }
-    // } else {
-    //   showDialog(
-    //       context: context,
-    //       builder: (context) {
-    //         return AlertDialog(
-    //             content: Text(
-    //                 'Password confirmation did not match. Please try again.'));
-    //       });
-    // }
+    } else if (_currentPasswordController.text.trim() != "" &&
+        _newPasswordController.text.trim() != "" &&
+        _confirmPasswordController.text.trim() != "") {
+      print("UPDATING PWD");
+      if (_newPasswordController.text.trim() ==
+          _confirmPasswordController.text.trim()) {
+        User? firebaseUser = await firebaseAuthentication.currentUser;
+        if (firebaseUser != null) {
+          try {
+            var credentials = EmailAuthProvider.credential(
+                email: await authentitcationHelper.getCurrentUserEmail(),
+                password: _currentPasswordController.text.trim());
+            await firebaseUser
+                .reauthenticateWithCredential(credentials)
+                .then((value) {
+              firebaseUser.updatePassword(_newPasswordController.text.trim());
+            });
+            print("PWD - SUCCESS");
+          } on FirebaseAuthException catch (e) {
+            print("PWD - LOGIN AGAIN OR PASSWORD INCORRECT");
+          } catch (e) {
+            print("PWD - TRUC CHELOU");
+            rethrow;
+          }
+        }
+      } else {
+        // confirmation different from other
+      }
+    }
   }
 
   @override
@@ -100,28 +93,17 @@ class EditAccountPageState extends State<EditAccountPage> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const AdminChoiceBoards(),
-            ));
-          },
-        ),
+        key: Key('app_bar'),
+        title: const Text('Edit Account'),
       ),
+      drawer: const AdminSideMenu(),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: SizedBox(
               width: 1000,
               child: FutureBuilder<String>(
-                future: _currentUser,
+                future: authentitcationHelper.getCurrentUserEmail(),
                 builder: (
                   BuildContext context,
                   AsyncSnapshot<String> snapshot,
@@ -133,17 +115,17 @@ class EditAccountPageState extends State<EditAccountPage> {
                       return const Text('Error');
                     } else if (snapshot.hasData) {
                       return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            "Edit your details",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 72,
-                            ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Edit your email:",
+                                style: TextStyle(
+                                  fontSize: 30,
+                                )),
                           ),
                           SizedBox(
-                            height: 50,
+                            height: 15,
                           ),
                           MyTextField(
                             key: Key('change_email_field'),
@@ -151,16 +133,42 @@ class EditAccountPageState extends State<EditAccountPage> {
                             controller: _emailEditController,
                           ),
                           const SizedBox(
-                            height: 50,
+                            height: 15,
                           ),
-                          Text(
-                            "Change password",
-                            style: TextStyle(
-                              fontSize: 30,
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              height: 60,
+                              width: 250,
+                              child: ElevatedButton(
+                                key: Key('confirm button'),
+                                style: ElevatedButton.styleFrom(
+                                  textStyle: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.teal[400],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                onPressed: commit_changes,
+                                child: Text("Change Email"),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Edit your password:",
+                              style: TextStyle(
+                                fontSize: 30,
+                              ),
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 15,
                           ),
                           MyTextField(
                             key: Key('current_password_input'),
@@ -187,30 +195,30 @@ class EditAccountPageState extends State<EditAccountPage> {
                             isPassword: true,
                           ),
                           SizedBox(
-                            height: 25,
+                            height: 15,
                           ),
-                          SizedBox(
-                            height: 88,
-                            width: 566,
-                            child: ElevatedButton(
-                              key: Key('confirm button'),
-                              style: ElevatedButton.styleFrom(
-                                textStyle: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SizedBox(
+                              height: 60,
+                              width: 250,
+                              child: ElevatedButton(
+                                key: Key('confirm button'),
+                                style: ElevatedButton.styleFrom(
+                                  textStyle: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.teal[400],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
                                 ),
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.deepPurple[400],
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
+                                onPressed: commit_changes,
+                                child: Text("Change Password"),
                               ),
-                              onPressed: commit_changes,
-                              child: Text("Confirm Changes"),
                             ),
-                          ),
-                          SizedBox(
-                            height: 30,
                           ),
                         ],
                       );

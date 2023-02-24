@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../child_board/child_board_interface.dart';
 import '../visual_timetable/visual_timetable_interface.dart';
 import 'edit_account.dart';
+import '../authenticate/login.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
@@ -84,6 +85,9 @@ class AdminSideMenu extends StatelessWidget {
               title: const Text('Log out'),
               onTap: () {
                 FirebaseAuth.instance.signOut();
+                // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                //   builder: (context) => const LogIn(),
+                // ));
               },
             ),
           ],

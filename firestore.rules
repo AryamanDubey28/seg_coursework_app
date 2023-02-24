@@ -65,6 +65,9 @@ service cloud.firestore {
     match /items {
       allow read: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
+
+      allow delete: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
       
       allow create: if (request.auth.uid != null && 
         request.resource.data.userId == request.auth.uid && 
@@ -77,6 +80,9 @@ service cloud.firestore {
 
     match /items/{itemId} {
       allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+
+      allow delete: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
       
       allow create: if (request.auth.uid != null && 
@@ -92,6 +98,9 @@ service cloud.firestore {
       allow read: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
       
+      allow delete: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
       allow create: if (request.auth.uid != null && 
         request.resource.data.userId == request.auth.uid && 
         categoryFieldsAreValid());
@@ -103,6 +112,9 @@ service cloud.firestore {
 
     match /categories/{categoryId} {
       allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow delete: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
       
       allow create: if (request.auth.uid != null && 
@@ -118,6 +130,9 @@ service cloud.firestore {
       allow read: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
       
+      allow delete: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
       allow create: if (request.auth.uid != null && 
         request.resource.data.userId == request.auth.uid && 
         categoryFieldsAreValid());
@@ -129,6 +144,9 @@ service cloud.firestore {
 
     match /workflows/{workflowId} {
       allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow delete: if (request.auth.uid != null && 
         resource.data.userId == request.auth.uid);
 
       allow create: if (request.auth.uid != null && 
@@ -149,6 +167,9 @@ service cloud.firestore {
         request.resource.data.userId == request.auth.uid && 
         exists(/databases/$(database)/documents/items/$(request.resource.data.keys()[0])) && 
         rankedItemFieldsAreValid());
+      
+      allow delete: if (request.auth.uid != null && 
+        get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
 
       allow update: if (request.auth.uid != null && 
         get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid && 
@@ -158,6 +179,9 @@ service cloud.firestore {
 
       match /items/{itemID} {
         allow read: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
+        
+        allow delete: if (request.auth.uid != null && 
           get(/databases/$(database)/documents/categories/$(categoryId)).data.userId == request.auth.uid);
 
         allow create: if (request.auth.uid != null && 
@@ -176,7 +200,10 @@ service cloud.firestore {
 
     match /workflowItems/{workflowId} {
       allow read: if (request.auth.uid != null && 
-        get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
+          get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
+      
+      allow delete: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
 
       allow create: if (request.auth.uid != null && 
         get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid && 
@@ -192,6 +219,9 @@ service cloud.firestore {
 
       match /items/{itemID} {
         allow read: if (request.auth.uid != null && 
+          get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
+        
+        allow delete: if (request.auth.uid != null && 
           get(/databases/$(database)/documents/workflows/$(workflowId)).data.userId == request.auth.uid);
 
         allow create: if (request.auth.uid != null && 
