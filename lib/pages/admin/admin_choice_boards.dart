@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
@@ -219,6 +220,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SwitchButton(itemId: "jEa9i4JQNpGeoO7VdXOP", categoryItemId: "vBlcToVKGWPj01DMnXdS"),
                     buildDeleteButton(),
                     buildEditButton(),
                   ],
