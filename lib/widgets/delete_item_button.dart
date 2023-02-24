@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Make updateRank inside deleteCategoryItem
-// Catch errors appropriately
-
 /// The trash (delete) button for items in the Admin Choice Boards page
 class DeleteItemButton extends StatefulWidget {
   final String categoryId;
@@ -97,21 +94,25 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
 
   /// Return the rank field of a categoryItem given the categoryId and
   /// itemId
-  Future<int> getCategoryItemRank(
+  Future getCategoryItemRank(
       {required String categoryId, required String itemId}) async {
-    final DocumentSnapshot categoryItem = await FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('categoryItems/$categoryId/items')
         .doc(itemId)
-        .get();
-
-    return categoryItem.get("rank");
+        .get()
+        .then((categoryItem) {
+      return categoryItem.get("rank");
+    }).onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
   }
 
   /// Should be called after deleting a categoryItem. Decrement the ranks
   /// of all documents which have a rank higher than the deleted categoryItem
-  Future<void> updateRanks(
+  Future updateRanks(
       {required String categoryId, required int removedRank}) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
     final QuerySnapshot querySnapshot = await firestore
         .collection('categoryItems/$categoryId/items')
         .where('rank', isGreaterThan: removedRank)
