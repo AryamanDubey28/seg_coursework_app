@@ -38,12 +38,6 @@ class _SwitchButtonState extends State<SwitchButton> {
     final DocumentReference itemRef =
         FirebaseFirestore.instance.collection("items").doc(itemKey);
 
-    final DocumentReference categoryItemRef = FirebaseFirestore.instance
-        .collection("categoryItems")
-        .doc(categoryItemKey)
-        .collection("items")
-        .doc(itemKey);
-
     final DocumentSnapshot documentSnapshot = await itemRef.get();
     final Map<String, dynamic> data =
         documentSnapshot.data() as Map<String, dynamic>;
