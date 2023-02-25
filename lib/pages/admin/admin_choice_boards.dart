@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
+import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
@@ -159,28 +160,19 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
-  /// Builds the edit button depending on if it's an item or a category
-  IconButton buildEditButton({bool isCategory = false}) {
+  /// Builds the edit button for a category
+  IconButton buildEditButton() {
     const editIcon = Icon(
       Icons.edit,
       color: Color.fromARGB(255, 0, 76, 153),
     );
 
-    if (isCategory) {
-      return IconButton(
-        key: const Key("editCategoryButton"),
-        onPressed: editCategory,
-        icon: editIcon,
-        alignment: Alignment.centerRight,
-      );
-    } else {
-      return IconButton(
-        key: const Key("editItemButton"),
-        onPressed: editItem,
-        icon: editIcon,
-        padding: const EdgeInsets.only(right: 45),
-      );
-    }
+    return IconButton(
+      key: const Key("editCategoryButton"),
+      onPressed: editCategory,
+      icon: editIcon,
+      alignment: Alignment.centerRight,
+    );
   }
 
   /// Builds the add button for categories
@@ -246,7 +238,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               buildDeleteButton(),
-              buildEditButton(isCategory: true),
+              buildEditButton(),
               const Spacer(),
               AddItemButton(categoryId: category.id),
               const Padding(padding: EdgeInsets.only(right: 35))
@@ -286,7 +278,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                         categoryId: category.id,
                         itemId: item.id,
                         itemName: item.name),
-                    buildEditButton(),
+                    EditItemButton(
+                        itemId: item.id,
+                        itemName: item.name,
+                        itemImageUrl: item.imageUrl),
                   ],
                 ),
               )))
@@ -309,9 +304,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       categories.insert(newCategoryIndex, selectedCategory);
     });
   }
-
-  /// redirects to the item edit page (to be implemented)
-  void editItem() {}
 
   /// redirects to the category edit page (to be implemented)
   void editCategory() {}
