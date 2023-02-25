@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -39,7 +40,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
-      floatingActionButton: buildAddButton(isCategory: true),
+      floatingActionButton: AddCategoryButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
