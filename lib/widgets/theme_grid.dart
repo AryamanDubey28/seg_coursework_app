@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/theme_details.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
+import 'theme_grid_square.dart';
+
 /// This widget is the bottom half of the visual timetable interface 
 /// and it shows a choice board of all the images that are fed into it.
 class ThemeGrid extends StatelessWidget {
@@ -31,21 +33,11 @@ class ThemeGrid extends StatelessWidget {
           },
           child: Tooltip(
             message: themeList[index].name,
-            child: Container(
-              decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
-              border: Border.all(color: Colors.black, width: 2),
-              color: themeList[index].themeData.scaffoldBackgroundColor,
-              ),
-              padding: EdgeInsets.all(8),
-              width: 150,
-              height: 150,
-              key: Key('theme$index'),
-              
-            ),
+            child: ThemeGridSquare(key: Key('themeSquare$index'), themeDetails: themeList[index]),
           ),
         );
       }
     );
   }
 }
+
