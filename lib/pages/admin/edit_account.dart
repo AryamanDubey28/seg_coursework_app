@@ -7,6 +7,7 @@ import '../../widgets/my_text_field.dart';
 import 'admin_choice_boards.dart';
 import '../authenticate/auth.dart';
 import './admin_side_menu.dart';
+import '../../widgets/loading_indicator.dart';
 
 class EditAccountPage extends StatefulWidget {
   const EditAccountPage({
@@ -32,31 +33,30 @@ class EditAccountPageState extends State<EditAccountPage> {
     authentitcationHelper = Auth(auth: firebaseAuthentication);
   }
 
-  Future commit_changes() async {
-    if (_emailEditController.text.trim() != "") {
-      User? firebaseUser = await firebaseAuthentication.currentUser;
-      if (firebaseUser != null) {
-        var message;
-        try {
-          await firebaseUser.updateEmail(_emailEditController.text.trim());
-          print("EMAIL - SUCCESS");
-        } on FirebaseAuthException catch (e) {
-          print("EMAIL - LOG IN AGAIN");
-          print(e.message);
-        } catch (e) {
-          print("EMAIL - LOG IN AGAIN");
-          rethrow;
-        }
-      }
-    } else if (_currentPasswordController.text.trim() != "" &&
+  void show_alert_dialog(String text, String key) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            key: Key(key),
+            content: Text(
+              text,
+              style: TextStyle(fontSize: 24),
+            ),
+          );
+        });
+  }
+
+  Future commit_password_edit() async {
+    if (_currentPasswordController.text.trim() != "" &&
         _newPasswordController.text.trim() != "" &&
         _confirmPasswordController.text.trim() != "") {
-      print("UPDATING PWD");
       if (_newPasswordController.text.trim() ==
           _confirmPasswordController.text.trim()) {
         User? firebaseUser = await firebaseAuthentication.currentUser;
         if (firebaseUser != null) {
           try {
+            LoadingIndicatorDialog().show(context);
             var credentials = EmailAuthProvider.credential(
                 email: await authentitcationHelper.getCurrentUserEmail(),
                 password: _currentPasswordController.text.trim());
@@ -65,17 +65,60 @@ class EditAccountPageState extends State<EditAccountPage> {
                 .then((value) {
               firebaseUser.updatePassword(_newPasswordController.text.trim());
             });
-            print("PWD - SUCCESS");
+            LoadingIndicatorDialog().dismiss();
+            show_alert_dialog("Your password was successfully changed.",
+                "password_changed_successfully");
           } on FirebaseAuthException catch (e) {
-            print("PWD - LOGIN AGAIN OR PASSWORD INCORRECT");
+            LoadingIndicatorDialog().dismiss();
+            show_alert_dialog(
+                'Your current password is not correct. Please try again.',
+                'password_change_failure_incorrect_password');
           } catch (e) {
-            print("PWD - TRUC CHELOU");
-            rethrow;
+            LoadingIndicatorDialog().dismiss();
+            show_alert_dialog(
+                'We are sorry, we could not change your password. Please try again.',
+                'password_change_failure_unknown_reason');
           }
         }
       } else {
-        // confirmation different from other
+        show_alert_dialog(
+            'The new password confirmation does not match the new password you demanded. Please try again.',
+            'password_change_failure_incorrect_confirmation');
       }
+    } else {
+      show_alert_dialog(
+          'Some fields required to operate your password change were not filled in. Please try again.',
+          'password_change_failure_missing_field');
+    }
+  }
+
+  Future commit_email_edit() async {
+    if (_emailEditController.text.trim() != "") {
+      User? firebaseUser = await firebaseAuthentication.currentUser;
+      if (firebaseUser != null) {
+        var message;
+        try {
+          LoadingIndicatorDialog().show(context);
+          await firebaseUser.updateEmail(_emailEditController.text.trim());
+          LoadingIndicatorDialog().dismiss();
+          show_alert_dialog('Your email was successfully changed.',
+              'email_changed_successfully');
+        } on FirebaseAuthException catch (e) {
+          LoadingIndicatorDialog().dismiss();
+          show_alert_dialog(
+              'We could not securely verify your identity because you did not login for a long time. Please log out and back in to carry out this change.',
+              'email_change_failure_login_too_old');
+        } catch (e) {
+          LoadingIndicatorDialog().dismiss();
+          show_alert_dialog(
+              'We could not securely verify your identity because you did not login for a long time. Please log out and back in to carry out this change.',
+              'email_change_failure_login_too_old');
+        }
+      }
+    } else {
+      show_alert_dialog(
+          'You did not input a new email address so the change could not be made. Please try again.',
+          'email_change_failure_missing_field');
     }
   }
 
@@ -153,7 +196,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
-                                onPressed: commit_changes,
+                                onPressed: commit_email_edit,
                                 child: Text("Change Email"),
                               ),
                             ),
@@ -215,7 +258,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                                     borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
-                                onPressed: commit_changes,
+                                onPressed: commit_password_edit,
                                 child: Text("Change Password"),
                               ),
                             ),
