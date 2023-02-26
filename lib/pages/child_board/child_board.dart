@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 
@@ -13,6 +14,7 @@ class ChildBoards extends StatefulWidget {
 class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
+  final FlutterTts flutterTts = FlutterTts();
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
@@ -154,7 +156,9 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           iconSize: 50,
           splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
-          onPressed: () {},
+          onPressed: () {
+            print("back");
+          },
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
