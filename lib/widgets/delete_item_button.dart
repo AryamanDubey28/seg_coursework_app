@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
+/// and its functions
 class DeleteItemButton extends StatefulWidget {
   final String categoryId;
   final String itemName;

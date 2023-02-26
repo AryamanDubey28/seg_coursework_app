@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_item.dart';
 import 'package:seg_coursework_app/widgets/hero_dialog_route.dart';
 
+/// The pen (edit) button for items in the Admin Choice Boards page
 class EditItemButton extends StatefulWidget {
   final String itemId;
   final String itemName;
