@@ -152,7 +152,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       alignment: Alignment.center,
       decoration: BoxDecoration(
           border: Border.all(width: 3),
-          color: themeNotifier.getTheme().scaffoldBackgroundColor,
+          color: themeNotifier.getTheme().floatingActionButtonTheme.backgroundColor,
           // color: Colors.blue,
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(

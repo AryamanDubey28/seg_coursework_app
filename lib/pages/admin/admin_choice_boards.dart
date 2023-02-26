@@ -214,6 +214,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 ),
                 title: Text(
                   item.name,
+                  style: TextStyle(color: Colors.black),
                   key: const Key("itemTitle"),
                 ),
                 trailing: Row(

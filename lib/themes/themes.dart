@@ -9,7 +9,7 @@ final defaultTheme = ThemeDetails(name: "Default theme", themeData: ThemeData(
     elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.teal[300],
+    backgroundColor: Colors.teal[400],
     foregroundColor: Colors.white,
   ),
   iconTheme: IconThemeData(
@@ -19,25 +19,16 @@ final defaultTheme = ThemeDetails(name: "Default theme", themeData: ThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStatePropertyAll(Colors.white), 
       backgroundColor: MaterialStatePropertyAll(Colors.teal[400]),
-      iconColor: MaterialStatePropertyAll(Colors.white),
-      textStyle: MaterialStatePropertyAll(TextStyle(color: Colors.white)),
     ),
   ),
-  dividerColor: Colors.white70,
-  iconButtonTheme: IconButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.teal[400]),
-    ),
-  ),
+  // // textTheme: TextTheme(
+  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+  // // ),
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.teal[300]
   ),
-  // textTheme: TextTheme(
-  //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // ),
   listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
-
+  
 ));
 
 final redTheme = ThemeDetails(name: "Red theme", themeData: ThemeData(
@@ -48,7 +39,7 @@ final redTheme = ThemeDetails(name: "Red theme", themeData: ThemeData(
     elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.red[300],
+    backgroundColor: Colors.red[400],
     foregroundColor: Colors.white,
   ),
   iconTheme: IconThemeData(
@@ -58,23 +49,14 @@ final redTheme = ThemeDetails(name: "Red theme", themeData: ThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStatePropertyAll(Colors.white), 
       backgroundColor: MaterialStatePropertyAll(Colors.red[400]),
-      iconColor: MaterialStatePropertyAll(Colors.white),
-      textStyle: MaterialStatePropertyAll(TextStyle(color: Colors.white)),
     ),
   ),
-  dividerColor: Colors.white70,
-  iconButtonTheme: IconButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.red[400]),
-    ),
-  ),
+  // // textTheme: TextTheme(
+  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+  // // ),
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.red[300]
   ),
-  // textTheme: TextTheme(
-  //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // )
   listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
 ));
 
@@ -86,7 +68,7 @@ final deepPurpleTheme = ThemeDetails(name: "Purple theme", themeData: ThemeData(
     elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.deepPurple[300],
+    backgroundColor: Colors.deepPurple[400],
     foregroundColor: Colors.white,
   ),
   iconTheme: IconThemeData(
@@ -96,23 +78,14 @@ final deepPurpleTheme = ThemeDetails(name: "Purple theme", themeData: ThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStatePropertyAll(Colors.white), 
       backgroundColor: MaterialStatePropertyAll(Colors.deepPurple[400]),
-      iconColor: MaterialStatePropertyAll(Colors.white),
-      textStyle: MaterialStatePropertyAll(TextStyle(color: Colors.white)),
     ),
   ),
-  dividerColor: Colors.white70,
-  iconButtonTheme: IconButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.deepPurple[400]),
-    ),
-  ),
+  // // textTheme: TextTheme(
+  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+  // // ),
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.deepPurple[300]
   ),
-  // textTheme: TextTheme(
-  //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // )
   listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
 ));
 
@@ -124,7 +97,7 @@ final lightGreenTheme = ThemeDetails(name: "Light green theme", themeData: Theme
     elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.lightGreen[300],
+    backgroundColor: Colors.lightGreen[400],
     foregroundColor: Colors.black,
   ),
   iconTheme: IconThemeData(
@@ -134,23 +107,14 @@ final lightGreenTheme = ThemeDetails(name: "Light green theme", themeData: Theme
     style: ButtonStyle(
       foregroundColor: MaterialStatePropertyAll(Colors.black), 
       backgroundColor: MaterialStatePropertyAll(Colors.lightGreen[400]),
-      iconColor: MaterialStatePropertyAll(Colors.black),
-      textStyle: MaterialStatePropertyAll(TextStyle(color: Colors.black)),
     ),
   ),
-  dividerColor: Colors.white70,
-  iconButtonTheme: IconButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.lightGreen[400]),
-    ),
-  ),
+  // // textTheme: TextTheme(
+  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+  // // ),
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.lightGreen[300]
   ),
-  // textTheme: TextTheme(
-  //   bodyLarge: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
-  // )
   listTileTheme: ListTileThemeData(textColor: Colors.black, iconColor: Colors.black)
 ));
 
@@ -162,7 +126,7 @@ final greenTheme = ThemeDetails(name: "Green theme", themeData: ThemeData(
     elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.green[300],
+    backgroundColor: Colors.green[400],
     foregroundColor: Colors.white,
   ),
   iconTheme: IconThemeData(
@@ -172,23 +136,14 @@ final greenTheme = ThemeDetails(name: "Green theme", themeData: ThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStatePropertyAll(Colors.white), 
       backgroundColor: MaterialStatePropertyAll(Colors.green[400]),
-      iconColor: MaterialStatePropertyAll(Colors.white),
-      textStyle: MaterialStatePropertyAll(TextStyle(color: Colors.white)),
     ),
   ),
-  dividerColor: Colors.white70,
-  iconButtonTheme: IconButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.green[400]),
-    ),
-  ),
+  // // textTheme: TextTheme(
+  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+  // // ),
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.green[300]
   ),
-  // textTheme: TextTheme(
-  //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // )
   listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
 ));
 
@@ -200,7 +155,7 @@ final deepOrangeTheme = ThemeDetails(name: "Orange theme", themeData: ThemeData(
     elevation: 0,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.deepOrange[300],
+    backgroundColor: Colors.deepOrange[400],
     foregroundColor: Colors.white,
   ),
   iconTheme: IconThemeData(
@@ -210,23 +165,14 @@ final deepOrangeTheme = ThemeDetails(name: "Orange theme", themeData: ThemeData(
     style: ButtonStyle(
       foregroundColor: MaterialStatePropertyAll(Colors.white), 
       backgroundColor: MaterialStatePropertyAll(Colors.deepOrange[400]),
-      iconColor: MaterialStatePropertyAll(Colors.white),
-      textStyle: MaterialStatePropertyAll(TextStyle(color: Colors.white)),
     ),
   ),
-  dividerColor: Colors.white70,
-  iconButtonTheme: IconButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.deepOrange[400]),
-    ),
-  ),
+  // // textTheme: TextTheme(
+  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+  // // ),
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.deepOrange[300]
   ),
-  // textTheme: TextTheme(
-  //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // )
   listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
 ));
 
