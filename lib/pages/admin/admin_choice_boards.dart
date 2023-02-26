@@ -83,7 +83,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               id: "8rXri8ni3gzANaFsO84v",
               name: "Cat soup",
               imageUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2FCat%20soup1677273324427?alt=media&token=377e113d-39c3-49ee-b3d9-d3e1f09cf9a0"),
+                  "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2FCat%20Soup1677438608954?alt=media&token=0b384b5a-ee8f-491b-a042-c2c3546f58a1"),
           DraggableListItem(
               id: "placeholder",
               name: "Butter chicken",

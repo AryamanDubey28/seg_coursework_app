@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:seg_coursework_app/helpers/firestore_functions.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
 /// and its functions
@@ -19,6 +19,8 @@ class DeleteItemButton extends StatefulWidget {
 }
 
 class _DeleteItemButtonState extends State<DeleteItemButton> {
+  final firestoreFunctions = FirestoreFunctions();
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -48,11 +50,12 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
               child: Text('Delete'),
               onPressed: () async {
                 try {
-                  int deletedCategoryItemRank = await getCategoryItemRank(
+                  int deletedCategoryItemRank =
+                      await firestoreFunctions.getCategoryItemRank(
+                          categoryId: widget.categoryId, itemId: widget.itemId);
+                  await firestoreFunctions.deleteCategoryItem(
                       categoryId: widget.categoryId, itemId: widget.itemId);
-                  await deleteCategoryItem(
-                      categoryId: widget.categoryId, itemId: widget.itemId);
-                  await updateRanks(
+                  await firestoreFunctions.updateCategoryRanks(
                       categoryId: widget.categoryId,
                       removedRank: deletedCategoryItemRank);
                   // go back to choice boards page
@@ -79,52 +82,5 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
         );
       },
     );
-  }
-
-  /// Delete the categoryItem that's associated with the given categoryId and
-  /// itemId from firestore
-  Future deleteCategoryItem(
-      {required String categoryId, required String itemId}) async {
-    CollectionReference categoryItems = FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items');
-
-    return categoryItems.doc(itemId).delete().onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
-  /// Return the rank field of a categoryItem given the categoryId and
-  /// itemId
-  Future getCategoryItemRank(
-      {required String categoryId, required String itemId}) async {
-    return FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items')
-        .doc(itemId)
-        .get()
-        .then((categoryItem) {
-      return categoryItem.get("rank");
-    }).onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
-  /// Should be called after deleting a categoryItem. Decrement the ranks
-  /// of all documents which have a rank higher than the deleted categoryItem
-  Future updateRanks(
-      {required String categoryId, required int removedRank}) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    final QuerySnapshot querySnapshot = await firestore
-        .collection('categoryItems/$categoryId/items')
-        .where('rank', isGreaterThan: removedRank)
-        .get();
-
-    for (final DocumentSnapshot documentSnapshot in querySnapshot.docs) {
-      final DocumentReference documentReference = firestore
-          .collection('categoryItems/$categoryId/items')
-          .doc(documentSnapshot.id);
-      await documentReference
-          .update({'rank': documentSnapshot.get('rank') - 1});
-    }
   }
 }

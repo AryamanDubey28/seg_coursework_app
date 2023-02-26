@@ -1,16 +1,10 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seg_coursework_app/helpers/firestore_functions.dart';
+import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
-
-/// The logic behind the upload/take picture library is made
-/// with the help of: https://youtu.be/MSv38jO4EJk
-/// and https://youtu.be/u52TWx41oU4
 
 class AddChoiceBoardItem extends StatefulWidget {
   final String categoryId;
@@ -26,6 +20,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   File? selectedImage; // hold the currently selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
+  final firestoreFunctions = FirestoreFunctions();
+  final imagePickerFunctions = ImagePickerFunctions();
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +73,23 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     PickImageButton(
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
-                        onPressed: () =>
-                            pickImage(source: ImageSource.gallery)),
+                        onPressed: () async {
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.gallery, context: context);
+                          if (newImage != null) {
+                            setState(() => selectedImage = newImage);
+                          }
+                        }),
                     PickImageButton(
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
-                        onPressed: () => pickImage(source: ImageSource.camera)),
+                        onPressed: () async {
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.camera, context: context);
+                          if (newImage != null) {
+                            setState(() => selectedImage = newImage);
+                          }
+                        }),
                     const SizedBox(height: 20),
                     // field to enter the item name
                     TextField(
@@ -137,11 +144,13 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             );
           });
     } else {
-      String? imageUrl = await uploadImageToCloud(image, itemName);
+      String? imageUrl = await firestoreFunctions.uploadImageToCloud(
+          image: image, itemName: itemName);
       if (imageUrl != null) {
         try {
-          String itemId = await createItem(name: itemName, imageUrl: imageUrl);
-          await createCategoryItem(
+          String itemId = await firestoreFunctions.createItem(
+              name: itemName, imageUrl: imageUrl);
+          await firestoreFunctions.createCategoryItem(
               name: itemName,
               imageUrl: imageUrl,
               categoryId: widget.categoryId,
@@ -165,106 +174,6 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
               });
         }
       }
-    }
-  }
-
-  /// Take an image and upload it to the cloud storage with
-  /// a unique name. Return the URL of the image from the cloud
-  Future<String?> uploadImageToCloud(File image, String itemName) async {
-    String uniqueName =
-        itemName + DateTime.now().millisecondsSinceEpoch.toString();
-    // A reference to the image from the cloud's root directory
-    Reference imageRef =
-        FirebaseStorage.instance.ref().child('images').child(uniqueName);
-    try {
-      await imageRef.putFile(image);
-      return await imageRef.getDownloadURL();
-    } on FirebaseException catch (error) {
-      print(error);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                  "An error occurred while uploading the image to the cloud"),
-            );
-          });
-      return null;
-    }
-  }
-
-  /// Add a new entry to the 'items' collection in Firestore with
-  /// the given item information. Return the created item's id
-  Future<String> createItem(
-      {required String name, required String imageUrl}) async {
-    CollectionReference items = FirebaseFirestore.instance.collection('items');
-    final FirebaseAuth auth = FirebaseAuth.instance;
-
-    return items
-        .add({
-          'name': name,
-          'illustration': imageUrl,
-          'is_available': true,
-          'userId': auth.currentUser!.uid
-        })
-        .then((item) => item.id)
-        .catchError((error, stackTrace) {
-          return throw FirebaseException(plugin: stackTrace.toString());
-        });
-  }
-
-  /// Add a new entry to the 'categoryItems' collection in Firestore with
-  /// the given item and category information.
-  /// Note: the categoryItem will have the same id as the item
-  Future createCategoryItem(
-      {required String name,
-      required String imageUrl,
-      required String categoryId,
-      required String itemId}) async {
-    CollectionReference categoryItems = FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items');
-    final FirebaseAuth auth = FirebaseAuth.instance;
-
-    return categoryItems.doc(itemId).set({
-      'illustration': imageUrl,
-      'is_available': true,
-      'name': name,
-      'rank': await getNewCategoryItemRank(categoryId: categoryId),
-      'userId': auth.currentUser!.uid
-    }).onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
-  /// Return an appropriate rank for a new categoryItem in the
-  /// given category (one more than the highest rank or zero if empty)
-  Future<int> getNewCategoryItemRank({required String categoryId}) async {
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items')
-        .get();
-    return querySnapshot.size;
-  }
-
-  /// Enable the user to either upload or take an image depending on
-  /// the source argument. Update the [selectedImage] with the user
-  /// provided image
-  Future pickImage({required ImageSource source}) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageFile = File(image.path);
-      setState(() => selectedImage = imageFile);
-    } on PlatformException catch (e) {
-      print(e);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
-            );
-          });
     }
   }
 }

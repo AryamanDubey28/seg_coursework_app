@@ -1,13 +1,11 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seg_coursework_app/helpers/firestore_functions.dart';
+import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
-// Refactor firestore methods into a separate file
 // ask Anton to add read permission to "match /categoryItems"
 // Handle errors well
 
@@ -31,6 +29,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   File? selectedImage; // hold the newly selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
+  final firestoreFunctions = FirestoreFunctions();
+  final imagePickerFunctions = ImagePickerFunctions();
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +84,23 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     PickImageButton(
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
-                        onPressed: () =>
-                            pickImage(source: ImageSource.gallery)),
+                        onPressed: () async {
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.gallery, context: context);
+                          if (newImage != null) {
+                            setState(() => selectedImage = newImage);
+                          }
+                        }),
                     PickImageButton(
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
-                        onPressed: () => pickImage(source: ImageSource.camera)),
+                        onPressed: () async {
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.camera, context: context);
+                          if (newImage != null) {
+                            setState(() => selectedImage = newImage);
+                          }
+                        }),
                     const SizedBox(height: 20),
                     // field to enter the item name
                     TextField(
@@ -146,31 +157,35 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       try {
         // Both image and name changed
         if (newName.isNotEmpty && newImage != null) {
-          await updateItemName(itemId: widget.itemId, newName: newName);
-          await updateCategoryItemsName(
+          await firestoreFunctions.updateItemName(
               itemId: widget.itemId, newName: newName);
-          await deleteImageFromCloud(imageUrl: widget.itemImageUrl);
-          String? newImageUrl =
-              await uploadImageToCloud(image: newImage, itemName: newName);
-          await updateItemImage(
+          await firestoreFunctions.updateCategoryItemsName(
+              itemId: widget.itemId, newName: newName);
+          await firestoreFunctions.deleteImageFromCloud(
+              imageUrl: widget.itemImageUrl);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
+              image: newImage, itemName: newName);
+          await firestoreFunctions.updateItemImage(
               itemId: widget.itemId, newImageUrl: newImageUrl!);
-          await updateCategoryItemsImage(
+          await firestoreFunctions.updateCategoryItemsImage(
               itemId: widget.itemId, newImageUrl: newImageUrl);
         }
         // Only name changed
         else if (newName.isNotEmpty && newImage == null) {
-          await updateItemName(itemId: widget.itemId, newName: newName);
-          await updateCategoryItemsName(
+          await firestoreFunctions.updateItemName(
+              itemId: widget.itemId, newName: newName);
+          await firestoreFunctions.updateCategoryItemsName(
               itemId: widget.itemId, newName: newName);
         }
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
-          await deleteImageFromCloud(imageUrl: widget.itemImageUrl);
-          String? newImageUrl =
-              await uploadImageToCloud(image: newImage, itemName: newName);
-          await updateItemImage(
+          await firestoreFunctions.deleteImageFromCloud(
+              imageUrl: widget.itemImageUrl);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
+              image: newImage, itemName: newName);
+          await firestoreFunctions.updateItemImage(
               itemId: widget.itemId, newImageUrl: newImageUrl!);
-          await updateCategoryItemsImage(
+          await firestoreFunctions.updateCategoryItemsImage(
               itemId: widget.itemId, newImageUrl: newImageUrl);
         }
 
@@ -190,130 +205,6 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                       'An error occurred while communicating with the database'));
             });
       }
-    }
-  }
-
-  /// Update only the "item" collection
-  Future updateItemName({required String itemId, required String newName}) {
-    CollectionReference items = FirebaseFirestore.instance.collection('items');
-
-    return items
-        .doc(itemId)
-        .update({'name': newName}).catchError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
-  /// Update all categoryItems with the same itemId
-  Future updateCategoryItemsName(
-      {required String itemId, required String newName}) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    final QuerySnapshot categoriesSnapshot =
-        await firestore.collection('categoryItems').get();
-
-    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
-      final QuerySnapshot categoryItemsSnapshot = await firestore
-          .collection('categoryItems/${category.id}/items')
-          .where(FieldPath.documentId, isEqualTo: itemId)
-          .get();
-
-      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
-        final DocumentReference categoryItemReference = firestore
-            .collection('categoryItems/${category.id}/items')
-            .doc(categoryItem.id);
-
-        await categoryItemReference.update({'name': newName});
-      }
-    }
-  }
-
-  Future deleteImageFromCloud({required String imageUrl}) {
-    return FirebaseStorage.instance.refFromURL(imageUrl).delete();
-  }
-
-  /// Take an image and upload it to the cloud storage with
-  /// a unique name. Return the URL of the image from the cloud
-  Future<String?> uploadImageToCloud(
-      {required File image, required String itemName}) async {
-    String uniqueName =
-        itemName + DateTime.now().millisecondsSinceEpoch.toString();
-    // A reference to the image from the cloud's root directory
-    Reference imageRef =
-        FirebaseStorage.instance.ref().child('images').child(uniqueName);
-    try {
-      await imageRef.putFile(image);
-      return await imageRef.getDownloadURL();
-    } on FirebaseException catch (error) {
-      print(error);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                  "An error occurred while uploading the image to the cloud"),
-            );
-          });
-      rethrow;
-    }
-  }
-
-  /// Update only the "item" collection
-  Future updateItemImage(
-      {required String itemId, required String newImageUrl}) {
-    CollectionReference items = FirebaseFirestore.instance.collection('items');
-
-    return items
-        .doc(itemId)
-        .update({'illustration': newImageUrl}).catchError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
-  /// Update all categoryItems with the same itemId
-  Future updateCategoryItemsImage(
-      {required String itemId, required String newImageUrl}) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    final QuerySnapshot categoriesSnapshot =
-        await firestore.collection('categoryItems').get();
-
-    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
-      final QuerySnapshot categoryItemsSnapshot = await firestore
-          .collection('categoryItems/${category.id}/items')
-          .where(FieldPath.documentId, isEqualTo: itemId)
-          .get();
-
-      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
-        final DocumentReference categoryItemReference = firestore
-            .collection('categoryItems/${category.id}/items')
-            .doc(categoryItem.id);
-
-        await categoryItemReference.update({'illustration': newImageUrl});
-      }
-    }
-  }
-
-  /// Enable the user to either upload or take an image depending on
-  /// the source argument. Update the [selectedImage] with the user
-  /// provided image
-  Future pickImage({required ImageSource source}) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageFile = File(image.path);
-      setState(() => selectedImage = imageFile);
-    } on PlatformException catch (e) {
-      print(e);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
-            );
-          });
     }
   }
 }
