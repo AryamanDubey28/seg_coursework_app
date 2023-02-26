@@ -158,15 +158,15 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
     CollectionReference categories = FirebaseFirestore.instance.collection('categories');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
-    return categories.add({'userId': auth.currentUser!.uid, 'title': title, 'illustration': imageUrl, 'rank': await getNewCategoryRank()}).then((category) => category.id).catchError((error, stackTrace) {
+    return categories.add({'userId': auth.currentUser!.uid, 'title': title, 'illustration': imageUrl, 'rank': await getNewCategoryRank(uid: auth.currentUser!.uid)}).then((category) => category.id).catchError((error, stackTrace) {
           return throw FirebaseException(plugin: stackTrace.toString());
         });
   }
 
   /// Return an appropriate rank for a new category
   /// (one more than the highest rank or zero if empty)
-  Future<int> getNewCategoryRank() async {
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('categories').get();
+  Future<int> getNewCategoryRank({required String uid}) async {
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('categories').where("userId", isEqualTo: uid).get();
     return querySnapshot.size;
   }
 
