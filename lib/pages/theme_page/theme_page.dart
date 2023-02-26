@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/widgets/theme_grid.dart';
 
+import 'customize_theme_page.dart';
+
 class ThemePage extends StatelessWidget {
   const ThemePage({super.key});
 
@@ -14,6 +16,19 @@ class ThemePage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CustomizeThemePage(),
+                ),
+              );
+            }, 
+            icon: Icon(Icons.edit)
+          )
+        ],
       ),
       body: Center(
         child: Container(
