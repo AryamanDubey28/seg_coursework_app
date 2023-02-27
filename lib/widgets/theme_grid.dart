@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:seg_coursework_app/models/custom_theme_details.dart';
 import 'package:seg_coursework_app/models/theme_details.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -8,14 +9,13 @@ import 'theme_grid_square.dart';
 /// This widget is the bottom half of the visual timetable interface 
 /// and it shows a choice board of all the images that are fed into it.
 class ThemeGrid extends StatelessWidget {
-  const ThemeGrid({super.key});
+  const ThemeGrid({super.key, required this.themeList});
 
-  
+  final List<CustomThemeDetails> themeList;
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
-    final List<ThemeDetails> themeList = themeNotifier.getThemes();
 
     return GridView.builder(
       itemCount: themeList.length,

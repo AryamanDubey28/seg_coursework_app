@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:seg_coursework_app/models/custom_theme_details.dart';
+import 'package:seg_coursework_app/models/theme_details.dart';
+
+import '../../themes/themes.dart';
 
 class CustomizeThemePage extends StatefulWidget {
-  const CustomizeThemePage({super.key});
+  const CustomizeThemePage({super.key, required List<CustomThemeDetails> this.themeList, required void Function(List<CustomThemeDetails> themeList, CustomTheme themeNotifier) this.updateThemeList});
 
+  final List<CustomThemeDetails> themeList;
+  final Function updateThemeList;
   @override
   State<CustomizeThemePage> createState() => _CustomizeThemePageState();
 }
@@ -17,13 +24,14 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<CustomTheme>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Customize Theme"),
         leading: IconButton(
           key: const Key("backButton"),
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context)
         ),
       ),
 
@@ -104,7 +112,7 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
                       onTap: () async {
                         Color newButtonsColor = await showColorPickerDialog(
                           context, 
-                          menuColor!
+                          buttonsColor!
                         );
                         if (newButtonsColor != null) {
                           setState(() {
@@ -177,6 +185,21 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
                         });
                       },
                     ),
+                  ),
+                  TextButton(
+                    child: Text("Save"),
+                    onPressed: () => setState(() {
+                      CustomThemeDetails temp = CustomThemeDetails(
+                        name: "Custom theme", 
+                        menuColor: menuColor, 
+                        backgroundColor: backgroundColor, 
+                        buttonsColor: buttonsColor, 
+                        iconsAndTextsColor: iconsAndTextsColor,
+                      );
+                      themeNotifier.addTheme(temp);
+                      widget.updateThemeList(widget.themeList, themeNotifier);
+                    
+                    })
                   ),
                 ],
               ),

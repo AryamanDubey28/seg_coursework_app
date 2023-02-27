@@ -1,180 +1,57 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/custom_theme_details.dart';
 import 'package:seg_coursework_app/models/theme_details.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-final defaultTheme = ThemeDetails(name: "Default theme", themeData: ThemeData(
-  primarySwatch: Colors.teal,
-  scaffoldBackgroundColor: Colors.teal[100],
-  appBarTheme: AppBarTheme(
-    color: Colors.teal[300],
-    elevation: 0,
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.teal[400],
-    foregroundColor: Colors.white,
-  ),
-  iconTheme: IconThemeData(
-    color: Colors.white,
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.teal[400]),
-    ),
-  ),
-  // // textTheme: TextTheme(
-  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // // ),
-  drawerTheme: DrawerThemeData(
-    backgroundColor: Colors.teal[300]
-  ),
-  listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
-  
-));
+final defaultTheme = CustomThemeDetails(
+  name: "Default theme",
+  menuColor: Colors.teal[300],
+  backgroundColor: Colors.teal[100],
+  buttonsColor: Colors.teal[400],
+  iconsAndTextsColor: Colors.white,
+);
 
-final redTheme = ThemeDetails(name: "Red theme", themeData: ThemeData(
-  primarySwatch: Colors.red,
-  scaffoldBackgroundColor: Colors.red[100],
-  appBarTheme: AppBarTheme(
-    color: Colors.red[300],
-    elevation: 0,
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.red[400],
-    foregroundColor: Colors.white,
-  ),
-  iconTheme: IconThemeData(
-    color: Colors.white,
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.red[400]),
-    ),
-  ),
-  // // textTheme: TextTheme(
-  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // // ),
-  drawerTheme: DrawerThemeData(
-    backgroundColor: Colors.red[300]
-  ),
-  listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
-));
+final redTheme = CustomThemeDetails(
+  name: "Red theme",
+  menuColor: Colors.red[300],
+  backgroundColor: Colors.red[100],
+  buttonsColor: Colors.red[400],
+  iconsAndTextsColor: Colors.white,
+);
 
-final deepPurpleTheme = ThemeDetails(name: "Purple theme", themeData: ThemeData(
-  primarySwatch: Colors.deepPurple,
-  scaffoldBackgroundColor: Colors.deepPurple[100],
-  appBarTheme: AppBarTheme(
-    color: Colors.deepPurple[300],
-    elevation: 0,
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.deepPurple[400],
-    foregroundColor: Colors.white,
-  ),
-  iconTheme: IconThemeData(
-    color: Colors.white,
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.deepPurple[400]),
-    ),
-  ),
-  // // textTheme: TextTheme(
-  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // // ),
-  drawerTheme: DrawerThemeData(
-    backgroundColor: Colors.deepPurple[300]
-  ),
-  listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
-));
+final deepPurpleTheme = CustomThemeDetails(
+  name: "Purple theme",
+  menuColor: Colors.deepPurple[300],
+  backgroundColor: Colors.deepPurple[100],
+  buttonsColor: Colors.deepPurple[400],
+  iconsAndTextsColor: Colors.white,
+);
 
-final lightGreenTheme = ThemeDetails(name: "Light green theme", themeData: ThemeData(
-  primarySwatch: Colors.lightGreen,
-  scaffoldBackgroundColor: Colors.lightGreen[100],
-  appBarTheme: AppBarTheme(
-    color: Colors.lightGreen[300],
-    elevation: 0,
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.lightGreen[400],
-    foregroundColor: Colors.black,
-  ),
-  iconTheme: IconThemeData(
-    color: Colors.black,
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.black), 
-      backgroundColor: MaterialStatePropertyAll(Colors.lightGreen[400]),
-    ),
-  ),
-  // // textTheme: TextTheme(
-  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // // ),
-  drawerTheme: DrawerThemeData(
-    backgroundColor: Colors.lightGreen[300]
-  ),
-  listTileTheme: ListTileThemeData(textColor: Colors.black, iconColor: Colors.black)
-));
+final lightGreenTheme = CustomThemeDetails(
+  name: "Light green theme",
+  menuColor: Colors.lightGreen[300],
+  backgroundColor: Colors.lightGreen[100],
+  buttonsColor: Colors.lightGreen[400],
+  iconsAndTextsColor: Colors.black,
+);
 
-final greenTheme = ThemeDetails(name: "Green theme", themeData: ThemeData(
-  primarySwatch: Colors.green,
-  scaffoldBackgroundColor: Colors.green[100],
-  appBarTheme: AppBarTheme(
-    color: Colors.green[300],
-    elevation: 0,
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.green[400],
-    foregroundColor: Colors.white,
-  ),
-  iconTheme: IconThemeData(
-    color: Colors.white,
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.green[400]),
-    ),
-  ),
-  // // textTheme: TextTheme(
-  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // // ),
-  drawerTheme: DrawerThemeData(
-    backgroundColor: Colors.green[300]
-  ),
-  listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
-));
+final greenTheme = CustomThemeDetails(
+  name: "Green theme",
+  menuColor: Colors.green[300],
+  backgroundColor: Colors.green[100],
+  buttonsColor: Colors.green[400],
+  iconsAndTextsColor: Colors.white,
+);
 
-final deepOrangeTheme = ThemeDetails(name: "Orange theme", themeData: ThemeData(
-  primarySwatch: Colors.deepOrange,
-  scaffoldBackgroundColor: Colors.deepOrange[100],
-  appBarTheme: AppBarTheme(
-    color: Colors.deepOrange[300],
-    elevation: 0,
-  ),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.deepOrange[400],
-    foregroundColor: Colors.white,
-  ),
-  iconTheme: IconThemeData(
-    color: Colors.white,
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: ButtonStyle(
-      foregroundColor: MaterialStatePropertyAll(Colors.white), 
-      backgroundColor: MaterialStatePropertyAll(Colors.deepOrange[400]),
-    ),
-  ),
-  // // textTheme: TextTheme(
-  // //   bodyLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-  // // ),
-  drawerTheme: DrawerThemeData(
-    backgroundColor: Colors.deepOrange[300]
-  ),
-  listTileTheme: ListTileThemeData(textColor: Colors.white, iconColor: Colors.white)
-));
+final deepOrangeTheme = CustomThemeDetails(
+  name: "Orange theme",
+  menuColor: Colors.deepOrange[300],
+  backgroundColor: Colors.deepOrange[100],
+  buttonsColor: Colors.deepOrange[400],
+  iconsAndTextsColor: Colors.white,
+);
 
 final darkTheme = ThemeDetails(name: "Dark theme", themeData: ThemeData.dark());
 
@@ -182,29 +59,67 @@ final darkTheme = ThemeDetails(name: "Dark theme", themeData: ThemeData.dark());
 
 class CustomTheme with ChangeNotifier
 {
-  ThemeData _themeData = defaultTheme.themeData;
+  CustomThemeDetails? _cachedTheme;
+  ThemeData _themeData = defaultTheme.getCustomTheme().themeData;
+  CustomThemeDetails _themeDetails = defaultTheme;
+
+  CustomThemeDetails? get cachedTheme => _cachedTheme;
+
+  CustomTheme() {
+    loadCachedTheme();
+  }
+
+  Future<void> loadCachedTheme() async {
+    _cachedTheme = await readCachedThemeDetails();
+    if (_cachedTheme != null) {
+      setTheme(_cachedTheme!);
+    }
+  }
 
   ThemeData getTheme() => _themeData;
+  CustomThemeDetails getThemeDetails() => _themeDetails;
 
-  List<ThemeDetails> getThemes()
+  List<CustomThemeDetails> _themesList = [defaultTheme, redTheme, deepPurpleTheme, lightGreenTheme, greenTheme, deepOrangeTheme];
+  List<CustomThemeDetails> getThemes() => _themesList;
+
+  void addTheme(CustomThemeDetails themeToAdd)
   {
-    return [defaultTheme, redTheme, deepPurpleTheme, lightGreenTheme, greenTheme, deepOrangeTheme];
+    _themesList.add(themeToAdd);
   }
 
-  setTheme(ThemeDetails themeDetails) async
+  setTheme(CustomThemeDetails customThemeDetails) async
   {
-    _themeData = themeDetails.themeData;
+    _themeData = customThemeDetails.getCustomTheme().themeData;
+    _themeDetails = customThemeDetails;
     notifyListeners();
+    saveThemeDetailsToCache(customThemeDetails);
   }
 
-  // static ThemeData get defaultTheme {
-  //   return ThemeData(
-  //     primarySwatch: Colors.teal,
-  //     scaffoldBackgroundColor: Colors.teal[100],
-  //   );
-  // }
+  static Future<CustomThemeDetails?> readCachedThemeDetails() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? themeString = prefs.getString('cached_theme');
+  if (themeString != null) {
+    Map<String, dynamic> jsonMap = json.decode(themeString);
+    CustomThemeDetails temp = CustomThemeDetails(
+      name: jsonMap['name'],
+      menuColor: Color(jsonMap['menuColor']),
+      backgroundColor: Color(jsonMap['backgroundColor']),
+      buttonsColor: Color(jsonMap['buttonsColor']),
+      iconsAndTextsColor: Color(jsonMap['iconsAndTextsColor']),);
+    return temp;
+  }
+  return null;
+  }
 
-  // static ThemeData get tealTheme {
-  //   return ThemeData();
-  // }
+  Future<void> saveThemeDetailsToCache(CustomThemeDetails customThemeDetails) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonMap = {
+      'name': customThemeDetails.name,
+      'menuColor': customThemeDetails.menuColor!.value,
+      'backgroundColor': customThemeDetails.backgroundColor!.value,
+      'buttonsColor': customThemeDetails.buttonsColor!.value,
+      'iconsAndTextsColor': customThemeDetails.iconsAndTextsColor!.value,
+    };
+    prefs.setString('cached_theme', json.encode(jsonMap));
+  }
 }
