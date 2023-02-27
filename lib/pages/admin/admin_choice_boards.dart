@@ -31,17 +31,17 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   final List<DraggableList> devCategories = [
     DraggableList(
         title: "Breakfast",
-        id: "HRbbm0S8hBkXhwIB3nUK",
+        id: "YYTURkIV6tr90ickFM0F",
         imageUrl:
             "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
         items: [
           DraggableListItem(
-              id: "placeholder",
+              id: "Eaawa8YiQRaTYnXmcJNp",
               name: "Toast",
               imageUrl:
                   "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
           DraggableListItem(
-              id: "placeholder",
+              id: "8fFoolNiYG7aise5AQuW",
               name: "Fruits",
               imageUrl:
                   "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80")
@@ -53,17 +53,17 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
             "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png",
         items: [
           DraggableListItem(
-              id: "placeholder",
+              id: "lYlJ95r6ft27KAsjg81z",
               name: "Football",
               imageUrl:
                   "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
           DraggableListItem(
-              id: "placeholder",
+              id: "BMjvuL6OwtVjGbk9QoNg",
               name: "Boxing",
               imageUrl:
                   "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
           DraggableListItem(
-              id: "placeholder",
+              id: "Qg40XVwilis4XRAL6hwI",
               name: "Swimming",
               imageUrl:
                   "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg")
@@ -74,16 +74,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         imageUrl:
             "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968",
         items: [
-          DraggableListItem(
-              id: "vvUA1y2roERdElRjzfhy",
-              name: "Oak Sauce",
-              imageUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2FOk%20Sauce1677270717787?alt=media&token=b678e93e-e1b1-4b28-9aeb-227696d0c00b"),
-          DraggableListItem(
-              id: "8rXri8ni3gzANaFsO84v",
-              name: "Cat soup",
-              imageUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2FCat%20Soup1677438608954?alt=media&token=0b384b5a-ee8f-491b-a042-c2c3546f58a1"),
           DraggableListItem(
               id: "placeholder",
               name: "Butter chicken",

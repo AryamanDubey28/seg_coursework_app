@@ -6,9 +6,6 @@ import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
-// ask Anton to add read permission to "match /categoryItems"
-// Handle errors well
-
 class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
   final String itemName;
@@ -182,7 +179,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           await firestoreFunctions.deleteImageFromCloud(
               imageUrl: widget.itemImageUrl);
           String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
-              image: newImage, itemName: newName);
+              image: newImage, itemName: widget.itemName);
           await firestoreFunctions.updateItemImage(
               itemId: widget.itemId, newImageUrl: newImageUrl!);
           await firestoreFunctions.updateCategoryItemsImage(

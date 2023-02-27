@@ -80,9 +80,12 @@ class FirestoreFunctions {
   Future updateCategoryItemsName(
       {required String itemId, required String newName}) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
-    final QuerySnapshot categoriesSnapshot =
-        await firestore.collection('categoryItems').get();
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .get();
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       final QuerySnapshot categoryItemsSnapshot = await firestore
@@ -140,9 +143,12 @@ class FirestoreFunctions {
   Future updateCategoryItemsImage(
       {required String itemId, required String newImageUrl}) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
-    final QuerySnapshot categoriesSnapshot =
-        await firestore.collection('categoryItems').get();
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .get();
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       final QuerySnapshot categoryItemsSnapshot = await firestore
