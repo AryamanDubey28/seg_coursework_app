@@ -43,7 +43,6 @@ class AdminSideMenu extends StatelessWidget {
           ListTile(
             key: const Key("choiceBoards"),
             leading: Icon(Icons.photo_size_select_actual_outlined, 
-            // color: iconColor,
             ),
             title: const Text('Choice boards'),
             onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -53,7 +52,6 @@ class AdminSideMenu extends StatelessWidget {
           ListTile(
             key: const Key("visualTimetable"),
             leading: Icon(Icons.event, 
-            // color: iconColor
             ),
             title: const Text('Visual Timetable'),
             onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -63,7 +61,6 @@ class AdminSideMenu extends StatelessWidget {
           ListTile(
             key: const Key("childMode"),
             leading: Icon(Icons.child_care, 
-            // color: iconColor
             ),
             title: const Text('Activate Child Mode'),
             onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -73,7 +70,6 @@ class AdminSideMenu extends StatelessWidget {
           ListTile(
             key: const Key("appColours"),
             leading: Icon(Icons.color_lens_outlined, 
-            // color: iconColor
             ),
             title: const Text('Edit App Colours'),
             onTap: () {
@@ -91,7 +87,6 @@ class AdminSideMenu extends StatelessWidget {
           ListTile(
             key: const Key("accountDetails"),
             leading: Icon(Icons.account_box_outlined, 
-            // color: iconColor
             ),
             title: const Text('Edit Account Details'),
             onTap: () {},
@@ -99,7 +94,6 @@ class AdminSideMenu extends StatelessWidget {
           ListTile(
             key: const Key("logout"),
             leading: Icon(Icons.logout_outlined, 
-            // color: iconColor
             ),
             title: const Text('Log out'),
             onTap: () {

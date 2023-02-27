@@ -65,7 +65,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
     return Scaffold(
-      // backgroundColor: Colors.grey.shade200,
       body: Center(
         widthFactor: MediaQuery.of(context).size.width,
         heightFactor: MediaQuery.of(context).size.height,
@@ -92,7 +91,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: themeNotifier.getTheme().appBarTheme.backgroundColor,
-          // color: Colors.red, 
           borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
@@ -153,13 +151,11 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       decoration: BoxDecoration(
           border: Border.all(width: 3),
           color: themeNotifier.getTheme().floatingActionButtonTheme.backgroundColor,
-          // color: Colors.blue,
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(8.0),
           iconSize: 50,
-          // splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back_rounded)),

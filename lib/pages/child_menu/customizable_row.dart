@@ -12,14 +12,12 @@ class CustomizableRow extends StatelessWidget {
 
   CustomizableRow({Key? key, required this.categoryTitle, required this.imagePreviews}) : super(key: key);
 
-  // var menuColour = Color(0xFFA8D1D1);
   // Everything is wrapped in Material() and InkWell() so the onTap gesture shows
   // a simple tap animation
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
     return Material(
-      // color: menuColour,
       color: themeNotifier.getTheme().scaffoldBackgroundColor,
       child: InkWell(
         child: Padding(

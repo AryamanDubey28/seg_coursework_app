@@ -85,13 +85,11 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     return FloatingActionButton(
       heroTag: "hideShowButton",
       key: const Key("hideShowButton"),
-      // backgroundColor: isGridVisible ? Colors.teal : Colors.white,
       onPressed: _toggleGrid,
       tooltip: 'Show/Hide',
       child: Icon(
         isGridVisible ? Icons.hide_image_outlined : Icons.image,
-        // color: isGridVisible ? Colors.white : Colors.teal, 
-        ),
+      ),
     );
   }
 
@@ -105,8 +103,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       tooltip: 'Save List',
       child: const Icon(
         Icons.add,
-        // color: Colors.teal,
-        ),
+      ),
       onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
       
     );
@@ -206,7 +203,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8),
         child: Stack(
-          children: [
+          children: <Widget>[
             //This makes sure that a timetable can't be saved if it has one or no elements.
             if (timetableList.imagesList.length >= 2) Align(
               alignment: Alignment.bottomLeft,

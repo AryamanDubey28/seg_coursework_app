@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/models/theme_details.dart';
 
-extension ColorExtension on Color {
-  Color withoutAlpha() {
-    return Color.fromRGBO(red, green, blue, 1);
-  }
-}
-
-///This model allows for easy handling of the themes. It saves a name and a ThemeData for each theme.
+///This model allows for easy handling of the themes. It saves a name and color configuration for each object.
+///It's used to manage themes and return a ThemeData of the object.
 class CustomThemeDetails {
   final String name;
   final Color? menuColor;
@@ -15,20 +9,27 @@ class CustomThemeDetails {
   final Color? buttonsColor;
   final Color? iconsAndTextsColor;
 
-  CustomThemeDetails({this.name = "Custom theme", this.menuColor = Colors.transparent, this.backgroundColor = Colors.transparent, this.buttonsColor = Colors.transparent, this.iconsAndTextsColor = Colors.transparent});
+  CustomThemeDetails({this.name = "Custom theme", 
+  this.menuColor = Colors.transparent, 
+  this.backgroundColor = Colors.transparent, 
+  this.buttonsColor = Colors.transparent, 
+  this.iconsAndTextsColor = Colors.transparent});
 
-    bool equals(CustomThemeDetails other)
-    {
-      return name == other.name && 
-      menuColor == other.menuColor && 
-      backgroundColor == other.backgroundColor &&
-      iconsAndTextsColor == other.iconsAndTextsColor;
-    }
+  ///This function is used to compare this theme with another theme.
+  bool equals(CustomThemeDetails other)
+  {
+    return name == other.name && 
+    menuColor == other.menuColor && 
+    backgroundColor == other.backgroundColor &&
+    iconsAndTextsColor == other.iconsAndTextsColor;
+  }
 
-    MaterialColor getColorSwatch(Color color) {
+  ///This is used to get the primarySwatch of any color.
+  MaterialColor getColorSwatch(Color color) {
     if (color is MaterialColor) {
       return color;
-    } else {
+    } 
+    else {
       return MaterialColor(
         color.value,
         <int, Color>{
@@ -47,14 +48,13 @@ class CustomThemeDetails {
     }
   }
 
-  ThemeDetails getCustomTheme()
+  ///This returns the ThemeData based on the color configurations of the object.
+  ThemeData getCustomThemeData()
   {
-    
     IconThemeData iconTheme = IconThemeData(
       color: iconsAndTextsColor,
     );
-    return ThemeDetails(name: "Custom theme", 
-    themeData: ThemeData(
+    return ThemeData(
       primarySwatch: getColorSwatch(menuColor!),
       scaffoldBackgroundColor: backgroundColor,
       appBarTheme: AppBarTheme(
@@ -84,7 +84,7 @@ class CustomThemeDetails {
       ),
       listTileTheme: ListTileThemeData(textColor: iconsAndTextsColor, iconColor: iconsAndTextsColor)
   
-    ));
+    );
   }
 
 }

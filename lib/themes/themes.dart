@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
-import 'package:seg_coursework_app/models/theme_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//Declarations of default themes.
 final defaultTheme = CustomThemeDetails(
   name: "Default theme",
   menuColor: Colors.teal[300],
@@ -53,14 +52,11 @@ final deepOrangeTheme = CustomThemeDetails(
   iconsAndTextsColor: Colors.white,
 );
 
-final darkTheme = ThemeDetails(name: "Dark theme", themeData: ThemeData.dark());
-
-
-
+///This class manages the default themes, the custom themes, and the cached theme.
 class CustomTheme with ChangeNotifier
 {
   CustomThemeDetails? _cachedTheme;
-  ThemeData _themeData = defaultTheme.getCustomTheme().themeData;
+  ThemeData _themeData = defaultTheme.getCustomThemeData();
   CustomThemeDetails _themeDetails = defaultTheme;
 
   CustomThemeDetails? get cachedTheme => _cachedTheme;
@@ -69,6 +65,7 @@ class CustomTheme with ChangeNotifier
     loadCachedTheme();
   }
 
+  ///Sets the cached theme as the app theme.
   Future<void> loadCachedTheme() async {
     _cachedTheme = await readCachedThemeDetails();
     if (_cachedTheme != null) {
@@ -80,9 +77,10 @@ class CustomTheme with ChangeNotifier
     }
   }
 
-  bool themesListContainsTheme(CustomThemeDetails element) {
+  ///Checks if the themesList contains the passed theme.
+  bool themesListContainsTheme(CustomThemeDetails theme) {
     for (CustomThemeDetails e in _themesList) {
-      if (e.equals(element)) return true;
+      if (e.equals(theme)) return true;
     }
     return false;
   }
@@ -93,6 +91,7 @@ class CustomTheme with ChangeNotifier
   List<CustomThemeDetails> _themesList = [defaultTheme, redTheme, deepPurpleTheme, lightGreenTheme, greenTheme, deepOrangeTheme];
   List<CustomThemeDetails> getThemes() => _themesList;
 
+  ///Adds the theme to the themesList if its not already in there.
   bool addTheme(CustomThemeDetails themeToAdd)
   {
     if(themesListContainsTheme(themeToAdd)) return false;
@@ -100,14 +99,16 @@ class CustomTheme with ChangeNotifier
     return true;
   }
 
+  ///Changes the app theme to the passed theme.
   setTheme(CustomThemeDetails customThemeDetails) async
   {
-    _themeData = customThemeDetails.getCustomTheme().themeData;
+    _themeData = customThemeDetails.getCustomThemeData();
     _themeDetails = customThemeDetails;
     notifyListeners();
     saveThemeDetailsToCache(customThemeDetails);
   }
 
+  ///This reads the saved theme from cache
   static Future<CustomThemeDetails?> readCachedThemeDetails() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? themeString = prefs.getString('cached_theme');
@@ -124,6 +125,7 @@ class CustomTheme with ChangeNotifier
   return null;
   }
 
+  ///This saves the passed theme to cache
   Future<void> saveThemeDetailsToCache(CustomThemeDetails customThemeDetails) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonMap = {

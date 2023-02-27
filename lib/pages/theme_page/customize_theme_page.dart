@@ -15,6 +15,7 @@ class CustomizeThemePage extends StatefulWidget {
   State<CustomizeThemePage> createState() => _CustomizeThemePageState();
 }
 
+/// The page for the user to manipulate theme colors and preview changes.
 class _CustomizeThemePageState extends State<CustomizeThemePage> {
   Color? menuColor = Colors.teal[300];
 
@@ -24,13 +25,15 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
 
   Color? iconsAndTextsColor = Colors.white;
 
+  ///A function that is fed to and used by the theme controls to set the menu color.
   void setMenuColor(Color? newMenuColor)
   {
     setState(() {
       menuColor = newMenuColor;
     });
   }
-
+  
+  ///A function that is fed to and used by the theme controls to set the background color.
   void setBackgroundColor(Color? newBackgroundColor)
   {
     setState(() {
@@ -38,6 +41,7 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
     });
   }
 
+  ///A function that is fed to and used by the theme controls to set the buttons color.
   void setButtonsColor(Color? newButtonsColor)
   {
     setState(() {
@@ -45,6 +49,7 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
     });
   }
 
+  ///A function that is fed to and used by the theme controls to set the icons and texts color.
   void setIconsAndTextsColor(Color? newIconsAndTextsColor)
   {
     setState(() {

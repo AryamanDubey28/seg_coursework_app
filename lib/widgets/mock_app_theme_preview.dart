@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///The widget to show a preview of the theme chosen by the user. It builds an appbar, a background,
+///a button, and a textbox to preview the user's choices.
 class MockAppThemePreview extends StatelessWidget {
   const MockAppThemePreview({
     super.key,
@@ -31,7 +33,6 @@ class MockAppThemePreview extends StatelessWidget {
             title: Text(
               'Menu',
               style: TextStyle(color: iconsAndTextsColor)
-              // themeData.primaryTextTheme.headline6,
             ),
           ),
           SizedBox(height: 16),
@@ -44,14 +45,12 @@ class MockAppThemePreview extends StatelessWidget {
                 child: Icon(
                   Icons.add,
                   color: iconsAndTextsColor,
-                  // color: themeData.accentIconTheme.color,
                 ),
               ),
               SizedBox(height: 16),
               Text(
                 'Example Text',
                 style: TextStyle(color: iconsAndTextsColor),
-                // style: themeData.textTheme.headline6,
               ),
             ],
           ),

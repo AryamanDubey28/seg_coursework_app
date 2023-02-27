@@ -28,7 +28,7 @@ class ThemeControls extends StatefulWidget {
   @override
   State<ThemeControls> createState() => _ThemeControlsState();
 }
-
+/// The widget for the admin to manipulate the theme colors.
 class _ThemeControlsState extends State<ThemeControls> {
   Color? menuColor = Colors.teal[300];
 
@@ -38,6 +38,7 @@ class _ThemeControlsState extends State<ThemeControls> {
 
   Color? iconsAndTextsColor = Colors.white;
 
+  ///Shows a message depending on if a theme is already saved or not.
   void showSnackBarMessage(bool isAdded) {
     if(isAdded)
     {
@@ -57,6 +58,7 @@ class _ThemeControlsState extends State<ThemeControls> {
     }
   }
 
+  ///A dialog that allows the user to choose between the colors black and white.
   Future<dynamic> ShowIconsAndTextsColorChooserDialog(BuildContext context) {
     return showDialog(
       context: context,
@@ -98,6 +100,7 @@ class _ThemeControlsState extends State<ThemeControls> {
     );
   }
 
+  ///A text button that saves the current theme settings.
   TextButton BuildSaveButton(CustomTheme themeNotifier) {
     return TextButton(
       child: Text("Save"),
@@ -218,15 +221,12 @@ class _ThemeControlsState extends State<ThemeControls> {
               ),
             ),
             onTap: () {
+              //(then) is used to take the color chosen from the dialog.
               ShowIconsAndTextsColorChooserDialog(context).then((newIconsAndTextsColor) {
-                if (newIconsAndTextsColor != null) {
-                  // Do something with the selected color
-                  // For example, update the state to rebuild the UI with the new color
-                  setState(() {
-                    iconsAndTextsColor = newIconsAndTextsColor;
-                    widget.setIconsAndTextsColor(newIconsAndTextsColor);
-                  });
-                }
+                setState(() {
+                  iconsAndTextsColor = newIconsAndTextsColor;
+                  widget.setIconsAndTextsColor(newIconsAndTextsColor);
+                });
               });
             },
           ),

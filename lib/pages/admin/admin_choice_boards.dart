@@ -116,7 +116,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     const addIcon = Icon(
       Icons.add,
     );
-    // const contentColor = MaterialStatePropertyAll(Colors.white);
 
     if (isCategory) {
       return TextButton.icon(
@@ -124,7 +123,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         onPressed: addCategory,
         icon: addIcon,
         label: const Text("Add a category"),
-        // style: const ButtonStyle(foregroundColor: contentColor, backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 80, 141, 93))),
       );
     } else {
       return TextButton.icon(
@@ -132,7 +130,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         onPressed: addItem,
         icon: addIcon,
         label: const Text("Add an item"),
-        // style: const ButtonStyle(foregroundColor: contentColor, backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
       );
     }
   }

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
 import 'package:seg_coursework_app/widgets/theme_grid.dart';
-
-import '../../models/theme_details.dart';
 import '../../themes/themes.dart';
 import 'customize_theme_page.dart';
 
@@ -14,8 +12,11 @@ class ThemePage extends StatefulWidget {
   State<ThemePage> createState() => _ThemePageState();
 }
 
+///The page for the user to select a theme to be displayed.
 class _ThemePageState extends State<ThemePage> {
 
+  ///This function is called whenever the save button in the customize theme page is pressed and allows
+  ///the theme grid to show the recently added theme.
   void updateThemeList(List<CustomThemeDetails> themeList, CustomTheme themeNotifier)
   {
     setState(() {
@@ -39,6 +40,8 @@ class _ThemePageState extends State<ThemePage> {
         ),
         actions: [
           IconButton(
+            tooltip: "Add a new theme",
+            icon: Icon(Icons.add),
             onPressed: () {
               Navigator.push(
                 context,
@@ -47,9 +50,7 @@ class _ThemePageState extends State<ThemePage> {
                 ),
               );
             }, 
-            tooltip: "Add a new theme",
-            icon: Icon(Icons.add)
-          )
+          ),
         ],
       ),
       body: Center(
