@@ -22,6 +22,25 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
   Color? iconsAndTextsColor = Colors.white;
 
 
+  void showSnackBarMessage(bool isAdded) {
+  if(isAdded)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Theme saved successfully.")
+        ),
+      );
+    }
+    else
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Theme is already saved.")
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
@@ -30,6 +49,7 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
         title: Text("Customize Theme"),
         leading: IconButton(
           key: const Key("backButton"),
+          tooltip: "Back",
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context)
         ),
@@ -196,7 +216,8 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
                         buttonsColor: buttonsColor, 
                         iconsAndTextsColor: iconsAndTextsColor,
                       );
-                      themeNotifier.addTheme(temp);
+                      bool isAdded = themeNotifier.addTheme(temp);
+                      showSnackBarMessage(isAdded);
                       widget.updateThemeList(widget.themeList, themeNotifier);
                     
                     })

@@ -5,8 +5,8 @@ import 'pages/authenticate/wrapper.dart';
 import 'themes/theme_provider.dart';
 
 Future main() async {
-  final themeNotifier = CustomTheme();
   WidgetsFlutterBinding.ensureInitialized();
+  final themeNotifier = CustomTheme();
   await Firebase.initializeApp();
   runApp(ThemeProvider(
     themeNotifier: themeNotifier,

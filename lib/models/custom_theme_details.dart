@@ -17,6 +17,14 @@ class CustomThemeDetails {
 
   CustomThemeDetails({this.name = "Custom theme", this.menuColor = Colors.transparent, this.backgroundColor = Colors.transparent, this.buttonsColor = Colors.transparent, this.iconsAndTextsColor = Colors.transparent});
 
+    bool equals(CustomThemeDetails other)
+    {
+      return name == other.name && 
+      menuColor == other.menuColor && 
+      backgroundColor == other.backgroundColor &&
+      iconsAndTextsColor == other.iconsAndTextsColor;
+    }
+
     MaterialColor getColorSwatch(Color color) {
     if (color is MaterialColor) {
       return color;

@@ -35,6 +35,7 @@ class _ThemePageState extends State<ThemePage> {
           key: const Key("backButton"),
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
+          tooltip: "Back",
         ),
         actions: [
           IconButton(
@@ -46,7 +47,8 @@ class _ThemePageState extends State<ThemePage> {
                 ),
               );
             }, 
-            icon: Icon(Icons.edit)
+            tooltip: "Add a new theme",
+            icon: Icon(Icons.add)
           )
         ],
       ),

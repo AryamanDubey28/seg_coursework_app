@@ -155,6 +155,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         actions: <Widget> [
           IconButton(
             key: const Key("allTimetablesButton"),
+            tooltip: "View all saved timetables",
             onPressed: () {
               Navigator.push(
                 context,

@@ -73,7 +73,18 @@ class CustomTheme with ChangeNotifier
     _cachedTheme = await readCachedThemeDetails();
     if (_cachedTheme != null) {
       setTheme(_cachedTheme!);
+      if(!themesListContainsTheme(_cachedTheme!))
+      {
+        addTheme(_cachedTheme!);
+      }
     }
+  }
+
+  bool themesListContainsTheme(CustomThemeDetails element) {
+    for (CustomThemeDetails e in _themesList) {
+      if (e.equals(element)) return true;
+    }
+    return false;
   }
 
   ThemeData getTheme() => _themeData;
@@ -82,9 +93,11 @@ class CustomTheme with ChangeNotifier
   List<CustomThemeDetails> _themesList = [defaultTheme, redTheme, deepPurpleTheme, lightGreenTheme, greenTheme, deepOrangeTheme];
   List<CustomThemeDetails> getThemes() => _themesList;
 
-  void addTheme(CustomThemeDetails themeToAdd)
+  bool addTheme(CustomThemeDetails themeToAdd)
   {
+    if(themesListContainsTheme(themeToAdd)) return false;
     _themesList.add(themeToAdd);
+    return true;
   }
 
   setTheme(CustomThemeDetails customThemeDetails) async
