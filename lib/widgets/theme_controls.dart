@@ -67,6 +67,7 @@ class _ThemeControlsState extends State<ThemeControls> {
           title: Text('Select a color'),
           actions: <Widget>[
             Container(
+              key: Key("blackButton"),
               width: 50,
               height: 50,
               decoration: BoxDecoration(
@@ -81,6 +82,7 @@ class _ThemeControlsState extends State<ThemeControls> {
               ),
             ),
             Container(
+              key: Key("whiteButton"),
               width: 50,
               height: 50,
               decoration: BoxDecoration(
@@ -103,7 +105,7 @@ class _ThemeControlsState extends State<ThemeControls> {
   ///A text button that saves the current theme settings.
   TextButton BuildSaveButton(CustomTheme themeNotifier) {
     return TextButton(
-      child: Text("Save"),
+      key: Key("saveButton"),
       onPressed: () => setState(() {
         CustomThemeDetails temp = CustomThemeDetails(
           name: "Custom theme", 
@@ -116,7 +118,8 @@ class _ThemeControlsState extends State<ThemeControls> {
         showSnackBarMessage(isAdded);
         widget.updateThemeList(widget.themeList, themeNotifier);
       
-      })
+      }),
+      child: Text("Save")
     );
   }
 
@@ -130,6 +133,7 @@ class _ThemeControlsState extends State<ThemeControls> {
           width: 300,
           height: 60,
           child: ListTile(
+            key: Key("menuColorListTile"),
             title: Text("Menu color"),
             trailing: Container(
               width: 50,
@@ -157,6 +161,7 @@ class _ThemeControlsState extends State<ThemeControls> {
           width: 300,
           height: 60,
           child: ListTile(
+            key: Key("backgroundColorListTile"),
             title: Text("Background color"),
             trailing: Container(
               width: 50,
@@ -184,6 +189,7 @@ class _ThemeControlsState extends State<ThemeControls> {
           width: 300,
           height: 60,
           child: ListTile(
+            key: Key("buttonsColorListTile"),
             title: Text("Buttons color"),
             trailing: Container(
               width: 50,
@@ -211,6 +217,7 @@ class _ThemeControlsState extends State<ThemeControls> {
           width: 300,
           height: 60,
           child: ListTile(
+            key: Key("iconsAndTextsColorListTile"),
             title: Text("Icons and texts color"),
             trailing: Container(
               width: 50,

@@ -40,6 +40,7 @@ class _ThemePageState extends State<ThemePage> {
         ),
         actions: [
           IconButton(
+            key: Key("addThemeButton"),
             tooltip: "Add a new theme",
             icon: Icon(Icons.add),
             onPressed: () {
