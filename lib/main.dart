@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'pages/authenticate/wrapper.dart';
-import 'pages/admin/edit_account.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

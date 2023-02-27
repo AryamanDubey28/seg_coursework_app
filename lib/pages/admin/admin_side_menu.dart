@@ -3,7 +3,7 @@ import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../child_board/child_board_interface.dart';
 import '../visual_timetable/visual_timetable_interface.dart';
-import 'edit_account.dart';
+import '../authenticate/edit_account.dart';
 import '../authenticate/login.dart';
 
 /// The side-menu of the admin's UI

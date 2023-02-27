@@ -55,12 +55,10 @@ service cloud.firestore {
       request.resource.data.rank>=0 &&
       request.resource.data.is_available is bool
     }
-    
 
     match /{document=**} {
       allow read, write: if false;
     }
-
 
     match /items {
       allow read: if (request.auth.uid != null && 

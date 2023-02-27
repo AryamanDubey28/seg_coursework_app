@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
-import 'admin_choice_boards.dart';
-import '../authenticate/auth.dart';
-import './admin_side_menu.dart';
+import '../admin/admin_choice_boards.dart';
+import 'auth.dart';
+import '../admin/admin_side_menu.dart';
 import '../../widgets/loading_indicator.dart';
 
 class EditAccountPage extends StatefulWidget {
@@ -33,12 +33,11 @@ class EditAccountPageState extends State<EditAccountPage> {
     authentitcationHelper = Auth(auth: firebaseAuthentication);
   }
 
-  void show_alert_dialog(String text, String key) {
+  void show_alert_dialog(String text) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            key: Key(key),
             content: Text(
               text,
               style: TextStyle(fontSize: 24),
@@ -48,78 +47,40 @@ class EditAccountPageState extends State<EditAccountPage> {
   }
 
   Future commit_password_edit() async {
+    String response;
     if (_currentPasswordController.text.trim() != "" &&
         _newPasswordController.text.trim() != "" &&
         _confirmPasswordController.text.trim() != "") {
       if (_newPasswordController.text.trim() ==
           _confirmPasswordController.text.trim()) {
-        User? firebaseUser = await firebaseAuthentication.currentUser;
-        if (firebaseUser != null) {
-          try {
-            LoadingIndicatorDialog().show(context);
-            var credentials = EmailAuthProvider.credential(
-                email: await authentitcationHelper.getCurrentUserEmail(),
-                password: _currentPasswordController.text.trim());
-            await firebaseUser
-                .reauthenticateWithCredential(credentials)
-                .then((value) {
-              firebaseUser.updatePassword(_newPasswordController.text.trim());
-            });
-            LoadingIndicatorDialog().dismiss();
-            show_alert_dialog("Your password was successfully changed.",
-                "password_changed_successfully");
-          } on FirebaseAuthException catch (e) {
-            LoadingIndicatorDialog().dismiss();
-            show_alert_dialog(
-                'Your current password is not correct. Please try again.',
-                'password_change_failure_incorrect_password');
-          } catch (e) {
-            LoadingIndicatorDialog().dismiss();
-            show_alert_dialog(
-                'We are sorry, we could not change your password. Please try again.',
-                'password_change_failure_unknown_reason');
-          }
-        }
+        LoadingIndicatorDialog().show(context);
+        response = await authentitcationHelper.editCurrentUserPassword(
+            _currentPasswordController.text.trim(),
+            _newPasswordController.text.trim());
+        LoadingIndicatorDialog().dismiss();
       } else {
-        show_alert_dialog(
-            'The new password confirmation does not match the new password you demanded. Please try again.',
-            'password_change_failure_incorrect_confirmation');
+        response =
+            'The new password confirmation does not match the new password you demanded. Please try again.';
       }
     } else {
-      show_alert_dialog(
-          'Some fields required to operate your password change were not filled in. Please try again.',
-          'password_change_failure_missing_field');
+      response =
+          'Some fields required to operate your password change were not filled in. Please try again.';
     }
+    show_alert_dialog(response);
   }
 
   Future commit_email_edit() async {
+    String response;
     if (_emailEditController.text.trim() != "") {
-      User? firebaseUser = await firebaseAuthentication.currentUser;
-      if (firebaseUser != null) {
-        var message;
-        try {
-          LoadingIndicatorDialog().show(context);
-          await firebaseUser.updateEmail(_emailEditController.text.trim());
-          LoadingIndicatorDialog().dismiss();
-          show_alert_dialog('Your email was successfully changed.',
-              'email_changed_successfully');
-        } on FirebaseAuthException catch (e) {
-          LoadingIndicatorDialog().dismiss();
-          show_alert_dialog(
-              'We could not securely verify your identity because you did not login for a long time. Please log out and back in to carry out this change.',
-              'email_change_failure_login_too_old');
-        } catch (e) {
-          LoadingIndicatorDialog().dismiss();
-          show_alert_dialog(
-              'We could not securely verify your identity because you did not login for a long time. Please log out and back in to carry out this change.',
-              'email_change_failure_login_too_old');
-        }
-      }
+      LoadingIndicatorDialog().show(context);
+      response = await authentitcationHelper
+          .editCurrentUserEmail(_emailEditController.text.trim());
+      LoadingIndicatorDialog().dismiss();
     } else {
-      show_alert_dialog(
-          'You did not input a new email address so the change could not be made. Please try again.',
-          'email_change_failure_missing_field');
+      response =
+          'You did not input a new email address so the change could not be made. Please try again.';
     }
+    show_alert_dialog(response);
   }
 
   @override
@@ -162,6 +123,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
+                            key: const Key("edit_email_prompt"),
                             child: Text("Edit your email:",
                                 style: TextStyle(
                                   fontSize: 30,
@@ -171,7 +133,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                             height: 15,
                           ),
                           MyTextField(
-                            key: Key('change_email_field'),
+                            key: Key('edit_email_field'),
                             hint: snapshot.data as String,
                             controller: _emailEditController,
                           ),
@@ -184,7 +146,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                               height: 60,
                               width: 250,
                               child: ElevatedButton(
-                                key: Key('confirm button'),
+                                key: Key('edit_email_submit'),
                                 style: ElevatedButton.styleFrom(
                                   textStyle: TextStyle(
                                     fontSize: 20,
@@ -205,6 +167,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "Edit your password:",
+                              key: Key('edit_password_prompt'),
                               style: TextStyle(
                                 fontSize: 30,
                               ),
@@ -232,7 +195,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                             height: 15,
                           ),
                           MyTextField(
-                            key: Key('confirm_new_password'),
+                            key: Key('confirm_new_password_input'),
                             hint: "Password confirmation",
                             controller: _confirmPasswordController,
                             isPassword: true,
@@ -246,7 +209,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                               height: 60,
                               width: 250,
                               child: ElevatedButton(
-                                key: Key('confirm button'),
+                                key: Key('edit_password_submit'),
                                 style: ElevatedButton.styleFrom(
                                   textStyle: TextStyle(
                                     fontSize: 20,

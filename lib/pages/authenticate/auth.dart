@@ -19,12 +19,65 @@ class Auth {
     }
   }
 
+  // Return the current user's email or the empty string if there is no identifiable current user.
   Future<String> getCurrentUserEmail() async {
     var user_email = await auth.currentUser!.email;
     if (user_email != null) {
       return user_email;
     } else {
       return "";
+    }
+  }
+
+  // Edit the current user's password and return custom error messages depending on the precise error that occured.
+  Future<String> editCurrentUserPassword(
+      String currentPassword, String newPassword) async {
+    if (await getCurrentUser() != null) {
+      try {
+        var credentials = EmailAuthProvider.credential(
+            email: await getCurrentUserEmail(), password: currentPassword);
+        await auth.currentUser!
+            .reauthenticateWithCredential(credentials)
+            .then((value) {
+          auth.currentUser!.updatePassword(newPassword);
+        });
+        return "Your password was successfully changed.";
+      } on FirebaseAuthException {
+        return 'Your current password is not correct. Please try again.';
+      } catch (e) {
+        return 'We are sorry, we could not change your password. Please try again.';
+      }
+    } else {
+      return 'We could not verify your identity. Please log out and back in.';
+    }
+  }
+
+  // Edit the current user's email and return custom error messages depending on the precise error that occured.
+  Future<String> editCurrentUserEmail(String newEmail) async {
+    if (await getCurrentUser() != null) {
+      if (validEmail(newEmail)) {
+        try {
+          await auth.currentUser!.updateEmail(newEmail);
+          return 'Your email was successfully changed.';
+        } on FirebaseAuthException {
+          return 'We could not securely verify your identity because you did not login for a long time. Please log out and back in to carry out this change.';
+        } catch (e) {
+          return 'We could not securely verify your identity because you did not login for a long time. Please log out and back in to carry out this change.';
+        }
+      } else {
+        return 'This is not a valid email address. Please try again.';
+      }
+    } else {
+      return 'We could not verify your identity. Please log out and back in.';
+    }
+  }
+
+  Future<User?> getCurrentUser() async {
+    var user = await auth.currentUser;
+    if (user != null) {
+      return user;
+    } else {
+      return null;
     }
   }
 
