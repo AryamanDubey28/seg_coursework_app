@@ -209,8 +209,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 elevation: 5,
                 margin: const EdgeInsets.all(10),
                 child: Image.network(
-                  key: const Key("categoryImage"),
                   category.imageUrl,
+                  key: const Key("categoryImage"),
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
@@ -222,8 +222,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               ),
               const Padding(padding: EdgeInsets.all(8)),
               Text(
-                key: const Key("categoryTitle"),
                 category.title,
+                key: const Key("categoryTitle"),
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
@@ -246,8 +246,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   ),
                   elevation: 5,
                   child: Image.network(
-                    key: const Key("itemImage"),
                     item.imageUrl,
+                    key: const Key("itemImage"),
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
