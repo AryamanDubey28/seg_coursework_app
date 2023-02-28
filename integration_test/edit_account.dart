@@ -5,27 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 
-Widget createHomeScreen() {
-  WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
-  return MaterialApp(
-      home: Scaffold(
-    body: StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          //if we are trying to sign in and snapshot contains user data, we are logged in
-          return const EditAccountPage();
-        } else {
-          FirebaseAuth.instance.signInWithEmailAndPassword(
-              email: "anton@test.con", password: "123Password");
-          return const EditAccountPage();
-        }
-      },
-    ),
-  ));
-}
-
 void main() {
   group("Email edit section", () {
     //   This test tests that the edit email portion of the page is properly connected to the editCurrentUserEmail

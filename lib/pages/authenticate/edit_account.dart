@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/my_text_field.dart';
 import '../admin/admin_choice_boards.dart';
-import 'auth.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 import '../admin/admin_side_menu.dart';
 import '../../widgets/loading_indicator.dart';
 
