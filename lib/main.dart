@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'pages/authenticate/wrapper.dart';
 import 'themes/theme_provider.dart';
@@ -19,8 +20,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<CustomTheme>(context);
+    final themeData = themeNotifier.getTheme();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: themeData,
       home: Wrapper(),
     );
   }

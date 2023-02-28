@@ -99,12 +99,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     key: Key("account_circle_icon"),
                     Icons.account_circle_sharp,
                     size: 90,
+                    color: Colors.black,
                   ),
                   Text(
                     "Register Here!",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 72,
+                      color: Colors.black
                     ),
                   ),
                   SizedBox(

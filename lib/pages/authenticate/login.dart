@@ -71,12 +71,13 @@ class _LogInState extends State<LogIn> {
                   const Icon(
                     Icons.waving_hand_outlined, //temp hello icon
                     size: 90,
+                    color: Colors.black,
                   ),
 
                   //Welcoming text
                   const Text(
                     "Hello There",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 72),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 72, color: Colors.black),
                   ),
                   const SizedBox(
                     height: 10,
@@ -170,7 +171,7 @@ class _LogInState extends State<LogIn> {
                     children: [
                       Text(
                         "Not a member?",
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(fontSize: 24, color: Colors.grey[600], fontWeight: FontWeight.normal),
                       ),
                       SizedBox(
                         height: 7,
@@ -179,6 +180,7 @@ class _LogInState extends State<LogIn> {
                         key: Key('create_account'),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.blue,
+                          backgroundColor: Colors.grey[200],
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
