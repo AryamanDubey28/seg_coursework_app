@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable_interface.dart';
+import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -171,7 +171,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         icon: const Icon(Icons.arrow_back_rounded),
         onPressed: () =>
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const VisualTimetableInterface(),
+          builder: (context) => CustomizableColumn(),
         )),
       ),
     );
