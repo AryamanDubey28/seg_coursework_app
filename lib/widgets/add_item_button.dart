@@ -17,7 +17,7 @@ class _AddItemButtonState extends State<AddItemButton> {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      key: Key("addItemButton-${widget.categoryId}"),
+      key: widget.key,
       onPressed: addItem,
       icon: Icon(Icons.add),
       label: const Text("Add an item"),

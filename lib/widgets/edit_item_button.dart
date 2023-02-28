@@ -22,7 +22,7 @@ class _EditItemButtonState extends State<EditItemButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: Key("editItemButton-${widget.itemId}"),
+      key: widget.key,
       onPressed: editItem,
       icon: Icon(Icons.edit, color: Color.fromARGB(255, 0, 76, 153)),
       padding: const EdgeInsets.only(right: 45),

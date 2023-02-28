@@ -5,6 +5,7 @@ import 'package:seg_coursework_app/helpers/firestore_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
+import 'package:seg_coursework_app/data/choice_boards_data.dart';
 
 class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
@@ -145,7 +146,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const AdminChoiceBoards(),
+        builder: (context) =>
+            AdminChoiceBoards(draggableCategories: devCategories),
       ));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("No edits made")),
@@ -187,7 +189,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         }
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const AdminChoiceBoards(),
+          builder: (context) =>
+              AdminChoiceBoards(draggableCategories: devCategories),
         ));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Edits saved successfully!")),

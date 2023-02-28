@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/firestore_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -157,7 +158,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
               itemId: itemId);
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const AdminChoiceBoards(),
+            builder: (context) =>
+                AdminChoiceBoards(draggableCategories: devCategories),
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(

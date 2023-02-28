@@ -24,7 +24,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: const Key("deleteButton"),
+      key: widget.key,
       onPressed: () => _showAlertDialog(context),
       icon: Icon(Icons.delete, color: Colors.red),
     );

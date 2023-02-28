@@ -12,7 +12,9 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 */
 
 class AdminChoiceBoards extends StatefulWidget {
-  const AdminChoiceBoards({Key? key}) : super(key: key);
+  final List<DraggableList> draggableCategories;
+  const AdminChoiceBoards({Key? key, required this.draggableCategories})
+      : super(key: key);
 
   @override
   State<AdminChoiceBoards> createState() => _AdminChoiceBoards();
@@ -22,75 +24,11 @@ class AdminChoiceBoards extends StatefulWidget {
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   late List<DragAndDropList> categories;
 
-  _AdminChoiceBoards() {
-    categories = devCategories.map(buildCategory).toList();
+  @override
+  void initState() {
+    super.initState();
+    categories = widget.draggableCategories.map(buildCategory).toList();
   }
-
-  // These are added to test while development
-  // They will later be supplied from the database (TO BE DELETED)
-  final List<DraggableList> devCategories = [
-    DraggableList(
-        title: "Breakfast",
-        id: "YYTURkIV6tr90ickFM0F",
-        imageUrl:
-            "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
-        items: [
-          DraggableListItem(
-              id: "Eaawa8YiQRaTYnXmcJNp",
-              name: "Toast",
-              imageUrl:
-                  "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
-          DraggableListItem(
-              id: "8fFoolNiYG7aise5AQuW",
-              name: "Fruits",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80")
-        ]),
-    DraggableList(
-        id: "vvKsFHrHvkP1SL8MlWKk",
-        title: "Activities",
-        imageUrl:
-            "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png",
-        items: [
-          DraggableListItem(
-              id: "lYlJ95r6ft27KAsjg81z",
-              name: "Football",
-              imageUrl:
-                  "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
-          DraggableListItem(
-              id: "BMjvuL6OwtVjGbk9QoNg",
-              name: "Boxing",
-              imageUrl:
-                  "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
-          DraggableListItem(
-              id: "Qg40XVwilis4XRAL6hwI",
-              name: "Swimming",
-              imageUrl:
-                  "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg")
-        ]),
-    DraggableList(
-        id: "JSgepdChaNV0hCMGDrIb",
-        title: "Lunch",
-        imageUrl:
-            "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968",
-        items: [
-          DraggableListItem(
-              id: "placeholder",
-              name: "Butter chicken",
-              imageUrl:
-                  "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "Fish and chips",
-              imageUrl:
-                  "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "burgers",
-              imageUrl:
-                  "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
-        ]),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -151,14 +89,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   }
 
   /// Builds the edit button for a category
-  IconButton buildEditButton() {
+  IconButton buildEditButton({Key? key}) {
     const editIcon = Icon(
       Icons.edit,
       color: Color.fromARGB(255, 0, 76, 153),
     );
 
     return IconButton(
-      key: const Key("editCategoryButton"),
+      key: key,
       onPressed: editCategory,
       icon: editIcon,
       alignment: Alignment.centerRight,
@@ -180,14 +118,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   }
 
   /// Builds the delete button
-  IconButton buildDeleteButton() {
+  IconButton buildDeleteButton({Key? key}) {
     const deleteIcon = Icon(
       Icons.delete,
       color: Colors.red,
     );
 
     return IconButton(
-      key: const Key("deleteButton"),
+      key: key,
       onPressed: deleteCategory,
       icon: deleteIcon,
     );
@@ -196,7 +134,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
-          key: const Key("categoryHeader"),
+          key: Key("categoryHeader-${category.id}"),
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
@@ -210,7 +148,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 margin: const EdgeInsets.all(10),
                 child: Image.network(
                   category.imageUrl,
-                  key: const Key("categoryImage"),
+                  key: Key("categoryImage-${category.id}"),
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
@@ -223,21 +161,25 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               const Padding(padding: EdgeInsets.all(8)),
               Text(
                 category.title,
-                key: const Key("categoryTitle"),
+                key: Key("categoryTitle-${category.id}"),
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              buildDeleteButton(),
-              buildEditButton(),
+              buildDeleteButton(
+                  key: Key("deleteCategoryButton-${category.id}")),
+              buildEditButton(key: Key("editCategoryButton-${category.id}")),
               const Spacer(),
-              AddItemButton(categoryId: category.id),
+              AddItemButton(
+                categoryId: category.id,
+                key: Key("addItemButton-${category.id}"),
+              ),
               const Padding(padding: EdgeInsets.only(right: 35))
             ],
           )),
       children: category.items
           .map((item) => DragAndDropItem(
                   child: ListTile(
-                key: const Key("categoryItem"),
+                key: Key("categoryItem-${item.id}"),
                 leading: Card(
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -247,7 +189,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   elevation: 5,
                   child: Image.network(
                     item.imageUrl,
-                    key: const Key("itemImage"),
+                    key: Key("itemImage-${item.id}"),
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
@@ -259,7 +201,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 ),
                 title: Text(
                   item.name,
-                  key: const Key("itemTitle"),
+                  key: Key("itemTitle-${item.id}"),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -267,11 +209,13 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                     DeleteItemButton(
                         categoryId: category.id,
                         itemId: item.id,
-                        itemName: item.name),
+                        itemName: item.name,
+                        key: Key("deleteItemButton-${item.id}")),
                     EditItemButton(
                         itemId: item.id,
                         itemName: item.name,
-                        itemImageUrl: item.imageUrl),
+                        itemImageUrl: item.imageUrl,
+                        key: Key("editItemButton-${item.id}")),
                   ],
                 ),
               )))
