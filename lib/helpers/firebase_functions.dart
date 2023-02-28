@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
 /// A class which holds methods to manipulate the Firebase database
-class FirestoreFunctions {
-  const FirestoreFunctions();
+class FirebaseFunctions {
+  const FirebaseFunctions();
 
   // #### Adding items functions ####
 

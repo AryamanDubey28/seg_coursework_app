@@ -61,6 +61,7 @@ dependencies:
   image_picker: ^0.8.6+2
   path_provider: ^2.0.12
   firebase_storage: ^11.0.13
+  build_runner: ^2.3.3
 
 dev_dependencies:
   integration_test:

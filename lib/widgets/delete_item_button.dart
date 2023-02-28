@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/helpers/firestore_functions.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
 /// and its functions
@@ -19,7 +19,7 @@ class DeleteItemButton extends StatefulWidget {
 }
 
 class _DeleteItemButtonState extends State<DeleteItemButton> {
-  final firestoreFunctions = FirestoreFunctions();
+  final firestoreFunctions = FirebaseFunctions();
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/helpers/firestore_functions.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
@@ -21,7 +21,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   File? selectedImage; // hold the currently selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
-  final firestoreFunctions = FirestoreFunctions();
+  final firestoreFunctions = FirebaseFunctions();
   final imagePickerFunctions = ImagePickerFunctions();
 
   @override
