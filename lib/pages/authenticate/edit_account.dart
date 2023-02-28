@@ -24,13 +24,11 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
-  late final FirebaseAuth firebaseAuthentication;
 
   @override
   void initState() {
     super.initState();
-    firebaseAuthentication = FirebaseAuth.instance;
-    authentitcationHelper = Auth(auth: firebaseAuthentication);
+    authentitcationHelper = Auth(auth: FirebaseAuth.instance);
   }
 
   void show_alert_dialog(String text) {
@@ -71,14 +69,15 @@ class EditAccountPageState extends State<EditAccountPage> {
 
   Future commit_email_edit() async {
     String response;
-    if (_emailEditController.text.trim() != "") {
+    if (_emailEditController.text.trim() != "" &&
+        authentitcationHelper.validEmail(_emailEditController.text.trim())) {
       LoadingIndicatorDialog().show(context);
       response = await authentitcationHelper
           .editCurrentUserEmail(_emailEditController.text.trim());
       LoadingIndicatorDialog().dismiss();
     } else {
       response =
-          'You did not input a new email address so the change could not be made. Please try again.';
+          'You did not input a valid email address so the change could not be made. Please try again.';
     }
     show_alert_dialog(response);
   }
@@ -133,7 +132,7 @@ class EditAccountPageState extends State<EditAccountPage> {
                             height: 15,
                           ),
                           MyTextField(
-                            key: Key('edit_email_field'),
+                            key: Key('email_text_field'),
                             hint: snapshot.data as String,
                             controller: _emailEditController,
                           ),
