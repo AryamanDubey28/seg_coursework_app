@@ -220,7 +220,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SwitchButton(itemId: "jEa9i4JQNpGeoO7VdXOP", categoryItemId: "vBlcToVKGWPj01DMnXdS"),
+                    SwitchButton(itemId: "Eaawa8YiQRaTYnXmcJNp"),
                     buildDeleteButton(),
                     buildEditButton(),
                   ],

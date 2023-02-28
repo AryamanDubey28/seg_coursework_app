@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 
 class SwitchButton extends StatefulWidget {
   final String itemId;
-  final String categoryItemId;
 
-  const SwitchButton(
-      {super.key, required this.itemId, required this.categoryItemId});
+  const SwitchButton({super.key, required this.itemId});
 
   @override
   State<SwitchButton> createState() => _SwitchButtonState();
@@ -16,61 +14,46 @@ class SwitchButton extends StatefulWidget {
 class _SwitchButtonState extends State<SwitchButton> {
   bool light1 = true;
 
-  Future<List<String>> getPaths(String key) async {
-    List<String> paths = [];
+  Future<void> multiPathUpdate(String itemKey, bool currentValue) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('categoryItems')
-        .where('`your_field_name`', isEqualTo: key)
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where('userId', isEqualTo: auth.currentUser!.uid)
         .get();
 
-    for (var doc in querySnapshot.docs) {
-      paths.add(doc.reference.path);
-    }
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .where(FieldPath.documentId, isEqualTo: itemKey)
+          .get();
 
-    return paths;
+      for (final DocumentSnapshot item in categoryItemsSnapshot.docs) {
+        final DocumentReference itemReference = firestore
+            .collection('categoryItems/${category.id}/items')
+            .doc(item.id);
+
+        await itemReference.update({"name": "test"});
+      }
+    }
   }
 
-  Future<void> switchBooleanValue(
-    String itemKey,
-    String categoryItemKey,
-  ) async {
+  Future<void> switchBooleanValue(String itemKey) async {
     final DocumentReference itemRef =
-        FirebaseFirestore.instance.collection("items").doc(itemKey);
-
+        await FirebaseFirestore.instance.collection("items").doc(itemKey);
     final DocumentSnapshot documentSnapshot = await itemRef.get();
     final Map<String, dynamic> data =
         documentSnapshot.data() as Map<String, dynamic>;
-
     final bool? currentValue = data["is_available"];
 
-    if (currentValue != null) {
-      // Items collection update
-      FirebaseFirestore.instance
-          .collection("items")
-          .doc(itemKey)
-          .update({"is_available": !currentValue});
-      // Multi path update in categoryItems collection
-      FirebaseFirestore.instance.collection("categoryItems").get().then(
-        (querySnapshot) {
-          querySnapshot.docs.forEach((doc) {
-            FirebaseFirestore.instance
-                .collection("categoryItems")
-                .doc(doc.id)
-                .collection("items")
-                .where(FieldPath.documentId, isEqualTo: itemKey)
-                .limit(1)
-                .get()
-                .then((query) {
-              if (query.docs.isNotEmpty) {
-                query.docs.first.reference
-                    .update({"is_available": !currentValue});
-              }
-            });
-          });
-        },
-      );
-    }
+    // Items collection update
+    FirebaseFirestore.instance
+        .collection("items")
+        .doc(itemKey)
+        .update({"is_available": !currentValue!}).then(
+      (_) => multiPathUpdate(itemKey, currentValue),
+    );
   }
 
   @override
@@ -78,7 +61,7 @@ class _SwitchButtonState extends State<SwitchButton> {
     return Switch(
       value: light1,
       onChanged: (bool value) async {
-        switchBooleanValue(widget.itemId, widget.categoryItemId);
+        switchBooleanValue(widget.itemId);
         setState(() {
           light1 = value;
         });
