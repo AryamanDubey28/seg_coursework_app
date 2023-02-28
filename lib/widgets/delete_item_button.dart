@@ -24,7 +24,6 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: widget.key,
       onPressed: () => _showAlertDialog(context),
       icon: Icon(Icons.delete, color: Colors.red),
     );
@@ -37,6 +36,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       barrierDismissible: false, // User must tap button to close dialog
       builder: (BuildContext context) {
         return AlertDialog(
+          key: Key("deleteItemAlert-${widget.itemId}"),
           title: Text('Confirmation'),
           content: Text('Are you sure you want to delete ${widget.itemName}?'),
           actions: <Widget>[

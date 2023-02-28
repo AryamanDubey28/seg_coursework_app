@@ -30,7 +30,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Hero(
-          tag: "add-item-hero",
+          tag: "addItemHero-${widget.categoryId}",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,

@@ -18,17 +18,17 @@ void main() {
       expect(find.byKey(const ValueKey("addCategoryButton")), findsOneWidget);
 
       expect(find.byKey(ValueKey("categoryHeader-$breakfastCategoryId")),
-          findsWidgets);
+          findsOneWidget);
       expect(find.byKey(ValueKey("categoryImage-$breakfastCategoryId")),
-          findsWidgets);
+          findsOneWidget);
       expect(find.byKey(ValueKey("categoryTitle-$breakfastCategoryId")),
-          findsWidgets);
+          findsOneWidget);
       expect(find.byKey(ValueKey("editCategoryButton-$breakfastCategoryId")),
-          findsWidgets);
+          findsOneWidget);
       expect(find.byKey(ValueKey("deleteCategoryButton-$breakfastCategoryId")),
-          findsWidgets);
+          findsOneWidget);
       expect(find.byKey(ValueKey("addItemButton-$breakfastCategoryId")),
-          findsWidgets);
+          findsOneWidget);
       expect(find.byKey(ValueKey("categoryDrag")), findsWidgets);
     });
   });
@@ -42,13 +42,68 @@ void main() {
 
       final String toastItemId = testCategories.first.items.first.id;
 
-      expect(find.byKey(ValueKey("categoryItem-$toastItemId")), findsWidgets);
-      expect(find.byKey(ValueKey("itemImage-$toastItemId")), findsWidgets);
-      expect(find.byKey(ValueKey("itemTitle-$toastItemId")), findsWidgets);
-      expect(find.byKey(ValueKey("editItemButton-$toastItemId")), findsWidgets);
+      expect(find.byKey(ValueKey("categoryItem-$toastItemId")), findsOneWidget);
+      expect(find.byKey(ValueKey("itemImage-$toastItemId")), findsOneWidget);
+      expect(find.byKey(ValueKey("itemTitle-$toastItemId")), findsOneWidget);
       expect(
-          find.byKey(ValueKey("deleteItemButton-$toastItemId")), findsWidgets);
+          find.byKey(ValueKey("editItemButton-$toastItemId")), findsOneWidget);
+      expect(find.byKey(ValueKey("deleteItemButton-$toastItemId")),
+          findsOneWidget);
       expect(find.byKey(ValueKey("itemDrag")), findsWidgets);
+    });
+  });
+
+  testWidgets("Add item button does correct page navigation",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(MaterialApp(
+          home: AdminChoiceBoards(
+        draggableCategories: testCategories,
+      )));
+
+      final String breakfastCategoryId = testCategories.first.id;
+
+      await tester
+          .tap(find.byKey(ValueKey("addItemButton-$breakfastCategoryId")));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(ValueKey("addItemHero-$breakfastCategoryId")),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets("Edit item button does correct page navigation",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(MaterialApp(
+          home: AdminChoiceBoards(
+        draggableCategories: testCategories,
+      )));
+
+      final String toastItemId = testCategories.first.items.first.id;
+
+      await tester.tap(find.byKey(ValueKey("editItemButton-$toastItemId")));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(ValueKey("editItemHero-$toastItemId")), findsOneWidget);
+    });
+  });
+
+  testWidgets("Delete item button shows confirmation alert",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(MaterialApp(
+          home: AdminChoiceBoards(
+        draggableCategories: testCategories,
+      )));
+
+      final String toastItemId = testCategories.first.items.first.id;
+
+      await tester.tap(find.byKey(ValueKey("deleteItemButton-$toastItemId")));
+      await tester.pumpAndSettle();
+
+      expect(
+          find.byKey(ValueKey("deleteItemAlert-$toastItemId")), findsOneWidget);
     });
   });
 }

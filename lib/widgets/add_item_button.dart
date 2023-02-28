@@ -17,7 +17,6 @@ class _AddItemButtonState extends State<AddItemButton> {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      key: widget.key,
       onPressed: addItem,
       icon: Icon(Icons.add),
       label: const Text("Add an item"),
@@ -31,7 +30,10 @@ class _AddItemButtonState extends State<AddItemButton> {
   /// open the add item popup (Add choice board item page)
   void addItem() {
     Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-      return AddChoiceBoardItem(categoryId: widget.categoryId);
+      return AddChoiceBoardItem(
+        categoryId: widget.categoryId,
+        key: Key("addItemHero-${widget.categoryId}"),
+      );
     }));
   }
 }

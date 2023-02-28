@@ -22,7 +22,6 @@ class _EditItemButtonState extends State<EditItemButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: widget.key,
       onPressed: editItem,
       icon: Icon(Icons.edit, color: Color.fromARGB(255, 0, 76, 153)),
       padding: const EdgeInsets.only(right: 45),
@@ -33,9 +32,11 @@ class _EditItemButtonState extends State<EditItemButton> {
   void editItem() {
     Navigator.of(context).push(HeroDialogRoute(builder: (context) {
       return EditChoiceBoardItem(
-          itemId: widget.itemId,
-          itemName: widget.itemName,
-          itemImageUrl: widget.itemImageUrl);
+        itemId: widget.itemId,
+        itemName: widget.itemName,
+        itemImageUrl: widget.itemImageUrl,
+        key: Key("editItemHero-${widget.itemId}"),
+      );
     }));
   }
 }

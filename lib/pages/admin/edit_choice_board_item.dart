@@ -36,7 +36,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Hero(
-          tag: "edit-item-hero",
+          tag: "editItemHero-${widget.itemId}",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
