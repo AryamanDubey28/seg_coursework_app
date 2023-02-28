@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/authenticate/Auth.dart';
+import 'package:seg_coursework_app/pages/authenticate/auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/forgot_password_page.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 
