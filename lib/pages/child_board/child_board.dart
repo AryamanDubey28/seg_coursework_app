@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
+import 'package:seg_coursework_app/pages/child_board/child_board_interface.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 
 class ChildBoards extends StatefulWidget {
@@ -156,9 +158,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           iconSize: 50,
           splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
-          onPressed: () {
-            print("back");
-          },
+          onPressed: () {},
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
