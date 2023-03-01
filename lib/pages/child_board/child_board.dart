@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChildBoards extends StatefulWidget {
   const ChildBoards({Key? key}) : super(key: key);
+  // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES, THIS SHOULD BE THE FUNCTION \/ DELETE THE CODE ABOVE
+  // const ChildBoards({Key? key, required String categoryTitle, required ClickableImage categoryImage, required List<ClickableImage> images}) : super(key: key);
 
   @override
   State<ChildBoards> createState() => _ChildBoards();
@@ -15,13 +16,12 @@ class ChildBoards extends StatefulWidget {
 class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
+  // DELETE AFTER ADDING A QUEERY TO GET IMAGES
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
           "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
       is_available: true);
-  // ClickableImage categoryImage;
-  // List<ClickableImage> images = [];
   final List<ClickableImage> images = [
     ClickableImage(
         name: "Toast",
@@ -64,11 +64,14 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg",
         is_available: true),
   ];
+  // DELETE DOWN TO HERE
+  // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES
+  // ClickableImage categoryImage;
+  // List<ClickableImage> images = [];
 
   @override
   void initState() {
     super.initState();
-    getImagesFromDatabase("items");
   }
 
   // Method used to build main body
@@ -175,27 +178,5 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         )),
       ),
     );
-  }
-
-  // Adds all images from selected database category to the images list, also sets the category image and name
-  Future<void> getImagesFromDatabase(
-    String category,
-  ) async {
-    final CollectionReference<Map<String, dynamic>> documentReference =
-        FirebaseFirestore.instance.collection(category);
-
-    final QuerySnapshot<Map<String, dynamic>> documentSnapshots =
-        await documentReference.get();
-    // categoryImage = ClickableImage(
-    //     name: category,
-    //     imageUrl: documentSnapshots["illustration"],
-    //     is_available: true);
-
-    for (var doc in documentSnapshots.docs) {
-      images.add(ClickableImage(
-          name: doc["name"],
-          imageUrl: doc["illustration"],
-          is_available: doc["is_available"]));
-    }
   }
 }
