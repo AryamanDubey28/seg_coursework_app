@@ -1,6 +1,5 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-//import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 import 'package:seg_coursework_app/main.dart' as app;
 
@@ -8,7 +7,8 @@ void main() {
   //IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('sign in tests', () {
-    testWidgets('input correct email and password, verify sign in', (tester) async {
+    testWidgets('input correct email and password, verify sign in',
+        (tester) async {
       app.main();
       await tester.pumpAndSettle(); //waits to see if application is ready
 

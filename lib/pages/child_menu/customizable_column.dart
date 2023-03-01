@@ -63,12 +63,15 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
       builder: (context) => AlertDialog(
             title: Text("Enter your PIN to go back to the Admin Home"),
             content: TextField(
+              key: Key("logoutTextField"),
               autofocus: true,
               controller: pin_controller,
             ),
             actions: [
               TextButton(
-                  onPressed: () => submit(context), child: Text("SUBMIT"))
+                  key: Key("submitButton"),
+                  onPressed: () => submit(context),
+                  child: Text("SUBMIT"))
             ],
           ));
 
@@ -88,7 +91,10 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text("Incorrect PIN Provided"),
+              content: Text(
+                "Incorrect PIN Provided",
+                textAlign: TextAlign.center,
+              ),
             );
           });
     }
@@ -106,8 +112,12 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
+                key: Key("logoutButton"),
                 //only triggers when its pressed for some time and swiped up
-                onLongPressUp: () {
+                // onLongPressUp: () {
+                //   openLogoutDialog(context);
+                // },
+                onTap: () {
                   openLogoutDialog(context);
                 },
                 child: Icon(Icons.exit_to_app)),
