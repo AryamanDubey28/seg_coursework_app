@@ -34,7 +34,7 @@ class _SwitchButtonState extends State<SwitchButton> {
             .collection('categoryItems/${category.id}/items')
             .doc(item.id);
 
-        await itemReference.update({"name": "test"});
+        await itemReference.update({"is_available": !currentValue});
       }
     }
   }
