@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
@@ -27,7 +30,10 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   File? selectedImage; // hold the newly selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
-  final firestoreFunctions = FirebaseFunctions();
+  final firestoreFunctions = FirebaseFunctions(
+      auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
+      storage: FirebaseStorage.instance);
   final imagePickerFunctions = ImagePickerFunctions();
 
   @override
@@ -51,6 +57,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                   children: [
                     // shows the currently selected image
                     Card(
+                        key: Key("itemImageCard"),
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
@@ -74,12 +81,14 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     // instructions text
                     Text(
                       "Pick an image",
+                      key: Key("instructionsText"),
                       style:
                           TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
                     PickImageButton(
+                        key: Key("pickImageFromGallery"),
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
                         onPressed: () async {
@@ -90,6 +99,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                           }
                         }),
                     PickImageButton(
+                        key: Key("takeImageWithCamera"),
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
                         onPressed: () async {
@@ -102,7 +112,9 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // field to enter the item name
                     TextField(
+                      key: Key("itemNameField"),
                       controller: itemNameController,
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
                           hintText: widget.itemName,
                           border: InputBorder.none,

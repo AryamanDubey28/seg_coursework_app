@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
@@ -19,7 +22,10 @@ class DeleteItemButton extends StatefulWidget {
 }
 
 class _DeleteItemButtonState extends State<DeleteItemButton> {
-  final firestoreFunctions = FirebaseFunctions();
+  final firestoreFunctions = FirebaseFunctions(
+      auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
+      storage: FirebaseStorage.instance);
 
   @override
   Widget build(BuildContext context) {

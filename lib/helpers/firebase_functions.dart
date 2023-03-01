@@ -5,7 +5,12 @@ import 'dart:io';
 
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
-  const FirebaseFunctions();
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+
+  FirebaseFunctions(
+      {required this.auth, required this.firestore, required this.storage});
 
   // #### Adding items functions ####
 
@@ -14,8 +19,7 @@ class FirebaseFunctions {
   /// Return the created item's id
   Future<String> createItem(
       {required String name, required String imageUrl}) async {
-    CollectionReference items = FirebaseFirestore.instance.collection('items');
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    CollectionReference items = firestore.collection('items');
 
     return items
         .add({
@@ -38,9 +42,8 @@ class FirebaseFunctions {
       required String imageUrl,
       required String categoryId,
       required String itemId}) async {
-    CollectionReference categoryItems = FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items');
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    CollectionReference categoryItems =
+        firestore.collection('categoryItems/$categoryId/items');
 
     return categoryItems.doc(itemId).set({
       'illustration': imageUrl,
@@ -56,9 +59,8 @@ class FirebaseFunctions {
   /// Return an appropriate rank for a new categoryItem in the
   /// given category (one more than the highest rank or zero if empty)
   Future<int> getNewCategoryItemRank({required String categoryId}) async {
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items')
-        .get();
+    final QuerySnapshot querySnapshot =
+        await firestore.collection('categoryItems/$categoryId/items').get();
     return querySnapshot.size;
   }
 
@@ -66,7 +68,7 @@ class FirebaseFunctions {
 
   /// Update the name of the given item (only in the "items" collection)
   Future updateItemName({required String itemId, required String newName}) {
-    CollectionReference items = FirebaseFirestore.instance.collection('items');
+    CollectionReference items = firestore.collection('items');
 
     return items
         .doc(itemId)
@@ -79,19 +81,25 @@ class FirebaseFunctions {
   /// the given itemId as their id
   Future updateCategoryItemsName(
       {required String itemId, required String newName}) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final FirebaseAuth auth = FirebaseAuth.instance;
-
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
         .get();
+
+    if (categoriesSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no categories");
+    }
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       final QuerySnapshot categoryItemsSnapshot = await firestore
           .collection('categoryItems/${category.id}/items')
           .where(FieldPath.documentId, isEqualTo: itemId)
           .get();
+
+      if (categoryItemsSnapshot.size == 0) {
+        return throw FirebaseException(
+            plugin: "No categoryItems found with the given item id");
+      }
 
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
         final DocumentReference categoryItemReference = firestore
@@ -106,7 +114,9 @@ class FirebaseFunctions {
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
   Future deleteImageFromCloud({required String imageUrl}) {
-    return FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    return storage.refFromURL(imageUrl).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
   }
 
   /// Take an image and upload it to Firestore Cloud Storage with
@@ -116,8 +126,7 @@ class FirebaseFunctions {
     String uniqueName =
         itemName + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
-    Reference imageRef =
-        FirebaseStorage.instance.ref().child('images').child(uniqueName);
+    Reference imageRef = storage.ref().child('images').child(uniqueName);
     try {
       await imageRef.putFile(image);
       return await imageRef.getDownloadURL();
@@ -129,7 +138,7 @@ class FirebaseFunctions {
   /// Update the image (illustration) of the given item (only in the "items" collection)
   Future updateItemImage(
       {required String itemId, required String newImageUrl}) {
-    CollectionReference items = FirebaseFirestore.instance.collection('items');
+    CollectionReference items = firestore.collection('items');
 
     return items
         .doc(itemId)
@@ -142,19 +151,25 @@ class FirebaseFunctions {
   /// the given itemId as their id
   Future updateCategoryItemsImage(
       {required String itemId, required String newImageUrl}) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final FirebaseAuth auth = FirebaseAuth.instance;
-
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
         .get();
+
+    if (categoriesSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no categories");
+    }
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       final QuerySnapshot categoryItemsSnapshot = await firestore
           .collection('categoryItems/${category.id}/items')
           .where(FieldPath.documentId, isEqualTo: itemId)
           .get();
+
+      if (categoryItemsSnapshot.size == 0) {
+        return throw FirebaseException(
+            plugin: "No categoryItems found with the given item id");
+      }
 
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
         final DocumentReference categoryItemReference = firestore
@@ -172,8 +187,13 @@ class FirebaseFunctions {
   /// itemId from Firestore
   Future deleteCategoryItem(
       {required String categoryId, required String itemId}) async {
-    CollectionReference categoryItems = FirebaseFirestore.instance
-        .collection('categoryItems/$categoryId/items');
+    CollectionReference categoryItems =
+        firestore.collection('categoryItems/$categoryId/items');
+
+    DocumentSnapshot categoryItem = await categoryItems.doc(itemId).get();
+    if (!categoryItem.exists) {
+      return throw FirebaseException(plugin: "categoryItem does not exist!");
+    }
 
     return categoryItems.doc(itemId).delete().onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
@@ -184,7 +204,7 @@ class FirebaseFunctions {
   /// itemId
   Future getCategoryItemRank(
       {required String categoryId, required String itemId}) async {
-    return FirebaseFirestore.instance
+    return firestore
         .collection('categoryItems/$categoryId/items')
         .doc(itemId)
         .get()
@@ -199,8 +219,6 @@ class FirebaseFunctions {
   /// of all documents which have a rank higher than the deleted categoryItem
   Future updateCategoryRanks(
       {required String categoryId, required int removedRank}) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
     final QuerySnapshot querySnapshot = await firestore
         .collection('categoryItems/$categoryId/items')
         .where('rank', isGreaterThan: removedRank)
