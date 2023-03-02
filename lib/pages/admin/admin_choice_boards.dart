@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
 import 'package:seg_coursework_app/widgets/edit_item_button.dart';
+import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
@@ -153,25 +155,12 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
-                margin: const EdgeInsets.all(10),
-                child: Image.network(
-                  category.imageUrl,
-                  key: Key("categoryImage-${category.id}"),
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object exception,
-                      StackTrace? stackTrace) {
-                    return const Text('!Error loading image!');
-                  },
-                ),
+              ImageSquare(
+                image: ImageDetails(
+                    name: category.title, imageUrl: category.imageUrl),
+                key: Key("categoryImage-${category.id}"),
+                height: 120,
+                width: 120,
               ),
               const Padding(padding: EdgeInsets.all(8)),
               Text(
@@ -198,24 +187,11 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .map((item) => DragAndDropItem(
                   child: ListTile(
                 key: Key("categoryItem-${item.id}"),
-                leading: Card(
-                  semanticContainer: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  elevation: 5,
-                  child: Image.network(
-                    item.imageUrl,
-                    key: Key("itemImage-${item.id}"),
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace? stackTrace) {
-                      return const Text('!Error loading image!');
-                    },
-                  ),
+                leading: ImageSquare(
+                  image: ImageDetails(name: item.name, imageUrl: item.imageUrl),
+                  key: Key("itemImage-${item.id}"),
+                  height: 90,
+                  width: 90,
                 ),
                 title: Text(
                   item.name,
