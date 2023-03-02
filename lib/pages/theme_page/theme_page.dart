@@ -38,21 +38,19 @@ class _ThemePageState extends State<ThemePage> {
           onPressed: () => Navigator.pop(context),
           tooltip: "Back",
         ),
-        actions: [
-          IconButton(
-            key: Key("addThemeButton"),
-            tooltip: "Add a new theme",
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CustomizeThemePage(themeList: themeList, updateThemeList: updateThemeList),
-                ),
-              );
-            }, 
-          ),
-        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        key: Key("addThemeButton"),
+        tooltip: "Add a new theme",
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CustomizeThemePage(themeList: themeList, updateThemeList: updateThemeList),
+            ),
+          );
+        }, 
       ),
       body: Center(
         child: Container(

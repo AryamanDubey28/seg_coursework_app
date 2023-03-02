@@ -6,7 +6,7 @@ import '../../widgets/mock_app_theme_preview.dart';
 import '../../widgets/theme_controls.dart';
 
 class CustomizeThemePage extends StatefulWidget {
-  CustomizeThemePage({super.key, required this.themeList, required void Function(List<CustomThemeDetails> themeList, CustomTheme themeNotifier) this.updateThemeList});
+  CustomizeThemePage({super.key, required this.themeList, required this.updateThemeList});
 
   final List<CustomThemeDetails> themeList;
   final Function updateThemeList;
