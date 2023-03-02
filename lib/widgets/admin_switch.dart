@@ -2,6 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// ignore: slash_for_doc_comments
+/**
+ * This widget is a switch that the admin can use in order to define 
+ * the availability status of a particular item in the admin choice 
+ * board.
+ */
 class SwitchButton extends StatefulWidget {
   final String itemId;
 
@@ -59,6 +65,7 @@ class _SwitchButtonState extends State<SwitchButton> {
   @override
   Widget build(BuildContext context) {
     return Switch(
+      key: const Key("adminSwitch"),
       value: light1,
       onChanged: (bool value) async {
         switchBooleanValue(widget.itemId);

@@ -18,6 +18,7 @@ void main() {
       expect(find.byKey(const ValueKey("deleteButton")), findsWidgets);
       expect(find.byKey(const ValueKey("addItemButton")), findsWidgets);
       expect(find.byKey(const ValueKey("categoryDrag")), findsWidgets);
+      expect(find.byKey(const ValueKey("adminSwitch")), findsWidgets);
     });
   });
 
