@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+// This widget is used to display a circular loading indicator in the middle of the screen.
 class LoadingIndicatorDialog {
   static final LoadingIndicatorDialog _singleton =
       LoadingIndicatorDialog._internal();
@@ -53,6 +54,7 @@ class LoadingIndicatorDialog {
         });
   }
 
+  // This method can be used to easily dismount the circular loading indicator when no longer needed.
   dismiss() {
     if (isDisplayed) {
       Navigator.of(_context).pop();
