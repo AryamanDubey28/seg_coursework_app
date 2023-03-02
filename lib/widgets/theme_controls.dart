@@ -116,6 +116,7 @@ class _ThemeControlsState extends State<ThemeControls> {
         );
         bool isAdded = themeNotifier.addTheme(temp);
         showSnackBarMessage(isAdded);
+        themeNotifier.setTheme(temp);
         widget.updateThemeList(widget.themeList, themeNotifier);
       
       }),
@@ -231,8 +232,17 @@ class _ThemeControlsState extends State<ThemeControls> {
               //(then) is used to take the color chosen from the dialog.
               ShowIconsAndTextsColorChooserDialog(context).then((newIconsAndTextsColor) {
                 setState(() {
-                  iconsAndTextsColor = newIconsAndTextsColor;
-                  widget.setIconsAndTextsColor(newIconsAndTextsColor);
+                  //null safety in case user doesn't pick a color.
+                  if(newIconsAndTextsColor != null)
+                  {
+                    iconsAndTextsColor = newIconsAndTextsColor;
+                    widget.setIconsAndTextsColor(newIconsAndTextsColor);
+                  }
+                  else
+                  {
+                    iconsAndTextsColor = Colors.white;
+                    widget.setIconsAndTextsColor(Colors.white);
+                  }
                 });
               });
             },

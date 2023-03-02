@@ -9,7 +9,7 @@ final defaultTheme = CustomThemeDetails(
   menuColor: Colors.teal[300],
   backgroundColor: Colors.teal[100],
   buttonsColor: Colors.teal[400],
-  iconsAndTextsColor: Colors.white,
+  iconsAndTextsColor: Colors.black,
 );
 
 final redTheme = CustomThemeDetails(
@@ -41,7 +41,7 @@ final greenTheme = CustomThemeDetails(
   menuColor: Colors.green[300],
   backgroundColor: Colors.green[100],
   buttonsColor: Colors.green[400],
-  iconsAndTextsColor: Colors.white,
+  iconsAndTextsColor: Colors.black,
 );
 
 final deepOrangeTheme = CustomThemeDetails(
@@ -49,7 +49,7 @@ final deepOrangeTheme = CustomThemeDetails(
   menuColor: Colors.deepOrange[300],
   backgroundColor: Colors.deepOrange[100],
   buttonsColor: Colors.deepOrange[400],
-  iconsAndTextsColor: Colors.white,
+  iconsAndTextsColor: Colors.black,
 );
 
 ///This class manages the default themes, the custom themes, and the cached theme.
@@ -95,7 +95,7 @@ class CustomTheme with ChangeNotifier
   bool addTheme(CustomThemeDetails themeToAdd)
   {
     if(themesListContainsTheme(themeToAdd)) return false;
-    _themesList.add(themeToAdd);
+    _themesList.insert(1, themeToAdd);
     return true;
   }
 
