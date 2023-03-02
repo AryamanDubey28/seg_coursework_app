@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
+
+import '../themes/themes.dart';
 
 ///This widget builds a timetable with the arrows to be shown in the visual timetable page.
 ///Not to be confused with TimetableRow which is shown in the all saved timetables page.
@@ -18,6 +21,8 @@ class TimetableList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<CustomTheme>(context);
+
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: imagesList.length,
@@ -40,7 +45,18 @@ class TimetableList extends StatelessWidget {
               //this is to prevent showing an arrow after the last image.
               if (index != imagesList.length - 1)
                 //size is set to this arbitrary number to scale the arrows as the screen gets bigger.
-                Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35),
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    (themeNotifier.getTheme().iconTheme.color == Colors.white) ?
+                      Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35, color: Colors.black,)
+                      :
+                      Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35, color: Colors.white,),
+                    
+                    Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35-10),
+                    
+                  ],
+                ),
             ],
           ),
         );
