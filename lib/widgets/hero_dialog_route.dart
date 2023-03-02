@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 /// taken from: https://youtu.be/Bxs8Zy2O4wk
 
 class HeroDialogRoute<T> extends PageRoute<T> {
-  /// {@macro hero_dialog_route}
   HeroDialogRoute({
     required WidgetBuilder builder,
     RouteSettings? settings,
