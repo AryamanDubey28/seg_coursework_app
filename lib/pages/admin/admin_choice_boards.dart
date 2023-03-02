@@ -89,7 +89,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         key: const Key("categoryDrag"),
         verticalAlignment: DragHandleVerticalAlignment.top,
         child: Container(
-          padding: const EdgeInsets.only(right: 10, top: 45),
+          padding: const EdgeInsets.only(right: 10, top: 55),
           child: dragIcon,
         ),
       );
