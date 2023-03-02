@@ -5,6 +5,7 @@ import 'package:seg_coursework_app/pages/theme_page/customize_theme_page.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/theme_grid_square.dart';
 
 
 void main() {
@@ -37,6 +38,12 @@ void main() {
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: ThemePage(),)));
+
+    // Find all ThemeGridSquares on screen before adding a theme.
+    final themeGridSquareFinderBefore = find.byType(ThemeGridSquare, skipOffstage: false);
+    
+    // Get the before count of ThemeGridSquares found.
+    final themeGridSquareCountBefore = themeGridSquareFinderBefore.evaluate().length;
 
     await tester.tap(find.byKey(const ValueKey("addThemeButton")));
     await tester.pumpAndSettle();
@@ -73,6 +80,14 @@ void main() {
 
     await tester.tap(find.byKey(ValueKey("backButton")));
     await tester.pumpAndSettle();
+
+    // Find all ThemeGridSquares on screen after adding a theme.
+    final themeGridSquareFinderAfter = find.byType(ThemeGridSquare, skipOffstage: false);
+    
+    // Get the after count of ThemeGridSquares found.
+    final themeGridSquareCountAfter = themeGridSquareFinderAfter.evaluate().length;
+
+    expect(themeGridSquareCountAfter, equals(themeGridSquareCountBefore + 1));
 
     // Choose the newly created theme.
     await tester.tap(find.text("Custom theme", skipOffstage: false), warnIfMissed: false);

@@ -99,7 +99,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     return FloatingActionButton(
       heroTag: "addToListOfListsButton",
       key: const Key("addToListOfListsButton"),
-      // backgroundColor: Colors.white,
       tooltip: 'Save List',
       child: const Icon(
         Icons.add,
