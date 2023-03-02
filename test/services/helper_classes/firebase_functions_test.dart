@@ -8,8 +8,7 @@ import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
-
-class MockFirebaseAuthentication extends Mock implements FirebaseAuth {}
+import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 
 Future<void> main() async {
   late FirebaseFunctions firebaseFunctions;
@@ -322,13 +321,13 @@ Future<void> main() async {
   });
 
   test(
-      "updating the name of a categoryItem that doesn't exist throws an exception",
+      "updating the name of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
     await _createCategory(id: "00xx");
     expect(
-        firebaseFunctions.updateCategoryItemsName(
+        await firebaseFunctions.updateCategoryItemsName(
             itemId: "doesn't exist", newName: "Nova Water"),
-        throwsA(isInstanceOf<FirebaseException>()));
+        null);
   });
 
   test(
@@ -490,13 +489,13 @@ Future<void> main() async {
   });
 
   test(
-      "updating the image of a categoryItem that doesn't exist throws an exception",
+      "updating the image of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
     await _createCategory(id: "00xx");
     expect(
-        firebaseFunctions.updateCategoryItemsImage(
+        await firebaseFunctions.updateCategoryItemsImage(
             itemId: "doesn't exist", newImageUrl: "Hana-water.jpeg"),
-        throwsA(isInstanceOf<FirebaseException>()));
+        null);
   });
 
   test(

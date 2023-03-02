@@ -12,8 +12,22 @@ import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
 class AddChoiceBoardItem extends StatefulWidget {
   final String categoryId;
-  const AddChoiceBoardItem({Key? key, required this.categoryId})
-      : super(key: key);
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+  late final File? preSelectedImage;
+
+  AddChoiceBoardItem(
+      {super.key,
+      required this.categoryId,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
+      this.preSelectedImage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<AddChoiceBoardItem> createState() => _AddChoiceBoardItem();
@@ -21,14 +35,23 @@ class AddChoiceBoardItem extends StatefulWidget {
 
 /// A Popup card to add a new item to a category.
 class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
-  File? selectedImage; // hold the currently selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
-  final firestoreFunctions = FirebaseFunctions(
-      auth: FirebaseAuth.instance,
-      firestore: FirebaseFirestore.instance,
-      storage: FirebaseStorage.instance);
   final imagePickerFunctions = ImagePickerFunctions();
+  File? selectedImage; // hold the currently selected image by the user
+  late FirebaseFunctions firestoreFunctions;
+
+  @override
+  void initState() {
+    super.initState();
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    if (widget.preSelectedImage != null) {
+      selectedImage = widget.preSelectedImage;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +194,11 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
               itemId: itemId);
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) =>
-                AdminChoiceBoards(draggableCategories: devCategories),
+            builder: (context) => AdminChoiceBoards(
+                draggableCategories: devCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage),
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(

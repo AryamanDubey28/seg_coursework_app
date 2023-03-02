@@ -10,22 +10,38 @@ class DeleteItemButton extends StatefulWidget {
   final String categoryId;
   final String itemName;
   final String itemId;
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
 
-  const DeleteItemButton(
+  DeleteItemButton(
       {super.key,
       required this.categoryId,
       required this.itemId,
-      required this.itemName});
+      required this.itemName,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<DeleteItemButton> createState() => _DeleteItemButtonState();
 }
 
 class _DeleteItemButtonState extends State<DeleteItemButton> {
-  final firestoreFunctions = FirebaseFunctions(
-      auth: FirebaseAuth.instance,
-      firestore: FirebaseFirestore.instance,
-      storage: FirebaseStorage.instance);
+  late FirebaseFunctions firestoreFunctions;
+
+  @override
+  void initState() {
+    super.initState();
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +63,14 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
           content: Text('Are you sure you want to delete ${widget.itemName}?'),
           actions: <Widget>[
             TextButton(
+              key: Key("cancelItemDelete"),
               child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
+              key: Key("confirmItemDelete"),
               child: Text('Delete'),
               onPressed: () async {
                 try {

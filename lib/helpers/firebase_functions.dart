@@ -96,11 +96,6 @@ class FirebaseFunctions {
           .where(FieldPath.documentId, isEqualTo: itemId)
           .get();
 
-      if (categoryItemsSnapshot.size == 0) {
-        return throw FirebaseException(
-            plugin: "No categoryItems found with the given item id");
-      }
-
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
         final DocumentReference categoryItemReference = firestore
             .collection('categoryItems/${category.id}/items')
@@ -165,11 +160,6 @@ class FirebaseFunctions {
           .collection('categoryItems/${category.id}/items')
           .where(FieldPath.documentId, isEqualTo: itemId)
           .get();
-
-      if (categoryItemsSnapshot.size == 0) {
-        return throw FirebaseException(
-            plugin: "No categoryItems found with the given item id");
-      }
 
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
         final DocumentReference categoryItemReference = firestore

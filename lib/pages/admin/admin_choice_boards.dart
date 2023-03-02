@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
@@ -13,8 +16,20 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
 class AdminChoiceBoards extends StatefulWidget {
   final List<DraggableList> draggableCategories;
-  const AdminChoiceBoards({Key? key, required this.draggableCategories})
-      : super(key: key);
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+
+  AdminChoiceBoards(
+      {super.key,
+      required this.draggableCategories,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<AdminChoiceBoards> createState() => _AdminChoiceBoards();
@@ -172,6 +187,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               AddItemButton(
                 categoryId: category.id,
                 key: Key("addItemButton-${category.id}"),
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage,
               ),
               const Padding(padding: EdgeInsets.only(right: 35))
             ],
@@ -207,15 +225,23 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DeleteItemButton(
-                        categoryId: category.id,
-                        itemId: item.id,
-                        itemName: item.name,
-                        key: Key("deleteItemButton-${item.id}")),
+                      categoryId: category.id,
+                      itemId: item.id,
+                      itemName: item.name,
+                      key: Key("deleteItemButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
                     EditItemButton(
-                        itemId: item.id,
-                        itemName: item.name,
-                        itemImageUrl: item.imageUrl,
-                        key: Key("editItemButton-${item.id}")),
+                      itemId: item.id,
+                      itemName: item.name,
+                      itemImageUrl: item.imageUrl,
+                      key: Key("editItemButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
                   ],
                 ),
               )))

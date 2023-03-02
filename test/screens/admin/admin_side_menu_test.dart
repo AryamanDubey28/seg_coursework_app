@@ -8,7 +8,7 @@ import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart'
 
 void main() {
   testWidgets("Menu has all the buttons", (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: AdminSideMenu()));
+    await tester.pumpWidget(const MaterialApp(home: AdminSideMenu(mock: true)));
 
     expect(find.byKey(const ValueKey("choiceBoards")), findsOneWidget);
     expect(find.byKey(const ValueKey("visualTimetable")), findsOneWidget);
@@ -21,7 +21,10 @@ void main() {
   testWidgets("Choice boards button does correct page navigation",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(const MaterialApp(home: AdminSideMenu()));
+      await tester.pumpWidget(const MaterialApp(
+          home: AdminSideMenu(
+        mock: true,
+      )));
       await tester.tap(find.byKey(const ValueKey("choiceBoards")));
       await tester.pumpAndSettle();
 
@@ -32,7 +35,8 @@ void main() {
   testWidgets("Visual timetable button does correct page navigation",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(const MaterialApp(home: AdminSideMenu()));
+      await tester
+          .pumpWidget(const MaterialApp(home: AdminSideMenu(mock: true)));
       await tester.tap(find.byKey(const ValueKey("visualTimetable")));
       await tester.pumpAndSettle();
 
@@ -43,7 +47,8 @@ void main() {
   testWidgets("Child mode button does correct page navigation",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(const MaterialApp(home: AdminSideMenu()));
+      await tester
+          .pumpWidget(const MaterialApp(home: AdminSideMenu(mock: true)));
       await tester.tap(find.byKey(const ValueKey("childMode")));
       await tester.pumpAndSettle();
 

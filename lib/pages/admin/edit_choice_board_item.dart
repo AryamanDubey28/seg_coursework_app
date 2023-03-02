@@ -14,12 +14,22 @@ class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
   final String itemName;
   final String itemImageUrl;
-  const EditChoiceBoardItem(
-      {Key? key,
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+
+  EditChoiceBoardItem(
+      {super.key,
       required this.itemId,
       required this.itemName,
-      required this.itemImageUrl})
-      : super(key: key);
+      required this.itemImageUrl,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<EditChoiceBoardItem> createState() => _EditChoiceBoardItem();
@@ -30,11 +40,17 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   File? selectedImage; // hold the newly selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
-  final firestoreFunctions = FirebaseFunctions(
-      auth: FirebaseAuth.instance,
-      firestore: FirebaseFirestore.instance,
-      storage: FirebaseStorage.instance);
   final imagePickerFunctions = ImagePickerFunctions();
+  late FirebaseFunctions firestoreFunctions;
+
+  @override
+  void initState() {
+    super.initState();
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,12 +174,19 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) =>
-            AdminChoiceBoards(draggableCategories: devCategories),
+        builder: (context) => AdminChoiceBoards(
+            draggableCategories: devCategories,
+            auth: widget.auth,
+            firestore: widget.firestore,
+            storage: widget.storage),
       ));
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("No edits made")),
-      );
+      try {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("No edits made")),
+        );
+      } catch (e) {
+        print("No Scaffold to present to!\n${e.toString()}");
+      }
     } else {
       try {
         // Both image and name changed
@@ -201,8 +224,11 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         }
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) =>
-              AdminChoiceBoards(draggableCategories: devCategories),
+          builder: (context) => AdminChoiceBoards(
+              draggableCategories: devCategories,
+              auth: widget.auth,
+              firestore: widget.firestore,
+              storage: widget.storage),
         ));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Edits saved successfully!")),
