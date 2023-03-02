@@ -34,7 +34,6 @@ class AdminSideMenu extends StatelessWidget {
   // The items of the side-menu
   Widget buildMenuItems(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
-    // final iconColor = themeNotifier.getTheme().primaryIconTheme.color;
     
     return Container(
       padding: const EdgeInsets.all(10),

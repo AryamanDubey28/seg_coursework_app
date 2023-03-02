@@ -21,6 +21,7 @@ class CustomThemeDetails {
     return name == other.name && 
     menuColor == other.menuColor && 
     backgroundColor == other.backgroundColor &&
+    buttonsColor == other.backgroundColor &&
     iconsAndTextsColor == other.iconsAndTextsColor;
   }
 
