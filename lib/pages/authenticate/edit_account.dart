@@ -58,7 +58,6 @@ class EditAccountPageState extends State<EditAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         key: Key('app_bar'),
         title: const Text('Edit Account'),

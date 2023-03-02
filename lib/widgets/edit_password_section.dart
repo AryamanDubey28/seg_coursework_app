@@ -111,8 +111,6 @@ class EditPasswordSection extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.teal[400],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
