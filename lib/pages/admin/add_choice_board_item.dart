@@ -148,7 +148,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     // submit to database button
                     TextButton.icon(
                       key: const Key("createItemButton"),
-                      onPressed: () => handleSavingItemToFirestore(
+                      onPressed: () => saveItemToFirestore(
                           image: selectedImage,
                           itemName: itemNameController.text),
                       icon: Icon(Icons.add),
@@ -169,7 +169,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   /// - create a new item with the uploaded image's Url in Firestore
   /// - create a new categoryItem entry in the selected category
   /// - Take the user back to the Choice Boards page
-  void handleSavingItemToFirestore(
+  void saveItemToFirestore(
       {required File? image, required String? itemName}) async {
     if (itemName!.isEmpty || image == null) {
       showDialog(

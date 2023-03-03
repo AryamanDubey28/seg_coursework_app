@@ -148,7 +148,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     // submit to database button
                     TextButton.icon(
                       key: const Key("editItemButton"),
-                      onPressed: () => handleEditingItemInFirestore(
+                      onPressed: () => editItemInFirestore(
                           newImage: selectedImage,
                           newName: itemNameController.text),
                       icon: Icon(Icons.edit),
@@ -168,7 +168,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   /// - Both the name and image changed
   /// - Only the name changed
   /// - Only the image changed
-  void handleEditingItemInFirestore(
+  void editItemInFirestore(
       {required File? newImage, required String? newName}) async {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
