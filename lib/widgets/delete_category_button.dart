@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin/delete_choice_board_category.dart';
 
+/// Button that opens delete category popup when pressed
 class DeleteCategoryButton extends StatefulWidget {
   final String categoryId;
 

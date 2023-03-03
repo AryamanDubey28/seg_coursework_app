@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+/// Deletes a choiceboard category given ID
 class DeleteChoiceBoardCategory extends StatelessWidget {
   final String categoryId;
 
@@ -9,7 +10,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // set up the buttons
+    // Return to admin screen if user cancels choice
     Widget cancelButton = TextButton(
       child: Text("No"),
       onPressed: () {
@@ -17,6 +18,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       },
     );
 
+    // Delete document from firebase collection
     void deleteFromCollection(String collectionName) {
       FirebaseFirestore.instance
           .collection(collectionName)
@@ -28,6 +30,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
           );
     }
 
+    // Once user confirms choice, call delete function
     Widget confirmButton = TextButton(
       child: Text("Yes"),
       onPressed: () {
@@ -38,6 +41,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
         deleteFromCollection("categories");
       },
     );
+
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Warning!"),
