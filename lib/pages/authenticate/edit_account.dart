@@ -10,6 +10,7 @@ import 'package:seg_coursework_app/services/auth.dart';
 import '../admin/admin_side_menu.dart';
 import '../../widgets/loading_indicator.dart';
 
+// Creates a screen and related functionalities for the user to be able to edit their email and password informations.
 class EditAccountPage extends StatefulWidget {
   const EditAccountPage({
     super.key,
