@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable_interface.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 
@@ -37,7 +38,8 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("choiceBoards"),
               leading: const Icon(Icons.photo_size_select_actual_outlined),
               title: const Text('Choice boards'),
-              onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+              onTap: () =>
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const AdminChoiceBoards(),
               )),
             ),
@@ -45,7 +47,8 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("visualTimetable"),
               leading: const Icon(Icons.event),
               title: const Text('Visual Timetable'),
-              onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+              onTap: () =>
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const VisualTimetableInterface(),
               )),
             ),
@@ -53,9 +56,18 @@ class AdminSideMenu extends StatelessWidget {
               key: const Key("childMode"),
               leading: const Icon(Icons.child_care),
               title: const Text('Activate Child Mode'),
-              onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => CustomizableColumn(),
-              )),
+              // onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //   builder: (context) => CustomizableColumn(),
+              // )
+              // ),
+              onTap: () async {
+                final pref = await SharedPreferences.getInstance();
+                pref.setBool("isInChildMode",
+                    true); //isInChildMode boolean set to true as we are entering
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => CustomizableColumn(),
+                ));
+              },
             ),
             ListTile(
               key: const Key("appColours"),

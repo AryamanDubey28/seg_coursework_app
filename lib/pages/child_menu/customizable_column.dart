@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'customizable_row.dart';
 
 // The child menu is formed essentially by creating a column of rows,
@@ -81,9 +82,12 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             ],
           ));
 
-  void submit(BuildContext context) {
+  Future<void> submit(BuildContext context) async {
     //verifys password is correct, if so then navigates back. otherwise says incorrect
     if (pin_controller.text.trim() == "0000") {
+      final pref = await SharedPreferences.getInstance();
+      pref.setBool("isInChildMode",
+          false); //isInChildMode boolean set to false as we are leaving
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
