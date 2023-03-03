@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 import 'customizable_row.dart';
@@ -64,6 +65,11 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             title: Text("Enter your PIN to go back to the Admin Home"),
             content: TextField(
               key: Key("logoutTextField"),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                FilteringTextInputFormatter.digitsOnly
+              ],
               autofocus: true,
               controller: pin_controller,
             ),
@@ -78,13 +84,10 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   void submit(BuildContext context) {
     //verifys password is correct, if so then navigates back. otherwise says incorrect
     if (pin_controller.text.trim() == "0000") {
-      print("navigating back to admin home");
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
       );
-
-      //Navigator.popAndPushNamed(context, 'adminScreen');
     } else {
       Navigator.of(context).pop();
       showDialog(
@@ -114,10 +117,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             child: GestureDetector(
                 key: Key("logoutButton"),
                 //only triggers when its pressed for some time and swiped up
-                // onLongPressUp: () {
-                //   openLogoutDialog(context);
-                // },
-                onTap: () {
+                onLongPressUp: () {
                   openLogoutDialog(context);
                 },
                 child: Icon(Icons.exit_to_app)),
