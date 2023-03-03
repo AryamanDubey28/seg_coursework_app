@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
+import 'package:seg_coursework_app/themes/theme_provider.dart';
+import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
   group("Email edit section", () {
@@ -15,8 +17,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -34,8 +41,7 @@ void main() {
 
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(
-          find.text(
-              "We could not securely verify your identity. Please log out and back in to carry out this change."),
+          find.text("The email address is already in use by another account."),
           findsOneWidget);
     });
 
@@ -44,8 +50,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -73,8 +84,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -105,8 +121,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -118,11 +139,11 @@ void main() {
       final Finder passwordChangeButton =
           find.byKey(Key('edit_password_submit'));
 
-      await tester.enterText(currentPasswordField, 'Password123');
+      await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
-      await tester.enterText(newPasswordField, 'Password123');
+      await tester.enterText(newPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
-      await tester.enterText(confirmNewPasswordField, 'Password123');
+      await tester.enterText(confirmNewPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
@@ -142,8 +163,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -154,12 +180,12 @@ void main() {
           find.byKey(Key('confirm_new_password_input'));
       final Finder passwordChangeButton =
           find.byKey(Key('edit_password_submit'));
-
+      expect(find.byKey(Key('edit_password_submit')), findsOneWidget);
       await tester.enterText(currentPasswordField, '');
       await tester.pumpAndSettle();
-      await tester.enterText(newPasswordField, 'Password123');
+      await tester.enterText(newPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
-      await tester.enterText(confirmNewPasswordField, 'Password123');
+      await tester.enterText(confirmNewPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
@@ -180,8 +206,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -193,11 +224,11 @@ void main() {
       final Finder passwordChangeButton =
           find.byKey(Key('edit_password_submit'));
 
-      await tester.enterText(currentPasswordField, 'Password123');
+      await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
       await tester.enterText(newPasswordField, '');
       await tester.pumpAndSettle();
-      await tester.enterText(confirmNewPasswordField, 'Password123');
+      await tester.enterText(confirmNewPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
@@ -218,8 +249,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -231,9 +267,9 @@ void main() {
       final Finder passwordChangeButton =
           find.byKey(Key('edit_password_submit'));
 
-      await tester.enterText(currentPasswordField, 'Password123');
+      await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
-      await tester.enterText(newPasswordField, 'Password123');
+      await tester.enterText(newPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
       await tester.enterText(confirmNewPasswordField, '');
       await tester.pumpAndSettle();
@@ -256,8 +292,13 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Password123");
-      runApp(MaterialApp(home: EditAccountPage()));
+          email: "anton@test.com", password: "Hello123!");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -269,9 +310,9 @@ void main() {
       final Finder passwordChangeButton =
           find.byKey(Key('edit_password_submit'));
 
-      await tester.enterText(currentPasswordField, 'Password123');
+      await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
-      await tester.enterText(newPasswordField, 'Password123');
+      await tester.enterText(newPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
       await tester.enterText(confirmNewPasswordField, 'NotTheSame123');
       await tester.pumpAndSettle();

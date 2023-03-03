@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Auth {
@@ -60,10 +59,9 @@ class Auth {
         await auth.currentUser!.updateEmail(newEmail);
         return 'Your email was successfully changed.';
       } on FirebaseAuthException catch (e) {
-        print(e);
-        return 'We could not securely verify your identity. Please log out and back in to carry out this change.';
+        return e.message ??
+            'We could not securely verify your identity. Please log out and back in to carry out this change.';
       } catch (e) {
-        print(e);
         return 'We could not connect to the database. Please try again later.';
       }
     } else {

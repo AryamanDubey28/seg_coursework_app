@@ -12,28 +12,31 @@ class PictureGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      itemCount: imagesList.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          childAspectRatio: 4/3,
-          mainAxisSpacing: 3,
-          crossAxisSpacing: 3,
-          ),
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            updateImagesList(imagesList[index]);
-          },
-          child: Tooltip(
-            message: imagesList[index].name,
-            child: ImageSquare(
-              key: Key('gridImage$index'),
-              image: imagesList[index],
+    return Container(
+      margin: EdgeInsets.fromLTRB(7,0,7,7),
+      child: GridView.builder(
+        itemCount: imagesList.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            childAspectRatio: 4/3,
+            mainAxisSpacing: 7,
+            crossAxisSpacing: 7,
             ),
-          ),
-        );
-      }
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              updateImagesList(imagesList[index]);
+            },
+            child: Tooltip(
+              message: imagesList[index].name,
+              child: ImageSquare(
+                key: Key('gridImage$index'),
+                image: imagesList[index],
+              ),
+            ),
+          );
+        }
+      ),
     );
   }
 }

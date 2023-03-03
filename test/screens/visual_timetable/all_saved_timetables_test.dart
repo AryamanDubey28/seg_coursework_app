@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/pages/visual_timetable/all_saved_timetables.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable_interface.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
+import 'package:seg_coursework_app/themes/theme_provider.dart';
+import 'package:seg_coursework_app/themes/themes.dart';
 
 
 void main() {
@@ -12,7 +14,7 @@ void main() {
       mockNetworkImagesFor(() async {
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const VisualTimetableInterface());
+    await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: VisualTimeTable(),)));
 
     await tester.tap(find.byKey(const ValueKey("allTimetablesButton")));
     await tester.pumpAndSettle();
@@ -29,7 +31,7 @@ void main() {
       mockNetworkImagesFor(() async {
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const VisualTimetableInterface());
+    await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: VisualTimeTable(),)));
 
     await tester.tap(find.byKey(const ValueKey("gridImage1")));
     await tester.pump();
@@ -54,7 +56,7 @@ void main() {
       mockNetworkImagesFor(() async {
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const VisualTimetableInterface());
+    await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: VisualTimeTable(),)));
 
     await tester.tap(find.byKey(const ValueKey("gridImage1")));
     await tester.pump();
