@@ -6,9 +6,13 @@ import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 import '../../themes/themes.dart';
 
 class ChildBoards extends StatefulWidget {
+  // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES
+  // String categoryTitle;
+  // ClickableImage categoryImage;
+  // List<ClickableImage> images = [];
   const ChildBoards({Key? key}) : super(key: key);
   // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES, THIS SHOULD BE THE FUNCTION \/ DELETE THE CODE ABOVE
-  // const ChildBoards({Key? key, required String categoryTitle, required ClickableImage categoryImage, required List<ClickableImage> images}) : super(key: key);
+  // const ChildBoards({Key? key, required this.categoryTitle, required this.categoryImage, required this.images}) : super(key: key);
 
   @override
   State<ChildBoards> createState() => _ChildBoards();
@@ -67,9 +71,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         is_available: true),
   ];
   // DELETE DOWN TO HERE
-  // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES
-  // ClickableImage categoryImage;
-  // List<ClickableImage> images = [];
+  
 
   @override
   void initState() {
