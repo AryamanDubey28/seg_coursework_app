@@ -57,7 +57,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "addItemHero-${widget.categoryId}",
           child: Material(
@@ -92,13 +93,16 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                             : Icon(
                                 Icons.image_search_outlined,
                                 size: 160,
+                                color: Colors.black87,
                               )),
                     // instructions text
                     Text(
                       "Pick an image",
                       key: Key("instructionsText"),
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
@@ -143,17 +147,13 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // submit to database button
                     TextButton.icon(
-                        key: const Key("createItemButton"),
-                        onPressed: () => handleSavingItemToFirestore(
-                            image: selectedImage,
-                            itemName: itemNameController.text),
-                        icon: Icon(Icons.add),
-                        label: const Text("Create new item"),
-                        style: const ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.white),
-                            backgroundColor: MaterialStatePropertyAll(
-                                Color.fromARGB(255, 105, 187, 123))))
+                      key: const Key("createItemButton"),
+                      onPressed: () => handleSavingItemToFirestore(
+                          image: selectedImage,
+                          itemName: itemNameController.text),
+                      icon: Icon(Icons.add),
+                      label: const Text("Create new item"),
+                    )
                   ],
                 ),
               ),

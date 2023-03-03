@@ -56,7 +56,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "editItemHero-${widget.itemId}",
           child: Material(
@@ -98,8 +99,10 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     Text(
                       "Pick an image",
                       key: Key("instructionsText"),
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
@@ -144,17 +147,13 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // submit to database button
                     TextButton.icon(
-                        key: const Key("editItemButton"),
-                        onPressed: () => handleEditingItemInFirestore(
-                            newImage: selectedImage,
-                            newName: itemNameController.text),
-                        icon: Icon(Icons.edit),
-                        label: const Text("Edit item"),
-                        style: const ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.white),
-                            backgroundColor: MaterialStatePropertyAll(
-                                Color.fromARGB(255, 0, 76, 153))))
+                      key: const Key("editItemButton"),
+                      onPressed: () => handleEditingItemInFirestore(
+                          newImage: selectedImage,
+                          newName: itemNameController.text),
+                      icon: Icon(Icons.edit),
+                      label: const Text("Edit item"),
+                    )
                   ],
                 ),
               ),

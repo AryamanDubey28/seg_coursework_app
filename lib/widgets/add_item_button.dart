@@ -35,10 +35,6 @@ class _AddItemButtonState extends State<AddItemButton> {
       onPressed: addItem,
       icon: Icon(Icons.add),
       label: const Text("Add an item"),
-      style: const ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(Colors.white),
-          backgroundColor:
-              MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
     );
   }
 

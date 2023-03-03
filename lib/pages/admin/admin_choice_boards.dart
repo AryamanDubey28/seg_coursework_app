@@ -127,10 +127,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       onPressed: addCategory,
       icon: Icon(Icons.add),
       label: const Text("Add a category"),
-      style: const ButtonStyle(
-          foregroundColor: MaterialStatePropertyAll(Colors.white),
-          backgroundColor:
-              MaterialStatePropertyAll(Color.fromARGB(255, 80, 141, 93))),
     );
   }
 

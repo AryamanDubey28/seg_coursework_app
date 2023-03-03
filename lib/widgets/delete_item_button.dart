@@ -71,6 +71,8 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             TextButton(
               key: Key("confirmItemDelete"),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
               child: Text('Delete'),
               onPressed: () async {
                 try {
