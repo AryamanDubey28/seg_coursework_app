@@ -31,7 +31,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -62,17 +63,28 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                     // instructions text
                     Text(
                       "Pick the main category image",
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
-                    PickImageButton(label: Text("Choose from Gallery"), icon: Icon(Icons.image), onPressed: () => pickImage(source: ImageSource.gallery)),
-                    PickImageButton(label: Text("Take a Picture"), icon: Icon(Icons.camera_alt), onPressed: () => pickImage(source: ImageSource.camera)),
+                    PickImageButton(
+                        label: Text("Choose from Gallery"),
+                        icon: Icon(Icons.image),
+                        onPressed: () =>
+                            pickImage(source: ImageSource.gallery)),
+                    PickImageButton(
+                        label: Text("Take a Picture"),
+                        icon: Icon(Icons.camera_alt),
+                        onPressed: () => pickImage(source: ImageSource.camera)),
                     const SizedBox(height: 20),
                     // field to enter the item name
                     TextField(
                       controller: categoryNameController,
-                      decoration: InputDecoration(hintText: "Category's name", border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)),
+                      decoration: InputDecoration(
+                          hintText: "Category's name",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
@@ -81,7 +93,18 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                     ),
                     const SizedBox(height: 20),
                     // submit to database button
-                    TextButton.icon(key: const Key("createCategoryButton"), onPressed: () => saveCategory(image: selectedImage, categoryName: categoryNameController.text), icon: Icon(Icons.add), label: const Text("Create new category"), style: const ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.white), backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))))
+                    TextButton.icon(
+                        key: const Key("createCategoryButton"),
+                        onPressed: () => saveCategory(
+                            image: selectedImage,
+                            categoryName: categoryNameController.text),
+                        icon: Icon(Icons.add),
+                        label: const Text("Create new category"),
+                        style: const ButtonStyle(
+                            foregroundColor:
+                                MaterialStatePropertyAll(Colors.white),
+                            backgroundColor: MaterialStatePropertyAll(
+                                Color.fromARGB(255, 105, 187, 123))))
                   ],
                 ),
               ),
@@ -96,7 +119,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   /// - upload the image to the cloud storage
   /// - create a new category with the uploaded image's Url in Firestore
   /// - Take the user back to the Choice Boards page
-  void saveCategory({required File? image, required String? categoryName}) async {
+  void saveCategory(
+      {required File? image, required String? categoryName}) async {
     if (categoryName!.isEmpty || image == null) {
       showDialog(
           context: context,
@@ -123,7 +147,9 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           showDialog(
               context: context,
               builder: (context) {
-                return AlertDialog(content: Text('An error occurred while communicating with the database'));
+                return AlertDialog(
+                    content: Text(
+                        'An error occurred while communicating with the database'));
               });
         }
       }
@@ -133,9 +159,11 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   /// Take an image and upload it to the cloud storage with
   /// a unique name. Return the URL of the image from the cloud
   Future<String?> uploadImage(File image, String categoryName) async {
-    String uniqueName = categoryName + DateTime.now().millisecondsSinceEpoch.toString();
+    String uniqueName =
+        categoryName + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
-    Reference imageRef = FirebaseStorage.instance.ref().child('images').child(uniqueName);
+    Reference imageRef =
+        FirebaseStorage.instance.ref().child('images').child(uniqueName);
     try {
       await imageRef.putFile(image);
       return await imageRef.getDownloadURL();
@@ -145,7 +173,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text("An error occurred while uploading the image to the cloud"),
+              content: Text(
+                  "An error occurred while uploading the image to the cloud"),
             );
           });
       return null;
@@ -154,11 +183,21 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
 
   /// Add a new entry to the 'categories' collection in Firestore with
   /// the given item information. Return the created category's id
-  Future<String> createCategory({required String title, required String imageUrl}) async {
-    CollectionReference categories = FirebaseFirestore.instance.collection('categories');
+  Future<String> createCategory(
+      {required String title, required String imageUrl}) async {
+    CollectionReference categories =
+        FirebaseFirestore.instance.collection('categories');
     final FirebaseAuth auth = FirebaseAuth.instance;
 
-    return categories.add({'userId': auth.currentUser!.uid, 'title': title, 'illustration': imageUrl, 'rank': await getNewCategoryRank(uid: auth.currentUser!.uid)}).then((category) => category.id).catchError((error, stackTrace) {
+    return categories
+        .add({
+          'userId': auth.currentUser!.uid,
+          'title': title,
+          'illustration': imageUrl,
+          'rank': await getNewCategoryRank(uid: auth.currentUser!.uid)
+        })
+        .then((category) => category.id)
+        .catchError((error, stackTrace) {
           return throw FirebaseException(plugin: stackTrace.toString());
         });
   }
@@ -166,7 +205,10 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   /// Return an appropriate rank for a new category
   /// (one more than the highest rank or zero if empty)
   Future<int> getNewCategoryRank({required String uid}) async {
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('categories').where("userId", isEqualTo: uid).get();
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('categories')
+        .where("userId", isEqualTo: uid)
+        .get();
     return querySnapshot.size;
   }
 
@@ -186,7 +228,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text("Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
+              content: Text(
+                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
             );
           });
     }
