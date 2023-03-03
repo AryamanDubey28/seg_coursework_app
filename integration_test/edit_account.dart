@@ -28,14 +28,15 @@ void main() {
       await Future.delayed(Duration(seconds: 2));
 
       final Finder emailField = find.byKey(Key('email_text_field'));
-      final Finder emailChangeButton = find.byKey(Key('edit_email_submit'));
+      final Finder emailChangeButton =
+          find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
       await tester.enterText(emailField, 'test@gmail.com');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(emailChangeButton);
+      await tester.tap(emailChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -61,14 +62,15 @@ void main() {
       await Future.delayed(Duration(seconds: 2));
 
       final Finder emailField = find.byKey(Key('email_text_field'));
-      final Finder emailChangeButton = find.byKey(Key('edit_email_submit'));
+      final Finder emailChangeButton =
+          find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
       await tester.enterText(emailField, 'test.com');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(emailChangeButton);
+      await tester.tap(emailChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -95,14 +97,15 @@ void main() {
       await Future.delayed(Duration(seconds: 2));
 
       final Finder emailField = find.byKey(Key('email_text_field'));
-      final Finder emailChangeButton = find.byKey(Key('edit_email_submit'));
+      final Finder emailChangeButton =
+          find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
       await tester.enterText(emailField, '');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(emailChangeButton);
+      await tester.tap(emailChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -128,6 +131,8 @@ void main() {
             home: EditAccountPage(),
           )));
       ;
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -137,7 +142,7 @@ void main() {
       final Finder confirmNewPasswordField =
           find.byKey(Key('confirm_new_password_input'));
       final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'));
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
@@ -148,7 +153,7 @@ void main() {
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(passwordChangeButton);
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -179,7 +184,8 @@ void main() {
       final Finder confirmNewPasswordField =
           find.byKey(Key('confirm_new_password_input'));
       final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'));
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
       expect(find.byKey(Key('edit_password_submit')), findsOneWidget);
       await tester.enterText(currentPasswordField, '');
       await tester.pumpAndSettle();
@@ -190,7 +196,7 @@ void main() {
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(passwordChangeButton);
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -222,7 +228,7 @@ void main() {
       final Finder confirmNewPasswordField =
           find.byKey(Key('confirm_new_password_input'));
       final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'));
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
@@ -233,7 +239,7 @@ void main() {
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(passwordChangeButton);
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -265,7 +271,7 @@ void main() {
       final Finder confirmNewPasswordField =
           find.byKey(Key('confirm_new_password_input'));
       final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'));
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
@@ -276,7 +282,7 @@ void main() {
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(passwordChangeButton);
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
@@ -308,7 +314,7 @@ void main() {
       final Finder confirmNewPasswordField =
           find.byKey(Key('confirm_new_password_input'));
       final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'));
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, 'Hello123!');
       await tester.pumpAndSettle();
@@ -319,7 +325,7 @@ void main() {
 
       await Future.delayed(Duration(seconds: 2));
 
-      await tester.tap(passwordChangeButton);
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
