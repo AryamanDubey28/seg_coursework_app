@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:seg_coursework_app/pages/authenticate/Auth.dart';
+import 'package:seg_coursework_app/pages/authenticate/auth.dart';
 import 'package:mockito/annotations.dart';
 
 @GenerateNiceMocks([MockSpec<FirebaseAuth>()])

@@ -51,13 +51,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple[400],
       ),
+      backgroundColor: Colors.grey[200],
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             "Enter your email to recieve a password reset link",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 30, color: Colors.black),
           ),
 
           //email textfield
@@ -71,6 +72,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: TextField(
+                  cursorColor: Colors.black,
                   controller: _emailController,
                   decoration: InputDecoration(
                     border: InputBorder.none,

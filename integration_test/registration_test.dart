@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 
 Future<void> addDelay() async {
   await Future<void>.delayed(Duration(milliseconds: 1000));
@@ -39,7 +39,7 @@ void main() {
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminInterface), findsOneWidget);
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
 
       final auth = FirebaseAuth.instance;
       auth.currentUser!.delete();
@@ -77,7 +77,7 @@ void main() {
 
       await addDelay();
 
-      expect(find.byType(AdminInterface), findsNothing);
+      expect(find.byType(AdminChoiceBoards), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text("Password confirmation did not match. Please try again."), findsOneWidget);
     });

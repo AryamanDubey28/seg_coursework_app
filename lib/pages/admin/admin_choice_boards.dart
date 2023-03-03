@@ -175,17 +175,35 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     const addIcon = Icon(
       Icons.add,
     );
-    const contentColor = MaterialStatePropertyAll(Colors.white);
 
-    return TextButton.icon(
-      key: const Key("addItemButton"),
-      onPressed: addItem,
-      icon: addIcon,
-      label: const Text("Add an item"),
-      style: const ButtonStyle(
-          foregroundColor: contentColor,
-          backgroundColor:
-              MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
+    if (isCategory) {
+      return TextButton.icon(
+        key: const Key("addCategoryButton"),
+        onPressed: addCategory,
+        icon: addIcon,
+        label: const Text("Add a category"),
+      );
+    } else {
+      return TextButton.icon(
+        key: const Key("addItemButton"),
+        onPressed: addItem,
+        icon: addIcon,
+        label: const Text("Add an item"),
+      );
+    }
+  }
+
+  /// Builds the delete button
+  IconButton buildDeleteButton() {
+    const deleteIcon = Icon(
+      Icons.delete,
+      color: Colors.red,
+    );
+
+    return IconButton(
+      key: const Key("deleteButton"),
+      onPressed: deleteCategory,
+      icon: deleteIcon,
     );
   }
 
@@ -258,6 +276,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 ),
                 title: Text(
                   item.name,
+                  style: TextStyle(color: Colors.black),
                   key: const Key("itemTitle"),
                 ),
                 trailing: Row(

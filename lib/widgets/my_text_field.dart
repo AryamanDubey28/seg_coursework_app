@@ -38,6 +38,7 @@ class _MyTextFieldState extends State<MyTextField> {
           padding: const EdgeInsets.only(left: 20.0),
           child: widget.isPassword == false
               ? TextField(
+                cursorColor: Colors.black,
                   controller: widget.controller,
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -45,6 +46,7 @@ class _MyTextFieldState extends State<MyTextField> {
                   ),
                 )
               : TextField(
+                cursorColor: Colors.black,
                   obscureText: !passwordVisible,
                   enableSuggestions: false,
                   autocorrect: false,
@@ -53,6 +55,7 @@ class _MyTextFieldState extends State<MyTextField> {
                     border: InputBorder.none,
                     hintText: widget.hint,
                     suffixIcon: IconButton(
+                      color: Colors.grey[500],
                       icon: Icon(passwordVisible
                           ? Icons.visibility
                           : Icons.visibility_off),

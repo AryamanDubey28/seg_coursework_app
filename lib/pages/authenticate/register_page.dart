@@ -99,12 +99,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     key: Key("account_circle_icon"),
                     Icons.account_circle_sharp,
                     size: 90,
+                    color: Colors.black,
                   ),
                   Text(
                     "Register Here!",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 72,
+                      color: Colors.black
                     ),
                   ),
                   SizedBox(
@@ -166,12 +168,22 @@ class _RegisterPageState extends State<RegisterPage> {
                         "Already have an account?",
                         style: TextStyle(
                           fontSize: 24,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                       TextButton(
                         onPressed: () {
                           widget.showLoginPage();
                         },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.blue,
+                          backgroundColor: Colors.grey[200],
+                          textStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
                         child: Text(
                           "Go Back",
                           key: Key("go_back_button"),

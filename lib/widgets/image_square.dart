@@ -11,20 +11,24 @@ class ImageSquare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
-        border: Border.all(color: Colors.black, width: 2),
-      ),
-      child: Image.network(
-        image.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (BuildContext context, Object exception,
-            StackTrace? stackTrace) {
-          return Text('!Error loading image! $exception');
-        },
+    return Material(
+      elevation: 5,
+      borderRadius: const BorderRadius.all(Radius.circular(20)),
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: Image.network(
+          image.imageUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (BuildContext context, Object exception,
+              StackTrace? stackTrace) {
+            return Center(child: Icon(Icons.network_check_rounded, color: Colors.red,));
+          },
+        ),
       ),
     );
   }
