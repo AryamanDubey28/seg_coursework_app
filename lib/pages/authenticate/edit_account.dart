@@ -58,6 +58,7 @@ class EditAccountPageState extends State<EditAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         key: Key('app_bar'),
         title: const Text('Edit Account'),
