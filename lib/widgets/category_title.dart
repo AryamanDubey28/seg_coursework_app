@@ -20,7 +20,6 @@ class CategoryTitle extends StatelessWidget {
             title,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontFamily: 'Poppins',
-                  color: Colors.white,
                   fontSize: 27,
                   fontWeight: FontWeight.w500,
                 ),

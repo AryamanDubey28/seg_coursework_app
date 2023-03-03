@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
+
+import '../../themes/themes.dart';
 
 class ChildBoards extends StatefulWidget {
   const ChildBoards({Key? key}) : super(key: key);
@@ -77,8 +79,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // Method used to build main body
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<CustomTheme>(context);
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
       body: Center(
         widthFactor: MediaQuery.of(context).size.width,
         heightFactor: MediaQuery.of(context).size.height,
@@ -87,7 +89,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           const SizedBox(
             height: 30,
           ),
-          getTopMenu(),
+          getTopMenu(themeNotifier),
           //this method is imported from clickable_image_grid in widgets
           getMainImages(images),
         ]),
@@ -96,7 +98,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   }
 
   // Method used to get top menu which has back button, category name and image
-  Padding getTopMenu() {
+  Padding getTopMenu(CustomTheme themeNotifier) {
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Container(
@@ -104,10 +106,11 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         alignment: Alignment.center,
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            color: Colors.teal, borderRadius: BorderRadius.circular(8)),
+          color: themeNotifier.getTheme().appBarTheme.backgroundColor,
+          borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
-            getBackButton(),
+            getBackButton(themeNotifier),
             //box for spacing
             const SizedBox(
               width: 30,
@@ -154,7 +157,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   }
 
   // Returns round back button that shows on menu
-  Container getBackButton() {
+  Container getBackButton(CustomTheme themeNotifier) {
     return Container(
       key: const Key("backButton"),
       margin: const EdgeInsets.all(8.0),
@@ -163,20 +166,15 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       alignment: Alignment.center,
       decoration: BoxDecoration(
           border: Border.all(width: 3),
-          color: Color.fromARGB(255, 0, 76, 153),
+          color: themeNotifier.getTheme().floatingActionButtonTheme.backgroundColor,
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        iconSize: 50,
-        splashColor: Colors.blue.shade900,
-        hoverColor: Colors.transparent,
-        icon: const Icon(Icons.arrow_back_rounded),
-        onPressed: () =>
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => CustomizableColumn(),
-        )),
-      ),
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.all(8.0),
+          iconSize: 50,
+          hoverColor: Colors.transparent,
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
 }
