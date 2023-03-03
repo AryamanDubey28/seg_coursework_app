@@ -13,6 +13,8 @@ import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/pages/admin/add_choice_board_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/themes/theme_provider.dart';
+import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
   late String breakfastCategoryId;
@@ -33,13 +35,16 @@ void main() {
 
   testWidgets("all elements are present", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AddChoiceBoardItem(
-        categoryId: breakfastCategoryId,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardItem(
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+            ),
+          )));
 
       expect(find.byKey(const ValueKey("itemImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
@@ -54,13 +59,16 @@ void main() {
   testWidgets("name and image missing shows alert",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AddChoiceBoardItem(
-        categoryId: breakfastCategoryId,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardItem(
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+            ),
+          )));
 
       await tester.tap(find.byKey(ValueKey("createItemButton")));
       await tester.pumpAndSettle();
@@ -70,13 +78,16 @@ void main() {
 
   testWidgets("only image missing shows alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AddChoiceBoardItem(
-        categoryId: breakfastCategoryId,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardItem(
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+            ),
+          )));
 
       final nameField = find.byKey(ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
@@ -90,14 +101,16 @@ void main() {
 
   testWidgets("only name missing shows alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AddChoiceBoardItem(
-        categoryId: breakfastCategoryId,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-        preSelectedImage: File("assets/test_image.png"),
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardItem(
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+            ),
+          )));
 
       await tester.tap(find.byKey(ValueKey("createItemButton")));
       await tester.pumpAndSettle();
@@ -108,14 +121,17 @@ void main() {
   testWidgets("successful item creation takes user to choice boards page",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AddChoiceBoardItem(
-        categoryId: breakfastCategoryId,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-        preSelectedImage: File("assets/test_image.png"),
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardItem(
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+              preSelectedImage: File("assets/test_image.png"),
+            ),
+          )));
 
       final nameField = find.byKey(ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");

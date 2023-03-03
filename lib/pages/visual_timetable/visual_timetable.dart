@@ -85,13 +85,11 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     return FloatingActionButton(
       heroTag: "hideShowButton",
       key: const Key("hideShowButton"),
-      backgroundColor: isGridVisible ? Colors.teal : Colors.white,
       onPressed: _toggleGrid,
       tooltip: 'Show/Hide',
       child: Icon(
         isGridVisible ? Icons.hide_image_outlined : Icons.image,
-        color: isGridVisible ? Colors.white : Colors.teal, 
-        ),
+      ),
     );
   }
 
@@ -101,11 +99,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     return FloatingActionButton(
       heroTag: "addToListOfListsButton",
       key: const Key("addToListOfListsButton"),
-      backgroundColor: Colors.white,
       tooltip: 'Save List',
       child: const Icon(
         Icons.add,
-        color: Colors.teal,),
+      ),
       onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
       
     );
@@ -154,6 +151,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         actions: <Widget> [
           IconButton(
             key: const Key("allTimetablesButton"),
+            tooltip: "View all saved timetables",
             onPressed: () {
               Navigator.push(
                 context,
@@ -185,7 +183,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
               ),
             )
           ),
-          isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 1, color: Colors.white,) : const SizedBox(),
+          isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
           Expanded(
             //This will make the timetable bigger if the PictureGrid is not visible
             flex: isGridVisible ? 5 : 0,
@@ -204,7 +202,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8),
         child: Stack(
-          children: [
+          children: <Widget>[
             //This makes sure that a timetable can't be saved if it has one or no elements.
             if (timetableList.imagesList.length >= 2) Align(
               alignment: Alignment.bottomLeft,

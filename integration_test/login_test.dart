@@ -1,7 +1,8 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
 
 void main() {
@@ -29,7 +30,7 @@ void main() {
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
-      expect(find.byType(AdminInterface), findsOneWidget);
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
 
     // Need to figure out how to press on side menu drawer to access log out button

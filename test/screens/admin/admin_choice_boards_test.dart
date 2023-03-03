@@ -13,6 +13,8 @@ import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/themes/theme_provider.dart';
+import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
   late FirebaseAuth mockAuth;
@@ -62,15 +64,15 @@ void main() {
   testWidgets("Category header has all components",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
-
-      final String breakfastCategoryId = testCategories.first.id;
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       expect(find.byKey(const ValueKey("addCategoryButton")), findsOneWidget);
 
@@ -93,13 +95,15 @@ void main() {
 
   testWidgets("Category item has all components", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       expect(
           find.byKey(ValueKey("categoryItem-${toastItem.id}")), findsOneWidget);
@@ -116,13 +120,15 @@ void main() {
   testWidgets("Add item button does correct page navigation",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       await tester
           .tap(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")));
@@ -136,13 +142,15 @@ void main() {
   testWidgets("Edit item button does correct page navigation",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       await tester.tap(find.byKey(ValueKey("editItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
@@ -155,13 +163,15 @@ void main() {
   testWidgets("Delete item button shows confirmation alert",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       await tester
           .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
@@ -174,13 +184,15 @@ void main() {
 
   testWidgets("Delete item alert has two buttons", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       await tester
           .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
@@ -194,13 +206,15 @@ void main() {
 
   testWidgets("Cancel deleting item hides alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
       await _createData();
 
       await tester
@@ -216,13 +230,15 @@ void main() {
 
   testWidgets("Confirm deleting item hides alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: AdminChoiceBoards(
-        draggableCategories: testCategories,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
       await _createData();
 
       await tester

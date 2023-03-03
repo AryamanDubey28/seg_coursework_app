@@ -14,6 +14,8 @@ import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/themes/theme_provider.dart';
+import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
   late DraggableListItem toastItem;
@@ -63,15 +65,17 @@ void main() {
 
   testWidgets("all elements are present", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: EditChoiceBoardItem(
-        itemId: toastItem.id,
-        itemImageUrl: toastItem.imageUrl,
-        itemName: toastItem.imageUrl,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardItem(
+            itemId: toastItem.id,
+            itemImageUrl: toastItem.imageUrl,
+            itemName: toastItem.imageUrl,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       expect(find.byKey(const ValueKey("itemImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
@@ -86,15 +90,17 @@ void main() {
   testWidgets("making no edits takes user to choice board page",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: EditChoiceBoardItem(
-        itemId: toastItem.id,
-        itemImageUrl: toastItem.imageUrl,
-        itemName: toastItem.imageUrl,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardItem(
+            itemId: toastItem.id,
+            itemImageUrl: toastItem.imageUrl,
+            itemName: toastItem.imageUrl,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       await _createData();
 
@@ -106,15 +112,17 @@ void main() {
 
   testWidgets("changing only name is successful", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: EditChoiceBoardItem(
-        itemId: toastItem.id,
-        itemImageUrl: toastItem.imageUrl,
-        itemName: toastItem.imageUrl,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardItem(
+            itemId: toastItem.id,
+            itemImageUrl: toastItem.imageUrl,
+            itemName: toastItem.imageUrl,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       await _createData();
 
@@ -131,15 +139,17 @@ void main() {
   testWidgets("editing an item that doesn't exist shows error",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-          home: EditChoiceBoardItem(
-        itemId: toastItem.id,
-        itemImageUrl: toastItem.imageUrl,
-        itemName: toastItem.imageUrl,
-        auth: mockAuth,
-        firestore: mockFirestore,
-        storage: mockStorage,
-      )));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardItem(
+            itemId: toastItem.id,
+            itemImageUrl: toastItem.imageUrl,
+            itemName: toastItem.imageUrl,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
 
       final nameField = find.byKey(ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");

@@ -196,6 +196,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 title: Text(
                   item.name,
                   key: Key("itemTitle-${item.id}"),
+                  style: TextStyle(color: Colors.black),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
