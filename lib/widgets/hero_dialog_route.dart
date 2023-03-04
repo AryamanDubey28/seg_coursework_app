@@ -37,7 +37,18 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return _builder(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final pageWidth = screenWidth * 0.7;
+
+    return Transform.scale(
+      scale: 1,
+      child: Center(
+        child: Container(
+          width: pageWidth,
+          child: _builder(context),
+        ),
+      ),
+    );
   }
 
   @override

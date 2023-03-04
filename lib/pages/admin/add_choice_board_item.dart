@@ -128,14 +128,15 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                             setState(() => selectedImage = newImage);
                           }
                         }),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                     // field to enter the item name
                     TextField(
                       key: Key("itemNameField"),
                       controller: itemNameController,
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 25.0),
                       decoration: InputDecoration(
-                          hintText: "Item's name",
+                          hintText: "Enter a name for the item",
                           border: InputBorder.none,
                           hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,

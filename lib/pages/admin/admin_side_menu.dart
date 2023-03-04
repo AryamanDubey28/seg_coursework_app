@@ -6,6 +6,7 @@ import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import '../../themes/themes.dart';
 import '../visual_timetable/visual_timetable.dart';
@@ -120,6 +121,11 @@ class AdminSideMenu extends StatelessWidget {
             title: const Text('Log out'),
             onTap: () {
               FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Wrapper(),
+                  ));
             },
           ),
         ],

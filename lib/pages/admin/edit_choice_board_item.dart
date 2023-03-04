@@ -128,12 +128,13 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                             setState(() => selectedImage = newImage);
                           }
                         }),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                     // field to enter the item name
                     TextField(
                       key: Key("itemNameField"),
                       controller: itemNameController,
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 25.0),
                       decoration: InputDecoration(
                           hintText: widget.itemName,
                           border: InputBorder.none,
