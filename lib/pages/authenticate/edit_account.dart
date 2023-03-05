@@ -1,14 +1,9 @@
-import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/widgets/edit_email_section.dart';
 import 'package:seg_coursework_app/widgets/edit_password_section.dart';
-import '../../widgets/my_text_field.dart';
-import '../admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import '../admin/admin_side_menu.dart';
-import '../../widgets/loading_indicator.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
 class EditAccountPage extends StatefulWidget {

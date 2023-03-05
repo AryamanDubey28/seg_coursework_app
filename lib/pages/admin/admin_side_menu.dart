@@ -1,7 +1,12 @@
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/data/choice_boards_data.dart';
+import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import '../../themes/themes.dart';
@@ -10,7 +15,8 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
-  const AdminSideMenu({Key? key}) : super(key: key);
+  final bool mock;
+  const AdminSideMenu({Key? key, this.mock = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Drawer(
@@ -46,10 +52,19 @@ class AdminSideMenu extends StatelessWidget {
               Icons.photo_size_select_actual_outlined,
             ),
             title: const Text('Choice boards'),
-            onTap: () =>
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const AdminChoiceBoards(),
-            )),
+            onTap: () => Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
+              if (!mock) {
+                return AdminChoiceBoards(draggableCategories: devCategories);
+              } else {
+                return AdminChoiceBoards(
+                  draggableCategories: devCategories,
+                  auth: MockFirebaseAuthentication(),
+                  firestore: FakeFirebaseFirestore(),
+                  storage: MockFirebaseStorage(),
+                );
+              }
+            })),
           ),
           ListTile(
             key: const Key("visualTimetable"),
@@ -114,6 +129,11 @@ class AdminSideMenu extends StatelessWidget {
             title: const Text('Log out'),
             onTap: () {
               FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Wrapper(),
+                  ));
             },
           ),
         ],
