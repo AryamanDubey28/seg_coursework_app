@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
+import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import '../../themes/themes.dart';
 import '../visual_timetable/visual_timetable.dart';
@@ -111,7 +112,14 @@ class AdminSideMenu extends StatelessWidget {
               Icons.account_box_outlined,
             ),
             title: const Text('Edit Account Details'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditAccountPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             key: const Key("logout"),
