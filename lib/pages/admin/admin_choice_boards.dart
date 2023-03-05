@@ -198,7 +198,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SwitchButton(itemId: "Eaawa8YiQRaTYnXmcJNp"),
+                    SwitchButton(
+                      itemId: item.id,
+                      itemAvailability: item.availability,
+                      key: Key("switchButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
                     DeleteItemButton(
                       categoryId: category.id,
                       itemId: item.id,

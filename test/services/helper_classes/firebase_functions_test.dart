@@ -765,4 +765,36 @@ Future<void> main() async {
             categoryId: "00xx", removedRank: 1),
         null);
   });
+
+  // test("test admin switch correctly updates availability status of item",
+  //     () async {
+  //   const String name = "Car";
+  //   const String imageUrl = "Ferrari.jpeg";
+  //   const String categoryId = "77xx";
+
+  //   String newItemId =
+  //       await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+  //   await firebaseFunctions.createCategoryItem(
+  //       name: name,
+  //       imageUrl: imageUrl,
+  //       categoryId: categoryId,
+  //       itemId: newItemId);
+
+  //   final newCategoryItem = await mockFirestore
+  //       .collection('categoryItems/$categoryId/items')
+  //       .doc(newItemId)
+  //       .get();
+
+  //   final data = newCategoryItem.data();
+  //   final currentValue = data!["is_available"];
+  //   expect(currentValue, true);
+
+  //   firebaseFunctions.updateItemAvailability(itemKey: newItemId);
+
+  //   final newData = newCategoryItem.data();
+  //   final newValue = newData!["is_available"];
+
+  //   expect(newValue, false);
+  // });
 }

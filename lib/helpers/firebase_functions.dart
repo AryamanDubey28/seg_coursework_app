@@ -51,6 +51,7 @@ class FirebaseFunctions {
       'name': name,
       'rank': await getNewCategoryItemRank(categoryId: categoryId),
       'userId': auth.currentUser!.uid
+      // ignore: void_checks
     }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
@@ -73,6 +74,7 @@ class FirebaseFunctions {
     return items
         .doc(itemId)
         .update({'name': newName}).catchError((error, stackTrace) {
+      // ignore: invalid_return_type_for_catch_error
       return throw FirebaseException(plugin: stackTrace.toString());
     });
   }
@@ -221,5 +223,61 @@ class FirebaseFunctions {
       await documentReference
           .update({'rank': documentSnapshot.get('rank') - 1});
     }
+  }
+
+  Future<void> multiPathUpdate(String itemKey, bool currentValue) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where('userId', isEqualTo: auth.currentUser!.uid)
+        .get();
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .where(FieldPath.documentId, isEqualTo: itemKey)
+          .get();
+
+      for (final DocumentSnapshot item in categoryItemsSnapshot.docs) {
+        final DocumentReference itemReference = firestore
+            .collection('categoryItems/${category.id}/items')
+            .doc(item.id);
+
+        await itemReference.update({"is_available": !currentValue});
+      }
+    }
+  }
+
+  Future<bool> updateItemAvailability({required String itemKey}) async {
+    try {
+      final DocumentReference itemRef =
+          await FirebaseFirestore.instance.collection("items").doc(itemKey);
+      final DocumentSnapshot documentSnapshot = await itemRef.get();
+      final Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+      final bool? currentValue = data["is_available"];
+      // Items collection update
+      FirebaseFirestore.instance
+          .collection("items")
+          .doc(itemKey)
+          .update({"is_available": !currentValue!}).then(
+        (_) => multiPathUpdate(itemKey, currentValue),
+      );
+    } on Exception catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  Future getItemAvailability({required String itemId}) async {
+    final DocumentReference itemRef =
+        await FirebaseFirestore.instance.collection("items").doc(itemId);
+    final DocumentSnapshot documentSnapshot = await itemRef.get();
+    final Map<String, dynamic> data =
+        documentSnapshot.data() as Map<String, dynamic>;
+    final bool? currentValue = data["is_available"];
+    return currentValue;
   }
 }

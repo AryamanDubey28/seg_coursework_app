@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
 // ignore: slash_for_doc_comments
 /**
@@ -10,68 +12,72 @@ import 'package:flutter/material.dart';
  */
 class SwitchButton extends StatefulWidget {
   final String itemId;
+  final bool itemAvailability;
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
 
-  const SwitchButton({super.key, required this.itemId});
+  SwitchButton(
+      {super.key,
+      required this.itemId,
+      required this.itemAvailability,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<SwitchButton> createState() => _SwitchButtonState();
 }
 
 class _SwitchButtonState extends State<SwitchButton> {
-  bool light1 = true;
+  late FirebaseFunctions firebaseFunctions;
+  bool is_available = true;
 
-  Future<void> multiPathUpdate(String itemKey, bool currentValue) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final FirebaseAuth auth = FirebaseAuth.instance;
-
-    final QuerySnapshot categoriesSnapshot = await firestore
-        .collection('categories')
-        .where('userId', isEqualTo: auth.currentUser!.uid)
-        .get();
-
-    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
-      final QuerySnapshot categoryItemsSnapshot = await firestore
-          .collection('categoryItems/${category.id}/items')
-          .where(FieldPath.documentId, isEqualTo: itemKey)
-          .get();
-
-      for (final DocumentSnapshot item in categoryItemsSnapshot.docs) {
-        final DocumentReference itemReference = firestore
-            .collection('categoryItems/${category.id}/items')
-            .doc(item.id);
-
-        await itemReference.update({"is_available": !currentValue});
-      }
-    }
+  @override
+  void initState() {
+    super.initState();
+    firebaseFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
   }
 
-  Future<void> switchBooleanValue(String itemKey) async {
-    final DocumentReference itemRef =
-        await FirebaseFirestore.instance.collection("items").doc(itemKey);
-    final DocumentSnapshot documentSnapshot = await itemRef.get();
-    final Map<String, dynamic> data =
-        documentSnapshot.data() as Map<String, dynamic>;
-    final bool? currentValue = data["is_available"];
+  Future<bool> switchBooleanValue(String itemKey) async {
+    final bool val = await firebaseFunctions.updateItemAvailability(itemKey: itemKey);
 
-    // Items collection update
-    FirebaseFirestore.instance
-        .collection("items")
-        .doc(itemKey)
-        .update({"is_available": !currentValue!}).then(
-      (_) => multiPathUpdate(itemKey, currentValue),
-    );
+    if (val) {
+      return true;
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                "Item availability could not be changed. Make sure you are connected to internet.",
+                style: TextStyle(fontSize: 20),
+              ),
+            );
+          });
+      return false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Switch(
       key: const Key("adminSwitch"),
-      value: light1,
+      value: widget.itemAvailability ? is_available : !is_available,
       onChanged: (bool value) async {
-        switchBooleanValue(widget.itemId);
-        setState(() {
-          light1 = value;
-        });
+        final bool trigger = await switchBooleanValue(widget.itemId);
+        if (trigger) {
+          setState(() {
+            is_available = value;
+          });
+        }
       },
     );
   }
