@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
 /// and its functions
@@ -73,40 +74,48 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
               key: Key("confirmItemDelete"),
               style: ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              onPressed: deleteItemFromFirestore,
               child: Text('Delete'),
-              onPressed: () async {
-                try {
-                  int deletedCategoryItemRank =
-                      await firestoreFunctions.getCategoryItemRank(
-                          categoryId: widget.categoryId, itemId: widget.itemId);
-                  await firestoreFunctions.deleteCategoryItem(
-                      categoryId: widget.categoryId, itemId: widget.itemId);
-                  await firestoreFunctions.updateCategoryRanks(
-                      categoryId: widget.categoryId,
-                      removedRank: deletedCategoryItemRank);
-                  // go back to choice boards page
-                  Navigator.of(context).pop();
-                  // update message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text("${widget.itemName} deleted successfully.")),
-                  );
-                } on Exception catch (e) {
-                  print(e);
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                            content: Text(
-                                'An error occurred while communicating with the database'));
-                      });
-                }
-              },
             ),
           ],
         );
       },
     );
+  }
+
+  /// Handle deleting an item from firestore:
+  /// - delete the "item" document
+  /// - delete the "categoryItem" document
+  /// - Update the ranks of the categoryItems of that category
+  void deleteItemFromFirestore() async {
+    try {
+      LoadingIndicatorDialog().show(context);
+
+      int deletedCategoryItemRank =
+          await firestoreFunctions.getCategoryItemRank(
+              categoryId: widget.categoryId, itemId: widget.itemId);
+      await firestoreFunctions.deleteCategoryItem(
+          categoryId: widget.categoryId, itemId: widget.itemId);
+      await firestoreFunctions.updateCategoryRanks(
+          categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
+
+      LoadingIndicatorDialog().dismiss();
+      // go back to choice boards page
+      Navigator.of(context).pop();
+      // update message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.itemName} deleted successfully.")),
+      );
+    } on Exception catch (e) {
+      LoadingIndicatorDialog().dismiss();
+      print(e);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                content: Text(
+                    'An error occurred while communicating with the database'));
+          });
+    }
   }
 }

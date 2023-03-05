@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 
@@ -189,6 +191,10 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       }
     } else {
       try {
+        if (widget.firestore is! FakeFirebaseFirestore) {
+          LoadingIndicatorDialog().show(context);
+        }
+
         // Both image and name changed
         if (newName.isNotEmpty && newImage != null) {
           await firestoreFunctions.updateItemName(
@@ -223,6 +229,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
               itemId: widget.itemId, newImageUrl: newImageUrl);
         }
 
+        LoadingIndicatorDialog().dismiss();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => AdminChoiceBoards(
               draggableCategories: devCategories,
@@ -234,6 +241,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           SnackBar(content: Text("Edits saved successfully!")),
         );
       } catch (e) {
+        LoadingIndicatorDialog().dismiss();
         print(e);
         showDialog(
             context: context,

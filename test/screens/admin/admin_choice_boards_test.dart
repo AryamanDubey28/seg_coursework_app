@@ -15,6 +15,7 @@ import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 void main() {
   late FirebaseAuth mockAuth;
@@ -248,7 +249,7 @@ void main() {
       await tester.tap(find.byKey(ValueKey("confirmItemDelete")));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
 }

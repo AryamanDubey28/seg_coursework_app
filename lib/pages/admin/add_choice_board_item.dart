@@ -8,6 +8,7 @@ import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
 class AddChoiceBoardItem extends StatefulWidget {
@@ -182,6 +183,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             );
           });
     } else {
+      LoadingIndicatorDialog().show(context);
       String? imageUrl = await firestoreFunctions.uploadImageToCloud(
           image: image, itemName: itemName);
       if (imageUrl != null) {
@@ -193,6 +195,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
               imageUrl: imageUrl,
               categoryId: widget.categoryId,
               itemId: itemId);
+
+          LoadingIndicatorDialog().dismiss();
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => AdminChoiceBoards(
@@ -207,6 +211,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
           );
         } catch (e) {
           print(e);
+          LoadingIndicatorDialog().dismiss();
           showDialog(
               context: context,
               builder: (context) {
