@@ -44,6 +44,7 @@ class CustomizableColumn extends StatelessWidget {
       body: ListView.separated(
         itemBuilder: (context, index) {
           return CustomizableRow(
+            key: Key("row$index"),
             categoryTitle: rowConfigs[index]['categoryTitle'],
             imagePreviews: rowConfigs[index]['images'],
           );

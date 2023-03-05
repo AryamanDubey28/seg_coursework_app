@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/authenticate/auth.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/forgot_password_page.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 
@@ -77,7 +77,10 @@ class _LogInState extends State<LogIn> {
                   //Welcoming text
                   const Text(
                     "Hello There",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 72, color: Colors.black),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 72,
+                        color: Colors.black),
                   ),
                   const SizedBox(
                     height: 10,
@@ -171,7 +174,10 @@ class _LogInState extends State<LogIn> {
                     children: [
                       Text(
                         "Not a member?",
-                        style: TextStyle(fontSize: 24, color: Colors.grey[600], fontWeight: FontWeight.normal),
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.normal),
                       ),
                       SizedBox(
                         height: 7,
