@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/my_text_field.dart';
 
+
+// This is the screen where the user can request for their password to get changed via email after they forgot it 
+
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
 
@@ -19,6 +22,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     _emailController.dispose();
   }
 
+  // Main password reset method that toggles database email message
   Future passwordReset() async {
     try {
       await FirebaseAuth.instance
