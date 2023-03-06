@@ -81,7 +81,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                     ),
                     const SizedBox(height: 20),
                     // submit to database button
-                    TextButton.icon(key: const Key("createCategoryButton"), onPressed: () => saveCategory(image: selectedImage, categoryName: categoryNameController.text), icon: Icon(Icons.add), label: const Text("Create new category"), style: const ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.white), backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))))
+                    TextButton.icon(key: const Key("createCategoryButton"), onPressed: () => saveCategory(image: selectedImage, categoryName: categoryNameController.text), icon: Icon(Icons.add), label: const Text("Create new category"))
                   ],
                 ),
               ),
