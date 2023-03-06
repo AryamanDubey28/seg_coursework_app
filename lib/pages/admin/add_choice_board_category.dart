@@ -25,7 +25,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "add-category-hero",
           child: Material(
@@ -70,11 +70,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                     PickImageButton(label: Text("Take a Picture"), icon: Icon(Icons.camera_alt), onPressed: () => pickImage(source: ImageSource.camera)),
                     const SizedBox(height: 20),
                     // field to enter the category name
-                    TextField(
-                      controller: categoryNameController,
-                      decoration: InputDecoration(hintText: "Category's name", border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)),
-                      cursorColor: Colors.white,
-                    ),
+                    TextField(controller: categoryNameController, decoration: InputDecoration(hintText: "Category's name", border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)), cursorColor: Colors.white, textAlign: TextAlign.center, style: TextStyle(fontSize: 25.0)),
                     const Divider(
                       color: Colors.black38,
                       thickness: 0.2,
@@ -101,9 +97,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
       showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              content: Text("A field or more are missing!"),
-            );
+            return AlertDialog(content: Text("A field or more are missing!"));
           });
     } else {
       String? imageUrl = await uploadImage(image, categoryName);
@@ -144,9 +138,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
       showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              content: Text("An error occurred while uploading the image to the cloud"),
-            );
+            return AlertDialog(content: Text("An error occurred while uploading the image to the cloud"));
           });
       return null;
     }
@@ -185,9 +177,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
       showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              content: Text("Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
-            );
+            return AlertDialog(content: Text("Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"));
           });
     }
   }

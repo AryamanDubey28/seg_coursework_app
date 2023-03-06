@@ -12,12 +12,7 @@ class EditChoiceBoardCategory extends StatefulWidget {
   final String categoryId;
   final String categoryName;
   final String categoryImageUrl;
-  const EditChoiceBoardCategory(
-      {Key? key,
-      required this.categoryId,
-      required this.categoryName,
-      required this.categoryImageUrl})
-      : super(key: key);
+  const EditChoiceBoardCategory({Key? key, required this.categoryId, required this.categoryName, required this.categoryImageUrl}) : super(key: key);
 
   @override
   State<EditChoiceBoardCategory> createState() => _EditChoiceBoardCategory();
@@ -33,14 +28,13 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "edit-category-hero",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -73,48 +67,22 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                     // instructions text
                     Text(
                       "Pick the main category image",
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
-                    PickImageButton(
-                        label: Text("Choose from Gallery"),
-                        icon: Icon(Icons.image),
-                        onPressed: () =>
-                            pickImage(source: ImageSource.gallery)),
-                    PickImageButton(
-                        label: Text("Take a Picture"),
-                        icon: Icon(Icons.camera_alt),
-                        onPressed: () => pickImage(source: ImageSource.camera)),
+                    PickImageButton(label: Text("Choose from Gallery"), icon: Icon(Icons.image), onPressed: () => pickImage(source: ImageSource.gallery)),
+                    PickImageButton(label: Text("Take a Picture"), icon: Icon(Icons.camera_alt), onPressed: () => pickImage(source: ImageSource.camera)),
                     const SizedBox(height: 20),
                     // field to enter the category name
-                    TextField(
-                      controller: categoryNameController,
-                      decoration: InputDecoration(
-                          hintText: widget.categoryName,
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
-                      cursorColor: Colors.white,
-                    ),
+                    TextField(controller: categoryNameController, decoration: InputDecoration(hintText: widget.categoryName, border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)), cursorColor: Colors.white, textAlign: TextAlign.center, style: TextStyle(fontSize: 25.0)),
                     const Divider(
                       color: Colors.black38,
                       thickness: 0.2,
                     ),
                     const SizedBox(height: 20),
                     // submit to database button
-                    TextButton.icon(
-                        key: const Key("editCategoryButton"),
-                        onPressed: () => editCategory(
-                            newImage: selectedImage,
-                            newCategoryName: categoryNameController.text),
-                        icon: Icon(Icons.edit),
-                        label: const Text("Edit category"),
-                        style: const ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.white),
-                            backgroundColor: MaterialStatePropertyAll(
-                                Color.fromARGB(255, 0, 76, 153))))
+                    TextButton.icon(key: const Key("editCategoryButton"), onPressed: () => editCategory(newImage: selectedImage, newCategoryName: categoryNameController.text), icon: Icon(Icons.edit), label: const Text("Edit category"), style: const ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.white), backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 0, 76, 153))))
                   ],
                 ),
               ),
@@ -126,8 +94,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   }
 
   // Update category image and/or title
-  Future<void> editCategory(
-      {required File? newImage, required String? newCategoryName}) async {
+  Future<void> editCategory({required File? newImage, required String? newCategoryName}) async {
     String? imageUrl;
     if (newCategoryName!.isEmpty && newImage == null) {
       // If user hasn't changed either
@@ -138,24 +105,15 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
       // If user is changing both image and title
       deleteImage(imageUrl: widget.categoryImageUrl);
       imageUrl = await replaceImage(newImage, newCategoryName);
-      FirebaseFirestore.instance
-          .collection('categories')
-          .doc(widget.categoryId)
-          .update({'illustration': imageUrl, 'title': newCategoryName});
+      FirebaseFirestore.instance.collection('categories').doc(widget.categoryId).update({'illustration': imageUrl, 'title': newCategoryName});
     } else if (newCategoryName.isNotEmpty && newImage == null) {
       // If user is changing title but not image
-      FirebaseFirestore.instance
-          .collection('categories')
-          .doc(widget.categoryId)
-          .update({'title': newCategoryName});
+      FirebaseFirestore.instance.collection('categories').doc(widget.categoryId).update({'title': newCategoryName});
     } else if (newCategoryName.isEmpty && newImage != null) {
       // If user is changing image but not title
       deleteImage(imageUrl: widget.categoryImageUrl);
       imageUrl = await replaceImage(newImage, newCategoryName);
-      FirebaseFirestore.instance
-          .collection('categories')
-          .doc(widget.categoryId)
-          .update({'illustration': imageUrl});
+      FirebaseFirestore.instance.collection('categories').doc(widget.categoryId).update({'illustration': imageUrl});
     } else {
       // Else, some error occurred
       try {} catch (e) {
@@ -177,11 +135,9 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   /// Take an image and upload it to the cloud storage with
   /// a unique name. Return the URL of the image from the cloud
   Future<String?> replaceImage(File image, String categoryName) async {
-    String uniqueName =
-        categoryName + DateTime.now().millisecondsSinceEpoch.toString();
+    String uniqueName = categoryName + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
-    Reference imageRef =
-        FirebaseStorage.instance.ref().child('images').child(uniqueName);
+    Reference imageRef = FirebaseStorage.instance.ref().child('images').child(uniqueName);
     try {
       await imageRef.putFile(image);
       return await imageRef.getDownloadURL();
@@ -191,8 +147,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text(
-                  "An error occurred while uploading the image to the cloud"),
+              content: Text("An error occurred while uploading the image to the cloud"),
             );
           });
       return null;
@@ -215,8 +170,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: Text(
-                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
+              content: Text("Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
             );
           });
     }
