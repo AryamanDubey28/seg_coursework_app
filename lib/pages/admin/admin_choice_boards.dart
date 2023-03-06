@@ -29,72 +29,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
   final List<DraggableList> devCategories = [
-    DraggableList(
-        title: "Breakfast",
-        id: "HRbbm0S8hBkXhwIB3nUK",
-        imageUrl:
-            "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2Fbwekfast1677509161380?alt=media&token=d6355591-241a-4b1e-965a-f4f9ee80b87a",
-        items: [
-          DraggableListItem(
-              id: "placeholder",
-              name: "Toast",
-              imageUrl:
-                  "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "Fruits",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80")
-        ]),
-    DraggableList(
-        id: "vvKsFHrHvkP1SL8MlWKk",
-        title: "Activities",
-        imageUrl:
-            "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png",
-        items: [
-          DraggableListItem(
-              id: "placeholder",
-              name: "Football",
-              imageUrl:
-                  "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "Boxing",
-              imageUrl:
-                  "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "Swimming",
-              imageUrl:
-                  "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg")
-        ]),
-    DraggableList(
-        id: "JSgepdChaNV0hCMGDrIb",
-        title: "Lunch",
-        imageUrl:
-            "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968",
-        items: [
-          DraggableListItem(
-              id: "vvUA1y2roERdElRjzfhy",
-              name: "Oak Sauce",
-              imageUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2FOk%20Sauce1677270717787?alt=media&token=b678e93e-e1b1-4b28-9aeb-227696d0c00b"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "Butter chicken",
-              imageUrl:
-                  "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "Fish and chips",
-              imageUrl:
-                  "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
-          DraggableListItem(
-              id: "placeholder",
-              name: "burgers",
-              imageUrl:
-                  "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
-        ]),
+    DraggableList(title: "Breakfast", id: "HRbbm0S8hBkXhwIB3nUK", imageUrl: "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2Fbwekfast1677509161380?alt=media&token=d6355591-241a-4b1e-965a-f4f9ee80b87a", items: [DraggableListItem(id: "placeholder", name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"), DraggableListItem(id: "placeholder", name: "Fruits", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80")]),
+    DraggableList(id: "vvKsFHrHvkP1SL8MlWKk", title: "Activities", imageUrl: "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png", items: [DraggableListItem(id: "placeholder", name: "Football", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"), DraggableListItem(id: "placeholder", name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"), DraggableListItem(id: "placeholder", name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg")]),
+    DraggableList(id: "JSgepdChaNV0hCMGDrIb", title: "Lunch", imageUrl: "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968", items: [DraggableListItem(id: "vvUA1y2roERdElRjzfhy", name: "Oak Sauce", imageUrl: "https://firebasestorage.googleapis.com/v0/b/seg-app-f4674.appspot.com/o/images%2FOk%20Sauce1677270717787?alt=media&token=b678e93e-e1b1-4b28-9aeb-227696d0c00b"), DraggableListItem(id: "placeholder", name: "Butter chicken", imageUrl: "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"), DraggableListItem(id: "placeholder", name: "Fish and chips", imageUrl: "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"), DraggableListItem(id: "placeholder", name: "burgers", imageUrl: "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")]),
   ];
 
   @override
@@ -109,9 +46,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
-        listInnerDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20)),
+        listInnerDecoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(20)),
         children: categories,
         itemDivider: const Divider(
           thickness: 2,
@@ -182,10 +117,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       onPressed: addItem,
       icon: addIcon,
       label: const Text("Add an item"),
-      style: const ButtonStyle(
-          foregroundColor: contentColor,
-          backgroundColor:
-              MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
+      style: const ButtonStyle(foregroundColor: contentColor, backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
     );
   }
 
@@ -210,8 +142,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object exception,
-                      StackTrace? stackTrace) {
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
                     return const Text('!Error loading image!');
                   },
                 ),
@@ -220,14 +151,13 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               Text(
                 category.title,
                 key: const Key("categoryTitle"),
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              DeleteCategoryButton(categoryId: category.id),
-              EditCategoryButton(
-                  categoryId: category.id,
-                  categoryName: category.title,
-                  categoryImageUrl: category.imageUrl),
+              DeleteCategoryButton(
+                categoryId: category.id,
+                categoryName: category.title,
+              ),
+              EditCategoryButton(categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
               const Spacer(),
               buildAddButton(),
               const Padding(padding: EdgeInsets.only(right: 35))
@@ -250,8 +180,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace? stackTrace) {
+                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
                       return const Text('!Error loading image!');
                     },
                   ),
@@ -271,11 +200,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
-      int newItemIndex, int newCategoryIndex) {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) {
     setState(() {
-      final selectedItem =
-          categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+      final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
       categories[newCategoryIndex].children.insert(newItemIndex, selectedItem);
     });
   }
