@@ -225,6 +225,8 @@ class FirebaseFunctions {
     }
   }
 
+  /// Updates the availability of every categoryItems of item [itemKey] 
+  /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
       {required String itemKey, required bool currentValue}) async {
     final QuerySnapshot categoriesSnapshot = await firestore
@@ -252,6 +254,9 @@ class FirebaseFunctions {
     }
   }
 
+  /// First, the method updates the availability status of the item [itemId] in the 'items' collection, 
+  /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
+  /// If not, it returns boolean false.
   Future updateItemAvailability({required String itemId}) async {
     try {
       final DocumentReference itemRef =
@@ -268,7 +273,7 @@ class FirebaseFunctions {
         (_) => availabilityMultiPathUpdate(
             itemKey: itemId, currentValue: currentValue),
       );
-    } on Exception {
+    } catch (e) {
       return false;
     }
     return true;

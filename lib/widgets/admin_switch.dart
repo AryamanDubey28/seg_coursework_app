@@ -4,12 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
-// ignore: slash_for_doc_comments
-/**
- * This widget is a switch that the admin can use in order to define 
- * the availability status of a particular item in the admin choice 
- * board.
- */
+///This widget is a switch that the admin can use in order to define 
+///the availability status of a particular item in the admin choice 
+///board.
 class SwitchButton extends StatefulWidget {
   final String itemId;
   final bool itemAvailability;
@@ -35,18 +32,19 @@ class SwitchButton extends StatefulWidget {
 
 class _SwitchButtonState extends State<SwitchButton> {
   late FirebaseFunctions firebaseFunctions;
-  late bool is_available;
+  late bool isAvailable;
 
   @override
   void initState() {
     super.initState();
-    is_available = widget.itemAvailability;
+    isAvailable = widget.itemAvailability;
     firebaseFunctions = FirebaseFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
   }
-
+  ///Switch the state of the switch of item [itemKey] from true to false or conversely.
+  ///If availability status has been saved in the db, returns true, else false.
   Future<bool> switchBooleanValue(String itemKey) async {
     final bool val =
         await firebaseFunctions.updateItemAvailability(itemId: itemKey);
@@ -72,12 +70,12 @@ class _SwitchButtonState extends State<SwitchButton> {
   Widget build(BuildContext context) {
     return Switch(
       key: const Key("adminSwitch"),
-      value: is_available,
+      value: isAvailable,
       onChanged: (bool value) async {
         final bool trigger = await switchBooleanValue(widget.itemId);
         if (trigger) {
           setState(() {
-            is_available = value;
+            isAvailable = value;
           });
         }
       },
