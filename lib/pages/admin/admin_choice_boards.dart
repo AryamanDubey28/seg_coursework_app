@@ -1,7 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/widgets/delete_category_button.dart';
 import 'package:seg_coursework_app/widgets/edit_category_button.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/widgets/add_item_button.dart';
+import 'package:seg_coursework_app/widgets/delete_item_button.dart';
+import 'package:seg_coursework_app/widgets/edit_item_button.dart';
+import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:seg_coursework_app/widgets/add_category_button.dart';
@@ -12,7 +20,16 @@ import 'package:seg_coursework_app/widgets/add_category_button.dart';
 */
 
 class AdminChoiceBoards extends StatefulWidget {
-  const AdminChoiceBoards({Key? key}) : super(key: key);
+  final List<DraggableList> draggableCategories;
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+
+  AdminChoiceBoards({super.key, required this.draggableCategories, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<AdminChoiceBoards> createState() => _AdminChoiceBoards();
@@ -22,8 +39,10 @@ class AdminChoiceBoards extends StatefulWidget {
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   late List<DragAndDropList> categories;
 
-  _AdminChoiceBoards() {
-    categories = devCategories.map(buildCategory).toList();
+  @override
+  void initState() {
+    super.initState();
+    categories = widget.draggableCategories.map(buildCategory).toList();
   }
 
   // These are added to test while development
@@ -42,7 +61,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
-      floatingActionButton: AddCategoryButton(),
+      floatingActionButton: buildAddButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
@@ -74,7 +93,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         key: const Key("categoryDrag"),
         verticalAlignment: DragHandleVerticalAlignment.top,
         child: Container(
-          padding: const EdgeInsets.only(right: 10, top: 45),
+          padding: const EdgeInsets.only(right: 10, top: 55),
           child: dragIcon,
         ),
       );
@@ -90,67 +109,62 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
-  /// Builds the edit button depending on if it's an item or a category
-  IconButton buildEditButton({bool isCategory = false}) {
+  /// Builds the edit button for a category
+  IconButton buildEditButton({Key? key}) {
     const editIcon = Icon(
       Icons.edit,
       color: Color.fromARGB(255, 0, 76, 153),
     );
 
     return IconButton(
-      key: const Key("editItemButton"),
-      onPressed: editItem,
+      key: key,
+      onPressed: editCategory,
       icon: editIcon,
-      padding: const EdgeInsets.only(right: 45),
+      alignment: Alignment.centerRight,
     );
   }
 
-  /// Builds the add button
+  /// Builds the add button for categories
   TextButton buildAddButton() {
-    const addIcon = Icon(
-      Icons.add,
-    );
-    const contentColor = MaterialStatePropertyAll(Colors.white);
-
     return TextButton.icon(
-      key: const Key("addItemButton"),
-      onPressed: addItem,
-      icon: addIcon,
-      label: const Text("Add an item"),
-      style: const ButtonStyle(foregroundColor: contentColor, backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
+      key: const Key("addCategoryButton"),
+      onPressed: addCategory,
+      icon: Icon(Icons.add),
+      label: const Text("Add a category"),
+    );
+  }
+
+  /// Builds the delete button
+  IconButton buildDeleteButton({Key? key}) {
+    const deleteIcon = Icon(
+      Icons.delete,
+      color: Colors.red,
+    );
+
+    return IconButton(
+      key: key,
+      onPressed: deleteCategory,
+      icon: deleteIcon,
     );
   }
 
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
-          key: const Key("categoryHeader"),
+          key: Key("categoryHeader-${category.id}"),
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
-                margin: const EdgeInsets.all(10),
-                child: Image.network(
-                  category.imageUrl,
-                  key: const Key("categoryImage"),
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                    return const Text('!Error loading image!');
-                  },
-                ),
+              ImageSquare(
+                image: ImageDetails(name: category.title, imageUrl: category.imageUrl),
+                key: Key("categoryImage-${category.id}"),
+                height: 120,
+                width: 120,
               ),
               const Padding(padding: EdgeInsets.all(8)),
               Text(
                 category.title,
-                key: const Key("categoryTitle"),
+                key: Key("categoryTitle-${category.id}"),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               DeleteCategoryButton(
@@ -159,41 +173,52 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               ),
               EditCategoryButton(categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
               const Spacer(),
-              buildAddButton(),
+              AddItemButton(
+                categoryId: category.id,
+                key: Key("addItemButton-${category.id}"),
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage,
+              ),
               const Padding(padding: EdgeInsets.only(right: 35))
             ],
           )),
       children: category.items
           .map((item) => DragAndDropItem(
                   child: ListTile(
-                key: const Key("categoryItem"),
-                leading: Card(
-                  semanticContainer: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  elevation: 5,
-                  child: Image.network(
-                    item.imageUrl,
-                    key: const Key("itemImage"),
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                      return const Text('!Error loading image!');
-                    },
-                  ),
+                key: Key("categoryItem-${item.id}"),
+                leading: ImageSquare(
+                  image: ImageDetails(name: item.name, imageUrl: item.imageUrl),
+                  key: Key("itemImage-${item.id}"),
+                  height: 90,
+                  width: 90,
                 ),
                 title: Text(
                   item.name,
-                  key: const Key("itemTitle"),
+                  key: Key("itemTitle-${item.id}"),
+                  style: TextStyle(color: Colors.black),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Delete item button goes here?
-                    buildEditButton(),
+                    DeleteItemButton(
+                      categoryId: category.id,
+                      itemId: item.id,
+                      itemName: item.name,
+                      key: Key("deleteItemButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
+                    EditItemButton(
+                      itemId: item.id,
+                      itemName: item.name,
+                      itemImageUrl: item.imageUrl,
+                      key: Key("editItemButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
                   ],
                 ),
               )))
@@ -218,9 +243,18 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// redirects to the item edit page (to be implemented)
   void editItem() {}
 
+  /// redirects to the category edit page (to be implemented)
+  void editCategory() {}
+
   /// deletes the item (to be implemented)
   void deleteItem() {}
 
+  /// deletes the category (to be implemented)
+  void deleteCategory() {}
+
   /// redirects to the item add page (to be implemented)
   void addItem() {}
+
+  /// redirects to the category add page (to be implemented)
+  void addCategory() {}
 }

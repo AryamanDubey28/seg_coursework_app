@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Custom [PageRoute] that creates an overlay dialog (popup effect).
 /// taken from: https://youtu.be/Bxs8Zy2O4wk
+
 class HeroDialogRoute<T> extends PageRoute<T> {
-  /// {@macro hero_dialog_route}
   HeroDialogRoute({
     required WidgetBuilder builder,
     RouteSettings? settings,
@@ -35,7 +35,18 @@ class HeroDialogRoute<T> extends PageRoute<T> {
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-    return _builder(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final pageWidth = screenWidth * 0.7;
+
+    return Transform.scale(
+      scale: 1,
+      child: Center(
+        child: Container(
+          width: pageWidth,
+          child: _builder(context),
+        ),
+      ),
+    );
   }
 
   @override
