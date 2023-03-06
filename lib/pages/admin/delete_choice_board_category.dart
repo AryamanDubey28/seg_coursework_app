@@ -1,12 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+
+import '../../helpers/firebase_functions.dart';
 
 /// Deletes a choiceboard category given ID
 class DeleteChoiceBoardCategory extends StatelessWidget {
   final String categoryId;
   final String categoryName;
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+  late FirebaseFunctions firestoreFunctions;
 
-  const DeleteChoiceBoardCategory({Key? key, required this.categoryId, required this.categoryName}) : super(key: key);
+  DeleteChoiceBoardCategory({super.key, required this.categoryId, required this.categoryName, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+    firestoreFunctions = FirebaseFunctions(auth: auth!, firestore: firestore!, storage: storage!);
+    ;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,23 +32,11 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       },
     );
 
-    // Delete document from firebase collection
-    void deleteFromCollection(String collectionName) {
-      FirebaseFirestore.instance.collection(collectionName).doc(categoryId).delete().then(
-            (doc) => print("Document deleted"),
-            onError: (e) => print("Error updating document $e"),
-          );
-    }
-
     // Once user confirms choice, call delete function
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed: () {
-        // Delete associated document from 'categoryItems' collection
-        deleteFromCollection("categoryItems");
-
-        // Delete category from 'categories' collection
-        deleteFromCollection("categories");
+      onPressed: () async {
+        await firestoreFunctions.deleteCategory(categoryId: categoryId);
       },
     );
 
