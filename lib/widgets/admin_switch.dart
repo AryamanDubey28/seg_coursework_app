@@ -35,11 +35,12 @@ class SwitchButton extends StatefulWidget {
 
 class _SwitchButtonState extends State<SwitchButton> {
   late FirebaseFunctions firebaseFunctions;
-  bool is_available = true;
+  late bool is_available;
 
   @override
   void initState() {
     super.initState();
+    is_available = widget.itemAvailability;
     firebaseFunctions = FirebaseFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
@@ -47,7 +48,8 @@ class _SwitchButtonState extends State<SwitchButton> {
   }
 
   Future<bool> switchBooleanValue(String itemKey) async {
-    final bool val = await firebaseFunctions.updateItemAvailability(itemKey: itemKey);
+    final bool val =
+        await firebaseFunctions.updateItemAvailability(itemId: itemKey);
 
     if (val) {
       return true;
@@ -70,7 +72,7 @@ class _SwitchButtonState extends State<SwitchButton> {
   Widget build(BuildContext context) {
     return Switch(
       key: const Key("adminSwitch"),
-      value: widget.itemAvailability ? is_available : !is_available,
+      value: is_available,
       onChanged: (bool value) async {
         final bool trigger = await switchBooleanValue(widget.itemId);
         if (trigger) {

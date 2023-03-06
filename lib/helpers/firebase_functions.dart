@@ -225,14 +225,16 @@ class FirebaseFunctions {
     }
   }
 
-  Future<void> multiPathUpdate(String itemKey, bool currentValue) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final FirebaseAuth auth = FirebaseAuth.instance;
-
+  Future availabilityMultiPathUpdate(
+      {required String itemKey, required bool currentValue}) async {
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
-        .where('userId', isEqualTo: auth.currentUser!.uid)
+        .where("userId", isEqualTo: auth.currentUser!.uid)
         .get();
+
+    if (categoriesSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no categories");
+    }
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       final QuerySnapshot categoryItemsSnapshot = await firestore
@@ -250,34 +252,25 @@ class FirebaseFunctions {
     }
   }
 
-  Future<bool> updateItemAvailability({required String itemKey}) async {
+  Future updateItemAvailability({required String itemId}) async {
     try {
       final DocumentReference itemRef =
-          await FirebaseFirestore.instance.collection("items").doc(itemKey);
+          firestore.collection("items").doc(itemId);
       final DocumentSnapshot documentSnapshot = await itemRef.get();
       final Map<String, dynamic> data =
           documentSnapshot.data() as Map<String, dynamic>;
       final bool? currentValue = data["is_available"];
       // Items collection update
-      FirebaseFirestore.instance
+      await firestore
           .collection("items")
-          .doc(itemKey)
+          .doc(itemId)
           .update({"is_available": !currentValue!}).then(
-        (_) => multiPathUpdate(itemKey, currentValue),
+        (_) => availabilityMultiPathUpdate(
+            itemKey: itemId, currentValue: currentValue),
       );
-    } on Exception catch (e) {
+    } on Exception {
       return false;
     }
     return true;
-  }
-
-  Future getItemAvailability({required String itemId}) async {
-    final DocumentReference itemRef =
-        await FirebaseFirestore.instance.collection("items").doc(itemId);
-    final DocumentSnapshot documentSnapshot = await itemRef.get();
-    final Map<String, dynamic> data =
-        documentSnapshot.data() as Map<String, dynamic>;
-    final bool? currentValue = data["is_available"];
-    return currentValue;
   }
 }

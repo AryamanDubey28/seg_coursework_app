@@ -766,35 +766,108 @@ Future<void> main() async {
         null);
   });
 
-  // test("test admin switch correctly updates availability status of item",
-  //     () async {
-  //   const String name = "Car";
-  //   const String imageUrl = "Ferrari.jpeg";
-  //   const String categoryId = "77xx";
+  test(
+      "update item availability status edits the is_available field successfully (1 item)",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
 
-  //   String newItemId =
-  //       await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-  //   await firebaseFunctions.createCategoryItem(
-  //       name: name,
-  //       imageUrl: imageUrl,
-  //       categoryId: categoryId,
-  //       itemId: newItemId);
+    DocumentSnapshot newCategoryItem =
+        await mockFirestore.collection('items').doc(newItemId).get();
 
-  //   final newCategoryItem = await mockFirestore
-  //       .collection('categoryItems/$categoryId/items')
-  //       .doc(newItemId)
-  //       .get();
+    expect(newCategoryItem.get('is_available'), true);
 
-  //   final data = newCategoryItem.data();
-  //   final currentValue = data!["is_available"];
-  //   expect(currentValue, true);
+    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
 
-  //   firebaseFunctions.updateItemAvailability(itemKey: newItemId);
+    DocumentSnapshot upCategoryItem =
+        await mockFirestore.collection('items').doc(newItemId).get();
 
-  //   final newData = newCategoryItem.data();
-  //   final newValue = newData!["is_available"];
+    expect(upCategoryItem.get('is_available'), false);
+  });
 
-  //   expect(newValue, false);
-  // });
+  test(
+      "update categoryItem availability status edits the 'is_available' field successfully (1 categoryItems in 1 categories)",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+    await _createCategory(id: categoryId1);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+
+    DocumentSnapshot newCategoryItem1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+
+    expect(newCategoryItem1.get('is_available'), true);
+    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+
+    newCategoryItem1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+
+    expect(newCategoryItem1.get('is_available'), false);
+  });
+
+  test(
+      "update categoryItem availability status edits the 'is_available' field successfully (2 categoryItems in 2 categories)",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId2);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId2,
+        itemId: newItemId);
+
+    DocumentSnapshot newCategoryItem1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    DocumentSnapshot newCategoryItem2 = await mockFirestore
+        .collection('categoryItems/$categoryId2/items')
+        .doc(newItemId)
+        .get();
+
+    expect(newCategoryItem1.get('is_available'), true);
+    expect(newCategoryItem2.get('is_available'), true);
+    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+
+    newCategoryItem1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    newCategoryItem2 = await mockFirestore
+        .collection('categoryItems/$categoryId2/items')
+        .doc(newItemId)
+        .get();
+
+    expect(newCategoryItem1.get('is_available'), false);
+    expect(newCategoryItem2.get('is_available'), false);
+  });
 }
