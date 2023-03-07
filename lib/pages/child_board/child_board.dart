@@ -25,7 +25,7 @@ class ChildBoards extends StatefulWidget {
 class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
-  final FlutterTts flutterTts = FlutterTts();
+
   // DELETE AFTER ADDING A QUEERY TO GET IMAGES
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",

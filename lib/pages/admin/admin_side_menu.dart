@@ -150,16 +150,15 @@ class AdminSideMenu extends StatelessWidget {
               Icons.child_care,
             ),
             title: const Text('Activate Child Mode'),
-            onTap: () =>
+            onTap: () async {
             final pref = await SharedPreferences.getInstance();
                 pref.setBool("isInChildMode",
                     true); //isInChildMode boolean set to true as we are entering
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => CustomizableColumn(),
-                ));
+                
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => CustomizableColumn(),
-            )),
+            ));
+            }
           ),
           ListTile(
             key: const Key("appColours"),
