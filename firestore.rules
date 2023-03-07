@@ -56,8 +56,50 @@ service cloud.firestore {
       request.resource.data.is_available is bool
     }
 
+    // UserPin stores a user's pin. It requires the userId and pin fields. Pin is a 4 characters string and the
+    // validity of the userId is to be tested in other parts of the rule.
+    function userPinFieldsAreValid()
+    {
+      return request.resource.data.keys().hasAll(['userId', 'pin']) && 
+      request.resource.data.keys().toSet().hasOnly(['userId', 'pin']) && 
+      request.resource.data.pin is string && 
+      request.resource.data.pin.size() == 4
+    }
+
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    match /userPins {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+
+      allow delete: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        userPinFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        userPinFieldsAreValid());
+    }
+
+    match /userPins/{userPinId} {
+      allow read: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+
+      allow delete: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid);
+      
+      allow create: if (request.auth.uid != null && 
+        request.resource.data.userId == request.auth.uid && 
+        userPinFieldsAreValid());
+      
+      allow update: if (request.auth.uid != null && 
+        resource.data.userId == request.auth.uid && 
+        userPinFieldsAreValid());
     }
 
     match /items {
