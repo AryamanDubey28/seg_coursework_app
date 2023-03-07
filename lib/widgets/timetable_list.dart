@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/models/timetable.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 
 import '../themes/themes.dart';
@@ -10,11 +11,11 @@ import '../themes/themes.dart';
 class TimetableList extends StatelessWidget {
   const TimetableList({super.key, required this.imagesList, required this.popImagesList});
 
-  final List<ImageDetails> imagesList;
+  final Timetable imagesList;
   final Function popImagesList;
 
   // This function returns the list of images already saved in the timetable.
-  List<ImageDetails> getImagesList()
+  Timetable getImagesList()
   {
     return imagesList;
   }
@@ -25,7 +26,7 @@ class TimetableList extends StatelessWidget {
 
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: imagesList.length,
+      itemCount: imagesList.length(),
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
@@ -34,16 +35,16 @@ class TimetableList extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Tooltip(
-                message: imagesList[index].name,
+                message: imagesList.get(index).name,
                 child: ImageSquare(
                   //This width is set to make the image less wide than 1/5 of the screen.
                   width: MediaQuery.of(context).size.width/6,
                   key: Key('timetableImage$index'),
-                  image: imagesList[index],
+                  image: imagesList.get(index),
                 ),
               ),
               //this is to prevent showing an arrow after the last image.
-              if (index != imagesList.length - 1)
+              if (index != imagesList.length() - 1)
                 //size is set to this arbitrary number to scale the arrows as the screen gets bigger.
                 Stack(
                   alignment: AlignmentDirectional.center,

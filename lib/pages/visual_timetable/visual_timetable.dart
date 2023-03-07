@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
+import 'package:seg_coursework_app/models/list_of_timetables.dart';
+import 'package:seg_coursework_app/models/timetable.dart';
 import '../../models/image_details.dart';
 import '../admin/admin_side_menu.dart';
 import '../../widgets/picture_grid.dart';
@@ -18,30 +19,31 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   bool isGridVisible = true;
   //The images that will be fed into the timetable. (No pictures are chosen by default.)
-  List<ImageDetails> imagesList = [];
+  Timetable imagesList = Timetable(listOfImages: []);
   //The images that will be fed into the PictureGrid (the choice board.)
   //To be deleted and fetched from the database.
-  List<ImageDetails> filledImagesList = [
+  Timetable filledImagesList = Timetable(listOfImages: [
     ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
     ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
     ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
     ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
     ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
     ImageDetails(name: "Fish and chips", imageUrl: "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
-  ];
+  ]);
 
   //The list that holds the saved timetables
-  ListOfListsOfImageDetails savedTimetables = ListOfListsOfImageDetails(listOfLists: []);
+  ListOfTimetables savedTimetables = ListOfTimetables(listOfLists: []);
 
 
   ///This makes a deep copy of a list to be saved in the savedTimetables 
-  List<ImageDetails> deepCopy(List<ImageDetails> list) {
-  List<ImageDetails> copy = [];
-  for (ImageDetails image in list) {
+  Timetable deepCopy(Timetable list) {
+  Timetable copy = Timetable(listOfImages: []);
+  // for (ImageDetails image in list) {
+  for (int i = 0 ; i < list.length(); i++){
     copy.add(
       ImageDetails(
-      name: image.name,
-      imageUrl: image.imageUrl
+      name: list.get(i).name,
+      imageUrl: list.get(i).imageUrl
       )
     );
   }
@@ -52,10 +54,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   ///and hides the PictureGrid when 5 images are chosen for the Timetable
   void updateImagesList(ImageDetails image) {
     setState(() {
-      if (imagesList.length < 5) {
+      if (imagesList.length() < 5) {
         imagesList.add(image);
       }
-      if (imagesList.length >= 5)
+      if (imagesList.length() >= 5)
       {
         isGridVisible = false;
       }
@@ -67,7 +69,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   void popImagesList(int index) {
     setState(() {
       imagesList.removeAt(index);
-      if (imagesList.length < 5) {
+      if (imagesList.length() < 5) {
         isGridVisible = true;
       }
     });
@@ -109,7 +111,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   }
 
   ///This function saves a timetable into the list of timetables.
-  void addTimetableToListOfLists(List<ImageDetails> imagesList) {
+  void addTimetableToListOfLists(Timetable imagesList) {
     setState(() {
       bool isAdded = savedTimetables.addList(deepCopy(imagesList));
       showSnackBarMessage(isAdded);
@@ -204,7 +206,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         child: Stack(
           children: <Widget>[
             //This makes sure that a timetable can't be saved if it has one or no elements.
-            if (timetableList.imagesList.length >= 2) Align(
+            if (timetableList.imagesList.length() >= 2) Align(
               alignment: Alignment.bottomLeft,
               child: buildAddButton(timetableList),
             ),

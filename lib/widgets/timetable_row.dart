@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/timetable.dart';
 import '../models/image_details.dart';
 import 'image_square.dart';
 
@@ -12,7 +13,7 @@ class TimetableRow extends StatelessWidget {
   required this.index,
 }) : super(key: key);
 
-  final List<ImageDetails> listOfImages;
+  final Timetable listOfImages;
   final Function unsaveList;
   final int index;
 
@@ -43,16 +44,16 @@ class TimetableRow extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: listOfImages.length,
+              itemCount: listOfImages.length(),
               itemBuilder: (context, subIndex) {
                 return Row(
                   children: <Widget>[
                     const SizedBox(width: 5,),
                     Tooltip(
-                      message: listOfImages[subIndex].name,
+                      message: listOfImages.get(subIndex).name,
                       child: ImageSquare(
                         key: Key('timetableImage$subIndex'),
-                        image: listOfImages[subIndex], 
+                        image: listOfImages.get(subIndex), 
                         //The width here is set to make sure the row isn't bigger than the screen and to make sure
                         //there is room for the delete button.
                         width: MediaQuery.of(context).size.width/6,

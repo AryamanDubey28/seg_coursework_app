@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
+import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import '../../widgets/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
   const AllSavedTimetables({super.key, required this.savedTimetables});
-  final ListOfListsOfImageDetails savedTimetables;
+  final ListOfTimetables savedTimetables;
 
   @override
   State<AllSavedTimetables> createState() => _AllSavedTimetablesState();

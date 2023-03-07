@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/models/timetable.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 
 /// This widget is the bottom half of the visual timetable interface 
@@ -7,7 +8,7 @@ import 'package:seg_coursework_app/widgets/image_square.dart';
 class PictureGrid extends StatelessWidget {
   const PictureGrid({super.key, required this.imagesList, required this.updateImagesList});
 
-  final List<ImageDetails> imagesList;
+  final Timetable imagesList;
   final Function updateImagesList;
 
   @override
@@ -15,7 +16,7 @@ class PictureGrid extends StatelessWidget {
     return Container(
       margin: EdgeInsets.fromLTRB(7,0,7,7),
       child: GridView.builder(
-        itemCount: imagesList.length,
+        itemCount: imagesList.length(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 4/3,
@@ -25,13 +26,13 @@ class PictureGrid extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              updateImagesList(imagesList[index]);
+              updateImagesList(imagesList.get(index));
             },
             child: Tooltip(
-              message: imagesList[index].name,
+              message: imagesList.get(index).name,
               child: ImageSquare(
                 key: Key('gridImage$index'),
-                image: imagesList[index],
+                image: imagesList.get(index),
               ),
             ),
           );
