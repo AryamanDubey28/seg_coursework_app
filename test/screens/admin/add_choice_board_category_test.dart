@@ -42,7 +42,7 @@ void main() {
             ),
           )));
 
-      expect(find.byKey(const ValueKey("itemImageCard")), findsOneWidget);
+      expect(find.byKey(const ValueKey("categoryImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
       expect(find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
       expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);

@@ -153,6 +153,7 @@ class FirebaseFunctions {
 
   /// Should be called after deleting a categoryItem. Decrement the ranks
   /// of all documents which have a rank higher than the deleted categoryItem
+  /// *** NOTE: should this be called updateCATEGORYranks? is it not updating item ranks?
   Future updateCategoryRanks({required String categoryId, required int removedRank}) async {
     final QuerySnapshot querySnapshot = await firestore.collection('categoryItems/$categoryId/items').where('rank', isGreaterThan: removedRank).get();
 
@@ -204,11 +205,32 @@ class FirebaseFunctions {
 
   // #### Deleting categories functions ####
 
+  /// Return the rank field of a category given the categoryId and
+  Future getCategoryRank({required String categoryId}) async {
+    return firestore.collection('categories').doc(categoryId).get().then((category) {
+      return category.get("rank");
+    }).onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  /// Decrement ranks of higher ranking categories
+  Future updateAllCategoryRanks({required int removedRank}) async {
+    final QuerySnapshot querySnapshot = await firestore.collection('categories').where('rank', isGreaterThan: removedRank).get();
+
+    for (final DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      final DocumentReference documentReference = firestore.collection('categories').doc(documentSnapshot.id);
+      await documentReference.update({'rank': documentSnapshot.get('rank') - 1});
+    }
+  }
+
   /// Delete category document from categories collection
   /// Delete associated categoryItems document
   Future deleteCategory({required String categoryId}) async {
-    void deleteFromCollection(String collectionName) {
-      FirebaseFirestore.instance.collection(collectionName).doc(categoryId).delete().then(
+    /// Delete document from firebase collection
+    Future deleteFromCollection(String collectionName) async {
+      updateAllCategoryRanks(removedRank: await getCategoryRank(categoryId: categoryId));
+      return FirebaseFirestore.instance.collection(collectionName).doc(categoryId).delete().then(
             (doc) => print("Document deleted"),
             onError: (e) => print("Error updating document $e"),
           );

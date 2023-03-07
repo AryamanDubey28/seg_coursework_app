@@ -153,14 +153,14 @@ Future<void> main() async {
     DocumentSnapshot item = await mockFirestore.collection('items').doc(newItemId).get();
 
     expect(item.get('name'), name);
-    await firebaseFunctions.updateCategoryName(itemId: newItemId, newName: "Nova Water");
+    await firebaseFunctions.updateItemName(itemId: newItemId, newName: "Nova Water");
 
     item = await mockFirestore.collection('items').doc(newItemId).get();
     expect(item.get('name'), "Nova Water");
   });
 
   test("updating the name of an item that doesn't exist throws an exception", () async {
-    expect(firebaseFunctions.updateCategoryName(itemId: "doesn't exist", newName: "Nove Water"), throwsA(isInstanceOf<FirebaseException>()));
+    expect(firebaseFunctions.updateItemName(itemId: "doesn't exist", newName: "Nove Water"), throwsA(isInstanceOf<FirebaseException>()));
   });
 
   test("update categoryItem name edits the name successfully (1 categoryItem)", () async {
