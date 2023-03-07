@@ -231,14 +231,14 @@ Future<void> main() async {
   });
 
   test("Uploading image to cloud is successful", () async {
-    String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), itemName: "Water");
+    String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "Water");
 
     expect(imageUrl, isA<String>());
     expect(mockStorage.refFromURL(imageUrl!), isNotNull);
   });
 
   test("Deleting image from cloud is successful", () async {
-    String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), itemName: "Water");
+    String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "Water");
 
     expect(mockStorage.refFromURL(imageUrl!), isNotNull);
     await firebaseFunctions.deleteImageFromCloud(imageUrl: imageUrl);

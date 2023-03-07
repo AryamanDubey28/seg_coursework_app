@@ -173,7 +173,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           await firestoreFunctions.updateItemName(itemId: widget.itemId, newName: newName);
           await firestoreFunctions.updateCategoryItemsName(itemId: widget.itemId, newName: newName);
           await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.itemImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, itemName: newName);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: newName);
           await firestoreFunctions.updateItemImage(itemId: widget.itemId, newImageUrl: newImageUrl!);
           await firestoreFunctions.updateCategoryItemsImage(itemId: widget.itemId, newImageUrl: newImageUrl);
         }
@@ -185,7 +185,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
           await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.itemImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, itemName: widget.itemName);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: widget.itemName);
           await firestoreFunctions.updateItemImage(itemId: widget.itemId, newImageUrl: newImageUrl!);
           await firestoreFunctions.updateCategoryItemsImage(itemId: widget.itemId, newImageUrl: newImageUrl);
         }

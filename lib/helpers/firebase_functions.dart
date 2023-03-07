@@ -83,8 +83,8 @@ class FirebaseFunctions {
 
   /// Take an image and upload it to Firestore Cloud Storage with
   /// a unique name. Return the URL of the image from the cloud
-  Future<String?> uploadImageToCloud({required File image, required String itemName}) async {
-    String uniqueName = itemName + DateTime.now().millisecondsSinceEpoch.toString();
+  Future<String?> uploadImageToCloud({required File image, required String name}) async {
+    String uniqueName = name + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
     Reference imageRef = storage.ref().child('images').child(uniqueName);
     try {
@@ -160,5 +160,64 @@ class FirebaseFunctions {
       final DocumentReference documentReference = firestore.collection('categoryItems/$categoryId/items').doc(documentSnapshot.id);
       await documentReference.update({'rank': documentSnapshot.get('rank') - 1});
     }
+  }
+
+  // #### Adding categories functions ####
+
+  /// Add a new entry to the 'categories' collection in Firestore with
+  /// the given item information. Return the created category's id
+  Future<String> createCategory({required String name, required String imageUrl}) async {
+    CollectionReference categories = FirebaseFirestore.instance.collection('categories');
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    return categories.add({'userId': auth.currentUser!.uid, 'title': name, 'illustration': imageUrl, 'rank': await getNewCategoryRank(uid: auth.currentUser!.uid)}).then((category) => category.id).catchError((error, stackTrace) {
+          return throw FirebaseException(plugin: stackTrace.toString());
+        });
+  }
+
+  /// Return an appropriate rank for a new category
+  /// (one more than the highest rank or zero if empty)
+  Future<int> getNewCategoryRank({required String uid}) async {
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('categories').where("userId", isEqualTo: uid).get();
+    return querySnapshot.size;
+  }
+
+  // #### Editing categories functions ####
+
+  /// Update category title with new name
+  Future updateCategoryName({required String categoryId, required String newName}) {
+    CollectionReference categories = firestore.collection('categories');
+
+    return categories.doc(categoryId).update({'title': newName}).catchError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  /// Change category image to new provided image
+  Future updateCategoryImage({required String categoryId, required String newImageUrl}) {
+    CollectionReference categories = firestore.collection('categories');
+
+    return categories.doc(categoryId).update({'illustration': newImageUrl}).catchError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  // #### Deleting categories functions ####
+
+  /// Delete category document from categories collection
+  /// Delete associated categoryItems document
+  Future deleteCategory({required String categoryId}) async {
+    void deleteFromCollection(String collectionName) {
+      FirebaseFirestore.instance.collection(collectionName).doc(categoryId).delete().then(
+            (doc) => print("Document deleted"),
+            onError: (e) => print("Error updating document $e"),
+          );
+    }
+
+    // Delete associated document from 'categoryItems' collection
+    deleteFromCollection("categoryItems");
+
+    // Delete category from 'categories' collection
+    deleteFromCollection("categories");
   }
 }

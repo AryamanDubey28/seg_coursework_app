@@ -160,7 +160,7 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           });
     } else {
       LoadingIndicatorDialog().show(context);
-      String? imageUrl = await firestoreFunctions.uploadImageToCloud(image: image, categoryName: categoryName);
+      String? imageUrl = await firestoreFunctions.uploadImageToCloud(image: image, name: categoryName);
       if (imageUrl != null) {
         try {
           await firestoreFunctions.createCategory(name: categoryName, imageUrl: imageUrl);

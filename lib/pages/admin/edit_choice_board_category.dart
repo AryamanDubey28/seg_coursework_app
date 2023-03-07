@@ -172,7 +172,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         if (newName.isNotEmpty && newImage != null) {
           await firestoreFunctions.updateCategoryName(categoryId: widget.categoryId, newName: newName);
           await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, categoryName: newName);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: newName);
           await firestoreFunctions.updateCategoryImage(categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
         // Only name changed
@@ -182,7 +182,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
           await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, categoryName: widget.categoryName);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: widget.categoryName);
           await firestoreFunctions.updateCategoryImage(categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
 
