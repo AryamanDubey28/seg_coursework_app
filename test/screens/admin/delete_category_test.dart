@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 
 import 'package:seg_coursework_app/pages/admin/delete_choice_board_category.dart';
 
@@ -28,28 +29,32 @@ void main() {
   });
 
   testWidgets('DeleteChoiceBoardCategory - should show confirmation dialog', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: deleteChoiceBoardCategory));
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(MaterialApp(home: deleteChoiceBoardCategory));
 
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.text('Warning!'), findsOneWidget);
-    expect(find.text('Are you sure you want to delete this category?'), findsOneWidget);
-    expect(find.text('No'), findsOneWidget);
-    expect(find.text('Yes'), findsOneWidget);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Warning!'), findsOneWidget);
+      expect(find.text('Are you sure you want to delete this category?'), findsOneWidget);
+      expect(find.text('No'), findsOneWidget);
+      expect(find.text('Yes'), findsOneWidget);
+    });
   });
 
   testWidgets('DeleteChoiceBoardCategory - should delete category from collections on confirmation', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: deleteChoiceBoardCategory));
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(MaterialApp(home: deleteChoiceBoardCategory));
 
-    final confirmButton = find.text('Yes');
-    expect(confirmButton, findsOneWidget);
+      final confirmButton = find.text('Yes');
+      expect(confirmButton, findsOneWidget);
 
-    // Mock the Firestore calls
-    when(mockFirestore.collection('categories')).thenReturn(CollectionReferenceMock() as CollectionReference<Map<String, dynamic>>);
-    when(mockFirestore.collection('categories').doc(categoryId)).thenReturn(DocumentReferenceMock() as DocumentReference<Map<String, dynamic>>);
+      // Mock the Firestore calls
+      when(mockFirestore.collection('categories')).thenReturn(CollectionReferenceMock() as CollectionReference<Map<String, dynamic>>);
+      when(mockFirestore.collection('categories').doc(categoryId)).thenReturn(DocumentReferenceMock() as DocumentReference<Map<String, dynamic>>);
 
-    await tester.tap(confirmButton);
-    await tester.pumpAndSettle();
+      await tester.tap(confirmButton);
+      await tester.pumpAndSettle();
 
-    verify(mockFirestore.collection('categories').doc(categoryId).delete());
+      verify(mockFirestore.collection('categories').doc(categoryId).delete());
+    });
   });
 }

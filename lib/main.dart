@@ -14,7 +14,7 @@ Future main() async {
   runApp(ThemeProvider(
     themeNotifier: themeNotifier,
     child: MyApp(),
-    ));
+  ));
 }
 
 class MyApp extends StatelessWidget {
