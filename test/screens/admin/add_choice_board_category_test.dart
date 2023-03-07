@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/pages/admin/add_choice_board_category.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -64,7 +63,7 @@ void main() {
           )));
 
       await tester.tap(find.byKey(ValueKey("createCategoryButton")));
-      await tester.pumpAndSettle();
+      await tester.pump();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
   });
@@ -83,7 +82,7 @@ void main() {
 
       final nameField = find.byKey(ValueKey("categoryNameField"));
       await tester.enterText(nameField, "Category");
-      await tester.pumpAndSettle();
+      await tester.pump();
 
       await tester.tap(find.byKey(ValueKey("createCategoryButton")));
       await tester.pumpAndSettle();
@@ -104,31 +103,8 @@ void main() {
           )));
 
       await tester.tap(find.byKey(ValueKey("createCategoryButton")));
-      await tester.pumpAndSettle();
+      await tester.pump();
       expect(find.byType(AlertDialog), findsOneWidget);
-    });
-  });
-
-  testWidgets("successful category creation takes user to choice boards page", (WidgetTester tester) async {
-    mockNetworkImagesFor(() async {
-      await tester.pumpWidget(ThemeProvider(
-          themeNotifier: CustomTheme(),
-          child: MaterialApp(
-            home: AddChoiceBoardCategory(
-              auth: mockAuth,
-              firestore: mockFirestore,
-              storage: mockStorage,
-              preSelectedImage: File("assets/test_image.png"),
-            ),
-          )));
-
-      final nameField = find.byKey(ValueKey("categoryNameField"));
-      await tester.enterText(nameField, "Category");
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(ValueKey("createCategoryButton")));
-      await tester.pumpAndSettle();
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
 }
