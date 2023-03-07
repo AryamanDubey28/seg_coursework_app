@@ -11,6 +11,7 @@ import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -41,11 +42,16 @@ class AdminChoiceBoards extends StatefulWidget {
 /// The page for admins to edit choice boards
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   late List<DragAndDropList> categories;
+  late FirebaseFunctions firebaseFunctions;
 
   @override
   void initState() {
     super.initState();
     categories = widget.draggableCategories.map(buildCategory).toList();
+    firebaseFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
   }
 
   @override
@@ -231,7 +237,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
   /// The logic behind reordering an item
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
-      int newItemIndex, int newCategoryIndex) {
+      int newItemIndex, int newCategoryIndex) async {
     setState(() {
       final selectedItem =
           categories[oldCategoryIndex].children.removeAt(oldItemIndex);
@@ -240,11 +246,28 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   }
 
   /// The logic behind reordering a category
-  void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) {
-    setState(() {
-      final selectedCategory = categories.removeAt(oldCategoryIndex);
-      categories.insert(newCategoryIndex, selectedCategory);
-    });
+  void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
+    final trigger = await firebaseFunctions.saveCategoryOrder(
+        categoryIdOne:
+            widget.draggableCategories.elementAt(oldCategoryIndex).id,
+        categoryIdTwo:
+            widget.draggableCategories.elementAt(newCategoryIndex).id);
+    if (trigger) {
+      setState(() {
+        final selectedCategory = categories.removeAt(oldCategoryIndex);
+        categories.insert(newCategoryIndex, selectedCategory);
+
+        final dragList = widget.draggableCategories.removeAt(oldCategoryIndex);
+        widget.draggableCategories.insert(newCategoryIndex, dragList);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(
+          'Reordering could not be done. Please ensure you are connected to internet.',
+        ),
+      ));
+    }
   }
 
   /// redirects to the category edit page (to be implemented)

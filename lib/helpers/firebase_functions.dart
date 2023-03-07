@@ -225,7 +225,7 @@ class FirebaseFunctions {
     }
   }
 
-  /// Updates the availability of every categoryItems of item [itemKey] 
+  /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
       {required String itemKey, required bool currentValue}) async {
@@ -254,7 +254,7 @@ class FirebaseFunctions {
     }
   }
 
-  /// First, the method updates the availability status of the item [itemId] in the 'items' collection, 
+  /// First, the method updates the availability status of the item [itemId] in the 'items' collection,
   /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
   /// If not, it returns boolean false.
   Future updateItemAvailability({required String itemId}) async {
@@ -276,6 +276,42 @@ class FirebaseFunctions {
     } catch (e) {
       return false;
     }
+    return true;
+  }
+
+  Future getCategoryRank({required String categoryId}) async {
+    final DocumentReference itemRef =
+        firestore.collection("categories").doc(categoryId);
+    final DocumentSnapshot documentSnapshot = await itemRef.get();
+    final Map<String, dynamic> data =
+        documentSnapshot.data() as Map<String, dynamic>;
+    final currentValue = data["rank"];
+    return currentValue;
+  }
+
+  Future updateCategoryRank(
+      {required String categoryId, required int newRank}) async {
+    await firestore
+        .collection("categories")
+        .doc(categoryId)
+        .update({"rank": newRank});
+  }
+
+  Future saveCategoryOrder(
+      {required String categoryIdOne, required String categoryIdTwo}) async {
+    try {
+      final tempRank = await getCategoryRank(categoryId: categoryIdOne);
+      final tempRank2 = await getCategoryRank(categoryId: categoryIdTwo);
+      updateCategoryRank(categoryId: categoryIdOne, newRank: tempRank2);
+      updateCategoryRank(categoryId: categoryIdTwo, newRank: tempRank);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  bool saveCategoryItemOrder(
+      {required String categoryIdOne, required String categoryIdTwo}) {
     return true;
   }
 }
