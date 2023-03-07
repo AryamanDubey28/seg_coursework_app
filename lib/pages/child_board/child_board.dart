@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board_interface.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
 
+import '../../themes/themes.dart';
+
 class ChildBoards extends StatefulWidget {
+  // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES
+  // String categoryTitle;
+  // ClickableImage categoryImage;
+  // List<ClickableImage> images = [];
   const ChildBoards({Key? key}) : super(key: key);
+  // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES, THIS SHOULD BE THE FUNCTION \/ DELETE THE CODE ABOVE
+  // const ChildBoards({Key? key, required this.categoryTitle, required this.categoryImage, required this.images}) : super(key: key);
 
   @override
   State<ChildBoards> createState() => _ChildBoards();
@@ -17,44 +26,55 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
   final FlutterTts flutterTts = FlutterTts();
+  // DELETE AFTER ADDING A QUEERY TO GET IMAGES
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
-          "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg");
+          "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
+      is_available: true);
   final List<ClickableImage> images = [
     ClickableImage(
         name: "Toast",
         imageUrl:
-            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
+            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
+        is_available: false),
     ClickableImage(
         name: "Fruits",
         imageUrl:
-            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
+            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
+        is_available: true),
     ClickableImage(
         name: "Football",
         imageUrl:
-            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
+            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg",
+        is_available: false),
     ClickableImage(
         name: "Boxing",
         imageUrl:
-            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
+            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325",
+        is_available: true),
     ClickableImage(
         name: "Swimming",
         imageUrl:
-            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
+            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg",
+        is_available: false),
     ClickableImage(
         name: "Butter chicken",
         imageUrl:
-            "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"),
+            "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg",
+        is_available: false),
     ClickableImage(
         name: "Fish and chips",
         imageUrl:
-            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
+            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg",
+        is_available: true),
     ClickableImage(
         name: "burgers",
         imageUrl:
-            "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
+            "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg",
+        is_available: true),
   ];
+  // DELETE DOWN TO HERE
 
   @override
   void initState() {
@@ -64,8 +84,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // Method used to build main body
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<CustomTheme>(context);
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
       body: Center(
         widthFactor: MediaQuery.of(context).size.width,
         heightFactor: MediaQuery.of(context).size.height,
@@ -74,7 +94,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           const SizedBox(
             height: 30,
           ),
-          getTopMenu(),
+          getTopMenu(themeNotifier),
           //this method is imported from clickable_image_grid in widgets
           getMainImages(images),
         ]),
@@ -83,7 +103,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   }
 
   // Method used to get top menu which has back button, category name and image
-  Padding getTopMenu() {
+  Padding getTopMenu(CustomTheme themeNotifier) {
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Container(
@@ -91,10 +111,11 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         alignment: Alignment.center,
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            color: Colors.red, borderRadius: BorderRadius.circular(8)),
+            color: themeNotifier.getTheme().appBarTheme.backgroundColor,
+            borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
-            getBackButton(),
+            getBackButton(themeNotifier),
             //box for spacing
             const SizedBox(
               width: 30,
@@ -141,7 +162,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   }
 
   // Returns round back button that shows on menu
-  Container getBackButton() {
+  Container getBackButton(CustomTheme themeNotifier) {
     return Container(
       key: const Key("backButton"),
       margin: const EdgeInsets.all(8.0),
@@ -150,15 +171,17 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       alignment: Alignment.center,
       decoration: BoxDecoration(
           border: Border.all(width: 3),
-          color: Colors.blue,
+          color: themeNotifier
+              .getTheme()
+              .floatingActionButtonTheme
+              .backgroundColor,
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(8.0),
           iconSize: 50,
-          splashColor: Colors.blue.shade900,
           hoverColor: Colors.transparent,
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }

@@ -28,6 +28,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
         title: const Text('All Saved Timetables'),
         leading: IconButton(
           key: const Key("backButton"),
+          tooltip: "Back",
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),

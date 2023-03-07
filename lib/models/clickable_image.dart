@@ -3,6 +3,8 @@
 class ClickableImage {
   final String name;
   final String imageUrl;
+  final bool is_available;
 
-  ClickableImage({required this.name, required this.imageUrl});
+  ClickableImage(
+      {required this.name, required this.imageUrl, required this.is_available});
 }

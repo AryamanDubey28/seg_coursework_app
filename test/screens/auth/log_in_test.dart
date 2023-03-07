@@ -1,6 +1,6 @@
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:seg_coursework_app/pages/authenticate/Auth.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 
 void main() async {
   late Auth auth;

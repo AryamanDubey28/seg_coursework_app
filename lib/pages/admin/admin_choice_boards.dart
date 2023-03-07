@@ -1,5 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/widgets/add_item_button.dart';
+import 'package:seg_coursework_app/widgets/delete_item_button.dart';
+import 'package:seg_coursework_app/widgets/edit_item_button.dart';
+import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
@@ -9,7 +17,21 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 */
 
 class AdminChoiceBoards extends StatefulWidget {
-  const AdminChoiceBoards({Key? key}) : super(key: key);
+  final List<DraggableList> draggableCategories;
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+
+  AdminChoiceBoards(
+      {super.key,
+      required this.draggableCategories,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<AdminChoiceBoards> createState() => _AdminChoiceBoards();
@@ -19,8 +41,10 @@ class AdminChoiceBoards extends StatefulWidget {
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   late List<DragAndDropList> categories;
 
-  _AdminChoiceBoards() {
-    categories = devCategories.map(buildCategory).toList();
+  @override
+  void initState() {
+    super.initState();
+    categories = widget.draggableCategories.map(buildCategory).toList();
   }
 
   // These are added to test while development
@@ -87,10 +111,13 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
-      floatingActionButton: buildAddButton(isCategory: true),
+      floatingActionButton: buildAddButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
+        listInnerDecoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20)),
         listInnerDecoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(20)),
@@ -121,7 +148,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         key: const Key("categoryDrag"),
         verticalAlignment: DragHandleVerticalAlignment.top,
         child: Container(
-          padding: const EdgeInsets.only(right: 10, top: 45),
+          padding: const EdgeInsets.only(right: 10, top: 55),
           child: dragIcon,
         ),
       );
@@ -137,28 +164,19 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
-  /// Builds the edit button depending on if it's an item or a category
-  IconButton buildEditButton({bool isCategory = false}) {
+  /// Builds the edit button for a category
+  IconButton buildEditButton({Key? key}) {
     const editIcon = Icon(
       Icons.edit,
       color: Color.fromARGB(255, 0, 76, 153),
     );
 
-    if (isCategory) {
-      return IconButton(
-        key: const Key("editCategoryButton"),
-        onPressed: editCategory,
-        icon: editIcon,
-        alignment: Alignment.centerRight,
-      );
-    } else {
-      return IconButton(
-        key: const Key("editItemButton"),
-        onPressed: editItem,
-        icon: editIcon,
-        padding: const EdgeInsets.only(right: 45),
-      );
-    }
+    return IconButton(
+      key: key,
+      onPressed: editCategory,
+      icon: editIcon,
+      alignment: Alignment.centerRight,
+    );
   }
 
   /// Builds the add button depending on if it's an item or a category
@@ -194,14 +212,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   }
 
   /// Builds the delete button
-  IconButton buildDeleteButton() {
+  IconButton buildDeleteButton({Key? key}) {
     const deleteIcon = Icon(
       Icons.delete,
       color: Colors.red,
     );
 
     return IconButton(
-      key: const Key("deleteButton"),
+      key: key,
       onPressed: deleteCategory,
       icon: deleteIcon,
     );
@@ -210,7 +228,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
-          key: const Key("categoryHeader"),
+          key: Key("categoryHeader-${category.id}"),
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
@@ -241,10 +259,17 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              buildEditButton(isCategory: true),
-              buildDeleteButton(),
+              buildDeleteButton(
+                  key: Key("deleteCategoryButton-${category.id}")),
+              buildEditButton(key: Key("editCategoryButton-${category.id}")),
               const Spacer(),
-              buildAddButton(),
+              AddItemButton(
+                categoryId: category.id,
+                key: Key("addItemButton-${category.id}"),
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage,
+              ),
               const Padding(padding: EdgeInsets.only(right: 35))
             ],
           )),
@@ -273,19 +298,38 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 ),
                 title: Text(
                   item.name,
-                  key: const Key("itemTitle"),
+                  key: Key("itemTitle-${item.id}"),
+                  style: TextStyle(color: Colors.black),
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    buildDeleteButton(),
-                    buildEditButton(),
+                    DeleteItemButton(
+                      categoryId: category.id,
+                      itemId: item.id,
+                      itemName: item.name,
+                      key: Key("deleteItemButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
+                    EditItemButton(
+                      itemId: item.id,
+                      itemName: item.name,
+                      itemImageUrl: item.imageUrl,
+                      key: Key("editItemButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
                   ],
                 ),
               )))
           .toList());
 
   /// The logic behind reordering an item
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
+      int newItemIndex, int newCategoryIndex) {
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
       int newItemIndex, int newCategoryIndex) {
     setState(() {
@@ -303,20 +347,11 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     });
   }
 
-  /// redirects to the item edit page (to be implemented)
-  void editItem() {}
-
   /// redirects to the category edit page (to be implemented)
   void editCategory() {}
 
-  /// deletes the item (to be implemented)
-  void deleteItem() {}
-
   /// deletes the category (to be implemented)
   void deleteCategory() {}
-
-  /// redirects to the item add page (to be implemented)
-  void addItem() {}
 
   /// redirects to the category add page (to be implemented)
   void addCategory() {}
