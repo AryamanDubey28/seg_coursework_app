@@ -236,6 +236,11 @@ class FirebaseFunctions {
           );
     }
 
+    DocumentSnapshot category = await firestore.collection('categories').doc(categoryId).get();
+    if (!category.exists) {
+      return throw FirebaseException(plugin: "category does not exist!");
+    }
+
     // Delete associated document from 'categoryItems' collection
     deleteFromCollection("categoryItems");
 

@@ -447,4 +447,136 @@ Future<void> main() async {
   test("updateCategoryRanks does nothing if given non existing categoryId", () async {
     expect(await firebaseFunctions.updateCategoryRanks(categoryId: "00xx", removedRank: 1), null);
   });
+
+  ///
+  ///
+  ///
+  test("create category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId, isA<String>());
+    DocumentSnapshot item = await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(item.get('title'), name);
+    expect(item.get('illustration'), imageUrl);
+    expect(item.get('userId'), "user1");
+    expect(item.get('rank'), true);
+  });
+
+  test("create catgories gives unique ids", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId1, isNot(newCategoryId2));
+  });
+
+  test("user can create more than one category", () async {
+    const String name1 = "Water";
+    const String imageUrl1 = "Nova-water.jpeg";
+    const String name2 = "Apple juice";
+    const String imageUrl2 = "Nova-Juice.jpeg";
+
+    String newCategoryId1 = await firebaseFunctions.createCategory(name: name1, imageUrl: imageUrl1);
+    String newCategoryId2 = await firebaseFunctions.createCategory(name: name2, imageUrl: imageUrl2);
+
+    DocumentSnapshot category1 = await mockFirestore.collection('categories').doc(newCategoryId1).get();
+    DocumentSnapshot category2 = await mockFirestore.collection('categories').doc(newCategoryId2).get();
+
+    final QuerySnapshot categoriesQuerySnapshot = await mockFirestore.collection('categories').get();
+
+    expect(categoriesQuerySnapshot.size, 2);
+    expect(category1.get('name'), name1);
+    expect(category2.get('name'), name2);
+    expect(category1.get('illustration'), imageUrl1);
+    expect(category2.get('illustration'), imageUrl2);
+    expect(category1.get('userId'), "user1");
+    expect(category2.get('userId'), "user1");
+  });
+
+  test("new category rank is one more than highest rank (using getNewCategoryRank)", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    DocumentSnapshot newCategory1 = await mockFirestore.collection('categories').doc(newCategoryId1).get();
+    DocumentSnapshot newCategory2 = await mockFirestore.collection('categories').doc(newCategoryId2).get();
+
+    expect(newCategory1.get('rank'), 0);
+    expect(newCategory2.get('rank'), 1);
+  });
+
+  test("update category name edits the category's name successfully", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category = await mockFirestore.collection('categories').doc(newCategoryId).get();
+
+    expect(category.get('title'), name);
+    await firebaseFunctions.updateCategoryName(categoryId: newCategoryId, newName: "Lunch");
+
+    category = await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('title'), "Lunch");
+  });
+
+  test("updating the name of a category that doesn't exist throws an exception", () async {
+    expect(firebaseFunctions.updateCategoryName(categoryId: "doesnt exist", newName: "doesnt matter"), throwsA(isInstanceOf<FirebaseException>()));
+  });
+
+  test("update category image edits the category's image successfully", () async {
+    const String name = "Dinner";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category = await mockFirestore.collection('categories').doc(newCategoryId).get();
+
+    expect(category.get('illustration'), imageUrl);
+    await firebaseFunctions.updateCategoryImage(categoryId: newCategoryId, newImageUrl: "Hana-water.jpeg");
+
+    category = await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('illustration'), "Hana-water.jpeg");
+  });
+
+  test("updating the image of a category that doesn't exist throws an exception", () async {
+    expect(firebaseFunctions.updateCategoryImage(categoryId: "doesn't exist", newImageUrl: "Hana-water.jpeg"), throwsA(isInstanceOf<FirebaseException>()));
+  });
+
+  test("deleting a category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category = await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.exists, true);
+
+    await firebaseFunctions.deleteCategory(categoryId: newCategoryId);
+
+    expect(category.exists, false);
+  });
+
+  test("deleting a non existing category throws exception", () async {
+    expect(firebaseFunctions.deleteCategory(categoryId: "00xx"), throwsA(isA<FirebaseException>()));
+  });
+
+  test("getCategoryRank returns correct rank", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(await firebaseFunctions.getCategoryRank(categoryId: newCategoryId1), 0);
+    expect(await firebaseFunctions.getCategoryRank(categoryId: newCategoryId2), 1);
+  });
+
+  test("getCategoryRank throws exception for non existing categories", () async {
+    expect(firebaseFunctions.getCategoryRank(categoryId: "00xx"), throwsA(isA<FirebaseException>()));
+  });
 }
