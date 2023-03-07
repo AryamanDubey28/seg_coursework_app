@@ -18,8 +18,9 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
-    firestoreFunctions = FirebaseFunctions(auth: auth!, firestore: firestore!, storage: storage!);
-    ;
+  }
+  void initState() {
+    firestoreFunctions = FirebaseFunctions(auth: auth, firestore: firestore, storage: storage);
   }
 
   @override

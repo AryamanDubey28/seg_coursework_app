@@ -61,7 +61,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
-      floatingActionButton: buildAddButton(),
+      floatingActionButton: AddCategoryButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
@@ -107,45 +107,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         ),
       );
     }
-  }
-
-  /// Builds the edit button for a category
-  IconButton buildEditButton({Key? key}) {
-    const editIcon = Icon(
-      Icons.edit,
-      color: Color.fromARGB(255, 0, 76, 153),
-    );
-
-    return IconButton(
-      key: key,
-      onPressed: editCategory,
-      icon: editIcon,
-      alignment: Alignment.centerRight,
-    );
-  }
-
-  /// Builds the add button for categories
-  TextButton buildAddButton() {
-    return TextButton.icon(
-      key: const Key("addCategoryButton"),
-      onPressed: addCategory,
-      icon: Icon(Icons.add),
-      label: const Text("Add a category"),
-    );
-  }
-
-  /// Builds the delete button
-  IconButton buildDeleteButton({Key? key}) {
-    const deleteIcon = Icon(
-      Icons.delete,
-      color: Colors.red,
-    );
-
-    return IconButton(
-      key: key,
-      onPressed: deleteCategory,
-      icon: deleteIcon,
-    );
   }
 
   /// Converts a category from DraggableList to DragAndDropList to be shown
@@ -239,22 +200,4 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       categories.insert(newCategoryIndex, selectedCategory);
     });
   }
-
-  /// redirects to the item edit page (to be implemented)
-  void editItem() {}
-
-  /// redirects to the category edit page (to be implemented)
-  void editCategory() {}
-
-  /// deletes the item (to be implemented)
-  void deleteItem() {}
-
-  /// deletes the category (to be implemented)
-  void deleteCategory() {}
-
-  /// redirects to the item add page (to be implemented)
-  void addItem() {}
-
-  /// redirects to the category add page (to be implemented)
-  void addCategory() {}
 }
