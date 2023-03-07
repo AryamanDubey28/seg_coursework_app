@@ -36,7 +36,8 @@ Future<void> main() async {
       'name': "Drinks",
       'illustration': "drink.jpeg",
       'userId': mockUser.uid,
-      'rank': 0
+      'rank': 0,
+      'is_available': false,
     });
   }
 
@@ -915,6 +916,7 @@ Future<void> main() async {
   test(
       "update item availability status of non-existent item returns a boolean False",
       () async {
-    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"), false);
+    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"),
+        false);
   });
 }

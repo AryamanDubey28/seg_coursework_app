@@ -33,11 +33,13 @@ class CategorySwitchButton extends StatefulWidget {
 class _SwitchButtonState extends State<CategorySwitchButton> {
   late FirebaseFunctions firebaseFunctions;
   late bool isAvailable;
+  late String buttonText;
 
   @override
   void initState() {
     super.initState();
     isAvailable = widget.categoryAvailability;
+    buttonText = isAvailable ? "On display" : "Hidden";
     firebaseFunctions = FirebaseFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
@@ -81,5 +83,32 @@ class _SwitchButtonState extends State<CategorySwitchButton> {
         }
       },
     );
+    // return ElevatedButton(
+    //     style: ElevatedButton.styleFrom(
+    //       textStyle: TextStyle(
+    //         fontSize: 20,
+    //         fontWeight: FontWeight.bold,
+    //       ),
+    //       shape: RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.circular(30),
+    //       ),
+    //     ),
+    //     child: Text(buttonText),
+    //     //    style: TextStyle(fontSize: 14)
+    //     onPressed: () async {
+    //       final bool trigger = await switchBooleanValue(widget.categoryId);
+    //       if (trigger) {
+    //         print("\n\nIS AVAILABLE:");
+    //         print(isAvailable);
+    //         setState(() {
+    //           buttonText = isAvailable ? "On display" : "Hidden";
+    //           isAvailable = !isAvailable;
+    //         });
+    //         print("\n\nNEW IS AVAILABLE:");
+    //         print(isAvailable);
+    //         print("\nNEW TEXT:");
+    //         print(buttonText);
+    //       }
+    //     });
   }
 }

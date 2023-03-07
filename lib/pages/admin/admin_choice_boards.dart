@@ -160,13 +160,16 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 height: 120,
                 width: 120,
               ),
-              const Padding(padding: EdgeInsets.all(8)),
+              const Padding(padding: EdgeInsets.only(right: 6)),
               Text(
                 category.title,
                 key: Key("categoryTitle-${category.id}"),
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
+              buildDeleteButton(
+                  key: Key("deleteCategoryButton-${category.id}")),
+              buildEditButton(key: Key("editCategoryButton-${category.id}")),
               CategorySwitchButton(
                 categoryId: category.id,
                 categoryAvailability: category.is_available,
@@ -175,9 +178,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 firestore: widget.firestore,
                 storage: widget.storage,
               ),
-              buildDeleteButton(
-                  key: Key("deleteCategoryButton-${category.id}")),
-              buildEditButton(key: Key("editCategoryButton-${category.id}")),
               const Spacer(),
               AddItemButton(
                 categoryId: category.id,

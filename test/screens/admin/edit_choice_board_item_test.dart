@@ -33,7 +33,8 @@ void main() {
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
-      'rank': 0
+      'rank': 0,
+      'is_available': false,
     });
 
     CollectionReference items = mockFirestore.collection('items');

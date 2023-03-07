@@ -33,7 +33,8 @@ void main() {
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
-      'rank': 0
+      'rank': 0,
+      'is_available': false,
     });
 
     CollectionReference items = mockFirestore.collection('items');
@@ -154,7 +155,6 @@ void main() {
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
-
       await tester.tap(find.byKey(ValueKey("editItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
@@ -175,7 +175,6 @@ void main() {
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
-
       await tester
           .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
