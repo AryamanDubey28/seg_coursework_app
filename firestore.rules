@@ -20,13 +20,14 @@ service cloud.firestore {
     // tested in other parts of the rule.
     function categoryFieldsAreValid()
     {
-      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration','rank']) && 
-      request.resource.data.keys().toSet().hasOnly(['title', 'userId', 'illustration','rank']) && 
+      return request.resource.data.keys().hasAll(['title', 'userId', 'illustration','rank','is_available']) && 
+      request.resource.data.keys().toSet().hasOnly(['title', 'userId', 'illustration','rank','is_available']) && 
       request.resource.data.title is string && 
       request.resource.data.title.size() < 100 && 
       request.resource.data.illustration is string && 
       request.resource.data.rank is number && 
-      request.resource.data.rank>=0
+      request.resource.data.rank>=0 && 
+      request.resource.data.is_available is bool
     }
 
     // Workflows must have a userId, a title, and an illustration field. Title is a string of length <100.

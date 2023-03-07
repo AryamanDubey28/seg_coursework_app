@@ -4,17 +4,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
-///This widget is a switch that the admin can use in order to define 
-///the availability status of a particular item in the admin choice 
+///This widget is a switch that the admin can use in order to define
+///the availability status of a particular item in the admin choice
 ///board.
-class SwitchButton extends StatefulWidget {
+class ItemSwitchButton extends StatefulWidget {
   final String itemId;
   final bool itemAvailability;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  SwitchButton(
+  ItemSwitchButton(
       {super.key,
       required this.itemId,
       required this.itemAvailability,
@@ -27,10 +27,10 @@ class SwitchButton extends StatefulWidget {
   }
 
   @override
-  State<SwitchButton> createState() => _SwitchButtonState();
+  State<ItemSwitchButton> createState() => _SwitchButtonState();
 }
 
-class _SwitchButtonState extends State<SwitchButton> {
+class _SwitchButtonState extends State<ItemSwitchButton> {
   late FirebaseFunctions firebaseFunctions;
   late bool isAvailable;
 
@@ -43,6 +43,7 @@ class _SwitchButtonState extends State<SwitchButton> {
         firestore: widget.firestore,
         storage: widget.storage);
   }
+
   ///Switch the state of the switch of item [itemKey] from true to false or conversely.
   ///If availability status has been saved in the db, returns true, else false.
   Future<bool> switchBooleanValue(String itemKey) async {

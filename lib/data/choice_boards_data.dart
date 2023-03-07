@@ -5,7 +5,8 @@ import 'package:seg_coursework_app/models/draggable_list.dart';
 final List<DraggableList> devCategories = [
   DraggableList(
       title: "Breakfast",
-      id: "YYTURkIV6tr90ickFM0F",
+      id: "vDeuSd7mW9T7x3QcbFz6",
+      is_available: true,
       imageUrl:
           "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
       items: [
@@ -25,6 +26,7 @@ final List<DraggableList> devCategories = [
   DraggableList(
       id: "vvKsFHrHvkP1SL8MlWKk",
       title: "Activities",
+      is_available: false,
       imageUrl:
           "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png",
       items: [
@@ -50,6 +52,7 @@ final List<DraggableList> devCategories = [
   DraggableList(
       id: "JSgepdChaNV0hCMGDrIb",
       title: "Lunch",
+      is_available: false,
       imageUrl:
           "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968",
       items: [
@@ -76,15 +79,21 @@ final List<DraggableList> devCategories = [
 
 /// Used for Testing classes
 final List<DraggableList> testCategories = [
-  DraggableList(title: "Breakfast", id: "0", imageUrl: "breakfast.jpg", items: [
-    DraggableListItem(
-        availability: true, id: "1", name: "Toast", imageUrl: "Toast.jpg"),
-    DraggableListItem(
-        availability: true, id: "2", name: "Fruits", imageUrl: "Fruits.png")
-  ]),
+  DraggableList(
+      title: "Breakfast",
+      id: "0",
+      imageUrl: "breakfast.jpg",
+      is_available: false,
+      items: [
+        DraggableListItem(
+            availability: true, id: "1", name: "Toast", imageUrl: "Toast.jpg"),
+        DraggableListItem(
+            availability: true, id: "2", name: "Fruits", imageUrl: "Fruits.png")
+      ]),
   DraggableList(
       id: "3",
       title: "Activities",
+      is_available: false,
       imageUrl: "Activities.png",
       items: [
         DraggableListItem(

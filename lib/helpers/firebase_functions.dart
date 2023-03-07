@@ -225,10 +225,10 @@ class FirebaseFunctions {
     }
   }
 
-  /// Updates the availability of every categoryItems of item [itemKey] 
+  /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
-      {required String itemKey, required bool currentValue}) async {
+      {required String itemKey, required bool newAvailabilityValue}) async {
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
@@ -249,12 +249,12 @@ class FirebaseFunctions {
             .collection('categoryItems/${category.id}/items')
             .doc(item.id);
 
-        await itemReference.update({"is_available": !currentValue});
+        await itemReference.update({"is_available": newAvailabilityValue});
       }
     }
   }
 
-  /// First, the method updates the availability status of the item [itemId] in the 'items' collection, 
+  /// First, the method updates the availability status of the item [itemId] in the 'items' collection,
   /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
   /// If not, it returns boolean false.
   Future updateItemAvailability({required String itemId}) async {
@@ -266,13 +266,36 @@ class FirebaseFunctions {
           documentSnapshot.data() as Map<String, dynamic>;
       final bool? currentValue = data["is_available"];
       // Items collection update
+      final bool newAvailabilityValue = !currentValue!;
       await firestore
           .collection("items")
           .doc(itemId)
-          .update({"is_available": !currentValue!}).then(
+          .update({"is_available": newAvailabilityValue}).then(
         (_) => availabilityMultiPathUpdate(
-            itemKey: itemId, currentValue: currentValue),
+            itemKey: itemId, newAvailabilityValue: newAvailabilityValue),
       );
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  /// First, the method updates the availability status of the category [categoryId] in the 'categories' collection,
+  /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
+  /// If not, it returns boolean false.
+  Future updateCategoryAvailability({required String categoryId}) async {
+    try {
+      final DocumentReference itemRef =
+          firestore.collection("categories").doc(categoryId);
+      final DocumentSnapshot documentSnapshot = await itemRef.get();
+      final Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+      final bool? currentValue = data["is_available"];
+      // Items collection update
+      await firestore
+          .collection("categories")
+          .doc(categoryId)
+          .update({"is_available": !currentValue!});
     } catch (e) {
       return false;
     }

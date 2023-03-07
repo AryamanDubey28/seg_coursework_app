@@ -114,8 +114,8 @@ void main() {
           findsOneWidget);
       expect(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")),
           findsOneWidget);
-      expect(
-          find.byKey(ValueKey("switchButton-${toastItem.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")),
+          findsOneWidget);
       expect(find.byKey(ValueKey("itemDrag")), findsWidgets);
     });
   });

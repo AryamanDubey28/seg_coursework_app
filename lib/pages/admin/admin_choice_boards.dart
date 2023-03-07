@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
-import 'package:seg_coursework_app/widgets/admin_switch.dart';
+import 'package:seg_coursework_app/widgets/admin_item_switch.dart';
+import 'package:seg_coursework_app/widgets/admin_category_switch.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
@@ -166,6 +167,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
+              CategorySwitchButton(
+                categoryId: category.id,
+                categoryAvailability: category.is_available,
+                key: Key("categorySwitchButton-${category.id}"),
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage,
+              ),
               buildDeleteButton(
                   key: Key("deleteCategoryButton-${category.id}")),
               buildEditButton(key: Key("editCategoryButton-${category.id}")),
@@ -198,10 +207,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SwitchButton(
+                    ItemSwitchButton(
                       itemId: item.id,
                       itemAvailability: item.availability,
-                      key: Key("switchButton-${item.id}"),
+                      key: Key("itemSwitchButton-${item.id}"),
                       auth: widget.auth,
                       firestore: widget.firestore,
                       storage: widget.storage,
