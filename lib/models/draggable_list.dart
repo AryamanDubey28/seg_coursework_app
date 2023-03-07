@@ -9,9 +9,10 @@ class DraggableList {
 }
 
 class DraggableListItem {
+  final bool availability;
   final String name;
   final String imageUrl;
   final String id;
 
-  DraggableListItem({required this.name, required this.imageUrl, required this.id});
+  DraggableListItem({required this.availability, required this.name, required this.imageUrl, required this.id});
 }

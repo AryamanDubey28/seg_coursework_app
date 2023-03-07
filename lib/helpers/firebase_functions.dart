@@ -30,7 +30,14 @@ class FirebaseFunctions {
   Future createCategoryItem({required String name, required String imageUrl, required String categoryId, required String itemId}) async {
     CollectionReference categoryItems = firestore.collection('categoryItems/$categoryId/items');
 
-    return categoryItems.doc(itemId).set({'illustration': imageUrl, 'is_available': true, 'name': name, 'rank': await getNewCategoryItemRank(categoryId: categoryId), 'userId': auth.currentUser!.uid}).onError((error, stackTrace) {
+    return categoryItems.doc(itemId).set({
+      'illustration': imageUrl,
+      'is_available': true,
+      'name': name,
+      'rank': await getNewCategoryItemRank(categoryId: categoryId),
+      'userId': auth.currentUser!.uid
+      // ignore: void_checks
+    }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
   }
@@ -49,6 +56,7 @@ class FirebaseFunctions {
     CollectionReference items = firestore.collection('items');
 
     return items.doc(itemId).update({'name': newName}).catchError((error, stackTrace) {
+      // ignore: invalid_return_type_for_catch_error
       return throw FirebaseException(plugin: stackTrace.toString());
     });
   }
@@ -222,6 +230,45 @@ class FirebaseFunctions {
       final DocumentReference documentReference = firestore.collection('categories').doc(documentSnapshot.id);
       await documentReference.update({'rank': documentSnapshot.get('rank') - 1});
     }
+  }
+
+  /// Updates the availability of every categoryItems of item [itemKey]
+  /// in all categoryItems collections holding it.
+  Future availabilityMultiPathUpdate({required String itemKey, required bool currentValue}) async {
+    final QuerySnapshot categoriesSnapshot = await firestore.collection('categories').where("userId", isEqualTo: auth.currentUser!.uid).get();
+
+    if (categoriesSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no categories");
+    }
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      final QuerySnapshot categoryItemsSnapshot = await firestore.collection('categoryItems/${category.id}/items').where(FieldPath.documentId, isEqualTo: itemKey).get();
+
+      for (final DocumentSnapshot item in categoryItemsSnapshot.docs) {
+        final DocumentReference itemReference = firestore.collection('categoryItems/${category.id}/items').doc(item.id);
+
+        await itemReference.update({"is_available": !currentValue});
+      }
+    }
+  }
+
+  /// First, the method updates the availability status of the item [itemId] in the 'items' collection,
+  /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
+  /// If not, it returns boolean false.
+  Future updateItemAvailability({required String itemId}) async {
+    try {
+      final DocumentReference itemRef = firestore.collection("items").doc(itemId);
+      final DocumentSnapshot documentSnapshot = await itemRef.get();
+      final Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+      final bool? currentValue = data["is_available"];
+      // Items collection update
+      await firestore.collection("items").doc(itemId).update({"is_available": !currentValue!}).then(
+        (_) => availabilityMultiPathUpdate(itemKey: itemId, currentValue: currentValue),
+      );
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   /// Delete category document from categories collection
