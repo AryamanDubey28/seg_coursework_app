@@ -274,6 +274,7 @@ class FirebaseFunctions {
             itemKey: itemId, currentValue: currentValue),
       );
     } catch (e) {
+      print(e);
       return false;
     }
     return true;
@@ -297,21 +298,67 @@ class FirebaseFunctions {
         .update({"rank": newRank});
   }
 
-  Future saveCategoryOrder(
-      {required String categoryIdOne, required String categoryIdTwo}) async {
+  Future saveCategoryOrder({required int oldRank, required int newRank}) async {
     try {
-      final tempRank = await getCategoryRank(categoryId: categoryIdOne);
-      final tempRank2 = await getCategoryRank(categoryId: categoryIdTwo);
-      updateCategoryRank(categoryId: categoryIdOne, newRank: tempRank2);
-      updateCategoryRank(categoryId: categoryIdTwo, newRank: tempRank);
+      // Retrieve all categories of user as an ordered list
+      QuerySnapshot categories = await firestore
+          .collection('categories')
+          .where("userId", isEqualTo: auth.currentUser!.uid)
+          .get();
+
+      var lst = [];
+      for (var cat in categories.docs) {
+        lst.add(cat);
+      }
+
+      lst.sort((a, b) =>
+          (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
+
+      final cat = lst.removeAt(oldRank);
+      lst.insert(newRank, cat);
+
+      // loop through updated list and update database
+      for (var i = 0; i < lst.length; i++) {
+        await firestore
+            .collection("categories")
+            .doc(lst[i].id)
+            .update({"rank": i});
+      }
     } catch (e) {
       return false;
     }
     return true;
   }
 
-  bool saveCategoryItemOrder(
-      {required String categoryIdOne, required String categoryIdTwo}) {
+  Future saveCategoryItemOrder(
+      {required String categoryId,
+      required int oldItemIndex,
+      required int newItemIndex}) async {
+    try {
+      QuerySnapshot categoryItems =
+          await firestore.collection('categoryItems/$categoryId/items').get();
+
+      var lst = [];
+      for (var item in categoryItems.docs) {
+        lst.add(item);
+      }
+      print(lst);
+
+      lst.sort((a, b) =>
+          (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
+
+      final item = lst.removeAt(oldItemIndex);
+      lst.insert(newItemIndex, item);
+
+      for (var i = 0; i < lst.length; i++) {
+        await firestore
+            .collection("categoryItems/$categoryId/items")
+            .doc(lst[i].id)
+            .update({"rank": i});
+      }
+    } catch (e) {
+      return false;
+    }
     return true;
   }
 }

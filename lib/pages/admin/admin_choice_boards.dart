@@ -238,20 +238,40 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// The logic behind reordering an item
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
       int newItemIndex, int newCategoryIndex) async {
-    setState(() {
-      final selectedItem =
-          categories[oldCategoryIndex].children.removeAt(oldItemIndex);
-      categories[newCategoryIndex].children.insert(newItemIndex, selectedItem);
-    });
+    final trigger = await firebaseFunctions.saveCategoryItemOrder(
+        categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,
+        oldItemIndex: oldItemIndex,
+        newItemIndex: newItemIndex);
+    if (trigger) {
+      if (newCategoryIndex == oldCategoryIndex) {
+        setState(() {
+          final selectedItem =
+              categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          categories[oldCategoryIndex]
+              .children
+              .insert(newItemIndex, selectedItem);
+          
+          final selectedItemDrag =
+              widget.draggableCategories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          widget.draggableCategories[oldCategoryIndex]
+              .children
+              .insert(newItemIndex, selectedItemDrag);
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(
+          'Reordering could not be done. Please ensure you are connected to internet.',
+        ),
+      ));
+    }
   }
 
   /// The logic behind reordering a category
   void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
     final trigger = await firebaseFunctions.saveCategoryOrder(
-        categoryIdOne:
-            widget.draggableCategories.elementAt(oldCategoryIndex).id,
-        categoryIdTwo:
-            widget.draggableCategories.elementAt(newCategoryIndex).id);
+        oldRank: oldCategoryIndex, newRank: newCategoryIndex);
     if (trigger) {
       setState(() {
         final selectedCategory = categories.removeAt(oldCategoryIndex);
