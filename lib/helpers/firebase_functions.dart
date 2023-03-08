@@ -343,7 +343,7 @@ class FirebaseFunctions {
       return throw FirebaseException(plugin: "workflow does not exist!");
     }
 
-    deleteWorkflowItems(workflowId: workflowId);//.then((value) => null);
+    await deleteWorkflowItems(workflowId: workflowId);//.then((value) => null);
 
     return workflows.doc(workflowId).delete().onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());

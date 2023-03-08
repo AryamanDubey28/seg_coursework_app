@@ -2,8 +2,9 @@
 class ImageDetails {
   final String name;
   final String imageUrl;
+  final String itemId;
 
-  ImageDetails({required this.name, required this.imageUrl});
+  ImageDetails({required this.name, required this.imageUrl, required this.itemId});
 
   bool equals(ImageDetails other)
   {

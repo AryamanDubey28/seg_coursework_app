@@ -35,14 +35,12 @@ import '../../helpers/firebase_functions.dart';
 
           for(int i = 0 ; i < timetable.length() ; i++)
           {
-            String itemId = await firestoreFunctions.createItem(
-              name: timetable.get(i).name, imageUrl: timetable.get(i).imageUrl);
           
             await firestoreFunctions.createWorkflowItem(
                 name: timetable.get(i).name,
                 imageUrl: timetable.get(i).imageUrl,
                 workflowId: workflowId,
-                itemId: itemId);
+                itemId: timetable.get(i).itemId);
           }
         } catch (e) {
           print(e);

@@ -154,7 +154,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
             children: [
               ImageSquare(
                 image: ImageDetails(
-                    name: category.title, imageUrl: category.imageUrl),
+                    name: category.title, imageUrl: category.imageUrl, itemId: "hahalool"), //Delet. later
                 key: Key("categoryImage-${category.id}"),
                 height: 120,
                 width: 120,
@@ -185,7 +185,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                   child: ListTile(
                 key: Key("categoryItem-${item.id}"),
                 leading: ImageSquare(
-                  image: ImageDetails(name: item.name, imageUrl: item.imageUrl),
+                  image: ImageDetails(name: item.name, imageUrl: item.imageUrl, itemId: "lool lmao hahahahahah"), //delet later
                   key: Key("itemImage-${item.id}"),
                   height: 90,
                   width: 90,
