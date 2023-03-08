@@ -23,7 +23,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   //The images that will be fed into the timetable. (No pictures are chosen by default.)
   Timetable imagesList = Timetable(listOfImages: []);
   //The images that will be fed into the PictureGrid (the choice board.)
-  //To be deleted and fetched from the database WHY TIMETABLE WHY.
+  //To be deleted and fetched from the database.
   List<ImageDetails> filledImagesList = [
     ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg", itemId: "qGzo8H6JgGrLvQyTb3rJ"),
     ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80", itemId: "MC13n4Jmg6lZTKjDdMsY"),
@@ -219,7 +219,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            flex: 5,
+            flex: 4,
             child: Center(
               child: Container(
                 //width here is set depending on the screen size. 6/6 represents the whole screen
@@ -236,7 +236,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
           isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
           Expanded(
             //This will make the timetable bigger if the PictureGrid is not visible
-            flex: isGridVisible ? 5 : 0,
+            flex: isGridVisible ? 8 : 0,
             child: Visibility(
               visible: isGridVisible,
               child: PictureGrid(
