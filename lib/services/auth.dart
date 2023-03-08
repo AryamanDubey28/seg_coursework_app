@@ -42,6 +42,30 @@ class Auth {
     return pin.toString();
   }
 
+  Future<bool> checkPINExists() async {
+    try {
+      String pin = await getCurrentUserPIN();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<String> createPIN(String pin) async {
+    final docUser = FirebaseFirestore.instance.collection('userPins').doc();
+    if (pin.length == 4) {
+      final entry = {
+        //pin is saved with user's ID
+        'pin': pin,
+        'userId': await getCurrentUserId(),
+      };
+      await docUser.set(entry); //adds PIN to database
+      return "Successfully made your pin: $pin";
+    } else {
+      return "Please ensure that your PIN is 4 digits";
+    }
+  }
+
   // Edit the current user's password and return custom error messages depending on the precise error that occured.
   Future<String> editCurrentUserPassword(
       String currentPassword, String newPassword) async {

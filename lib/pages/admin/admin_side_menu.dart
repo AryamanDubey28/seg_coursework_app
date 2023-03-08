@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 import '../../themes/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
@@ -17,6 +18,7 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
   final bool mock;
+
   const AdminSideMenu({Key? key, this.mock = false}) : super(key: key);
 
   @override
@@ -38,6 +40,20 @@ class AdminSideMenu extends StatelessWidget {
           top: MediaQuery.of(context).padding.top,
         ),
       );
+
+  // Displays an alert dialog with the text passed as parameter.
+  void show_alert_dialog(BuildContext context, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(
+              text,
+              style: TextStyle(fontSize: 24),
+            ),
+          );
+        });
+  }
 
   // The items of the side-menu
 
@@ -86,13 +102,20 @@ class AdminSideMenu extends StatelessWidget {
               ),
               title: const Text('Activate Child Mode'),
               onTap: () async {
-                final pref = await SharedPreferences.getInstance();
-                pref.setBool("isInChildMode",
-                    true); //isInChildMode boolean set to true as we are entering
+                final auth = Auth(auth: FirebaseAuth.instance);
+                bool check = await auth.checkPINExists();
+                if (check) {
+                  final pref = await SharedPreferences.getInstance();
+                  pref.setBool("isInChildMode",
+                      true); //isInChildMode boolean set to true as we are entering
 
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => CustomizableColumn(),
-                ));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => CustomizableColumn(),
+                  ));
+                } else {
+                  show_alert_dialog(context,
+                      "Please first create a PIN in the 'Edit Account Details' section");
+                }
               }),
           ListTile(
             key: const Key("appColours"),

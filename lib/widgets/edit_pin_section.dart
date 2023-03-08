@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 import '../services/auth.dart';
@@ -40,6 +42,38 @@ class EditPINSection extends StatelessWidget {
     show_alert_dialog(response);
   }
 
+  Future makePin(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text(
+                "Enter a PIN that you would like to lock the child account with"),
+            content: TextField(
+              key: Key("enterPINTextField"),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'[0-9]')), //only numbers can be entered
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              autofocus: true,
+              controller: _pinEditController,
+            ),
+            actions: [
+              TextButton(
+                  key: Key("submitButton"),
+                  onPressed: () => submit(context),
+                  child: Text("SUBMIT"))
+            ],
+          ));
+
+  Future<void> submit(BuildContext context) async {
+    String result =
+        await authentitcationHelper.createPIN(_pinEditController.text.trim());
+    show_alert_dialog(result);
+    Navigator.of(context).pop();
+    _pinEditController.clear();
+  }
+
   @override
   Widget build(BuildContext _context) {
     context = _context;
@@ -53,8 +87,23 @@ class EditPINSection extends StatelessWidget {
           return CircularProgressIndicator();
         } else if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            print("snapshot has error");
-            return const Text('Error');
+            //if snapshot has an error, it cannot read the user's PIN from the database therefore, prompts user to make a PIN
+            return ElevatedButton(
+              key: Key('make_pin_submit'),
+              style: ElevatedButton.styleFrom(
+                textStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              onPressed: () async {
+                makePin(context);
+              },
+              child: Text("Create PIN"),
+            );
           } else if (snapshot.hasData) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,

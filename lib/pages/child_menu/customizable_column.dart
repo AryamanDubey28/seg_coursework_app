@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'customizable_row.dart';
 
@@ -18,11 +21,13 @@ class CustomizableColumn extends StatefulWidget {
 class _CustomizableColumnState extends State<CustomizableColumn> {
   // List of categories, their titles, and images within them
   late TextEditingController pin_controller;
+  late Auth auth;
 
   @override
   void initState() {
     super.initState();
     pin_controller = TextEditingController();
+    auth = Auth(auth: FirebaseAuth.instance);
   }
 
   @override
@@ -84,7 +89,8 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
 
   Future<void> submit(BuildContext context) async {
     //verifys password is correct, if so then navigates back. otherwise says incorrect
-    if (pin_controller.text.trim() == "0000") {
+    String currentPin = await auth.getCurrentUserPIN();
+    if (pin_controller.text.trim() == currentPin) {
       final pref = await SharedPreferences.getInstance();
       pref.setBool("isInChildMode",
           false); //isInChildMode boolean set to false as we are leaving
