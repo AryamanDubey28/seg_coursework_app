@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/widgets/edit_email_section.dart';
 import 'package:seg_coursework_app/widgets/edit_password_section.dart';
@@ -7,12 +9,14 @@ import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
 class EditAccountPage extends StatefulWidget {
-  const EditAccountPage({
-    super.key,
-  });
+  late FirebaseAuth auth;
+
+  EditAccountPage({super.key, FirebaseAuth? auth}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+  }
 
   @override
-  State<EditAccountPage> createState() => EditAccountPageState();
+  State<EditAccountPage> createState() => EditAccountPageState(auth);
 }
 
 class EditAccountPageState extends State<EditAccountPage> {
@@ -21,14 +25,18 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
+  late FirebaseAuth auth;
+
+  EditAccountPageState(this.auth);
 
   @override
   void initState() {
     super.initState();
-    authentitcationHelper = Auth(auth: FirebaseAuth.instance);
+    authentitcationHelper = Auth(auth: auth);
   }
 
   // Displays an alert dialog with the text passed as parameter.
+  // ignore: non_constant_identifier_names
   void show_alert_dialog(String text) {
     showDialog(
         context: context,

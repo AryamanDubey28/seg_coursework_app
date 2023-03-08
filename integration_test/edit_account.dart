@@ -17,7 +17,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -31,7 +31,7 @@ void main() {
       final Finder emailChangeButton =
           find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
-      await tester.enterText(emailField, 'test@gmail.com');
+      await tester.enterText(emailField, 'teest@gmail.com');
       await tester.pumpAndSettle();
 
       await Future.delayed(Duration(seconds: 2));
@@ -51,7 +51,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -86,7 +86,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -124,7 +124,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -168,7 +168,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -212,7 +212,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -255,7 +255,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
@@ -298,7 +298,7 @@ void main() {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
       FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "anton@test.com", password: "Hello123!");
+          email: "anton@change.com", password: "Hello123!");
       runApp(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
