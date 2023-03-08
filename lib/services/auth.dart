@@ -34,12 +34,18 @@ class Auth {
   }
 
   Future<String> getCurrentUserPIN() async {
-    final query = FirebaseFirestore.instance
-        .collection('userPins')
-        .where('userId', isEqualTo: await getCurrentUserId());
-    final map = await query.get();
-    final pin = map.docs.first.data()['pin'];
-    return pin.toString();
+    try {
+      final query = FirebaseFirestore.instance
+          .collection('userPins')
+          .where('userId', isEqualTo: await getCurrentUserId());
+      final map = await query.get();
+      final pin = map.docs.first.data()['pin'];
+      return pin.toString();
+    } on FirebaseAuthException {
+      return "Error. Could not communicate with database";
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   Future<bool> checkPINExists() async {
@@ -52,17 +58,23 @@ class Auth {
   }
 
   Future<String> createPIN(String pin) async {
-    final docUser = FirebaseFirestore.instance.collection('userPins').doc();
-    if (pin.length == 4) {
-      final entry = {
-        //pin is saved with user's ID
-        'pin': pin,
-        'userId': await getCurrentUserId(),
-      };
-      await docUser.set(entry); //adds PIN to database
-      return "Successfully made your pin: $pin";
-    } else {
-      return "Please ensure that your PIN is 4 digits";
+    try {
+      final docUser = FirebaseFirestore.instance.collection('userPins').doc();
+      if (pin.length == 4) {
+        final entry = {
+          //pin is saved with user's ID
+          'pin': pin,
+          'userId': await getCurrentUserId(),
+        };
+        await docUser.set(entry); //adds PIN to database
+        return "Successfully made your pin: $pin";
+      } else {
+        return "Please ensure that your PIN is 4 digits";
+      }
+    } on FirebaseAuthException {
+      return "Error creating PIN. Could not communicate with database";
+    } catch (e) {
+      return e.toString();
     }
   }
 
@@ -130,7 +142,6 @@ class Auth {
         updater.update({
           'pin': newPIN,
         });
-
         return "Your PIN was successfully changed to $newPIN";
       } catch (e) {
         return "There was an error: $e";
