@@ -83,32 +83,5 @@ class _SwitchButtonState extends State<CategorySwitchButton> {
         }
       },
     );
-    // return ElevatedButton(
-    //     style: ElevatedButton.styleFrom(
-    //       textStyle: TextStyle(
-    //         fontSize: 20,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(30),
-    //       ),
-    //     ),
-    //     child: Text(buttonText),
-    //     //    style: TextStyle(fontSize: 14)
-    //     onPressed: () async {
-    //       final bool trigger = await switchBooleanValue(widget.categoryId);
-    //       if (trigger) {
-    //         print("\n\nIS AVAILABLE:");
-    //         print(isAvailable);
-    //         setState(() {
-    //           buttonText = isAvailable ? "On display" : "Hidden";
-    //           isAvailable = !isAvailable;
-    //         });
-    //         print("\n\nNEW IS AVAILABLE:");
-    //         print(isAvailable);
-    //         print("\nNEW TEXT:");
-    //         print(buttonText);
-    //       }
-    //     });
   }
 }
