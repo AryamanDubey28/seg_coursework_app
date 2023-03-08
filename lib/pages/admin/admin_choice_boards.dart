@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
@@ -17,15 +18,21 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
+// fix this
+// break down the firebase_functions
+// catch errors in firebase_functions
+// fix any test errors
+// figure out how to use cache
+
 class AdminChoiceBoards extends StatefulWidget {
-  final List<DraggableList> draggableCategories;
+  final List<DraggableList>? draggableCategories;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
   AdminChoiceBoards(
       {super.key,
-      required this.draggableCategories,
+      this.draggableCategories,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -40,16 +47,50 @@ class AdminChoiceBoards extends StatefulWidget {
 
 /// The page for admins to edit choice boards
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
-  late List<DragAndDropList> categories;
+  late List<DragAndDropList> categories = [];
+  late Future<List<DraggableList>>
+      _futureUserCategories; // holds the user categories (if not mocking)
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    categories = widget.draggableCategories.map(buildCategory).toList();
+    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+
+    if (widget.draggableCategories != null) {
+      categories = widget.draggableCategories!.map(buildCategory).toList();
+    } else {
+      _futureUserCategories = firebaseFunctions.getUserCategories();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<List<DraggableList>>(
+      future: _futureUserCategories,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // The future is complete and has data
+          print("\n\nHAS DATA\n\n");
+          List<DragAndDropList> catRename =
+              snapshot.data!.map(buildCategory).toList();
+          return choice_boards_scaffold(userCategories: catRename);
+        } else if (snapshot.hasError) {
+          // The future has an error
+          print("\n\nNO DATA\n\n");
+          return choice_boards_scaffold(userCategories: categories);
+        }
+
+        // By default, show a loading spinner
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
+  Scaffold choice_boards_scaffold(
+      {required List<DragAndDropList> userCategories}) {
     return Scaffold(
       appBar: AppBar(
         key: Key('app_bar'),
@@ -63,7 +104,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         listInnerDecoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(20)),
-        children: categories,
+        children: userCategories,
         itemDivider: const Divider(
           thickness: 2,
           height: 2,

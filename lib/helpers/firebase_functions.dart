@@ -3,6 +3,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
+import 'package:seg_coursework_app/models/draggable_list.dart';
+
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
   late final FirebaseAuth auth;
@@ -225,7 +227,7 @@ class FirebaseFunctions {
     }
   }
 
-  /// Updates the availability of every categoryItems of item [itemKey] 
+  /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
       {required String itemKey, required bool currentValue}) async {
@@ -254,7 +256,9 @@ class FirebaseFunctions {
     }
   }
 
-  /// First, the method updates the availability status of the item [itemId] in the 'items' collection, 
+  // #### updating availabilities functions ####
+
+  /// First, the method updates the availability status of the item [itemId] in the 'items' collection,
   /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
   /// If not, it returns boolean false.
   Future updateItemAvailability({required String itemId}) async {
@@ -277,5 +281,47 @@ class FirebaseFunctions {
       return false;
     }
     return true;
+  }
+
+  // #### Retrieving data functions ####
+
+  Future<List<DraggableList>> getUserCategories() async {
+    List<DraggableList> userCategories = []; // holds all of the user's data
+
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .get();
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      // holds the current category's categoryItems
+      List<DraggableListItem> categoryItems = [];
+
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .get();
+
+      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
+        categoryItems.add(DraggableListItem(
+          name: categoryItem.get("name"),
+          availability: categoryItem.get("is_available"),
+          id: categoryItem.id,
+          imageUrl: categoryItem.get("illustration"),
+          rank: categoryItem.get("rank"),
+        ));
+      }
+
+      userCategories.add(DraggableList(
+        title: category.get("title"),
+        rank: category.get("rank"),
+        items: categoryItems,
+        imageUrl: category.get("illustration"),
+        id: category.id,
+        availability: category.get("is_available"),
+      ));
+    }
+
+    print("\n\nin FF, length: ${userCategories.length}\n\n");
+    return userCategories;
   }
 }

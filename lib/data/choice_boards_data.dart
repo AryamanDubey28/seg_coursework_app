@@ -6,17 +6,21 @@ final List<DraggableList> devCategories = [
   DraggableList(
       title: "Breakfast",
       id: "YYTURkIV6tr90ickFM0F",
+      availability: true,
+      rank: 0,
       imageUrl:
           "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
       items: [
         DraggableListItem(
             availability: true,
+            rank: 0,
             id: "Eaawa8YiQRaTYnXmcJNp",
             name: "Toast",
             imageUrl:
                 "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
         DraggableListItem(
             availability: false,
+            rank: 1,
             id: "Eaawa8YiQRaTYnXmcJNp",
             name: "Fruits",
             imageUrl:
@@ -24,24 +28,29 @@ final List<DraggableList> devCategories = [
       ]),
   DraggableList(
       id: "vvKsFHrHvkP1SL8MlWKk",
+      rank: 1,
       title: "Activities",
+      availability: true,
       imageUrl:
           "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png",
       items: [
         DraggableListItem(
             availability: false,
+            rank: 0,
             id: "Eaawa8YiQRaTYnXmcJNp",
             name: "Football",
             imageUrl:
                 "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
         DraggableListItem(
             availability: true,
+            rank: 1,
             id: "BMjvuL6OwtVjGbk9QoNg",
             name: "Boxing",
             imageUrl:
                 "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
         DraggableListItem(
             availability: true,
+            rank: 2,
             id: "Qg40XVwilis4XRAL6hwI",
             name: "Swimming",
             imageUrl:
@@ -49,24 +58,29 @@ final List<DraggableList> devCategories = [
       ]),
   DraggableList(
       id: "JSgepdChaNV0hCMGDrIb",
+      rank: 2,
       title: "Lunch",
+      availability: true,
       imageUrl:
           "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968",
       items: [
         DraggableListItem(
             availability: true,
+            rank: 0,
             id: "placeholder",
             name: "Butter chicken",
             imageUrl:
                 "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"),
         DraggableListItem(
             availability: true,
+            rank: 1,
             id: "placeholder",
             name: "Fish and chips",
             imageUrl:
                 "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
         DraggableListItem(
             availability: true,
+            rank: 2,
             id: "placeholder",
             name: "burgers",
             imageUrl:
@@ -76,19 +90,36 @@ final List<DraggableList> devCategories = [
 
 /// Used for Testing classes
 final List<DraggableList> testCategories = [
-  DraggableList(title: "Breakfast", id: "0", imageUrl: "breakfast.jpg", items: [
-    DraggableListItem(
-        availability: true, id: "1", name: "Toast", imageUrl: "Toast.jpg"),
-    DraggableListItem(
-        availability: true, id: "2", name: "Fruits", imageUrl: "Fruits.png")
-  ]),
   DraggableList(
-      id: "3",
-      title: "Activities",
-      imageUrl: "Activities.png",
+      title: "Breakfast",
+      rank: 0,
+      id: "0",
+      imageUrl: "breakfast.jpg",
+      availability: true,
       items: [
         DraggableListItem(
             availability: true,
+            id: "1",
+            rank: 0,
+            name: "Toast",
+            imageUrl: "Toast.jpg"),
+        DraggableListItem(
+            availability: true,
+            id: "2",
+            rank: 1,
+            name: "Fruits",
+            imageUrl: "Fruits.png")
+      ]),
+  DraggableList(
+      id: "3",
+      rank: 1,
+      title: "Activities",
+      imageUrl: "Activities.png",
+      availability: true,
+      items: [
+        DraggableListItem(
+            availability: true,
+            rank: 0,
             id: "4",
             name: "Football",
             imageUrl: "Football.jpg"),
