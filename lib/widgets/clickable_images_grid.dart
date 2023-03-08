@@ -20,6 +20,7 @@ Expanded getMainImages(List<ClickableImage> images) {
   );
 }
 
+//Method for the Text-To-Speech package Flutter TTS to speak a given text
 Future speak(String text) async {
   final FlutterTts flutterTts = FlutterTts();
   await flutterTts.setSharedInstance(true);

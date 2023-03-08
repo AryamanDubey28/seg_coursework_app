@@ -110,6 +110,7 @@ class Auth {
     if (await getCurrentUser() != null) {
       try {
         String docId = "";
+        //get the document id of the current user
         final docUser = await FirebaseFirestore.instance
             .collection('userPins')
             .where('userId', isEqualTo: await getCurrentUserId())
@@ -120,6 +121,7 @@ class Auth {
           });
         });
 
+        //update the PIN to the newPIN
         final updater =
             FirebaseFirestore.instance.collection('userPins').doc(docId);
         updater.update({
