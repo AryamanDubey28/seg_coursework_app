@@ -156,9 +156,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
       ));
       try {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("No edits made")),
-        );
+        ScaffoldMessenger(child: SnackBar(content: Text("No edits made")));
       } catch (e) {
         print("No Scaffold to present to!\n${e.toString()}");
       }
@@ -190,9 +188,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
         ));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Edits saved successfully!")),
-        );
+        ScaffoldMessenger(child: SnackBar(content: Text("Edits saved successfully!")));
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
         print(e);

@@ -176,8 +176,7 @@ class FirebaseFunctions {
   /// Add a new entry to the 'categories' collection in Firestore with
   /// the given item information. Return the created category's id
   Future<String> createCategory({required String name, required String imageUrl}) async {
-    CollectionReference categories = FirebaseFirestore.instance.collection('categories');
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    CollectionReference categories = firestore.collection('categories');
 
     return categories.add({'userId': auth.currentUser!.uid, 'title': name, 'illustration': imageUrl, 'rank': await getNewCategoryRank(uid: auth.currentUser!.uid)}).then((category) => category.id).catchError((error, stackTrace) {
           return throw FirebaseException(plugin: stackTrace.toString());
@@ -187,7 +186,7 @@ class FirebaseFunctions {
   /// Return an appropriate rank for a new category
   /// (one more than the highest rank or zero if empty)
   Future<int> getNewCategoryRank({required String uid}) async {
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('categories').where("userId", isEqualTo: uid).get();
+    final QuerySnapshot querySnapshot = await firestore.collection('categories').where("userId", isEqualTo: uid).get();
     return querySnapshot.size;
   }
 
@@ -276,8 +275,8 @@ class FirebaseFunctions {
   Future deleteCategory({required String categoryId}) async {
     /// Delete document from firebase collection
     Future deleteFromCollection(String collectionName) async {
-      updateAllCategoryRanks(removedRank: await getCategoryRank(categoryId: categoryId));
-      return FirebaseFirestore.instance.collection(collectionName).doc(categoryId).delete().then(
+      await updateAllCategoryRanks(removedRank: await getCategoryRank(categoryId: categoryId));
+      return await firestore.collection(collectionName).doc(categoryId).delete().then(
             (doc) => print("Document deleted"),
             onError: (e) => print("Error updating document $e"),
           );
@@ -289,9 +288,9 @@ class FirebaseFunctions {
     }
 
     // Delete associated document from 'categoryItems' collection
-    deleteFromCollection("categoryItems");
+    await deleteFromCollection("categoryItems");
 
     // Delete category from 'categories' collection
-    deleteFromCollection("categories");
+    await deleteFromCollection("categories");
   }
 }

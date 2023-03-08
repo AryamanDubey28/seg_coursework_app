@@ -18,9 +18,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
-  }
-  void initState() {
-    firestoreFunctions = FirebaseFunctions(auth: auth, firestore: firestore, storage: storage);
+    firestoreFunctions = FirebaseFunctions(auth: this.auth, firestore: this.firestore, storage: this.storage);
   }
 
   @override
@@ -43,6 +41,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
+      key: Key("confirmationAlert"),
       title: Text("Warning!"),
       content: Text("Are you sure you want to delete '$categoryName'?"),
       actions: [

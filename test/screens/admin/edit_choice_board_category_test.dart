@@ -128,7 +128,7 @@ void main() {
 
       await tester.tap(find.byKey(ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(ScaffoldMessenger), findsOneWidget);
     });
   });
 }
