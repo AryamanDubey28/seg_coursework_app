@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // This class concentrates all method relative to communicating with the Firebase Authentication service.
@@ -28,6 +31,15 @@ class Auth {
     } else {
       return "";
     }
+  }
+
+  Future<String> getCurrentUserPIN() async {
+    final query = FirebaseFirestore.instance
+        .collection('userPins')
+        .where('userId', isEqualTo: await getCurrentUserId());
+    final map = await query.get();
+    final pin = map.docs.first.data()['pin'];
+    return pin.toString();
   }
 
   // Edit the current user's password and return custom error messages depending on the precise error that occured.
@@ -70,10 +82,47 @@ class Auth {
     }
   }
 
+  Future<String> editCurrentUserPIN(String newPIN) async {
+    if (await getCurrentUser() != null) {
+      try {
+        String docId = "";
+        final docUser = await FirebaseFirestore.instance
+            .collection('userPins')
+            .where('userId', isEqualTo: await getCurrentUserId())
+            .get()
+            .then((value) {
+          value.docs.forEach((element) {
+            docId = element.id;
+          });
+        });
+
+        final updater =
+            FirebaseFirestore.instance.collection('userPins').doc(docId);
+        updater.update({
+          'pin': newPIN,
+        });
+
+        return "Your PIN was successfully changed to $newPIN";
+      } catch (e) {
+        return "There was an error: $e";
+      }
+    }
+    return "This attempt at changing your PIN was unsuccessful";
+  }
+
   Future<User?> getCurrentUser() async {
     var user = await auth.currentUser;
     if (user != null) {
       return user;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getCurrentUserId() async {
+    var user = await auth.currentUser;
+    if (user != null) {
+      return user.uid;
     } else {
       return null;
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'customizable_row.dart';
 
@@ -90,7 +90,10 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           false); //isInChildMode boolean set to false as we are leaving
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
+        MaterialPageRoute(
+            builder: (context) => AdminChoiceBoards(
+                  draggableCategories: devCategories,
+                )),
       );
     } else {
       Navigator.of(context).pop();

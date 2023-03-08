@@ -16,7 +16,12 @@ Future main() async {
   final pref = await SharedPreferences.getInstance();
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
-  runApp(MyApp(isInChildMode: isInChildMode));
+  runApp(ThemeProvider(
+    themeNotifier: themeNotifier,
+    child: MyApp(
+      isInChildMode: isInChildMode,
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {

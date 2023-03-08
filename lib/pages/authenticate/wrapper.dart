@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'toggleAuth.dart';

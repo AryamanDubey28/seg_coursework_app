@@ -1,14 +1,13 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
+
 import 'package:seg_coursework_app/main.dart' as app;
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 
 void main() {
   //IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('sign in tests', () {
-    testWidgets('input correct email and password, verify sign in',
-        (tester) async {
     testWidgets('input correct email and password, verify sign in',
         (tester) async {
       app.main();

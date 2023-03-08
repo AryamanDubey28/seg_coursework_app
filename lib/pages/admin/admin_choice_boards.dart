@@ -47,65 +47,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     categories = widget.draggableCategories.map(buildCategory).toList();
   }
 
-  // These are added to test while development
-  // They will later be supplied from the database (TO BE DELETED)
-  final List<DraggableList> devCategories = [
-    DraggableList(
-        title: "Breakfast",
-        imageUrl:
-            "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
-        items: [
-          DraggableListItem(
-              name: "Toast",
-              imageUrl:
-                  "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
-          DraggableListItem(
-              name: "Fruits",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80")
-        ]),
-    DraggableList(
-        title: "Activities",
-        imageUrl:
-            "https://busyteacher.org/uploads/posts/2014-03/1394546738_freetime-activities.png",
-        items: [
-          DraggableListItem(
-              name: "Football",
-              imageUrl:
-                  "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
-          DraggableListItem(
-              name: "Boxing",
-              imageUrl:
-                  "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
-          DraggableListItem(
-              name: "Swimming",
-              imageUrl:
-                  "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg")
-        ]),
-    DraggableList(
-        title: "Lunch",
-        imageUrl:
-            "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968",
-        items: [
-          DraggableListItem(
-              name: "Butter chicken",
-              imageUrl:
-                  "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"),
-          DraggableListItem(
-              name: "Fish and chips",
-              imageUrl:
-                  "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
-          DraggableListItem(
-              name: "burgers",
-              imageUrl:
-                  "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
-        ]),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: Key("admin_boards_scaffold"),
       appBar: AppBar(
         key: Key('app_bar'),
         title: const Text('Edit Choice Boards'),
@@ -115,9 +59,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
-        listInnerDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20)),
         listInnerDecoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(20)),
@@ -179,36 +120,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     );
   }
 
-  /// Builds the add button depending on if it's an item or a category
-  TextButton buildAddButton({bool isCategory = false}) {
-    const addIcon = Icon(
-      Icons.add,
+  /// Builds the add button for categories
+  TextButton buildAddButton() {
+    return TextButton.icon(
+      key: const Key("addCategoryButton"),
+      onPressed: addCategory,
+      icon: Icon(Icons.add),
+      label: const Text("Add a category"),
     );
-    const contentColor = MaterialStatePropertyAll(Colors.white);
-
-    if (isCategory) {
-      return TextButton.icon(
-        key: const Key("addCategoryButton"),
-        onPressed: addCategory,
-        icon: addIcon,
-        label: const Text("Add a category"),
-        style: const ButtonStyle(
-            foregroundColor: contentColor,
-            backgroundColor:
-                MaterialStatePropertyAll(Color.fromARGB(255, 80, 141, 93))),
-      );
-    } else {
-      return TextButton.icon(
-        key: const Key("addItemButton"),
-        onPressed: addItem,
-        icon: addIcon,
-        label: const Text("Add an item"),
-        style: const ButtonStyle(
-            foregroundColor: contentColor,
-            backgroundColor:
-                MaterialStatePropertyAll(Color.fromARGB(255, 105, 187, 123))),
-      );
-    }
   }
 
   /// Builds the delete button
@@ -232,30 +151,17 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
-                margin: const EdgeInsets.all(10),
-                child: Image.network(
-                  category.imageUrl,
-                  key: const Key("categoryImage"),
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (BuildContext context, Object exception,
-                      StackTrace? stackTrace) {
-                    return const Text('!Error loading image!');
-                  },
-                ),
+              ImageSquare(
+                image: ImageDetails(
+                    name: category.title, imageUrl: category.imageUrl),
+                key: Key("categoryImage-${category.id}"),
+                height: 120,
+                width: 120,
               ),
               const Padding(padding: EdgeInsets.all(8)),
               Text(
                 category.title,
-                key: const Key("categoryTitle"),
+                key: Key("categoryTitle-${category.id}"),
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
@@ -276,25 +182,12 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       children: category.items
           .map((item) => DragAndDropItem(
                   child: ListTile(
-                key: const Key("categoryItem"),
-                leading: Card(
-                  semanticContainer: true,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  elevation: 5,
-                  child: Image.network(
-                    item.imageUrl,
-                    key: const Key("itemImage"),
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace? stackTrace) {
-                      return const Text('!Error loading image!');
-                    },
-                  ),
+                key: Key("categoryItem-${item.id}"),
+                leading: ImageSquare(
+                  image: ImageDetails(name: item.name, imageUrl: item.imageUrl),
+                  key: Key("itemImage-${item.id}"),
+                  height: 90,
+                  width: 90,
                 ),
                 title: Text(
                   item.name,
@@ -328,8 +221,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
-      int newItemIndex, int newCategoryIndex) {
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
       int newItemIndex, int newCategoryIndex) {
     setState(() {

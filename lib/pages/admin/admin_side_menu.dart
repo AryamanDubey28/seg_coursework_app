@@ -40,72 +40,7 @@ class AdminSideMenu extends StatelessWidget {
       );
 
   // The items of the side-menu
-  Widget buildMenuItems(BuildContext context) => Container(
-        padding: const EdgeInsets.all(10),
-        child: Wrap(
-          children: [
-            ListTile(
-              key: const Key("choiceBoards"),
-              leading: const Icon(Icons.photo_size_select_actual_outlined),
-              title: const Text('Choice boards'),
-              onTap: () =>
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const AdminChoiceBoards(),
-              )),
-            ),
-            ListTile(
-              key: const Key("visualTimetable"),
-              leading: const Icon(Icons.event),
-              title: const Text('Visual Timetable'),
-              onTap: () =>
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const VisualTimetableInterface(),
-              )),
-            ),
-            ListTile(
-              key: const Key("childMode"),
-              leading: const Icon(Icons.child_care),
-              title: const Text('Activate Child Mode'),
-              // onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-              //   builder: (context) => CustomizableColumn(),
-              // )
-              // ),
-              onTap: () async {
-                final pref = await SharedPreferences.getInstance();
-                pref.setBool("isInChildMode",
-                    true); //isInChildMode boolean set to true as we are entering
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => CustomizableColumn(),
-                ));
-              },
-            ),
-            ListTile(
-              key: const Key("appColours"),
-              leading: const Icon(Icons.color_lens_outlined),
-              title: const Text('Edit App Colours'),
-              onTap: () {},
-            ),
-            const Divider(
-              color: Colors.black54,
-            ),
-            ListTile(
-              key: const Key("accountDetails"),
-              leading: const Icon(Icons.account_box_outlined),
-              title: const Text('Edit Account Details'),
-              onTap: () {},
-            ),
-            ListTile(
-              key: const Key("logout"),
-              leading: const Icon(Icons.logout_outlined),
-              title: const Text('Log out'),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-              },
-            ),
-          ],
-        ),
-      );
-}
+
   Widget buildMenuItems(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
 
@@ -145,21 +80,20 @@ class AdminSideMenu extends StatelessWidget {
             )),
           ),
           ListTile(
-            key: const Key("childMode"),
-            leading: Icon(
-              Icons.child_care,
-            ),
-            title: const Text('Activate Child Mode'),
-            onTap: () async {
-            final pref = await SharedPreferences.getInstance();
+              key: const Key("childMode"),
+              leading: Icon(
+                Icons.child_care,
+              ),
+              title: const Text('Activate Child Mode'),
+              onTap: () async {
+                final pref = await SharedPreferences.getInstance();
                 pref.setBool("isInChildMode",
                     true); //isInChildMode boolean set to true as we are entering
-                
+
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => CustomizableColumn(),
-            ));
-            }
-          ),
+                  builder: (context) => CustomizableColumn(),
+                ));
+              }),
           ListTile(
             key: const Key("appColours"),
             leading: Icon(
@@ -199,12 +133,16 @@ class AdminSideMenu extends StatelessWidget {
               Icons.logout_outlined,
             ),
             title: const Text('Log out'),
-            onTap: () {
+            onTap: () async {
               FirebaseAuth.instance.signOut();
+              final pref = await SharedPreferences.getInstance();
+              final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Wrapper(),
+                    builder: (context) => Wrapper(
+                      isInChildMode: isInChildMode,
+                    ),
                   ));
             },
           ),

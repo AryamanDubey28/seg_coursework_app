@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/admin/admin_interface.dart';
 import 'package:seg_coursework_app/main.dart' as app;
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 
