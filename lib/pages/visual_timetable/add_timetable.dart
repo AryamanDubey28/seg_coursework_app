@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
@@ -26,7 +27,7 @@ import '../../helpers/firebase_functions.dart';
   /// - create a new item with the uploaded image's Url in Firestore
   /// - create a new categoryItem entry in the selected category
   /// - Take the user back to the Choice Boards page
-  void saveWorkflowToFirestore(
+  Future<String> saveWorkflowToFirestore(
         {required Timetable timetable}) async {
         try {
           String workflowId = await firestoreFunctions.createWorkflow(
@@ -42,8 +43,10 @@ import '../../helpers/firebase_functions.dart';
                 workflowId: workflowId,
                 itemId: timetable.get(i).itemId);
           }
+          return workflowId;
         } catch (e) {
           print(e);
+          return "";
         }
   }
 
@@ -63,4 +66,14 @@ import '../../helpers/firebase_functions.dart';
           //     });
         }
       // }
+  }
+  Future<ListOfTimetables> fetchWorkflow() async {
+        try {
+          return await firestoreFunctions.getListOfTimetables();
+
+          
+        } catch (e) {
+          print(e);
+          return ListOfTimetables(listOfLists: []);
+        }
   }

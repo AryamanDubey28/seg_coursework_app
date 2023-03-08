@@ -5,7 +5,7 @@ class Timetable {
   List<ImageDetails> listOfImages;
   late String workflowId;
 
-  Timetable({this.title = "Timetable Title", required this.listOfImages});
+  Timetable({this.title = "Timetable Title", required this.listOfImages, this.workflowId = ""});
 
   int length()
   {
@@ -20,6 +20,11 @@ class Timetable {
   void add(ImageDetails img)
   {
     listOfImages.add(img);
+  }
+
+  void insert(int index, ImageDetails img)
+  {
+    listOfImages.insert(index, img);
   }
 
   ImageDetails removeAt(int index)

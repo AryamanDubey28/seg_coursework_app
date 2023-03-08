@@ -34,11 +34,12 @@ class ListOfTimetables {
 
   ///This method attempts to save a timetable in the list of timetables.
   ///Returns false if it's already saved. Saves the timetable and returns true if not.
-  bool addList(Timetable list)
+  Future<bool> addList(Timetable list) async
   {
     if(existsIn(list)) return false;
     listOfLists.add(list);
-    saveWorkflowToFirestore(timetable: list);
+    String temp = await saveWorkflowToFirestore(timetable: list);
+    list.setID(id: temp);
     return true;
   }
 

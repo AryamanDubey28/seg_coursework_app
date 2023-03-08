@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
 import '../../models/image_details.dart';
 import '../admin/admin_side_menu.dart';
 import '../../widgets/picture_grid.dart';
@@ -21,7 +22,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   bool isGridVisible = true;
   //The images that will be fed into the timetable. (No pictures are chosen by default.)
-  Timetable imagesList = Timetable(listOfImages: []);
+  List<ImageDetails> imagesList = [];
   //The images that will be fed into the PictureGrid (the choice board.)
   //To be deleted and fetched from the database.
   List<ImageDetails> filledImagesList = [
@@ -34,18 +35,28 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   //The list that holds the saved timetables
   ListOfTimetables savedTimetables = ListOfTimetables(listOfLists: []);
+  _VisualTimeTableState()
+  {
+    _FetchTimetables();
+  }
+
+  Future<void> _FetchTimetables() async
+  {
+    savedTimetables = await fetchWorkflow();
+  }
+   //
 
 
   ///This makes a deep copy of a list to be saved in the savedTimetables 
-  Timetable deepCopy(String title, Timetable list) {
+  Timetable deepCopy(String title, List<ImageDetails> list) {
   Timetable copy = Timetable(title: title, listOfImages: []);
   // for (ImageDetails image in list) {
-  for (int i = 0 ; i < list.length(); i++){
+  for (int i = 0 ; i < list.length; i++){
     copy.add(
       ImageDetails(
-      name: list.get(i).name,
-      imageUrl: list.get(i).imageUrl,
-      itemId: list.get(i).itemId,
+      name: list[i].name,
+      imageUrl: list[i].imageUrl,
+      itemId: list[i].itemId,
       )
     );
   }
@@ -56,10 +67,10 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   ///and hides the PictureGrid when 5 images are chosen for the Timetable
   void updateImagesList(ImageDetails image) {
     setState(() {
-      if (imagesList.length() < 5) {
+      if (imagesList.length < 5) {
         imagesList.add(image);
       }
-      if (imagesList.length() >= 5)
+      if (imagesList.length >= 5)
       {
         isGridVisible = false;
       }
@@ -71,7 +82,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   void popImagesList(int index) {
     setState(() {
       imagesList.removeAt(index);
-      if (imagesList.length() < 5) {
+      if (imagesList.length < 5) {
         isGridVisible = true;
       }
     });
@@ -159,9 +170,9 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   }
 
   ///This function saves a timetable into the list of timetables.
-  void addTimetableToListOfLists(String title, Timetable imagesList) {
-    setState(() {
-      bool isAdded = savedTimetables.addList(deepCopy(title, imagesList));
+  void addTimetableToListOfLists(String title, List<ImageDetails> imagesList)  {
+    setState(() async {
+      bool isAdded = await savedTimetables.addList(deepCopy(title, imagesList));
       showSnackBarMessage(isAdded);
     });
   }
@@ -254,7 +265,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         child: Stack(
           children: <Widget>[
             //This makes sure that a timetable can't be saved if it has one or no elements.
-            if (timetableList.imagesList.length() >= 2) Align(
+            if (timetableList.imagesList.length >= 2) Align(
               alignment: Alignment.bottomLeft,
               child: buildAddButton(timetableList),
             ),

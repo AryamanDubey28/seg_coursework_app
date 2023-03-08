@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'dart:io';
 
 import 'package:seg_coursework_app/models/timetable.dart';
@@ -65,6 +67,43 @@ class FirebaseFunctions {
     final QuerySnapshot querySnapshot =
         await firestore.collection('categoryItems/$categoryId/items').get();
     return querySnapshot.size;
+  }
+
+  Future<List<ImageDetails>> getLibraryOfImages() async
+  {
+    List<ImageDetails> library = [];
+    final QuerySnapshot itemsSnapshot = await firestore.collection("items")
+    .where("userId", isEqualTo: auth.currentUser!.uid)
+    .get();
+
+    for (final DocumentSnapshot item in itemsSnapshot.docs) {
+      library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+    }
+
+    return library;
+  }
+
+  Future<ListOfTimetables> getListOfTimetables() async
+  {
+    List<Timetable> listOfTimetablesTemp = [];
+    final QuerySnapshot workflowsSnapshot = await firestore.collection("workflows")
+    .where("userId", isEqualTo: auth.currentUser!.uid)
+    .get();
+
+    for (final DocumentSnapshot workflow in workflowsSnapshot.docs) {
+      final QuerySnapshot workflowItems = await firestore.collection('workflowItems/${workflow.id}/items').get();
+      List<ImageDetails> temp = [];
+      for(final DocumentSnapshot workflowItem in workflowItems.docs)
+      {
+        temp.add(//workflowItem.get('rank'), 
+        ImageDetails(name: workflowItem.get('name'), imageUrl: workflowItem.get("illustration"), itemId: workflowItem.id));
+        
+      }
+      listOfTimetablesTemp.add(Timetable(title: workflow.get("title"), listOfImages: temp, workflowId: workflow.id));
+      // library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+    }
+
+    return ListOfTimetables(listOfLists: listOfTimetablesTemp);
   }
 
   ///Create a new workflow and add it to the database.
