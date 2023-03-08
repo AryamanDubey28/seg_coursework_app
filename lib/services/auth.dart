@@ -108,6 +108,9 @@ class Auth {
 
   Future<String> editCurrentUserPIN(String newPIN) async {
     if (await getCurrentUser() != null) {
+      if (newPIN.length != 4) {
+        return "Please ensure your PIN is 4 digits";
+      }
       try {
         String docId = "";
         //get the document id of the current user

@@ -110,7 +110,7 @@ class EditPINSection extends StatelessWidget {
               children: [
                 Align(
                     alignment: Alignment.centerLeft,
-                    key: const Key("edit_email_prompt"),
+                    key: const Key("edit_pin_prompt"),
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text("Edit your PIN:",
