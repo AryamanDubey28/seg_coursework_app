@@ -1,9 +1,11 @@
 import 'image_details.dart';
 
 class Timetable {
+  String title;
   List<ImageDetails> listOfImages;
+  late String workflowId;
 
-  Timetable({required this.listOfImages});
+  Timetable({this.title = "Timetable Title", required this.listOfImages});
 
   int length()
   {
@@ -23,5 +25,9 @@ class Timetable {
   ImageDetails removeAt(int index)
   {
     return listOfImages.removeAt(index);
+  }
+
+  void setID({required String id}) {
+    workflowId = id;
   }
 }

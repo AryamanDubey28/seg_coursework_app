@@ -1,4 +1,6 @@
 
+import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
+
 import 'image_details.dart';
 import 'timetable.dart';
 
@@ -36,6 +38,7 @@ class ListOfTimetables {
   {
     if(existsIn(list)) return false;
     listOfLists.add(list);
+    saveWorkflowToFirestore(timetable: list);
     return true;
   }
 

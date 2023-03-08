@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
+import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
 import '../../widgets/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
@@ -16,9 +17,11 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
   ///This function is fed into the TimetableRow and will unsave the timetable from the list of saved timetables.
   void unsaveList(int index)
   {
+    deleteWorkflowFromFirestore(timetable: widget.savedTimetables[index]);
     setState(() {
       widget.savedTimetables.removeAt(index);
     });
+    
   }
 
   @override
@@ -39,12 +42,15 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
           return Column(
             children: [
               const SizedBox(height: 5,),
+              Text(widget.savedTimetables[index].title),
+              const SizedBox(height: 10,),
               TimetableRow(
                 key: Key("timetableRow$index"),
                 listOfImages: widget.savedTimetables[index],
                 unsaveList: unsaveList,
                 index: index,
               ),
+              Divider()
             ],
           );
         },

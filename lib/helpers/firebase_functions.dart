@@ -3,6 +3,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
+import 'package:seg_coursework_app/models/timetable.dart';
+
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
   late final FirebaseAuth auth;
@@ -64,6 +66,57 @@ class FirebaseFunctions {
         await firestore.collection('categoryItems/$categoryId/items').get();
     return querySnapshot.size;
   }
+
+  ///Create a new workflow and add it to the database.
+  Future<String> createWorkflow({required String title})
+  async {
+    CollectionReference workflows = firestore.collection('workflows');
+
+    return workflows
+      .add({
+        'title': title,
+        'userId': auth.currentUser!.uid,
+      })
+      .then((workflow) => workflow.id)
+      .catchError((error, stackTrace) {
+        return throw FirebaseException(plugin: stackTrace.toString());
+      });
+
+  }
+
+  Future createWorkflowItem(
+      {
+      required String name,
+      required String imageUrl,
+      required String workflowId,
+      required String itemId}) async {
+    CollectionReference workflowItems =
+        firestore.collection('workflowItems/$workflowId/items');
+    try{
+      return workflowItems.doc(itemId).set({
+      'illustration': imageUrl,
+      'name': name,
+      'rank': await getNewWorkflowItemRank(workflowId: workflowId),
+      'userId': auth.currentUser!.uid
+      // ignore: void_checks
+    });
+    }
+    catch(e)
+    {
+      print("error saving workflowitem");
+      print(e);
+    }
+    
+  }
+
+  /// Return an appropriate rank for a new workflowItem in the
+  /// given workflow (one more than the highest rank or zero if empty)
+  Future<int> getNewWorkflowItemRank({required String workflowId}) async {
+    final QuerySnapshot querySnapshot =
+        await firestore.collection('workflowItems/$workflowId/items').get();
+    return querySnapshot.size;
+  }
+
 
   // #### Edting items functions ####
 
@@ -277,5 +330,37 @@ class FirebaseFunctions {
       return false;
     }
     return true;
+  }
+
+  ///Delete a workflow.
+  Future deleteWorkflow(
+      {required String workflowId}) async {
+    CollectionReference workflows =
+        firestore.collection('workflows');
+
+    DocumentSnapshot workflow = await workflows.doc(workflowId).get();
+    if (!workflow.exists) {
+      return throw FirebaseException(plugin: "workflow does not exist!");
+    }
+
+    deleteWorkflowItems(workflowId: workflowId);//.then((value) => null);
+
+    return workflows.doc(workflowId).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  ///Delete a workflow's associated items.
+  Future deleteWorkflowItems(
+      {required String workflowId}) async {
+
+    final QuerySnapshot workflowItemFolder = await firestore.collection('workflowItems/$workflowId/items').get();
+
+    for(final DocumentSnapshot workflowItem in workflowItemFolder.docs)
+    {
+      final DocumentReference workflowItemReference = firestore.collection('workflowItems/$workflowId/items').doc(workflowItem.id);
+      await workflowItemReference.delete();
+    }
+
   }
 }

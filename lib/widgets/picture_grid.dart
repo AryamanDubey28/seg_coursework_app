@@ -8,7 +8,7 @@ import 'package:seg_coursework_app/widgets/image_square.dart';
 class PictureGrid extends StatelessWidget {
   const PictureGrid({super.key, required this.imagesList, required this.updateImagesList});
 
-  final Timetable imagesList;
+  final List<ImageDetails> imagesList;
   final Function updateImagesList;
 
   @override
@@ -16,7 +16,7 @@ class PictureGrid extends StatelessWidget {
     return Container(
       margin: EdgeInsets.fromLTRB(7,0,7,7),
       child: GridView.builder(
-        itemCount: imagesList.length(),
+        itemCount: imagesList.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 4/3,
@@ -26,13 +26,13 @@ class PictureGrid extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              updateImagesList(imagesList.get(index));
+              updateImagesList(imagesList[index]);
             },
             child: Tooltip(
-              message: imagesList.get(index).name,
+              message: imagesList[index].name,
               child: ImageSquare(
                 key: Key('gridImage$index'),
-                image: imagesList.get(index),
+                image: imagesList[index],
               ),
             ),
           );
