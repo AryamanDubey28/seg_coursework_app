@@ -250,11 +250,11 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           categories[oldCategoryIndex]
               .children
               .insert(newItemIndex, selectedItem);
-          
-          final selectedItemDrag =
-              widget.draggableCategories[oldCategoryIndex].children.removeAt(oldItemIndex);
-          widget.draggableCategories[oldCategoryIndex]
-              .children
+
+          final selectedItemDrag = widget
+              .draggableCategories[oldCategoryIndex].children
+              .removeAt(oldItemIndex);
+          widget.draggableCategories[oldCategoryIndex].children
               .insert(newItemIndex, selectedItemDrag);
         });
       }

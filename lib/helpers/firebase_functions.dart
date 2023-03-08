@@ -45,7 +45,7 @@ class FirebaseFunctions {
     CollectionReference categoryItems =
         firestore.collection('categoryItems/$categoryId/items');
 
-    return categoryItems.doc(itemId).set({
+    categoryItems.doc(itemId).set({
       'illustration': imageUrl,
       'is_available': true,
       'name': name,
@@ -342,7 +342,6 @@ class FirebaseFunctions {
       for (var item in categoryItems.docs) {
         lst.add(item);
       }
-      print(lst);
 
       lst.sort((a, b) =>
           (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
