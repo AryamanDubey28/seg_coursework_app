@@ -280,24 +280,13 @@ class FirebaseFunctions {
     return true;
   }
 
-  Future getCategoryRank({required String categoryId}) async {
-    final DocumentReference itemRef =
-        firestore.collection("categories").doc(categoryId);
-    final DocumentSnapshot documentSnapshot = await itemRef.get();
-    final Map<String, dynamic> data =
-        documentSnapshot.data() as Map<String, dynamic>;
-    final currentValue = data["rank"];
-    return currentValue;
-  }
-
-  Future updateCategoryRank(
-      {required String categoryId, required int newRank}) async {
-    await firestore
-        .collection("categories")
-        .doc(categoryId)
-        .update({"rank": newRank});
-  }
-
+  /// When category reordering occurs, updates the new rank of each category in firebase.
+  /// The function creates an ordered list (depending on the ranks) of categories before the reordering,
+  /// applies reordering changes to the list and then upload to firebase the new position 
+  /// of the categories in the list as their updated ranks.
+  /// 
+  /// [oldRank] The initial index (position) of the dragged category.
+  /// [newRank] The new index (position) of the dragged category.
   Future saveCategoryOrder({required int oldRank, required int newRank}) async {
     try {
       // Retrieve all categories of user as an ordered list
@@ -330,6 +319,14 @@ class FirebaseFunctions {
     return true;
   }
 
+  /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.
+  /// The function creates an ordered list of categoryItems before the reordering,
+  /// applies reordering changes to the list and then upload to firebase the new position 
+  /// of the categoryItems in the list as their updated ranks.
+  /// 
+  /// [categoryId] The category concerned by the reordering.
+  /// [oldItemIndex] The initial index (position) of the dragged categoryItem.
+  /// [newItemIndex] The new index (position) of the dragged categoryItem.
   Future saveCategoryItemOrder(
       {required String categoryId,
       required int oldItemIndex,
