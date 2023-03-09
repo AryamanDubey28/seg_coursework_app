@@ -72,13 +72,20 @@ class FirebaseFunctions {
   Future<List<ImageDetails>> getLibraryOfImages() async
   {
     List<ImageDetails> library = [];
-    final QuerySnapshot itemsSnapshot = await firestore.collection("items")
-    .where("userId", isEqualTo: auth.currentUser!.uid)
-    .get();
+    try{
+      final QuerySnapshot itemsSnapshot = await firestore.collection("items")
+      .where("userId", isEqualTo: auth.currentUser!.uid)
+      .get();
 
-    for (final DocumentSnapshot item in itemsSnapshot.docs) {
-      library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+      for (final DocumentSnapshot item in itemsSnapshot.docs) {
+        library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+      }
     }
+    catch(e)
+    {
+      print(e);
+    }
+    
 
     return library;
   }

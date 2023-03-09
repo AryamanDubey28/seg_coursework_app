@@ -16,7 +16,40 @@ class VisualTimeTable extends StatefulWidget {
 }
 
 /// The page for the admin to show the choice boards and make a timetable from that
-class _VisualTimeTableState extends State<VisualTimeTable> {
+class _VisualTimeTableState extends State<VisualTimeTable> with WidgetsBindingObserver {
+  bool _isPictureGridLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _fetchData();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _isPictureGridLoaded) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _fetchData() async
+  {
+    await Future.wait([
+      _FetchLibrary(),
+      _FetchTimetables(),
+    ]);
+
+    setState(() {
+      _isPictureGridLoaded = true;
+    });
+  }
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -25,24 +58,30 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   List<ImageDetails> imagesList = [];
   //The images that will be fed into the PictureGrid (the choice board.)
   //To be deleted and fetched from the database.
-  List<ImageDetails> filledImagesList = [
-    ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg", itemId: "qGzo8H6JgGrLvQyTb3rJ"),
-    ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80", itemId: "MC13n4Jmg6lZTKjDdMsY"),
-    ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg", itemId: "KFNwVWwvXCDx8WBuJNTC"),
-    ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325", itemId: "NAvFQBzOnLgTwVJYh5n2"),
-    ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg", itemId: "HSC9A2YKSrdQUlHGGOkn"),
-  ];
+  List<ImageDetails> filledImagesList = [];
+  //   ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg", itemId: "qGzo8H6JgGrLvQyTb3rJ"),
+  //   ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80", itemId: "MC13n4Jmg6lZTKjDdMsY"),
+  //   ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg", itemId: "KFNwVWwvXCDx8WBuJNTC"),
+  //   ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325", itemId: "NAvFQBzOnLgTwVJYh5n2"),
+  //   ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg", itemId: "HSC9A2YKSrdQUlHGGOkn"),
+  // ];
 
   //The list that holds the saved timetables
   ListOfTimetables savedTimetables = ListOfTimetables(listOfLists: []);
-  _VisualTimeTableState()
-  {
-    _FetchTimetables();
-  }
+  // _VisualTimeTableState()
+  // {
+  //   _FetchLibrary();
+  //   _FetchTimetables();
+    
+  // }
 
   Future<void> _FetchTimetables() async
   {
     savedTimetables = await fetchWorkflow();
+  }
+  Future<void> _FetchLibrary() async
+  {
+    filledImagesList = await fetchLibrary();
   }
    //
 
@@ -205,77 +244,85 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       popImagesList: popImagesList
     );
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: AppBar(
-        title: const Text("Visual Timetable"),
-        actions: <Widget> [
-          IconButton(
-            key: const Key("allTimetablesButton"),
-            tooltip: "View all saved timetables",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AllSavedTimetables(savedTimetables: savedTimetables),
-                ),
-              );
-            }, 
-          icon: const Icon(Icons.list)
-          ),
-        ],
-      ),
-      drawer: const AdminSideMenu(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            flex: 4,
-            child: Center(
-              child: Container(
-                //width here is set depending on the screen size. 6/6 represents the whole screen
-                // 5/6 allows it to be centered and have a bit of padding on the left and right side.
-                // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
-                //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
-                width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
-                height: 200,
-                alignment: Alignment.center,
-                child: Align(alignment: Alignment.center ,child: timetableList),
-              ),
-            )
-          ),
-          isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
-          Expanded(
-            //This will make the timetable bigger if the PictureGrid is not visible
-            flex: isGridVisible ? 8 : 0,
-            child: Visibility(
-              visible: isGridVisible,
-              child: PictureGrid(
-                imagesList: filledImagesList, 
-                updateImagesList: updateImagesList
-              ),
-            ),
-          ),
-        ],
-      ),
-
-      //This is to add two floatingActionButtons and allign them to the corners of the screen.
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Stack(
-          children: <Widget>[
-            //This makes sure that a timetable can't be saved if it has one or no elements.
-            if (timetableList.imagesList.length >= 2) Align(
-              alignment: Alignment.bottomLeft,
-              child: buildAddButton(timetableList),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: buildHideButton(),
+    if (!_isPictureGridLoaded) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        appBar: AppBar(
+          title: const Text("Visual Timetable"),
+          actions: <Widget> [
+            IconButton(
+              key: const Key("allTimetablesButton"),
+              tooltip: "View all saved timetables",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AllSavedTimetables(savedTimetables: savedTimetables),
+                  ),
+                );
+              }, 
+            icon: const Icon(Icons.list)
             ),
           ],
         ),
-      ),
-    );
+        drawer: const AdminSideMenu(),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              flex: 4,
+              child: Center(
+                child: Container(
+                  //width here is set depending on the screen size. 6/6 represents the whole screen
+                  // 5/6 allows it to be centered and have a bit of padding on the left and right side.
+                  // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
+                  //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
+                  width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
+                  height: 200,
+                  alignment: Alignment.center,
+                  child: Align(alignment: Alignment.center ,child: timetableList),
+                ),
+              )
+            ),
+            isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
+            Expanded(
+              //This will make the timetable bigger if the PictureGrid is not visible
+              flex: isGridVisible ? 8 : 0,
+              child: Visibility(
+                visible: isGridVisible,
+                child: PictureGrid(
+                  imagesList: filledImagesList, 
+                  updateImagesList: updateImagesList
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        //This is to add two floatingActionButtons and allign them to the corners of the screen.
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Stack(
+            children: <Widget>[
+              //This makes sure that a timetable can't be saved if it has one or no elements.
+              if (timetableList.imagesList.length >= 2) Align(
+                alignment: Alignment.bottomLeft,
+                child: buildAddButton(timetableList),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: buildHideButton(),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }

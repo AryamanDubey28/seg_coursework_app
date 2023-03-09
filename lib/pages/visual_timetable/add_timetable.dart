@@ -77,3 +77,14 @@ import '../../helpers/firebase_functions.dart';
           return ListOfTimetables(listOfLists: []);
         }
   }
+
+  Future<List<ImageDetails>> fetchLibrary() async {
+        try {
+          return await firestoreFunctions.getLibraryOfImages();
+
+          
+        } catch (e) {
+          print(e);
+          return [];
+        }
+  }
