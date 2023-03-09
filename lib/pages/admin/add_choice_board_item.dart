@@ -200,7 +200,6 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => AdminChoiceBoards(
-                draggableCategories: devCategories,
                 auth: widget.auth,
                 firestore: widget.firestore,
                 storage: widget.storage),

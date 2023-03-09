@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
@@ -46,14 +47,14 @@ class AdminChoiceBoards extends StatefulWidget {
 }
 
 /// The page for admins to edit choice boards
-class _AdminChoiceBoards extends State<AdminChoiceBoards> {
+class _AdminChoiceBoards extends State<AdminChoiceBoards>
+    with LoadingMixin<AdminChoiceBoards> {
   late List<DragAndDropList> categories = [];
-  late Future<List<DraggableList>>
+  late List<DraggableList>
       _futureUserCategories; // holds the user categories (if not mocking)
 
   @override
-  initState() {
-    super.initState();
+  Future<void> load() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
@@ -62,31 +63,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     if (widget.draggableCategories != null) {
       categories = widget.draggableCategories!.map(buildCategory).toList();
     } else {
-      _futureUserCategories = firebaseFunctions.getUserCategories();
+      _futureUserCategories = await firebaseFunctions.getUserCategories();
+      categories = _futureUserCategories.map(buildCategory).toList();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<DraggableList>>(
-      future: _futureUserCategories,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          // The future is complete and has data
-          print("\n\nHAS DATA\n\n");
-          List<DragAndDropList> catRename =
-              snapshot.data!.map(buildCategory).toList();
-          return choice_boards_scaffold(userCategories: catRename);
-        } else if (snapshot.hasError) {
-          // The future has an error
-          print("\n\nNO DATA\n\n");
-          return choice_boards_scaffold(userCategories: categories);
-        }
-
-        // By default, show a loading spinner
-        return CircularProgressIndicator();
-      },
-    );
+    return choice_boards_scaffold(userCategories: categories);
   }
 
   Scaffold choice_boards_scaffold(

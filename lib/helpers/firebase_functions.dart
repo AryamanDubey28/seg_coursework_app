@@ -321,7 +321,6 @@ class FirebaseFunctions {
       ));
     }
 
-    print("\n\nin FF, length: ${userCategories.length}\n\n");
     return userCategories;
   }
 }
