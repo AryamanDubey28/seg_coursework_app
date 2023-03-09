@@ -16,6 +16,7 @@ void main() {
         (tester) async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
+      await Future.delayed(Duration(seconds: 2));
       FirebaseAuth.instance.signInWithEmailAndPassword(
           email: "anton@test.com", password: "Hello123!");
       runApp(ThemeProvider(

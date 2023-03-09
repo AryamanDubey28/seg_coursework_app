@@ -16,7 +16,19 @@ void main() {
       app.main();
       await tester.pumpAndSettle(); //waits to see if application is ready
 
+      final Finder emailField = find.byKey(Key('email_text_field'));
+      final Finder passwordField = find.byKey(Key('password_text_field'));
+      final Finder signInButton = find.byKey(Key('sign_in_button'));
+
+      await tester.enterText(emailField, 'ary@test.com');
+      await tester.pumpAndSettle();
+      await tester.enterText(passwordField, "Password123");
+      await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
+
+      await tester.tap(signInButton);
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 5));
 
       final ScaffoldState state =
           tester.firstState(find.byKey(Key("admin_boards_scaffold")));
