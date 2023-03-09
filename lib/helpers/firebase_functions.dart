@@ -84,6 +84,7 @@ class FirebaseFunctions {
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
   Future deleteImageFromCloud({required String imageUrl}) {
+    print(imageUrl);
     return storage.refFromURL(imageUrl).delete().onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
@@ -178,7 +179,7 @@ class FirebaseFunctions {
   Future<String> createCategory({required String name, required String imageUrl}) async {
     CollectionReference categories = firestore.collection('categories');
 
-    return categories.add({'userId': auth.currentUser!.uid, 'title': name, 'illustration': imageUrl, 'rank': await getNewCategoryRank(uid: auth.currentUser!.uid)}).then((category) => category.id).catchError((error, stackTrace) {
+    return categories.add({'userId': auth.currentUser!.uid, 'title': name, 'illustration': imageUrl, 'rank': await getNewCategoryRank(uid: auth.currentUser!.uid), "is_available": true}).then((category) => category.id).catchError((error, stackTrace) {
           return throw FirebaseException(plugin: stackTrace.toString());
         });
   }
@@ -273,24 +274,23 @@ class FirebaseFunctions {
   /// Delete category document from categories collection
   /// Delete associated categoryItems document
   Future deleteCategory({required String categoryId}) async {
-    /// Delete document from firebase collection
-    Future deleteFromCollection(String collectionName) async {
-      await updateAllCategoryRanks(removedRank: await getCategoryRank(categoryId: categoryId));
-      return await firestore.collection(collectionName).doc(categoryId).delete().then(
-            (doc) => print("Document deleted"),
-            onError: (e) => print("Error updating document $e"),
-          );
-    }
+    CollectionReference categoryItems = firestore.collection('categoryItems');
+    CollectionReference categories = firestore.collection('categories');
 
-    DocumentSnapshot category = await firestore.collection('categories').doc(categoryId).get();
+    DocumentSnapshot categoryItem = await categoryItems.doc(categoryId).get();
+    DocumentSnapshot category = await categories.doc(categoryId).get();
     if (!category.exists) {
       return throw FirebaseException(plugin: "category does not exist!");
     }
 
-    // Delete associated document from 'categoryItems' collection
-    await deleteFromCollection("categoryItems");
+    // ignore: void_checks
+    categoryItems.doc(categoryId).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
 
-    // Delete category from 'categories' collection
-    await deleteFromCollection("categories");
+    // ignore: void_checks
+    return categories.doc(categoryId).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
   }
 }

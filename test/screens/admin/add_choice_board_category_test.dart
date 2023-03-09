@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +12,7 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/pages/admin/add_choice_board_category.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -103,6 +106,29 @@ void main() {
       await tester.tap(find.byKey(ValueKey("createCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
+    });
+  });
+
+  testWidgets("successful category creation takes user to choice boards page", (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardCategory(
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+              preSelectedImage: File("assets/test_image.png"),
+            ),
+          )));
+
+      final nameField = find.byKey(ValueKey("categoryNameField"));
+      await tester.enterText(nameField, "Breakfast");
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(ValueKey("createCategoryButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
 }

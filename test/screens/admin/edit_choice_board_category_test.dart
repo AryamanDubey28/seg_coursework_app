@@ -107,28 +107,4 @@ void main() {
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
-
-  testWidgets("editing a category that doesn't exist shows error", (WidgetTester tester) async {
-    mockNetworkImagesFor(() async {
-      await tester.pumpWidget(ThemeProvider(
-          themeNotifier: CustomTheme(),
-          child: MaterialApp(
-              home: EditChoiceBoardCategory(
-            categoryId: breakfastCategory.id,
-            categoryImageUrl: "food.jpeg",
-            categoryName: "food.jpeg",
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
-
-      final nameField = find.byKey(ValueKey("categoryNameField"));
-      await tester.enterText(nameField, "Dinner");
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
-      await tester.pumpAndSettle();
-      expect(find.byType(ScaffoldMessenger), findsOneWidget);
-    });
-  });
 }

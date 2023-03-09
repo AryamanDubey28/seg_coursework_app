@@ -33,9 +33,11 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
 
     // Once user confirms choice, call delete function
     Widget deleteButton = TextButton(
+      style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
       child: Text("Delete"),
       onPressed: () async {
         await firestoreFunctions.deleteCategory(categoryId: categoryId);
+        Navigator.pop(context);
       },
     );
 

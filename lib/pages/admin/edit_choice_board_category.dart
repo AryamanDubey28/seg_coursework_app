@@ -156,7 +156,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
       ));
       try {
-        ScaffoldMessenger(child: SnackBar(content: Text("No edits made")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No edits made!")));
       } catch (e) {
         print("No Scaffold to present to!\n${e.toString()}");
       }
@@ -180,7 +180,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
           await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: widget.categoryName);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: newName);
           await firestoreFunctions.updateCategoryImage(categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
 
@@ -188,7 +188,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
         ));
-        ScaffoldMessenger(child: SnackBar(content: Text("Edits saved successfully!")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Edits saved successfully!")));
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
         print(e);

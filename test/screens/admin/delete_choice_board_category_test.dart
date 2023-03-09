@@ -46,7 +46,3 @@ void main() {
     });
   });
 }
-
-class CollectionReferenceMock extends Mock implements CollectionReference {}
-
-class DocumentReferenceMock extends Mock implements DocumentReference {}
