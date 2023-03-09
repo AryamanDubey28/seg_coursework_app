@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
+import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
 import '../services/auth.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their email.
@@ -15,26 +16,15 @@ class EditPINSection extends StatelessWidget {
 
   // Displays an alert dialog with the text passed as parameter.
   void show_alert_dialog(String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              text,
-              style: TextStyle(fontSize: 24),
-            ),
-          );
-        });
+    ShowAlertDialog.show_dialog(context, text);
   }
 
   // Verify the validity of fields and execute the change of a user's email.
   Future commit_pin_edit() async {
     String response = "";
     if (_pinEditController.text.trim() != "") {
-      LoadingIndicatorDialog().show(context);
       String pin = _pinEditController.text.trim();
       response = await authentitcationHelper.editCurrentUserPIN(pin);
-      LoadingIndicatorDialog().dismiss();
     } else {
       response =
           'You did not input a valid PIN so the change could not be made. Please try again.';
@@ -70,7 +60,6 @@ class EditPINSection extends StatelessWidget {
     String result =
         await authentitcationHelper.createPIN(_pinEditController.text.trim());
     show_alert_dialog(result);
-    //Navigator.of(context).pop();
     _pinEditController.clear();
   }
 

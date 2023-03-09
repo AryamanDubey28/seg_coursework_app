@@ -38,8 +38,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      //home: Wrapper(),
-      //home: isInChildMode ? ChildBoards() : Wrapper(),
       home: Wrapper(isInChildMode: isInChildMode),
     );
   }

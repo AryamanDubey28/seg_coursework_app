@@ -10,6 +10,7 @@ import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
+import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
 import '../../themes/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
@@ -43,16 +44,7 @@ class AdminSideMenu extends StatelessWidget {
 
   // Displays an alert dialog with the text passed as parameter.
   void show_alert_dialog(BuildContext context, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              text,
-              style: TextStyle(fontSize: 24),
-            ),
-          );
-        });
+    ShowAlertDialog.show_dialog(context, text);
   }
 
   // The items of the side-menu
