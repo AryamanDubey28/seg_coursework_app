@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
-import 'package:seg_coursework_app/widgets/admin_item_switch.dart';
-import 'package:seg_coursework_app/widgets/admin_category_switch.dart';
+import 'package:seg_coursework_app/widgets/admin_switch_buttons.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
@@ -170,9 +169,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               buildDeleteButton(
                   key: Key("deleteCategoryButton-${category.id}")),
               buildEditButton(key: Key("editCategoryButton-${category.id}")),
-              CategorySwitchButton(
-                categoryId: category.id,
-                categoryAvailability: category.is_available,
+              AvailabilitySwitchToggle(
+                documentId: category.id,
+                documentAvailability: category.is_available,
+                isCategory: true,
                 key: Key("categorySwitchButton-${category.id}"),
                 auth: widget.auth,
                 firestore: widget.firestore,
@@ -207,9 +207,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ItemSwitchButton(
-                      itemId: item.id,
-                      itemAvailability: item.availability,
+                    AvailabilitySwitchToggle(
+                      documentId: item.id,
+                      documentAvailability: item.availability,
+                      isCategory: false,
                       key: Key("itemSwitchButton-${item.id}"),
                       auth: widget.auth,
                       firestore: widget.firestore,
