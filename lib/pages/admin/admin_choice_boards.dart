@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
@@ -197,6 +198,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SwitchButton(
+                      itemId: item.id,
+                      itemAvailability: item.availability,
+                      key: Key("switchButton-${item.id}"),
+                      auth: widget.auth,
+                      firestore: widget.firestore,
+                      storage: widget.storage,
+                    ),
                     DeleteItemButton(
                       categoryId: category.id,
                       itemId: item.id,
