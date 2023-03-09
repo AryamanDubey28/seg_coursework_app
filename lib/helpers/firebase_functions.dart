@@ -215,9 +215,9 @@ class FirebaseFunctions {
   // #### Deleting categories functions ####
 
   /// Return the rank field of a category given the categoryId and
-  Future getCategoryRank({required String categoryId}) async {
+  Future<int> getCategoryRank({required String categoryId}) {
     return firestore.collection('categories').doc(categoryId).get().then((category) {
-      return category.get("rank");
+      return int.parse(category.get("rank"));
     }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
@@ -284,10 +284,14 @@ class FirebaseFunctions {
 
     await deleteCategoryItems(categoryId: categoryId);
 
+    int categoryRank = await getCategoryRank(categoryId: categoryId);
+
     // ignore: void_checks
-    return categories.doc(categoryId).delete().onError((error, stackTrace) {
+    categories.doc(categoryId).delete().onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
+
+    return updateAllCategoryRanks(removedRank: categoryRank);
   }
 
   ///Delete a category's associated items.
