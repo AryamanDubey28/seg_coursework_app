@@ -15,7 +15,6 @@ import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 void main() {
   late FirebaseAuth mockAuth;
@@ -92,6 +91,9 @@ void main() {
       expect(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")),
           findsOneWidget);
       expect(find.byKey(ValueKey("categoryDrag")), findsWidgets);
+      expect(
+          find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")),
+          findsWidgets);
     });
   });
 
