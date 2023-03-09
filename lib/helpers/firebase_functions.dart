@@ -3,6 +3,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
   late final FirebaseAuth auth;
@@ -84,7 +86,6 @@ class FirebaseFunctions {
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
   Future deleteImageFromCloud({required String imageUrl}) {
-    print(imageUrl);
     return storage.refFromURL(imageUrl).delete().onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
@@ -274,23 +275,28 @@ class FirebaseFunctions {
   /// Delete category document from categories collection
   /// Delete associated categoryItems document
   Future deleteCategory({required String categoryId}) async {
-    CollectionReference categoryItems = firestore.collection('categoryItems');
     CollectionReference categories = firestore.collection('categories');
 
-    DocumentSnapshot categoryItem = await categoryItems.doc(categoryId).get();
     DocumentSnapshot category = await categories.doc(categoryId).get();
     if (!category.exists) {
       return throw FirebaseException(plugin: "category does not exist!");
     }
 
-    // ignore: void_checks
-    categoryItems.doc(categoryId).delete().onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
+    await deleteCategoryItems(categoryId: categoryId);
 
     // ignore: void_checks
     return categories.doc(categoryId).delete().onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
+  }
+
+  ///Delete a category's associated items.
+  Future deleteCategoryItems({required String categoryId}) async {
+    final QuerySnapshot categoryItemFolder = await firestore.collection('categoryItems/$categoryId/items').get();
+
+    for (final DocumentSnapshot categoryItem in categoryItemFolder.docs) {
+      final DocumentReference categoryItemReference = firestore.collection('categoryItems/$categoryId/items').doc(categoryItem.id);
+      await categoryItemReference.delete();
+    }
   }
 }

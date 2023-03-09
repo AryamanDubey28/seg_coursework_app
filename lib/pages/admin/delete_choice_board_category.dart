@@ -38,6 +38,9 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       onPressed: () async {
         await firestoreFunctions.deleteCategory(categoryId: categoryId);
         Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Category successfully deleted!")),
+        );
       },
     );
 
