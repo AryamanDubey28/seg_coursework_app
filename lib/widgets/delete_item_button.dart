@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
@@ -101,7 +102,12 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
 
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
-      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => AdminChoiceBoards(
+            auth: widget.auth,
+            firestore: widget.firestore,
+            storage: widget.storage),
+      ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${widget.itemName} deleted successfully.")),

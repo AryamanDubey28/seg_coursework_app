@@ -285,12 +285,16 @@ class FirebaseFunctions {
 
   // #### Retrieving data functions ####
 
+  /// Retrieve all of the current user's categories with their
+  /// categoryItems in the correct rank, converted into a list
+  /// of DraggableList.
   Future<List<DraggableList>> getUserCategories() async {
     List<DraggableList> userCategories = []; // holds all of the user's data
 
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
+        .orderBy('rank')
         .get();
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
@@ -299,6 +303,7 @@ class FirebaseFunctions {
 
       final QuerySnapshot categoryItemsSnapshot = await firestore
           .collection('categoryItems/${category.id}/items')
+          .orderBy('rank')
           .get();
 
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {

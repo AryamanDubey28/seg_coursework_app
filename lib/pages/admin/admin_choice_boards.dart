@@ -8,6 +8,7 @@ import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
+import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
 import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
@@ -19,8 +20,6 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// fix this
-// break down the firebase_functions
 // catch errors in firebase_functions
 // fix any test errors
 // figure out how to use cache
@@ -70,36 +69,39 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
 
   @override
   Widget build(BuildContext context) {
-    return choice_boards_scaffold(userCategories: categories);
-  }
-
-  Scaffold choice_boards_scaffold(
-      {required List<DragAndDropList> userCategories}) {
-    return Scaffold(
-      appBar: AppBar(
-        key: Key('app_bar'),
-        title: const Text('Edit Choice Boards'),
-      ),
-      drawer: const AdminSideMenu(),
-      floatingActionButton: buildAddButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      body: DragAndDropLists(
-        listPadding: const EdgeInsets.all(30),
-        listInnerDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20)),
-        children: userCategories,
-        itemDivider: const Divider(
-          thickness: 2,
-          height: 2,
-          color: Colors.black12,
+    if (loading) {
+      return CustomLoadingIndicator();
+    } else if (hasError) {
+      return AlertDialog(
+          content:
+              Text('An error occurred while communicating with the database'));
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          key: Key('app_bar'),
+          title: const Text('Edit Choice Boards'),
         ),
-        listDragHandle: buildDragHandle(isCategory: true),
-        itemDragHandle: buildDragHandle(),
-        onItemReorder: onReorderCategoryItem,
-        onListReorder: onReorderCategory,
-      ),
-    );
+        drawer: const AdminSideMenu(),
+        floatingActionButton: buildAddButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        body: DragAndDropLists(
+          listPadding: const EdgeInsets.all(30),
+          listInnerDecoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(20)),
+          children: categories,
+          itemDivider: const Divider(
+            thickness: 2,
+            height: 2,
+            color: Colors.black12,
+          ),
+          listDragHandle: buildDragHandle(isCategory: true),
+          itemDragHandle: buildDragHandle(),
+          onItemReorder: onReorderCategoryItem,
+          onListReorder: onReorderCategory,
+        ),
+      );
+    }
   }
 
   /// Builds the dragging icon depending on if it's an item or a category

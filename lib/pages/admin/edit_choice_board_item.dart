@@ -177,7 +177,6 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => AdminChoiceBoards(
-            draggableCategories: devCategories,
             auth: widget.auth,
             firestore: widget.firestore,
             storage: widget.storage),
@@ -232,7 +231,6 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         LoadingIndicatorDialog().dismiss();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => AdminChoiceBoards(
-              draggableCategories: devCategories,
               auth: widget.auth,
               firestore: widget.firestore,
               storage: widget.storage),
