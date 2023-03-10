@@ -22,7 +22,7 @@ class _PictureGridState extends State<PictureGrid> {
 
   List<ImageDetails> _getFilteredItems() {
     if (_searchText.isEmpty) {
-      return widget.imagesList; // items is the list of all items to be displayed in the grid view
+      return widget.imagesList; // the list of all items to be displayed in the grid view
     } else {
       return widget.imagesList.where((item) => item.name.toLowerCase().contains(_searchText.toLowerCase())).toList();
     }

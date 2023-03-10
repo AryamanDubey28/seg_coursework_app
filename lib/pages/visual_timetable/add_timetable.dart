@@ -50,7 +50,7 @@ import '../../helpers/firebase_functions.dart';
         }
   }
 
-  void deleteWorkflowFromFirestore(
+  Future deleteWorkflowFromFirestore(
         {required Timetable timetable}) async {
         try {
           await firestoreFunctions.deleteWorkflow(workflowId: timetable.workflowId);

@@ -77,6 +77,10 @@ class FirebaseFunctions {
       .where("userId", isEqualTo: auth.currentUser!.uid)
       .get();
 
+      if (itemsSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no items");
+      }
+
       for (final DocumentSnapshot item in itemsSnapshot.docs) {
         library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
       }
@@ -97,17 +101,37 @@ class FirebaseFunctions {
     .where("userId", isEqualTo: auth.currentUser!.uid)
     .get();
 
+    if (workflowsSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no timetables");
+    }
+
     for (final DocumentSnapshot workflow in workflowsSnapshot.docs) {
       final QuerySnapshot workflowItems = await firestore.collection('workflowItems/${workflow.id}/items').get();
-      List<ImageDetails> temp = [];
+      Map<int, ImageDetails> temp = {};
       for(final DocumentSnapshot workflowItem in workflowItems.docs)
       {
-        temp.add(//workflowItem.get('rank'), 
-        ImageDetails(name: workflowItem.get('name'), imageUrl: workflowItem.get("illustration"), itemId: workflowItem.id));
-        
+        temp[workflowItem.get('rank')] = ImageDetails(
+          name: workflowItem.get('name'), 
+          imageUrl: workflowItem.get("illustration"), 
+          itemId: workflowItem.id
+        );
       }
-      listOfTimetablesTemp.add(Timetable(title: workflow.get("title"), listOfImages: temp, workflowId: workflow.id));
-      // library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+
+      List<ImageDetails> itemsList = [];
+      for (int i = 0; i < temp.length; i++) {
+        if(temp.containsKey(i))
+        {
+          itemsList.add(temp[i]!);
+        }
+      }
+
+      listOfTimetablesTemp.add(
+        Timetable(
+          title: workflow.get("title"), 
+          listOfImages: itemsList, 
+          workflowId: workflow.id
+        )
+      );
     }
 
     return ListOfTimetables(listOfLists: listOfTimetablesTemp);
@@ -405,8 +429,9 @@ class FirebaseFunctions {
     for(final DocumentSnapshot workflowItem in workflowItemFolder.docs)
     {
       final DocumentReference workflowItemReference = firestore.collection('workflowItems/$workflowId/items').doc(workflowItem.id);
-      await workflowItemReference.delete();
+      await workflowItemReference.delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+      });
     }
-
   }
 }

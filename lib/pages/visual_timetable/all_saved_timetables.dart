@@ -27,10 +27,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
       builder: (_) {
         return Dialog(
           // backgroundColor: Provider.of<CustomTheme>(context).getTheme().scaffoldBackgroundColor,
-          child: Hero(
-            tag: 'timetableRow',
-            child: TimetableListDialog(timetable: test)
-          ),
+          child: TimetableListDialog(timetable: test),
         );
       }
     );
@@ -38,9 +35,9 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
 
 
   ///This function is fed into the TimetableRow and will unsave the timetable from the list of saved timetables.
-  void unsaveList(int index)
+  void unsaveList(int index) async
   {
-    deleteWorkflowFromFirestore(timetable: widget.savedTimetables[index]);
+    await deleteWorkflowFromFirestore(timetable: widget.savedTimetables[index]);
     setState(() {
       widget.savedTimetables.removeAt(index);
     });
@@ -67,15 +64,12 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
               const SizedBox(height: 5,),
               Text(widget.savedTimetables[index].title),
               const SizedBox(height: 10,),
-              Hero(
-                tag: "timetableRow",
-                child: TimetableRow(
-                  key: Key("timetableRow$index"),
-                  listOfImages: widget.savedTimetables[index],
-                  unsaveList: unsaveList,
-                  index: index,
-                  expandTimetable: expandTimetable
-                ),
+              TimetableRow(
+                key: Key("timetableRow$index"),
+                listOfImages: widget.savedTimetables[index],
+                unsaveList: unsaveList,
+                index: index,
+                expandTimetable: expandTimetable
               ),
               Divider()
             ],
