@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:seg_coursework_app/pages/authenticate/forgot_password_PAGE.dart';
+import 'package:seg_coursework_app/pages/authenticate/forgot_password_page.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
