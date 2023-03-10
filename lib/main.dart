@@ -1,8 +1,10 @@
 // ignore_for_file: unused_import
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
@@ -14,6 +16,8 @@ Future main() async {
   final themeNotifier = CustomTheme();
   await Firebase.initializeApp();
   final pref = await SharedPreferences.getInstance();
+  final auth = Auth(auth: FirebaseAuth.instance);
+
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
   runApp(ThemeProvider(
@@ -38,7 +42,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: Wrapper(isInChildMode: isInChildMode),
+      home: Wrapper(
+        isInChildMode: isInChildMode,
+      ),
     );
   }
 }
