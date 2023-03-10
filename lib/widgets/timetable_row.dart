@@ -10,12 +10,14 @@ class TimetableRow extends StatelessWidget {
   Key? key,
   required this.listOfImages,
   required this.unsaveList,
-  required this.index,
+  required this.index, 
+  required this.expandTimetable,
 }) : super(key: key);
 
   final Timetable listOfImages;
   final Function unsaveList;
   final int index;
+  final Function expandTimetable;
 
   ///This returns a delete button to unsave a list from the list of saved timetables.
   IconButton buildDeleteButton()
@@ -42,14 +44,17 @@ class TimetableRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: listOfImages.length(),
-              itemBuilder: (context, subIndex) {
-                return Row(
-                  children: <Widget>[
-                    const SizedBox(width: 5,),
-                    Tooltip(
+            child: GestureDetector(
+              onTap: () {
+                expandTimetable(listOfImages);
+              },
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: listOfImages.length(),
+                itemBuilder: (context, subIndex) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                    child: Tooltip(
                       message: listOfImages.get(subIndex).name,
                       child: ImageSquare(
                         key: Key('timetableImage$subIndex'),
@@ -59,9 +64,9 @@ class TimetableRow extends StatelessWidget {
                         width: MediaQuery.of(context).size.width/6,
                       ),
                     ),
-                  ],
-                );
-              },  
+                  );
+                },  
+              ),
             ),
           ),
           buildDeleteButton(),
