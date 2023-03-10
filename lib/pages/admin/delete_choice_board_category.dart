@@ -36,7 +36,10 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
       child: Text("Delete"),
       onPressed: () async {
+        int deletedCategoryRank = await firestoreFunctions.getCategoryRank(categoryId: categoryId);
         await firestoreFunctions.deleteCategory(categoryId: categoryId);
+        await firestoreFunctions.updateAllCategoryRanks(removedRank: deletedCategoryRank);
+
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Category successfully deleted!")),

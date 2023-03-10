@@ -15,14 +15,7 @@ class DeleteItemButton extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  DeleteItemButton(
-      {super.key,
-      required this.categoryId,
-      required this.itemId,
-      required this.itemName,
-      FirebaseAuth? auth,
-      FirebaseFirestore? firestore,
-      FirebaseStorage? storage}) {
+  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -38,10 +31,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(
-        auth: widget.auth,
-        firestore: widget.firestore,
-        storage: widget.storage);
+    firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
   }
 
   @override
@@ -72,8 +62,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             TextButton(
               key: Key("confirmItemDelete"),
-              style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
               onPressed: deleteItemFromFirestore,
               child: Text('Delete'),
             ),
@@ -91,13 +80,9 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
     try {
       LoadingIndicatorDialog().show(context);
 
-      int deletedCategoryItemRank =
-          await firestoreFunctions.getCategoryItemRank(
-              categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.deleteCategoryItem(
-          categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.updateCategoryRanks(
-          categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
+      int deletedCategoryItemRank = await firestoreFunctions.getCategoryItemRank(categoryId: widget.categoryId, itemId: widget.itemId);
+      await firestoreFunctions.deleteCategoryItem(categoryId: widget.categoryId, itemId: widget.itemId);
+      await firestoreFunctions.updateCategoryRanks(categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
@@ -112,9 +97,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-                content: Text(
-                    'An error occurred while communicating with the database'));
+            return AlertDialog(content: Text('An error occurred while communicating with the database'));
           });
     }
   }
