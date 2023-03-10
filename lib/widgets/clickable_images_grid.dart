@@ -9,7 +9,7 @@ Expanded getMainImages(List<ClickableImage> images) {
     child: GridView.builder(
         key: const Key("mainGridOfPictures"),
         padding: const EdgeInsets.all(8.0),
-        physics: const NeverScrollableScrollPhysics(),
+        //physics: const NeverScrollableScrollPhysics(),
         itemCount: images.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 5, childAspectRatio: 4 / 3),
