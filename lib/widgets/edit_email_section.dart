@@ -5,11 +5,11 @@ import '../services/auth.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their email.
 class EditEmailSection extends StatelessWidget {
-  late BuildContext context;
+  late final BuildContext context;
   final _emailEditController = TextEditingController();
   late final Auth authentitcationHelper;
 
-  EditEmailSection({required this.authentitcationHelper});
+  EditEmailSection({super.key, required this.authentitcationHelper});
 
   // Displays an alert dialog with the text passed as parameter.
   void show_alert_dialog(String text) {
@@ -30,10 +30,10 @@ class EditEmailSection extends StatelessWidget {
     String response;
     if (_emailEditController.text.trim() != "" &&
         authentitcationHelper.validEmail(_emailEditController.text.trim())) {
-      LoadingIndicatorDialog().show(context);
+      // LoadingIndicatorDialog().show(context);
       response = await authentitcationHelper
           .editCurrentUserEmail(_emailEditController.text.trim());
-      LoadingIndicatorDialog().dismiss();
+      // LoadingIndicatorDialog().dismiss();
     } else {
       response =
           'You did not input a valid email address so the change could not be made. Please try again.';

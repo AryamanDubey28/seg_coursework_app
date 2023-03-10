@@ -17,10 +17,12 @@ import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 class MyMockUser extends MockUser {
   MyMockUser({super.email, super.uid, super.displayName});
 
+  @override
   Future<void> updateEmail(String email) {
     if (email == "throw_known_error@tester.org") {
       throw FirebaseAuthException(code: "Simulation");
@@ -30,8 +32,9 @@ class MyMockUser extends MockUser {
     return Future(() => null);
   }
 
+  @override
   Future<void> updatePassword(String newPassword) {
-    if (newPassword == "throw_unknown_error") {
+    if (newPassword == "IAmWrong123") {
       throw Error();
     }
     return Future(() => null);
@@ -40,7 +43,7 @@ class MyMockUser extends MockUser {
   @override
   Future<UserCredential> reauthenticateWithCredential(
       AuthCredential? credential) {
-    if (credential!.asMap()['secret'] == "FALSE") {
+    if (credential!.asMap()['secret'] == "IAmWrong123") {
       throw FirebaseAuthException(code: "Simulation");
     }
     return super.reauthenticateWithCredential(credential);
@@ -67,14 +70,13 @@ void main() {
 
   setUpAll(() {
     mockAuth = MockFirebaseAuthentication();
-    mockUser = MockUser(uid: "user1");
+    mockUser = MyMockUser(email: _email, uid: _uid, displayName: _displayName);
     when(mockAuth.currentUser).thenReturn(mockUser);
     final _mockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
     auth = Auth(auth: _mockAuth);
   });
 
-  testWidgets(
-      "Edit email correctly failed when given an unvalid email address.",
+  testWidgets("Edit email correctly fails when given an unvalid email address.",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
@@ -93,7 +95,7 @@ void main() {
       await tester.enterText(emailField, 'test.com');
       await tester.pumpAndSettle();
 
-      await tester.tap(emailChangeButton, warnIfMissed: false);
+      await tester.tap(emailChangeButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
@@ -103,296 +105,298 @@ void main() {
           findsOneWidget);
     });
   });
+
+  testWidgets("Edit email correctly fails when email field is empty.",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder emailField = find.byKey(Key('email_text_field'));
+      final Finder emailChangeButton =
+          await find.byKey(Key('edit_email_submit'), skipOffstage: false);
+
+      await tester.enterText(emailField, '');
+      await tester.pumpAndSettle();
+
+      await tester.tap(emailChangeButton);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text(
+              "You did not input a valid email address so the change could not be made. Please try again."),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets("Edit email is successful when given a valid email address",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder emailField = await find.byKey(Key('email_text_field'));
+      final Finder emailChangeButton =
+          await find.byKey(Key('edit_email_submit'), skipOffstage: false);
+
+      await tester.enterText(emailField, 'testing@frebase.com');
+      await tester.pumpAndSettle();
+
+      await tester.tap(emailChangeButton);
+      await tester.pumpAndSettle();
+      // Edit was successful.
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Your email was successfully changed.'), findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      "Edit password gives correct error message if new password left empty",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder currentPasswordField =
+          find.byKey(Key('current_password_input'));
+      final Finder newPasswordField = find.byKey(Key('new_password_input'));
+      final Finder confirmNewPasswordField =
+          find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton =
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
+      await tester.enterText(currentPasswordField, _password);
+      await tester.pumpAndSettle();
+      await tester.enterText(newPasswordField, "");
+      await tester.pumpAndSettle();
+      await tester.enterText(confirmNewPasswordField, 'Hello123!');
+      await tester.pumpAndSettle();
+
+      await tester.tap(passwordChangeButton);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text(
+              "Some fields required to operate your password change were not filled in. Please try again."),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      "Edit password gives correct error message if new password confirmation left empty",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder currentPasswordField =
+          find.byKey(Key('current_password_input'));
+      final Finder newPasswordField = find.byKey(Key('new_password_input'));
+      final Finder confirmNewPasswordField =
+          find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton =
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
+      await tester.enterText(currentPasswordField, _password);
+      await tester.pumpAndSettle();
+      await tester.enterText(newPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+      await tester.enterText(confirmNewPasswordField, "");
+      await tester.pumpAndSettle();
+
+      await tester.tap(passwordChangeButton);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text(
+              "Some fields required to operate your password change were not filled in. Please try again."),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      "Edit password gives correct error message if current password left empty",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder currentPasswordField =
+          find.byKey(Key('current_password_input'));
+      final Finder newPasswordField = find.byKey(Key('new_password_input'));
+      final Finder confirmNewPasswordField =
+          find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton =
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
+      await tester.enterText(currentPasswordField, "");
+      await tester.pumpAndSettle();
+      await tester.enterText(newPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+      await tester.enterText(confirmNewPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+
+      await tester.tap(passwordChangeButton);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text(
+              "Some fields required to operate your password change were not filled in. Please try again."),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      "Edit password gives correct error message if new password does not match the confirmation",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder currentPasswordField =
+          find.byKey(Key('current_password_input'));
+      final Finder newPasswordField = find.byKey(Key('new_password_input'));
+      final Finder confirmNewPasswordField =
+          find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton =
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
+      await tester.enterText(currentPasswordField, _password);
+      await tester.pumpAndSettle();
+      await tester.enterText(newPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+      await tester.enterText(confirmNewPasswordField, "IDontMatch123");
+      await tester.pumpAndSettle();
+
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text(
+              'The new password confirmation does not match the new password you demanded. Please try again.'),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      "Edit password gives correct error message if current password inputed is wrong",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder currentPasswordField =
+          find.byKey(Key('current_password_input'));
+      final Finder newPasswordField = find.byKey(Key('new_password_input'));
+      final Finder confirmNewPasswordField =
+          find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton =
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
+      await tester.enterText(currentPasswordField, "IAmWrong123");
+      await tester.pumpAndSettle();
+      await tester.enterText(newPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+      await tester.enterText(confirmNewPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text("Your current password is not correct. Please try again."),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets(
+      "Edit password gives correct error message if current password inputed is wrong",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+          ))));
+      await tester.binding.setSurfaceSize(const Size(1000, 1000));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder currentPasswordField =
+          find.byKey(Key('current_password_input'));
+      final Finder newPasswordField = find.byKey(Key('new_password_input'));
+      final Finder confirmNewPasswordField =
+          find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton =
+          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+
+      await tester.enterText(currentPasswordField, _password);
+      await tester.pumpAndSettle();
+      await tester.enterText(newPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+      await tester.enterText(confirmNewPasswordField, "Hello123!");
+      await tester.pumpAndSettle();
+
+      await tester.tap(passwordChangeButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+          find.text("Your password was successfully changed."), findsOneWidget);
+    });
+  });
 }
-
-
-//   //   testWidgets('Edit email gives error message when email is not valid',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder emailField = find.byKey(Key('email_text_field'));
-//   //     final Finder emailChangeButton =
-//   //         find.byKey(Key('edit_email_submit'), skipOffstage: false);
-
-//   //     await tester.enterText(emailField, 'test.com');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(emailChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(find.byType(AlertDialog), findsOneWidget);
-//   //     expect(
-//   //         find.text(
-//   //             "You did not input a valid email address so the change could not be made. Please try again."),
-//   //         findsOneWidget);
-//   //   });
-
-//   //   testWidgets('Edit email gives error message when email is not valid',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder emailField = find.byKey(Key('email_text_field'));
-//   //     final Finder emailChangeButton =
-//   //         find.byKey(Key('edit_email_submit'), skipOffstage: false);
-
-//   //     await tester.enterText(emailField, '');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(emailChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(find.byType(AlertDialog), findsOneWidget);
-//   //     expect(
-//   //         find.text(
-//   //             "You did not input a valid email address so the change could not be made. Please try again."),
-//   //         findsOneWidget);
-//   //   });
-//   // });
-
-//   // group("Password edit section", () {
-//   //   testWidgets(
-//   //       'Edit password is successful when given all fields and valid current password',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.binding.setSurfaceSize(const Size(1000, 1000));
-
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder currentPasswordField =
-//   //         find.byKey(Key('current_password_input'));
-//   //     final Finder newPasswordField = find.byKey(Key('new_password_input'));
-//   //     final Finder confirmNewPasswordField =
-//   //         find.byKey(Key('confirm_new_password_input'));
-//   //     final Finder passwordChangeButton =
-//   //         find.byKey(Key('edit_password_submit'), skipOffstage: false);
-
-//   //     await tester.enterText(currentPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(newPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(confirmNewPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(passwordChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(find.byType(AlertDialog), findsOneWidget);
-//   //     expect(
-//   //         find.text("Your password was successfully changed."), findsOneWidget);
-//   //   });
-
-//   //   testWidgets(
-//   //       'Edit password gives proper error message when the current password is missing',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder currentPasswordField =
-//   //         find.byKey(Key('current_password_input'));
-//   //     final Finder newPasswordField = find.byKey(Key('new_password_input'));
-//   //     final Finder confirmNewPasswordField =
-//   //         find.byKey(Key('confirm_new_password_input'));
-//   //     final Finder passwordChangeButton =
-//   //         find.byKey(Key('edit_password_submit'), skipOffstage: false);
-
-//   //     expect(find.byKey(Key('edit_password_submit')), findsOneWidget);
-//   //     await tester.enterText(currentPasswordField, '');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(newPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(confirmNewPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(passwordChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(
-//   //         find.text(
-//   //             "Some fields required to operate your password change were not filled in. Please try again."),
-//   //         findsOneWidget);
-//   //   });
-
-//   //   testWidgets(
-//   //       'Edit password gives proper error message when the new password is missing',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder currentPasswordField =
-//   //         find.byKey(Key('current_password_input'));
-//   //     final Finder newPasswordField = find.byKey(Key('new_password_input'));
-//   //     final Finder confirmNewPasswordField =
-//   //         find.byKey(Key('confirm_new_password_input'));
-//   //     final Finder passwordChangeButton =
-//   //         find.byKey(Key('edit_password_submit'), skipOffstage: false);
-
-//   //     await tester.enterText(currentPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(newPasswordField, '');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(confirmNewPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(passwordChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(
-//   //         find.text(
-//   //             "Some fields required to operate your password change were not filled in. Please try again."),
-//   //         findsOneWidget);
-//   //   });
-
-//   //   testWidgets(
-//   //       'Edit password gives proper error message when the new password confirmation is missing',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder currentPasswordField =
-//   //         find.byKey(Key('current_password_input'));
-//   //     final Finder newPasswordField = find.byKey(Key('new_password_input'));
-//   //     final Finder confirmNewPasswordField =
-//   //         find.byKey(Key('confirm_new_password_input'));
-//   //     final Finder passwordChangeButton =
-//   //         find.byKey(Key('edit_password_submit'), skipOffstage: false);
-
-//   //     await tester.enterText(currentPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(newPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(confirmNewPasswordField, '');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(passwordChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(
-//   //         find.text(
-//   //             "Some fields required to operate your password change were not filled in. Please try again."),
-//   //         findsOneWidget);
-//   //   });
-
-//   //   testWidgets(
-//   //       'Edit password gives proper error message when the new password and its confirmation are different',
-//   //       (tester) async {
-//   //     WidgetsFlutterBinding.ensureInitialized();
-//   //     await Firebase.initializeApp();
-//   //     FirebaseAuth.instance.signInWithEmailAndPassword(
-//   //         email: "anton@change.com", password: "Hello123!");
-//   //     runApp(ThemeProvider(
-//   //         themeNotifier: CustomTheme(),
-//   //         child: MaterialApp(
-//   //           home: EditAccountPage(),
-//   //         )));
-//   //     ;
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     final Finder currentPasswordField =
-//   //         find.byKey(Key('current_password_input'));
-//   //     final Finder newPasswordField = find.byKey(Key('new_password_input'));
-//   //     final Finder confirmNewPasswordField =
-//   //         find.byKey(Key('confirm_new_password_input'));
-//   //     final Finder passwordChangeButton =
-//   //         find.byKey(Key('edit_password_submit'), skipOffstage: false);
-
-//   //     await tester.enterText(currentPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(newPasswordField, 'Hello123!');
-//   //     await tester.pumpAndSettle();
-//   //     await tester.enterText(confirmNewPasswordField, 'NotTheSame123');
-//   //     await tester.pumpAndSettle();
-
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     await tester.tap(passwordChangeButton, warnIfMissed: false);
-//   //     await tester.pumpAndSettle();
-//   //     await Future.delayed(Duration(seconds: 2));
-
-//   //     expect(
-//   //         find.text(
-//   //             "The new password confirmation does not match the new password you demanded. Please try again."),
-//   //         findsOneWidget);
-//   //   });
-//   // });
-// // }
