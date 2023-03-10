@@ -14,6 +14,9 @@ import 'customizable_row.dart';
 //
 
 class CustomizableColumn extends StatefulWidget {
+  final bool mock;
+
+  const CustomizableColumn({this.mock = false});
   @override
   State<CustomizableColumn> createState() => _CustomizableColumnState();
 }
@@ -21,13 +24,11 @@ class CustomizableColumn extends StatefulWidget {
 class _CustomizableColumnState extends State<CustomizableColumn> {
   // List of categories, their titles, and images within them
   late TextEditingController pin_controller;
-  late Auth auth;
 
   @override
   void initState() {
     super.initState();
     pin_controller = TextEditingController();
-    auth = Auth(auth: FirebaseAuth.instance);
   }
 
   @override
@@ -89,11 +90,34 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
 
   Future<void> submit(BuildContext context) async {
     //verifys password is correct, if so then navigates back. otherwise says incorrect
-    String currentPin = await auth.getCurrentUserPIN();
-    if (pin_controller.text.trim() == currentPin) {
-      final pref = await SharedPreferences.getInstance();
-      pref.setBool("isInChildMode",
-          false); //isInChildMode boolean set to false as we are leaving
+    if (!widget.mock) {
+      final auth = Auth(auth: FirebaseAuth.instance);
+      String currentPin = await auth.getCurrentUserPIN();
+      if (pin_controller.text.trim() == currentPin) {
+        final pref = await SharedPreferences.getInstance();
+        pref.setBool("isInChildMode",
+            false); //isInChildMode boolean set to false as we are leaving
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AdminChoiceBoards(
+                    draggableCategories: devCategories,
+                  )),
+        );
+      } else {
+        Navigator.of(context).pop();
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(
+                  "Incorrect PIN Provided",
+                  textAlign: TextAlign.center,
+                ),
+              );
+            });
+      }
+    } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -101,18 +125,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
                   draggableCategories: devCategories,
                 )),
       );
-    } else {
-      Navigator.of(context).pop();
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                "Incorrect PIN Provided",
-                textAlign: TextAlign.center,
-              ),
-            );
-          });
     }
     pin_controller.clear();
   }

@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/services/auth.dart';
 import 'toggleAuth.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 
 class Wrapper extends StatelessWidget {
   final bool isInChildMode;
-  const Wrapper({Key? key, required this.isInChildMode}) : super(key: key);
+  //final auth = Auth(auth: FirebaseAuth.instance);
+
+  Wrapper({Key? key, required this.isInChildMode}) : super(key: key);
 
   Stream<User?> get user => FirebaseAuth.instance.authStateChanges();
 

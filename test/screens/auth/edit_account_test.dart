@@ -16,6 +16,15 @@ class MyMockUser extends MockUser {
     return Future(() => null);
   }
 
+  Future<void> updatePIN(String pin) {
+    if (email == "throw_known_error@tester.org") {
+      throw FirebaseAuthException(code: "Simulation");
+    } else if (email == "throw_unknown_error@tester.org") {
+      throw Error();
+    }
+    return Future(() => null);
+  }
+
   Future<void> updatePassword(String newPassword) {
     if (newPassword == "throw_unknown_error") {
       throw Error();

@@ -94,19 +94,25 @@ class AdminSideMenu extends StatelessWidget {
               ),
               title: const Text('Activate Child Mode'),
               onTap: () async {
-                final auth = Auth(auth: FirebaseAuth.instance);
-                bool check = await auth.checkPINExists();
-                if (check) {
-                  final pref = await SharedPreferences.getInstance();
-                  pref.setBool("isInChildMode",
-                      true); //isInChildMode boolean set to true as we are entering
-
+                if (!mock) {
+                  final auth = Auth(auth: FirebaseAuth.instance);
+                  bool check = await auth.checkPINExists();
+                  if (check) {
+                    final pref = await SharedPreferences.getInstance();
+                    pref.setBool("isInChildMode",
+                        true); //isInChildMode boolean set to true as we are entering
+                    final String pin = await auth.getCurrentUserPIN();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => CustomizableColumn(),
+                    ));
+                  } else {
+                    show_alert_dialog(context,
+                        "Please first create a PIN in the 'Edit Account Details' section");
+                  }
+                } else {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => CustomizableColumn(),
                   ));
-                } else {
-                  show_alert_dialog(context,
-                      "Please first create a PIN in the 'Edit Account Details' section");
                 }
               }),
           ListTile(
@@ -151,6 +157,8 @@ class AdminSideMenu extends StatelessWidget {
             onTap: () async {
               FirebaseAuth.instance.signOut();
               final pref = await SharedPreferences.getInstance();
+              final auth = Auth(auth: FirebaseAuth.instance);
+              final String pin = await auth.getCurrentUserPIN();
               final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(
                   context,
