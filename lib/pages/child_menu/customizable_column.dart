@@ -142,7 +142,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             child: GestureDetector(
                 key: Key("logoutButton"),
                 //only triggers when its pressed for some time and swiped up
-                onLongPressUp: () {
+                onLongPressUp: () async {
                   openLogoutDialog(context);
                 },
                 child: Icon(Icons.exit_to_app)),

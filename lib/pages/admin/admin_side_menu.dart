@@ -110,6 +110,7 @@ class AdminSideMenu extends StatelessWidget {
                         "Please first create a PIN in the 'Edit Account Details' section");
                   }
                 } else {
+                  print("mocking");
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => CustomizableColumn(),
                   ));

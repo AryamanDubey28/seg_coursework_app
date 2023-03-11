@@ -49,12 +49,9 @@ class Auth {
   }
 
   Future<bool> checkPINExists() async {
-    try {
-      String pin = await getCurrentUserPIN();
-      return true;
-    } catch (e) {
-      return false;
-    }
+    String pin = await getCurrentUserPIN();
+    return pin.length == 4 &&
+        num.tryParse(pin) != null; // unless PIN is 4 digits, return false
   }
 
   Future<String> createPIN(String pin) async {

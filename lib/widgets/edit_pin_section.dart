@@ -19,15 +19,20 @@ class EditPINSection extends StatelessWidget {
     ShowAlertDialog.show_dialog(context, text);
   }
 
+  bool validatePin(String pin) {
+    return pin.length == 4 && num.tryParse(pin) != null;
+  }
+
   // Verify the validity of fields and execute the change of a user's email.
   Future commit_pin_edit() async {
     String response = "";
-    if (_pinEditController.text.trim() != "") {
+    String pin = _pinEditController.text.trim();
+    if (pin != "" && validatePin(pin)) {
       String pin = _pinEditController.text.trim();
       response = await authentitcationHelper.editCurrentUserPIN(pin);
     } else {
       response =
-          'You did not input a valid PIN so the change could not be made. Please try again.';
+          'You did not input a valid PIN so the change could not be made. Please try again. \nValid PINs are made up of 4 digits';
     }
     show_alert_dialog(response);
   }
@@ -75,7 +80,7 @@ class EditPINSection extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
+          if (snapshot.hasError || !validatePin(snapshot.data as String)) {
             //if snapshot has an error, it cannot read the user's PIN from the database therefore, prompts user to make a PIN
             return ElevatedButton(
               key: Key('make_pin_submit'),
@@ -113,6 +118,7 @@ class EditPINSection extends StatelessWidget {
                 MyTextField(
                   key: Key('pin_text_field'),
                   hint: snapshot.data as String,
+                  isNumericKeyboard: true,
                   controller: _pinEditController,
                 ),
                 const SizedBox(
