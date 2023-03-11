@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
-///This widget is a switch that the admin can use in order to define
-///the availability status of a particular item in the admin choice
-///board.
+///This widget is used to create toggleSwitches able to switch the is_available value
+///of a database document (categories or items).
 class AvailabilitySwitchToggle extends StatefulWidget {
   final String documentId;
   final bool documentAvailability;
@@ -60,14 +59,10 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
     if (val) {
       return true;
     } else {
-      showFailedUpdateMessage(isCategory);
+      ErrorDialogHelper(context: context)
+          .show_alert_dialog(getFailedUpdateText(isCategory));
       return false;
     }
-  }
-
-  void showFailedUpdateMessage(bool isCategory) {
-    ErrorDialogHelper(context: context)
-        .show_alert_dialog(getFailedUpdateText(isCategory));
   }
 
   String getFailedUpdateText(bool isCategory) {

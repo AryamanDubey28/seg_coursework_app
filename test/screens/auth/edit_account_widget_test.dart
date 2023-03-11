@@ -19,6 +19,7 @@ import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
+// Widget tests for all edit account functionality and error handling.
 class MyMockUser extends MockUser {
   MyMockUser({super.email, super.uid, super.displayName});
 
