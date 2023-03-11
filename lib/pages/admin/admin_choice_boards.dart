@@ -20,9 +20,8 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// catch errors in firebase_functions
-// fix any test errors
 // figure out how to use cache
+// fix any test errors
 
 class AdminChoiceBoards extends StatefulWidget {
   final List<DraggableList>? draggableCategories;
@@ -70,11 +69,28 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return CustomLoadingIndicator();
+      return Scaffold(
+        appBar: AppBar(
+          key: Key('app_bar'),
+          title: const Text('Loading Choice Boards'),
+        ),
+        drawer: const AdminSideMenu(),
+        body: CustomLoadingIndicator(),
+      );
     } else if (hasError) {
       return AlertDialog(
-          content:
-              Text('An error occurred while communicating with the database'));
+        content:
+            Text('An error occurred while communicating with the database'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Retry'),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => AdminChoiceBoards()));
+            },
+          ),
+        ],
+      );
     } else {
       return Scaffold(
         appBar: AppBar(

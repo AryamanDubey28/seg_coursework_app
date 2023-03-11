@@ -685,7 +685,7 @@ Future<void> main() async {
             categoryId: categoryId, itemId: newItemId3),
         2);
 
-    await firebaseFunctions.updateCategoryRanks(
+    await firebaseFunctions.updateCategoryItemsRanks(
         categoryId: categoryId,
         removedRank: await firebaseFunctions.getCategoryItemRank(
             categoryId: categoryId, itemId: newItemId1));
@@ -741,7 +741,7 @@ Future<void> main() async {
             categoryId: categoryId, itemId: newItemId2),
         1);
 
-    await firebaseFunctions.updateCategoryRanks(
+    await firebaseFunctions.updateCategoryItemsRanks(
         categoryId: categoryId,
         removedRank: await firebaseFunctions.getCategoryItemRank(
             categoryId: categoryId, itemId: newItemId3));
@@ -761,7 +761,7 @@ Future<void> main() async {
   test("updateCategoryRanks does nothing if given non existing categoryId",
       () async {
     expect(
-        await firebaseFunctions.updateCategoryRanks(
+        await firebaseFunctions.updateCategoryItemsRanks(
             categoryId: "00xx", removedRank: 1),
         null);
   });
@@ -915,6 +915,7 @@ Future<void> main() async {
   test(
       "update item availability status of non-existent item returns a boolean False",
       () async {
-    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"), false);
+    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"),
+        false);
   });
 }

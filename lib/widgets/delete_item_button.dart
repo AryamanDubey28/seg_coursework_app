@@ -85,7 +85,6 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   }
 
   /// Handle deleting an item from firestore:
-  /// - delete the "item" document
   /// - delete the "categoryItem" document
   /// - Update the ranks of the categoryItems of that category
   void deleteItemFromFirestore() async {
@@ -97,7 +96,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
               categoryId: widget.categoryId, itemId: widget.itemId);
       await firestoreFunctions.deleteCategoryItem(
           categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.updateCategoryRanks(
+      await firestoreFunctions.updateCategoryItemsRanks(
           categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
       LoadingIndicatorDialog().dismiss();

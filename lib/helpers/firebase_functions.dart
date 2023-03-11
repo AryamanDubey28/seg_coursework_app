@@ -211,7 +211,7 @@ class FirebaseFunctions {
 
   /// Should be called after deleting a categoryItem. Decrement the ranks
   /// of all documents which have a rank higher than the deleted categoryItem
-  Future updateCategoryRanks(
+  Future updateCategoryItemsRanks(
       {required String categoryId, required int removedRank}) async {
     final QuerySnapshot querySnapshot = await firestore
         .collection('categoryItems/$categoryId/items')
