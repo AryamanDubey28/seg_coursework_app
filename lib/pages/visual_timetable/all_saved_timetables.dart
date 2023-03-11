@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/widgets/timetable_list.dart';
 import '../../models/timetable.dart';
 import '../../themes/themes.dart';
@@ -19,6 +20,12 @@ class AllSavedTimetables extends StatefulWidget {
 /// The page for the admin to see all the saved timetables and be able to delete unwanted ones.
 class _AllSavedTimetablesState extends State<AllSavedTimetables> {
 
+  @override
+  void dispose() {
+    CheckConnection.startMonitoring();
+    super.dispose();
+  }
+
 
   void expandTimetable(Timetable test)
   {
@@ -26,7 +33,6 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
       context: context,
       builder: (_) {
         return Dialog(
-          // backgroundColor: Provider.of<CustomTheme>(context).getTheme().scaffoldBackgroundColor,
           child: TimetableListDialog(timetable: test),
         );
       }
@@ -37,11 +43,25 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
   ///This function is fed into the TimetableRow and will unsave the timetable from the list of saved timetables.
   void unsaveList(int index) async
   {
-    await deleteWorkflowFromFirestore(timetable: widget.savedTimetables[index]);
-    setState(() {
-      widget.savedTimetables.removeAt(index);
-    });
-    
+    if(CheckConnection.isDeviceConnected)
+    {
+      await deleteWorkflowFromFirestore(timetable: widget.savedTimetables[index]);
+      setState(() {
+        widget.savedTimetables.removeAt(index);
+      });
+    }
+    else
+    {
+      showSnackBarMessage("Cannot remove timetable. No connection.");
+    }
+  }
+
+  void showSnackBarMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message)
+      ),
+    );
   }
 
   @override
@@ -61,15 +81,19 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
         itemBuilder: (context, index) {
           return Column(
             children: [
-              const SizedBox(height: 5,),
-              Text(widget.savedTimetables[index].title),
-              const SizedBox(height: 10,),
-              TimetableRow(
-                key: Key("timetableRow$index"),
-                listOfImages: widget.savedTimetables[index],
-                unsaveList: unsaveList,
-                index: index,
-                expandTimetable: expandTimetable
+              // const SizedBox(height: 5,),
+              // TextButton(onPressed: (){}, child: Text(listOfImages.title)),
+              // Text(widget.savedTimetables[index].title),
+              // const SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0,15,0,15),
+                child: TimetableRow(
+                  key: Key("timetableRow$index"),
+                  listOfImages: widget.savedTimetables[index],
+                  unsaveList: unsaveList,
+                  index: index,
+                  expandTimetable: expandTimetable
+                ),
               ),
               Divider()
             ],

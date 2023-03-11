@@ -35,7 +35,7 @@ class _PictureGridState extends State<PictureGrid> {
       child: Column(
         children: <Widget>[
           Expanded(
-            flex: 1,
+            flex: 2,
             child: SearchBar(onTextChanged: (text) {
               setState(() {
                 _searchText = text;
@@ -43,7 +43,7 @@ class _PictureGridState extends State<PictureGrid> {
             }),
           ),
           Expanded(
-            flex: 5,
+            flex: 9,
             child: GridView.builder(
               itemCount: _getFilteredItems().length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -1,7 +1,11 @@
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
 import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 import '../../models/image_details.dart';
 import '../admin/admin_side_menu.dart';
 import '../../widgets/picture_grid.dart';
@@ -18,17 +22,23 @@ class VisualTimeTable extends StatefulWidget {
 /// The page for the admin to show the choice boards and make a timetable from that
 class _VisualTimeTableState extends State<VisualTimeTable> with WidgetsBindingObserver {
   bool _isPictureGridLoaded = false;
+  // bool isDeviceConnected = false;
+  // late StreamSubscription subscription;
+  // bool alertSet = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _fetchData();
+    // getConnectivity();
   }
 
   @override
   void dispose() {
+    // subscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    CheckConnection.stopMonitoring();
     super.dispose();
   }
 
@@ -50,6 +60,15 @@ class _VisualTimeTableState extends State<VisualTimeTable> with WidgetsBindingOb
       _isPictureGridLoaded = true;
     });
   }
+  // getConnectivity() =>
+  //   subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async { 
+  //     isDeviceConnected = await InternetConnectionChecker().hasConnection;
+      
+  //     setState(() {
+        
+  //     });
+      
+  //   });
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -154,10 +173,12 @@ class _VisualTimeTableState extends State<VisualTimeTable> with WidgetsBindingOb
         Icons.add,
       ),
       onPressed: () {
+        CheckConnection.isDeviceConnected?
         showDialog(
           context: context,
           builder: (_) => showSaveDialog(timetableList),
-        ).then((value) => _textEditingController.clear());
+        ).then((value) => _textEditingController.clear())
+        : showSnackBarMessage("Cannot save timetable. No connection.");
       },
     );
   }
@@ -199,11 +220,15 @@ class _VisualTimeTableState extends State<VisualTimeTable> with WidgetsBindingOb
         TextButton(
           child: Text('Submit'),
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
+            if (_formKey.currentState!.validate() && CheckConnection.isDeviceConnected) {
               String title = _textEditingController.text;
               _textEditingController.clear();
               addTimetableToListOfLists(title, timetableList.getImagesList());
               Navigator.pop(context);
+            }
+            else
+            {
+              showSnackBarMessage("Cannot save timetable. No connection.");
             }
           },
         ),
@@ -220,34 +245,23 @@ class _VisualTimeTableState extends State<VisualTimeTable> with WidgetsBindingOb
       await savedTimetables.saveWorkflowToDatabase(temp);
       setState(() {
       savedTimetables.addList(temp);
-      showSnackBarMessage(true);
       });
+      showSnackBarMessage("Timetable saved successfully.");
     }
     else
     {
-      showSnackBarMessage(false);
+      showSnackBarMessage("Timetable is already saved.");
     }
     
   }
 
   ///This function shows a message at the bottom of the screen when the admin attempts to save a timetable.
-  void showSnackBarMessage(bool isAdded) {
-  if(isAdded)
-    {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Timetable saved successfully.")
-        ),
-      );
-    }
-    else
-    {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Timetable is already saved.")
-        ),
-      );
-    }
+  void showSnackBarMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message)
+      ),
+    );
   }
 
   @override

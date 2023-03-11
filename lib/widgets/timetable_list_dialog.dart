@@ -32,8 +32,9 @@ class TimetableListDialog extends StatelessWidget {
             Tooltip(
               message: timetable.get(index).name,
               child: ImageSquare(
-                //This width is set to make the image less wide than 1/5 of the screen.
-                width: MediaQuery.of(context).size.width/7,
+                //This width is set to make the image less wide than 1/5 of the screen. FIX LATER
+                width: MediaQuery.of(context).size.width/(timetable.length()+1),
+                height: MediaQuery.of(context).size.height/timetable.length(),
                 key: Key('timetableImage$index'),
                 image: timetable.get(index),
               ),
