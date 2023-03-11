@@ -4,6 +4,25 @@ import 'package:seg_coursework_app/models/draggable_list.dart';
 // They will later be supplied from the database (TO BE DELETED)
 final List<DraggableList> devCategories = [
   DraggableList(
+      title: "Breakfast",
+      id: "BLShyb4fzW9V1ZeN7KEB",
+      imageUrl:
+          "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
+      items: [
+        DraggableListItem(
+            availability: true,
+            id: "SUXyjNw1J3xPaBKORftQ",
+            name: "Toast",
+            imageUrl:
+                "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
+        DraggableListItem(
+            availability: false,
+            id: "cmT3Q83n5g5JxNu6VJny",
+            name: "Fruits",
+            imageUrl:
+                "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
+      ]),
+  DraggableList(
       id: "Qn6XzuTVTWNQDj90RlHI",
       title: "Activities",
       imageUrl:
@@ -27,25 +46,6 @@ final List<DraggableList> devCategories = [
             name: "Swimming",
             imageUrl:
                 "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg")
-      ]),
-  DraggableList(
-      title: "Breakfast",
-      id: "BLShyb4fzW9V1ZeN7KEB",
-      imageUrl:
-          "https://img.delicious.com.au/bQjDG77i/del/2021/07/spiced-peanut-butter-and-honey-pancakes-with-blackberry-cream-155151-2.jpg",
-      items: [
-        DraggableListItem(
-            availability: true,
-            id: "SUXyjNw1J3xPaBKORftQ",
-            name: "Toast",
-            imageUrl:
-                "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
-        DraggableListItem(
-            availability: false,
-            id: "cmT3Q83n5g5JxNu6VJny",
-            name: "Fruits",
-            imageUrl:
-                "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
       ]),
   DraggableList(
       id: "wT9cgT3Xp3viIWJAEFQf",

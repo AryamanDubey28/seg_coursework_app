@@ -236,14 +236,13 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
-      int newItemIndex, int newCategoryIndex) async {
-    final trigger = await firebaseFunctions.saveCategoryItemOrder(
-        categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,
-        oldItemIndex: oldItemIndex,
-        newItemIndex: newItemIndex);
-    if (trigger) {
-      if (newCategoryIndex == oldCategoryIndex) {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
+    if (newCategoryIndex == oldCategoryIndex) {
+      final trigger = await firebaseFunctions.saveCategoryItemOrder(
+          categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,
+          oldItemIndex: oldItemIndex,
+          newItemIndex: newItemIndex);
+      if (trigger) {
         setState(() {
           final selectedItem =
               categories[oldCategoryIndex].children.removeAt(oldItemIndex);
@@ -257,14 +256,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           widget.draggableCategories[oldCategoryIndex].children
               .insert(newItemIndex, selectedItemDrag);
         });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 3),
+          content: Text(
+            'Reordering could not be done. Please ensure you are connected to internet.',
+          ),
+        ));
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 3),
-        content: Text(
-          'Reordering could not be done. Please ensure you are connected to internet.',
-        ),
-      ));
     }
   }
 
