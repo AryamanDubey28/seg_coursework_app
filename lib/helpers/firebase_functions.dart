@@ -3,8 +3,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
   late final FirebaseAuth auth;
@@ -112,8 +110,11 @@ class FirebaseFunctions {
 
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
-  Future deleteImageFromCloud({required String imageUrl}) {
-    return storage.refFromURL(imageUrl).delete().onError((error, stackTrace) {
+  Future deleteImageFromCloud({required String imageUrl}) async {
+    return storage
+        .refFromURL(imageUrl)
+        .delete()
+        .catchError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
   }
@@ -172,6 +173,14 @@ class FirebaseFunctions {
         await categoryItemReference.update({'illustration': newImageUrl});
       }
     }
+  }
+
+  /// Behaves as an assertion to check that an item exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> itemExists({required String itemId}) async {
+    DocumentSnapshot item =
+        await firestore.collection('items').doc(itemId).get();
+    return item.exists;
   }
 
   // #### Deleting items functions ####
@@ -282,6 +291,14 @@ class FirebaseFunctions {
         .update({'illustration': newImageUrl}).catchError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
+  }
+
+  /// Behaves as an assertion to check that a category exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> categoryExists({required String categoryId}) async {
+    DocumentSnapshot category =
+        await firestore.collection('categories').doc(categoryId).get();
+    return category.exists;
   }
 
   // #### Deleting categories functions ####

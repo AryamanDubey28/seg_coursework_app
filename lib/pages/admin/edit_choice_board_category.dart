@@ -212,6 +212,8 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         }
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
+          await firestoreFunctions.categoryExists(
+              categoryId: widget.categoryId);
           await firestoreFunctions.deleteImageFromCloud(
               imageUrl: widget.categoryImageUrl);
           String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
