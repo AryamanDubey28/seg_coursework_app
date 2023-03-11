@@ -1,10 +1,10 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:seg_coursework_app/widgets/item_unavailable.dart';
 
-// Create widget for all the child images
 Expanded getMainImages(List<ClickableImage> images) {
   return Expanded(
     child: GridView.builder(
@@ -18,6 +18,23 @@ Expanded getMainImages(List<ClickableImage> images) {
           return getImage(index, images);
         }),
   );
+}
+
+Future speak(String text) async {
+  final FlutterTts flutterTts = FlutterTts();
+  await flutterTts.setSharedInstance(true);
+
+  await flutterTts.setLanguage("en-US");
+
+  await flutterTts.setSpeechRate(0.5);
+
+  await flutterTts.setVolume(1.0);
+
+  await flutterTts.setPitch(0.7);
+
+  await flutterTts.isLanguageAvailable("en-US");
+
+  await flutterTts.speak(text);
 }
 
 // Returns one image that on click blurs the background and is available
@@ -38,6 +55,9 @@ FocusedMenuHolder getAvailableItem(List<ClickableImage> images, int index) {
     onPressed: () {
       final player = AudioPlayer();
       player.play(AssetSource('available.mp3'));
+      Future.delayed(Duration(milliseconds: 180), () { 
+        speak(images[index].name);
+      });
     },
     menuItems: const [],
     blurSize: 5.0,

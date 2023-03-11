@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../themes/themes.dart';
 
@@ -24,6 +25,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
   // DELETE AFTER ADDING A QUEERY TO GET IMAGES
+  final FlutterTts flutterTts = FlutterTts();
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
