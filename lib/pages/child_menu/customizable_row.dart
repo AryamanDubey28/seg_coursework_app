@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
@@ -41,6 +42,8 @@ class CustomizableRow extends StatelessWidget {
         ),
         onTap: () {
           // PLACEHOLDER.
+          final player = AudioPlayer();
+          player.play(AssetSource('page_turning.mp3'));
           Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildBoards()));
         },
       ),

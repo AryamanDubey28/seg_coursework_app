@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
-import 'package:flutter/services.dart';
 
 import '../../themes/themes.dart';
 
@@ -177,15 +176,15 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           padding: const EdgeInsets.all(8.0),
           iconSize: 50,
           hoverColor: Colors.transparent,
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            final player = AudioPlayer();
+            player.play(AssetSource('back_button.mp3'));
+            Navigator.pop(context);
+            },
+          //onPressed: () => Navigator.pop(context),
           //backButtonFunction(),
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
 
-  void backButtonFunction() {
-    Navigator.pop(context);
-    //SystemSound.play(SystemSoundType.alert);
-    AudioPlayer().play(AssetSource('test/assets/button.mp3'));
-  }
 }
