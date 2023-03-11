@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 
 ///This widget is a switch that the admin can use in order to define
@@ -65,16 +66,8 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
   }
 
   void showFailedUpdateMessage(bool isCategory) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              getFailedUpdateText(isCategory),
-              style: TextStyle(fontSize: 20),
-            ),
-          );
-        });
+    ErrorDialogHelper(context: context)
+        .show_alert_dialog(getFailedUpdateText(isCategory));
   }
 
   String getFailedUpdateText(bool isCategory) {

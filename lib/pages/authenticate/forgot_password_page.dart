@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -18,31 +19,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Future passwordReset() async {
+    String text;
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                "Sent Password Reset link to ${_emailController.text.trim()}",
-                style: TextStyle(fontSize: 24),
-              ),
-            );
-          });
+      text = "Sent Password Reset link to ${_emailController.text.trim()}";
     } on FirebaseAuthException catch (e) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                e.message.toString(),
-                style: TextStyle(fontSize: 24),
-              ),
-            );
-          });
+      text = e.message.toString();
     }
+    ErrorDialogHelper(context: context).show_alert_dialog(text);
   }
 
   @override

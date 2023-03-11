@@ -116,7 +116,7 @@ class AdminSideMenu extends StatelessWidget {
             onTap: () => Navigator.of(context)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
               if (!mock) {
-                return AdminChoiceBoards(draggableCategories: devCategories);
+                return EditAccountPage();
               } else {
                 return EditAccountPage(
                   auth: MockFirebaseAuthentication(),

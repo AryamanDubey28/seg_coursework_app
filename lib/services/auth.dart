@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 // This class concentrates all method relative to communicating with the Firebase Authentication service.
 class Auth {

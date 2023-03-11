@@ -84,6 +84,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
@@ -114,6 +115,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
@@ -144,6 +146,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
@@ -172,6 +175,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
       await auth.signIn(_email, _password);
@@ -212,6 +216,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
       await auth.signIn(_email, _password);
@@ -252,6 +257,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
       await auth.signIn(_email, _password);
@@ -292,6 +298,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
       await auth.signIn(_email, _password);
@@ -332,6 +339,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
       await auth.signIn(_email, _password);
@@ -371,6 +379,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
       await auth.signIn(_email, _password);
