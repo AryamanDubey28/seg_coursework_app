@@ -5,15 +5,19 @@ import 'toggleAuth.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({Key? key}) : super(key: key);
+  late FirebaseAuth auth;
 
-  Stream<User?> get user => FirebaseAuth.instance.authStateChanges();
+  Wrapper({Key? key, FirebaseAuth? auth}) : super(key: key) {
+    this.auth = auth ?? FirebaseAuth.instance;
+  }
+
+  Stream<User?> get user => auth.authStateChanges();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
+        stream: auth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             //if we are trying to sign in and snapshot contains user data, we are logged in
@@ -22,7 +26,7 @@ class Wrapper extends StatelessWidget {
             );
           } else {
             //snapshot does not contain user data therefore, not logged in
-            return const ToggleAuth();
+            return ToggleAuth(auth: auth);
           }
         },
       ),

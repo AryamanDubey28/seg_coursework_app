@@ -1,4 +1,5 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
@@ -112,14 +113,16 @@ class AdminSideMenu extends StatelessWidget {
               Icons.account_box_outlined,
             ),
             title: const Text('Edit Account Details'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditAccountPage(),
-                ),
-              );
-            },
+            onTap: () => Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
+              if (!mock) {
+                return AdminChoiceBoards(draggableCategories: devCategories);
+              } else {
+                return EditAccountPage(
+                  auth: MockFirebaseAuthentication(),
+                );
+              }
+            })),
           ),
           ListTile(
             key: const Key("logout"),
