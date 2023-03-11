@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
+import 'package:seg_coursework_app/pages/admin/add_existing_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
@@ -128,12 +129,33 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                       thickness: 0.2,
                     ),
                     const SizedBox(height: 20),
-                    // submit to database button
-                    TextButton.icon(
-                      key: const Key("createItemButton"),
-                      onPressed: () => saveItemToFirestore(image: selectedImage, itemName: itemNameController.text),
-                      icon: Icon(Icons.add),
-                      label: const Text("Create new item"),
+                    Row(
+                      children: [
+                        Spacer(),
+                        // use preexisting item to create categoryItem
+                        TextButton.icon(
+                          key: const Key("useExistingItemButton"),
+                          onPressed: () => {
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId),
+                            ))
+                          },
+                          icon: Icon(Icons.add),
+                          label: const Text("Use existing item"),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: Text("or"),
+                        ),
+                        // submit to database button
+                        TextButton.icon(
+                          key: const Key("createItemButton"),
+                          onPressed: () => saveItemToFirestore(image: selectedImage, itemName: itemNameController.text),
+                          icon: Icon(Icons.add),
+                          label: const Text("Create new item"),
+                        ),
+                        Spacer()
+                      ],
                     )
                   ],
                 ),
