@@ -11,6 +11,8 @@ class DraggableList {
       required this.items,
       required this.imageUrl,
       required this.id});
+
+  get children => items;
 }
 
 class DraggableListItem {

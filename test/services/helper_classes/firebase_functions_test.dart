@@ -31,13 +31,15 @@ Future<void> main() async {
     mockFirestore = FakeFirebaseFirestore();
   });
 
-  Future<void> _createCategory({required String id}) {
-    return mockFirestore.collection('categories').doc(id).set({
+  Future<DocumentSnapshot> _createCategory(
+      {required String id, int rank = 0}) async {
+    mockFirestore.collection('categories').doc(id).set({
       'name': "Drinks",
       'illustration': "drink.jpeg",
       'userId': mockUser.uid,
-      'rank': 0
+      'rank': rank
     });
+    return mockFirestore.collection('categories').doc(id).get();
   }
 
   test("create item is successful", () async {
@@ -915,6 +917,293 @@ Future<void> main() async {
   test(
       "update item availability status of non-existent item returns a boolean False",
       () async {
-    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"), false);
+    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"),
+        false);
+  });
+
+  test("Reordering non-existent categories returns false", () async {
+    expect(await firebaseFunctions.saveCategoryOrder(oldRank: 2, newRank: 0),
+        false);
+  });
+
+  test("Reordering non-existent categoryItems returns false", () async {
+    const String categoryId1 = "00xx";
+    await _createCategory(id: categoryId1);
+    expect(
+        await firebaseFunctions.saveCategoryItemOrder(
+            categoryId: categoryId1, oldItemIndex: 2, newItemIndex: 0),
+        false);
+  });
+
+  test("Reordering 3 categories updates all rank fields correctly", () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+
+    var cat1 = await _createCategory(id: categoryId1);
+    var cat2 = await _createCategory(id: categoryId2, rank: 1);
+    var cat3 = await _createCategory(id: categoryId3, rank: 2);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 2, newRank: 0);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+
+    expect(cat1.get('rank'), 1);
+    expect(cat2.get('rank'), 2);
+    expect(cat3.get('rank'), 0);
+  });
+
+  test(
+      "Reordering 5 categories from the lowest rank to highest one updates all rank fields correctly",
+      () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+    const String categoryId4 = "11aa";
+    const String categoryId5 = "11bb";
+
+    var cat1 = await _createCategory(id: categoryId1);
+    var cat2 = await _createCategory(id: categoryId2, rank: 1);
+    var cat3 = await _createCategory(id: categoryId3, rank: 2);
+    var cat4 = await _createCategory(id: categoryId4, rank: 3);
+    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+    expect(cat4.get('rank'), 3);
+    expect(cat5.get('rank'), 4);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 4, newRank: 0);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+    cat4 = await mockFirestore.collection('categories').doc(categoryId4).get();
+    cat5 = await mockFirestore.collection('categories').doc(categoryId5).get();
+
+    expect(cat1.get('rank'), 1);
+    expect(cat2.get('rank'), 2);
+    expect(cat3.get('rank'), 3);
+    expect(cat4.get('rank'), 4);
+    expect(cat5.get('rank'), 0);
+  });
+
+  test(
+      "Reordering 5 categories from middle ranks update all rank fields correctly",
+      () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+    const String categoryId4 = "11aa";
+    const String categoryId5 = "11bb";
+
+    var cat1 = await _createCategory(id: categoryId1);
+    var cat2 = await _createCategory(id: categoryId2, rank: 1);
+    var cat3 = await _createCategory(id: categoryId3, rank: 2);
+    var cat4 = await _createCategory(id: categoryId4, rank: 3);
+    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+    expect(cat4.get('rank'), 3);
+    expect(cat5.get('rank'), 4);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 3, newRank: 1);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+    cat4 = await mockFirestore.collection('categories').doc(categoryId4).get();
+    cat5 = await mockFirestore.collection('categories').doc(categoryId5).get();
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 2);
+    expect(cat3.get('rank'), 3);
+    expect(cat4.get('rank'), 1);
+    expect(cat5.get('rank'), 4);
+  });
+
+  test(
+      "Reordering 5 categories from highest to lowest rank updates all rank fields correctly",
+      () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+    const String categoryId4 = "11aa";
+    const String categoryId5 = "11bb";
+
+    var cat1 = await _createCategory(id: categoryId1);
+    var cat2 = await _createCategory(id: categoryId2, rank: 1);
+    var cat3 = await _createCategory(id: categoryId3, rank: 2);
+    var cat4 = await _createCategory(id: categoryId4, rank: 3);
+    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+    expect(cat4.get('rank'), 3);
+    expect(cat5.get('rank'), 4);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 0, newRank: 4);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+    cat4 = await mockFirestore.collection('categories').doc(categoryId4).get();
+    cat5 = await mockFirestore.collection('categories').doc(categoryId5).get();
+
+    expect(cat1.get('rank'), 4);
+    expect(cat2.get('rank'), 0);
+    expect(cat3.get('rank'), 1);
+    expect(cat4.get('rank'), 2);
+    expect(cat5.get('rank'), 3);
+  });
+
+  test(
+      "Reordering 3 categoryItems from lowest to highest rank updates all rank fields correctly",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+
+    var cat1 = await _createCategory(id: categoryId1);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId1 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId2 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId1);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId2);
+
+    var item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    var item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    var item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 0);
+    expect(item1.get('rank'), 1);
+    expect(item2.get('rank'), 2);
+
+    await firebaseFunctions.saveCategoryItemOrder(
+        categoryId: categoryId1, oldItemIndex: 2, newItemIndex: 0);
+
+    item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 1);
+    expect(item1.get('rank'), 2);
+    expect(item2.get('rank'), 0);
+  });
+
+  test(
+      "Reordering 3 categoryItems from highest to lowest rank updates all rank fields correctly",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+
+    var cat1 = await _createCategory(id: categoryId1);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId1 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId2 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId1);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId2);
+
+    var item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    var item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    var item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 0);
+    expect(item1.get('rank'), 1);
+    expect(item2.get('rank'), 2);
+
+    await firebaseFunctions.saveCategoryItemOrder(
+        categoryId: categoryId1, oldItemIndex: 0, newItemIndex: 2);
+
+    item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 2);
+    expect(item1.get('rank'), 0);
+    expect(item2.get('rank'), 1);
   });
 }
