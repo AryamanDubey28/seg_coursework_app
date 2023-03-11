@@ -24,7 +24,12 @@ void main() {
   late MockUser mockUser;
 
   Future<void> createData() async {
-    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({'name': "Breakfast", 'illustration': "food.jpeg", 'userId': mockUser.uid, 'rank': 0});
+    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
+      'name': "Breakfast",
+      'illustration': "food.jpeg",
+      'userId': mockUser.uid,
+      'rank': 0
+    });
   }
 
   setUpAll(() {
@@ -53,14 +58,16 @@ void main() {
 
       expect(find.byKey(const ValueKey("categoryImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
-      expect(find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
       expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);
       expect(find.byKey(const ValueKey("categoryNameField")), findsOneWidget);
       expect(find.byKey(const ValueKey("editCategoryButton")), findsOneWidget);
     });
   });
 
-  testWidgets("making no edits takes user to choice board page", (WidgetTester tester) async {
+  testWidgets("making no edits takes user to choice board page",
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -90,7 +97,7 @@ void main() {
               home: EditChoiceBoardCategory(
             categoryId: breakfastCategory.id,
             categoryImageUrl: "food.jpeg",
-            categoryName: "food.jpeg",
+            categoryName: "food",
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -105,6 +112,31 @@ void main() {
       await tester.tap(find.byKey(ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("editing a category that doesn't exist shows error",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardCategory(
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: "food.jpeg",
+            categoryName: "food",
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+
+      final nameField = find.byKey(ValueKey("categoryNameField"));
+      await tester.enterText(nameField, "Dinner");
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
     });
   });
 }

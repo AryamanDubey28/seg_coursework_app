@@ -24,6 +24,7 @@ void main() {
   // Test values
   const categoryId = '1234';
   const categoryName = 'Category Name';
+  const categoryImage = 'Category.jpeg';
 
   setUpAll(() {
     mockUser = MockUser(uid: "user1");
@@ -31,10 +32,17 @@ void main() {
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
     when(mockAuth.currentUser).thenReturn(mockUser);
-    deleteChoiceBoardCategory = DeleteChoiceBoardCategory(categoryId: categoryId, categoryName: categoryName, auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
+    deleteChoiceBoardCategory = DeleteChoiceBoardCategory(
+        categoryId: categoryId,
+        categoryName: categoryName,
+        categoryImage: categoryImage,
+        auth: mockAuth,
+        firestore: mockFirestore,
+        storage: mockStorage);
   });
 
-  testWidgets('DeleteChoiceBoardCategory - should show confirmation dialog', (WidgetTester tester) async {
+  testWidgets('DeleteChoiceBoardCategory - should show confirmation dialog',
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(MaterialApp(home: deleteChoiceBoardCategory));
 

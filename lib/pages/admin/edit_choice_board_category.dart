@@ -20,7 +20,14 @@ class EditChoiceBoardCategory extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  EditChoiceBoardCategory({super.key, required this.categoryId, required this.categoryName, required this.categoryImageUrl, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  EditChoiceBoardCategory(
+      {super.key,
+      required this.categoryId,
+      required this.categoryName,
+      required this.categoryImageUrl,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -41,20 +48,25 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "editCategoryHero-${widget.categoryId}",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -89,7 +101,10 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                     Text(
                       "Pick an image",
                       key: Key("instructionsText"),
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87),
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
@@ -98,7 +113,8 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.gallery, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.gallery, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -108,7 +124,8 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.camera, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.camera, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -120,7 +137,10 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                       controller: categoryNameController,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25.0),
-                      decoration: InputDecoration(hintText: widget.categoryName, border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)),
+                      decoration: InputDecoration(
+                          hintText: widget.categoryName,
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
@@ -131,7 +151,9 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                     // submit to database button
                     TextButton.icon(
                       key: const Key("editCategoryButton"),
-                      onPressed: () => editCategoryInFirestore(newImage: selectedImage, newName: categoryNameController.text),
+                      onPressed: () => editCategoryInFirestore(
+                          newImage: selectedImage,
+                          newName: categoryNameController.text),
                       icon: Icon(Icons.edit),
                       label: const Text("Edit category"),
                     )
@@ -149,14 +171,20 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   /// - Both the name and image changed
   /// - Only the name changed
   /// - Only the image changed
-  void editCategoryInFirestore({required File? newImage, required String? newName}) async {
+  void editCategoryInFirestore(
+      {required File? newImage, required String? newName}) async {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+        builder: (context) => AdminChoiceBoards(
+            draggableCategories: devCategories,
+            auth: widget.auth,
+            firestore: widget.firestore,
+            storage: widget.storage),
       ));
       try {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No edits made!")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("No edits made!")));
       } catch (e) {
         print("No Scaffold to present to!\n${e.toString()}");
       }
@@ -168,34 +196,49 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
 
         // Both image and name changed
         if (newName.isNotEmpty && newImage != null) {
-          await firestoreFunctions.updateCategoryName(categoryId: widget.categoryId, newName: newName);
-          await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: newName);
-          await firestoreFunctions.updateCategoryImage(categoryId: widget.categoryId, newImageUrl: newImageUrl!);
+          await firestoreFunctions.updateCategoryName(
+              categoryId: widget.categoryId, newName: newName);
+          await firestoreFunctions.deleteImageFromCloud(
+              imageUrl: widget.categoryImageUrl);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
+              image: newImage, name: newName);
+          await firestoreFunctions.updateCategoryImage(
+              categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
         // Only name changed
         else if (newName.isNotEmpty && newImage == null) {
-          await firestoreFunctions.updateCategoryName(categoryId: widget.categoryId, newName: newName);
+          await firestoreFunctions.updateCategoryName(
+              categoryId: widget.categoryId, newName: newName);
         }
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
-          await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(image: newImage, name: newName);
-          await firestoreFunctions.updateCategoryImage(categoryId: widget.categoryId, newImageUrl: newImageUrl!);
+          await firestoreFunctions.deleteImageFromCloud(
+              imageUrl: widget.categoryImageUrl);
+          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
+              image: newImage, name: widget.categoryName);
+          await firestoreFunctions.updateCategoryImage(
+              categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
 
         LoadingIndicatorDialog().dismiss();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+          builder: (context) => AdminChoiceBoards(
+              draggableCategories: devCategories,
+              auth: widget.auth,
+              firestore: widget.firestore,
+              storage: widget.storage),
         ));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Edits saved successfully!")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Edits saved successfully!")));
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
         print(e);
         showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(content: Text('An error occurred while communicating with the database'));
+              return AlertDialog(
+                  content: Text(
+                      'An error occurred while communicating with the database'));
             });
       }
     }

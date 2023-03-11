@@ -26,7 +26,12 @@ class AdminChoiceBoards extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  AdminChoiceBoards({super.key, required this.draggableCategories, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  AdminChoiceBoards(
+      {super.key,
+      required this.draggableCategories,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -58,7 +63,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
-        listInnerDecoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(20)),
+        listInnerDecoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20)),
         children: categories,
         itemDivider: const Divider(
           thickness: 2,
@@ -110,7 +117,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           child: Row(
             children: [
               ImageSquare(
-                image: ImageDetails(name: category.title, imageUrl: category.imageUrl),
+                image: ImageDetails(
+                    name: category.title, imageUrl: category.imageUrl),
                 key: Key("categoryImage-${category.id}"),
                 height: 120,
                 width: 120,
@@ -119,13 +127,17 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               Text(
                 category.title,
                 key: Key("categoryTitle-${category.id}"),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               DeleteCategoryButton(
-                categoryId: category.id,
-                categoryName: category.title,
-              ),
-              EditCategoryButton(categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
+                  categoryId: category.id,
+                  categoryName: category.title,
+                  categoryImage: category.imageUrl),
+              EditCategoryButton(
+                  categoryId: category.id,
+                  categoryName: category.title,
+                  categoryImageUrl: category.imageUrl),
               const Spacer(),
               AddItemButton(
                 categoryId: category.id,
@@ -187,9 +199,11 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
+      int newItemIndex, int newCategoryIndex) {
     setState(() {
-      final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+      final selectedItem =
+          categories[oldCategoryIndex].children.removeAt(oldItemIndex);
       categories[newCategoryIndex].children.insert(newItemIndex, selectedItem);
     });
   }
