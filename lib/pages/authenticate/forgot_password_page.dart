@@ -2,6 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 
+import '../../widgets/my_text_field.dart';
+
+
+// This is the screen where the user can request for their password to get changed via email after they forgot it 
+
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
 
@@ -18,6 +23,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     _emailController.dispose();
   }
 
+  // Main password reset method that toggles database email message
   Future passwordReset() async {
     String text;
     try {
@@ -29,7 +35,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     }
     ErrorDialogHelper(context: context).show_alert_dialog(text);
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,47 +43,58 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         backgroundColor: Colors.deepPurple[400],
       ),
       backgroundColor: Colors.grey[200],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Enter your email to recieve a password reset link",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 30, color: Colors.black),
-          ),
-
-          //email textfield
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: TextField(
-                  cursorColor: Colors.black,
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Email",
-                  ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            width: 1000,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Please enter your email to receive a password reset link",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 30, color: Colors.black),
                 ),
-              ),
+          
+                SizedBox(
+                  height: 65,
+                ),
+
+                // Email field
+                MyTextField(
+                  controller: _emailController,
+                  hint: 'Email',
+                ),
+          
+                SizedBox(
+                          height: 35,
+                ),
+          
+                // Button
+                SizedBox(
+                          height: 88,
+                          width: 566,
+                          child: ElevatedButton(
+                            key: Key('reset_password_button'),
+                            style: ElevatedButton.styleFrom(
+                              textStyle: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.deepPurple[400],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: passwordReset,
+                            child: Text("Reset Password"),
+                          ),
+                        ),
+              ],
             ),
           ),
-
-          //button
-          MaterialButton(
-            onPressed: passwordReset,
-            color: Colors.deepPurple[300],
-            child: Text(
-              "Reset Password",
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
