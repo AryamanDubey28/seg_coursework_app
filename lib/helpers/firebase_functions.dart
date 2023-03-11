@@ -156,26 +156,20 @@ class FirebaseFunctions {
 
   Future createWorkflowItem(
       {
-      required String name,
-      required String imageUrl,
+      required ImageDetails workflowItem,
       required String workflowId,
-      required String itemId}) async {
+      }) async {
     CollectionReference workflowItems =
         firestore.collection('workflowItems/$workflowId/items');
-    try{
-      return workflowItems.doc(itemId).set({
-      'illustration': imageUrl,
-      'name': name,
+
+    return workflowItems.doc(workflowItem.itemId).set({
+      'illustration': workflowItem.imageUrl,
+      'name': workflowItem.name,
       'rank': await getNewWorkflowItemRank(workflowId: workflowId),
       'userId': auth.currentUser!.uid
       // ignore: void_checks
-    });
-    }
-    catch(e)
-    {
-      print("error saving workflowitem");
-      print(e);
-    }
+    }).onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
+    
     
   }
 

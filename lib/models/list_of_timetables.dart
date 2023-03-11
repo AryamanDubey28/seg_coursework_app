@@ -41,8 +41,7 @@ class ListOfTimetables {
 
   Future saveWorkflowToDatabase(Timetable timetable) async
   {
-    String temp = await saveWorkflowToFirestore(timetable: timetable);
-    timetable.setID(id: temp);
+    await saveWorkflowToFirestore(timetable: timetable);
   }
 
   List<Timetable> getListOfLists()

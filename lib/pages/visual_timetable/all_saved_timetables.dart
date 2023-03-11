@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/widgets/timetable_list.dart';
+import '../../helpers/snackbar_manager.dart';
 import '../../models/timetable.dart';
-import '../../themes/themes.dart';
 import '../../widgets/timetable_list_dialog.dart';
 import '../../widgets/timetable_row.dart';
 
@@ -49,20 +47,14 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
       setState(() {
         widget.savedTimetables.removeAt(index);
       });
+      SnackBarManager.showSnackBarMessage(context, "Timetable removed successfully");
     }
     else
     {
-      showSnackBarMessage("Cannot remove timetable. No connection.");
+      SnackBarManager.showSnackBarMessage(context, "Cannot remove timetable. No connection.");
     }
   }
 
-  void showSnackBarMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message)
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +73,6 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
         itemBuilder: (context, index) {
           return Column(
             children: [
-              // const SizedBox(height: 5,),
-              // TextButton(onPressed: (){}, child: Text(listOfImages.title)),
-              // Text(widget.savedTimetables[index].title),
-              // const SizedBox(height: 10,),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0,15,0,15),
                 child: TimetableRow(
