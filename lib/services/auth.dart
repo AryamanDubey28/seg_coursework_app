@@ -55,23 +55,28 @@ class Auth {
   }
 
   Future<String> createPIN(String pin) async {
-    try {
-      final docUser = FirebaseFirestore.instance.collection('userPins').doc();
-      if (pin.length == 4) {
-        final entry = {
-          //pin is saved with user's ID
-          'pin': pin,
-          'userId': await getCurrentUserId(),
-        };
-        await docUser.set(entry); //adds PIN to database
-        return "Successfully made your pin: $pin";
-      } else {
-        return "Please ensure that your PIN is 4 digits";
+    if (await getCurrentUser() != null) {
+      try {
+        if (pin.length == 4 && num.tryParse(pin) != null) {
+          final docUser =
+              FirebaseFirestore.instance.collection('userPins').doc();
+          final entry = {
+            //pin is saved with user's ID
+            'pin': pin,
+            'userId': await getCurrentUserId(),
+          };
+          await docUser.set(entry); //adds PIN to database
+          return "Successfully made your pin: $pin";
+        } else {
+          return "Please ensure that your PIN is 4 digits";
+        }
+      } on FirebaseAuthException {
+        return "Error creating PIN. Could not communicate with database";
+      } catch (e) {
+        return e.toString();
       }
-    } on FirebaseAuthException {
-      return "Error creating PIN. Could not communicate with database";
-    } catch (e) {
-      return e.toString();
+    } else {
+      return 'We could not verify your identity. Please log out and back in.';
     }
   }
 
@@ -117,7 +122,7 @@ class Auth {
 
   Future<String> editCurrentUserPIN(String newPIN) async {
     if (await getCurrentUser() != null) {
-      if (newPIN.length != 4) {
+      if (newPIN.length != 4 && num.tryParse(newPIN) != null) {
         return "Please ensure your PIN is 4 digits";
       }
       try {

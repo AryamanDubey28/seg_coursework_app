@@ -32,6 +32,10 @@ class MyMockUser extends MockUser {
     return Future(() => null);
   }
 
+  Future<void> createPIN(String pin) {
+    return Future(() => null);
+  }
+
   @override
   Future<UserCredential> reauthenticateWithCredential(
       AuthCredential? credential) {
@@ -98,6 +102,7 @@ void main() async {
       'update password works when provided with valid current password and password argument',
       () async {
     await auth.signIn(_email, _password);
+    print("going to edit password");
     expect(await auth.editCurrentUserPassword(_password, "newPassword123"),
         "Your password was successfully changed.");
   });
@@ -123,5 +128,17 @@ void main() async {
       () async {
     expect(await auth.editCurrentUserPassword(_password, "newPassword123"),
         'We could not verify your identity. Please log out and back in.');
+  });
+
+  test("Cannot set a PIN longer than 4 digits", () async {
+    await auth.signIn(_email, _password);
+    expect(await auth.createPIN("12345"),
+        "Please ensure that your PIN is 4 digits");
+  });
+
+  test("Cannot create a PIN with characters and letters", () async {
+    await auth.signIn(_email, _password);
+    expect(await auth.createPIN("abcd"),
+        "Please ensure that your PIN is 4 digits");
   });
 }

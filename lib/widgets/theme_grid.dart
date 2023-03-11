@@ -26,7 +26,6 @@ class ThemeGrid extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               themeNotifier.setTheme(themeList[index]);
-              //print("clicked ${themeList[index]}");
             },
             child: Tooltip(
               message: themeList[index].name,

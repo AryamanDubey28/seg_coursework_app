@@ -39,9 +39,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-      ),
+      theme: themeData,
       home: Wrapper(
         isInChildMode: isInChildMode,
       ),
