@@ -17,7 +17,6 @@ Future main() async {
   await Firebase.initializeApp();
   final pref = await SharedPreferences.getInstance();
   final auth = Auth(auth: FirebaseAuth.instance);
-
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
   runApp(ThemeProvider(
