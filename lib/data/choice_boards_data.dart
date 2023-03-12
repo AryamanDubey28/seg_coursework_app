@@ -1,8 +1,9 @@
+import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/category.dart';
 
 // These are added to test while development
-// They will later be supplied from the database (TO BE DELETED)
+// They will later be supplied from the database
 final List<Category> devCategories = [
   Category(
       title: "Breakfast",
@@ -90,7 +91,9 @@ final List<Category> devCategories = [
 ];
 
 /// Used for Testing classes
-final List<Category> testCategories = [
+final Categories testCategories = Categories(categories: categories);
+
+final List<Category> categories = [
   Category(
       title: "Breakfast",
       rank: 0,

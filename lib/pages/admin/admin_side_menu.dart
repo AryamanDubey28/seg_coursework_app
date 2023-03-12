@@ -58,7 +58,7 @@ class AdminSideMenu extends StatelessWidget {
                 return AdminChoiceBoards();
               } else {
                 return AdminChoiceBoards(
-                  draggableCategories: testCategories,
+                  testCategories: testCategories,
                   auth: MockFirebaseAuthentication(),
                   firestore: FakeFirebaseFirestore(),
                   storage: MockFirebaseStorage(),

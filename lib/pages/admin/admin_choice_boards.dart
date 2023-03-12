@@ -21,18 +21,15 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// Refactor draggable_list
-// fix any test errors
-
 class AdminChoiceBoards extends StatefulWidget {
-  final List<Category>? draggableCategories;
+  final Categories? testCategories;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
   AdminChoiceBoards(
       {super.key,
-      this.draggableCategories,
+      this.testCategories,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -59,8 +56,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
         firestore: widget.firestore,
         storage: widget.storage);
 
-    if (widget.draggableCategories != null) {
-      categories = widget.draggableCategories!.map(buildCategory).toList();
+    if (widget.testCategories != null) {
+      categories = widget.testCategories!.getList().map(buildCategory).toList();
     } else {
       _futureUserCategories = await firebaseFunctions.getUserCategories();
       categories = _futureUserCategories.getList().map(buildCategory).toList();

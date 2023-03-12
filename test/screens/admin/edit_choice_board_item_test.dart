@@ -34,6 +34,7 @@ void main() {
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
+      'is_available': true,
       'rank': 0
     });
 
@@ -54,8 +55,8 @@ void main() {
   }
 
   setUpAll(() {
-    toastItem = testCategories.first.items.first;
-    breakfastCategory = testCategories.first;
+    toastItem = testCategories.getList().first.items.first;
+    breakfastCategory = testCategories.getList().first;
 
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
@@ -73,6 +74,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            mock: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -98,6 +100,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            mock: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -120,6 +123,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            mock: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -147,6 +151,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            mock: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,

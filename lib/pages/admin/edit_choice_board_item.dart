@@ -16,6 +16,7 @@ class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
   final String itemName;
   final String itemImageUrl;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -25,6 +26,7 @@ class EditChoiceBoardItem extends StatefulWidget {
       required this.itemId,
       required this.itemName,
       required this.itemImageUrl,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -176,10 +178,17 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => AdminChoiceBoards(
-            auth: widget.auth,
-            firestore: widget.firestore,
-            storage: widget.storage),
+        builder: (context) {
+          if (widget.mock) {
+            return AdminChoiceBoards(
+                testCategories: testCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage);
+          } else {
+            return AdminChoiceBoards();
+          }
+        },
       ));
       try {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -230,10 +239,17 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
 
         LoadingIndicatorDialog().dismiss();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => AdminChoiceBoards(
-              auth: widget.auth,
-              firestore: widget.firestore,
-              storage: widget.storage),
+          builder: (context) {
+            if (widget.mock) {
+              return AdminChoiceBoards(
+                  testCategories: testCategories,
+                  auth: widget.auth,
+                  firestore: widget.firestore,
+                  storage: widget.storage);
+            } else {
+              return AdminChoiceBoards();
+            }
+          },
         ));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Edits saved successfully!")),

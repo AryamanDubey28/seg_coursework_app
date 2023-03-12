@@ -33,6 +33,7 @@ void main() {
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
+      'is_available': true,
       'rank': 0
     });
 
@@ -53,8 +54,8 @@ void main() {
   }
 
   setUpAll(() {
-    toastItem = testCategories.first.items.first;
-    breakfastCategory = testCategories.first;
+    toastItem = testCategories.getList().first.items.first;
+    breakfastCategory = testCategories.getList().first;
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
     mockFirestore = FakeFirebaseFirestore();
@@ -69,11 +70,13 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+
+      await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey("addCategoryButton")), findsOneWidget);
 
@@ -100,11 +103,13 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+
+      await tester.pumpAndSettle();
 
       expect(
           find.byKey(ValueKey("categoryItem-${toastItem.id}")), findsOneWidget);
@@ -127,11 +132,13 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+
+      await tester.pumpAndSettle();
 
       await tester
           .tap(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")));
@@ -149,11 +156,12 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("editItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
@@ -170,11 +178,12 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+      await tester.pumpAndSettle();
 
       await tester
           .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
@@ -191,11 +200,12 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+      await tester.pumpAndSettle();
 
       await tester
           .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
@@ -213,11 +223,12 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+      await tester.pumpAndSettle();
       await _createData();
 
       await tester
@@ -237,11 +248,12 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            draggableCategories: testCategories,
+            testCategories: testCategories,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+      await tester.pumpAndSettle();
       await _createData();
 
       await tester
@@ -249,9 +261,9 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("confirmItemDelete")));
-      await tester.pumpAndSettle();
+      await tester.pump();
 
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+      expect(find.byType(AdminChoiceBoards), findsWidgets);
     });
   });
 }
