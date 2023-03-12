@@ -1,8 +1,9 @@
 // List of image previews that belong to a category
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/draggable_list.dart';
 
 class CategoryImageRow extends StatelessWidget {
-  final List<Widget> imagePreviews;
+  final List imagePreviews;
 
   const CategoryImageRow({
     super.key,
@@ -33,7 +34,7 @@ class CategoryImageRow extends StatelessWidget {
                         width: 3,
                       ),
                       image: DecorationImage(
-                        image: (image as Image).image,
+                        image: image.image,
                         fit: BoxFit.cover,
                       ),
                     ),

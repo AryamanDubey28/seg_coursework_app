@@ -236,7 +236,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
+      int newItemIndex, int newCategoryIndex) async {
     if (newCategoryIndex == oldCategoryIndex) {
       final trigger = await firebaseFunctions.saveCategoryItemOrder(
           categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,

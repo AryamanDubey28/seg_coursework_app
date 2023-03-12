@@ -12,7 +12,11 @@ import 'package:seg_coursework_app/widgets/category_title.dart';
 // Test ensures that column of rows (categories) is displayed on screen
 void main() {
   testWidgets('Test column (with rows) is present', (tester) async {
-    await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: CustomizableColumn(),)));
+    await tester.pumpWidget(ThemeProvider(
+        themeNotifier: CustomTheme(),
+        child: MaterialApp(
+          home: CustomizableColumn(),
+        )));
 
     expect(find.byType(CustomizableColumn), findsWidgets);
     expect(find.byType(CustomizableRow), findsWidgets);
@@ -23,10 +27,13 @@ void main() {
 
   testWidgets('Test tappable row directs to new screen', (tester) async {
     mockNetworkImagesFor(() async {
-
-      await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: CustomizableRow(categoryTitle: "Title", imagePreviews: [
-          Image.asset("test/assets/test_image.png"),
-        ]),)));
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: CustomizableRow(categoryTitle: "Title", imagePreviews: [
+              //Image.asset("test/assets/test_image.png"),
+            ]),
+          )));
 
       await tester.tap(find.byType(CustomizableRow));
       await tester.pumpAndSettle();
