@@ -68,6 +68,7 @@ class _MyTextFieldState extends State<MyTextField> {
             border: InputBorder.none,
             hintText: widget.hint,
             suffixIcon: IconButton(
+              key: Key("visibilityButton"),
               color: Colors.grey[500],
               icon: Icon(
                   passwordVisible ? Icons.visibility : Icons.visibility_off),
@@ -98,6 +99,7 @@ class _MyTextFieldState extends State<MyTextField> {
             border: InputBorder.none,
             hintText: widget.hint,
             suffixIcon: IconButton(
+              key: Key("visibilityButton"),
               color: Colors.grey[500],
               icon: Icon(
                   passwordVisible ? Icons.visibility : Icons.visibility_off),

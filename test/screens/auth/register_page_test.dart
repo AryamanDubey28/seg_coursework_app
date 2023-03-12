@@ -21,11 +21,12 @@ void main() {
       (WidgetTester tester) async {
     await tester
         .pumpWidget(MaterialApp(home: RegisterPage(showLoginPage: () {})));
-
-    await tester.tap(find.byKey(const ValueKey("visibilityButton")).first);
-
+    print("---------------------------------------> 1");
+    await tester.tap(find.byKey(const Key("visibilityButton")).first);
+    print("---------------------------------------> 2");
     await tester.pumpAndSettle();
-
+    print("---------------------------------------> 3");
     expect(find.byIcon(Icons.visibility), findsOneWidget);
+    print("---------------------------------------> 4");
   });
 }
