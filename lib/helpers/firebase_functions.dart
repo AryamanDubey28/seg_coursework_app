@@ -3,8 +3,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
   late final FirebaseAuth auth;
@@ -32,7 +30,7 @@ class FirebaseFunctions {
   Future createCategoryItem({required String name, required String imageUrl, required String categoryId, required String itemId}) async {
     CollectionReference categoryItems = firestore.collection('categoryItems/$categoryId/items');
 
-    return categoryItems.doc(itemId).set({
+    categoryItems.doc(itemId).set({
       'illustration': imageUrl,
       'is_available': true,
       'name': name,
@@ -85,8 +83,8 @@ class FirebaseFunctions {
 
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
-  Future deleteImageFromCloud({required String imageUrl}) {
-    return storage.refFromURL(imageUrl).delete().onError((error, stackTrace) {
+  Future deleteImageFromCloud({required String imageUrl}) async {
+    return storage.refFromURL(imageUrl).delete().catchError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
   }
@@ -132,6 +130,13 @@ class FirebaseFunctions {
         await categoryItemReference.update({'illustration': newImageUrl});
       }
     }
+  }
+
+  /// Behaves as an assertion to check that an item exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> itemExists({required String itemId}) async {
+    DocumentSnapshot item = await firestore.collection('items').doc(itemId).get();
+    return item.exists;
   }
 
   // #### Deleting items functions ####
@@ -211,6 +216,13 @@ class FirebaseFunctions {
     });
   }
 
+  /// Behaves as an assertion to check that a category exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> categoryExists({required String categoryId}) async {
+    DocumentSnapshot category = await firestore.collection('categories').doc(categoryId).get();
+    return category.exists;
+  }
+
   // #### Deleting categories functions ####
 
   /// Return the rank field of a category given the categoryId and
@@ -224,7 +236,7 @@ class FirebaseFunctions {
 
   /// Decrement ranks of higher ranking categories
   Future updateAllCategoryRanks({required int removedRank}) async {
-    final QuerySnapshot querySnapshot = await firestore.collection('categories').where('rank', isGreaterThan: removedRank).get();
+    final QuerySnapshot querySnapshot = await firestore.collection('categories').where('userId', isEqualTo: auth.currentUser!.uid).where('rank', isGreaterThan: removedRank).get();
 
     for (final DocumentSnapshot documentSnapshot in querySnapshot.docs) {
       final DocumentReference documentReference = firestore.collection('categories').doc(documentSnapshot.id);
@@ -265,6 +277,70 @@ class FirebaseFunctions {
       await firestore.collection("items").doc(itemId).update({"is_available": !currentValue!}).then(
         (_) => availabilityMultiPathUpdate(itemKey: itemId, currentValue: currentValue),
       );
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return true;
+  }
+
+  /// When category reordering occurs, updates the new rank of each category in firebase.
+  /// The function creates an ordered list (depending on the ranks) of categories before the reordering,
+  /// applies reordering changes to the list and then upload to firebase the new position
+  /// of the categories in the list as their updated ranks.
+  ///
+  /// [oldRank] The initial index (position) of the dragged category.
+  /// [newRank] The new index (position) of the dragged category.
+  Future saveCategoryOrder({required int oldRank, required int newRank}) async {
+    try {
+      // Retrieve all categories of user as an ordered list
+      QuerySnapshot categories = await firestore.collection('categories').where("userId", isEqualTo: auth.currentUser!.uid).get();
+
+      var lst = [];
+      for (var cat in categories.docs) {
+        lst.add(cat);
+      }
+
+      lst.sort((a, b) => (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
+
+      final cat = lst.removeAt(oldRank);
+      lst.insert(newRank, cat);
+
+      // loop through updated list and update database
+      for (var i = 0; i < lst.length; i++) {
+        await firestore.collection("categories").doc(lst[i].id).update({"rank": i});
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.
+  /// The function creates an ordered list of categoryItems before the reordering,
+  /// applies reordering changes to the list and then upload to firebase the new position
+  /// of the categoryItems in the list as their updated ranks.
+  ///
+  /// [categoryId] The category concerned by the reordering.
+  /// [oldItemIndex] The initial index (position) of the dragged categoryItem.
+  /// [newItemIndex] The new index (position) of the dragged categoryItem.
+  Future saveCategoryItemOrder({required String categoryId, required int oldItemIndex, required int newItemIndex}) async {
+    try {
+      QuerySnapshot categoryItems = await firestore.collection('categoryItems/$categoryId/items').get();
+
+      var lst = [];
+      for (var item in categoryItems.docs) {
+        lst.add(item);
+      }
+
+      lst.sort((a, b) => (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
+
+      final item = lst.removeAt(oldItemIndex);
+      lst.insert(newItemIndex, item);
+
+      for (var i = 0; i < lst.length; i++) {
+        await firestore.collection("categoryItems/$categoryId/items").doc(lst[i].id).update({"rank": i});
+      }
     } catch (e) {
       return false;
     }

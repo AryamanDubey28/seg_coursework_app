@@ -13,6 +13,7 @@ import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
 /* 
@@ -39,11 +40,13 @@ class AdminChoiceBoards extends StatefulWidget {
 /// The page for admins to edit choice boards
 class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   late List<DragAndDropList> categories;
+  late FirebaseFunctions firebaseFunctions;
 
   @override
   void initState() {
     super.initState();
     categories = widget.draggableCategories.map(buildCategory).toList();
+    firebaseFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
   }
 
   @override
@@ -121,10 +124,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 key: Key("categoryTitle-${category.id}"),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              DeleteCategoryButton(
-                categoryId: category.id,
-                categoryName: category.title,
-              ),
+              DeleteCategoryButton(categoryId: category.id, categoryName: category.title, categoryImage: category.imageUrl),
               EditCategoryButton(categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
               const Spacer(),
               AddItemButton(
@@ -187,18 +187,46 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) {
-    setState(() {
-      final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
-      categories[newCategoryIndex].children.insert(newItemIndex, selectedItem);
-    });
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
+    if (newCategoryIndex == oldCategoryIndex) {
+      final trigger = await firebaseFunctions.saveCategoryItemOrder(categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id, oldItemIndex: oldItemIndex, newItemIndex: newItemIndex);
+      if (trigger) {
+        setState(() {
+          final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          categories[oldCategoryIndex].children.insert(newItemIndex, selectedItem);
+
+          final selectedItemDrag = widget.draggableCategories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          widget.draggableCategories[oldCategoryIndex].children.insert(newItemIndex, selectedItemDrag);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 3),
+          content: Text(
+            'Reordering could not be done. Please ensure you are connected to internet.',
+          ),
+        ));
+      }
+    }
   }
 
   /// The logic behind reordering a category
-  void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) {
-    setState(() {
-      final selectedCategory = categories.removeAt(oldCategoryIndex);
-      categories.insert(newCategoryIndex, selectedCategory);
-    });
+  void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
+    final trigger = await firebaseFunctions.saveCategoryOrder(oldRank: oldCategoryIndex, newRank: newCategoryIndex);
+    if (trigger) {
+      setState(() {
+        final selectedCategory = categories.removeAt(oldCategoryIndex);
+        categories.insert(newCategoryIndex, selectedCategory);
+
+        final dragList = widget.draggableCategories.removeAt(oldCategoryIndex);
+        widget.draggableCategories.insert(newCategoryIndex, dragList);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(
+          'Reordering could not be done. Please ensure you are connected to internet.',
+        ),
+      ));
+    }
   }
 }
