@@ -125,43 +125,7 @@ class _MyTextFieldState extends State<MyTextField> {
             border: Border.all(color: Colors.white),
             borderRadius: BorderRadius.circular(15)),
         child: Padding(
-            padding: const EdgeInsets.only(left: 20.0), child: getTextField()
-            // widget.isPassword == false
-            //     ?
-            //     TextField(
-            //         cursorColor: Colors.black,
-            //         controller: widget.controller,
-            //         decoration: InputDecoration(
-            //           border: InputBorder.none,
-            //           hintText: widget.hint,
-            //         ),
-            //       )
-            //     :
-            // TextField(
-            //         cursorColor: Colors.black,
-            //         obscureText: !passwordVisible,
-            //         enableSuggestions: false,
-            //         autocorrect: false,
-            //         controller: widget.controller,
-            //         decoration: InputDecoration(
-            //           border: InputBorder.none,
-            //           hintText: widget.hint,
-            //           suffixIcon: IconButton(
-            //             color: Colors.grey[500],
-            //             icon: Icon(passwordVisible
-            //                 ? Icons.visibility
-            //                 : Icons.visibility_off),
-            //             onPressed: () {
-            //               setState(
-            //                 () {
-            //                   passwordVisible = !passwordVisible;
-            //                 },
-            //               );
-            //             },
-            //           ),
-            //         ),
-            //       ),
-            ),
+            padding: const EdgeInsets.only(left: 20.0), child: getTextField()),
       ),
     );
   }
