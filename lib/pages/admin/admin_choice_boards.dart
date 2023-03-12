@@ -20,7 +20,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 * of https://youtu.be/HmiaGyf55ZM
 */
 
-// figure out how to use cache
+// Refactor draggable_list
 // fix any test errors
 
 class AdminChoiceBoards extends StatefulWidget {
@@ -48,7 +48,7 @@ class AdminChoiceBoards extends StatefulWidget {
 class _AdminChoiceBoards extends State<AdminChoiceBoards>
     with LoadingMixin<AdminChoiceBoards> {
   late List<DragAndDropList> categories = [];
-  late List<DraggableList>
+  late Categories
       _futureUserCategories; // holds the user categories (if not mocking)
 
   @override
@@ -62,7 +62,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
       categories = widget.draggableCategories!.map(buildCategory).toList();
     } else {
       _futureUserCategories = await firebaseFunctions.getUserCategories();
-      categories = _futureUserCategories.map(buildCategory).toList();
+      categories = _futureUserCategories.getList().map(buildCategory).toList();
     }
   }
 

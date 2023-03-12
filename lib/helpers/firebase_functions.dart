@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
-
 import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
@@ -285,11 +285,11 @@ class FirebaseFunctions {
 
   // #### Retrieving data functions ####
 
-  /// Retrieve all of the current user's categories with their
-  /// categoryItems in the correct rank, converted into a list
-  /// of DraggableList.
-  Future<List<DraggableList>> getUserCategories() async {
-    List<DraggableList> userCategories = []; // holds all of the user's data
+  /// Return all of the current user's categories with their
+  /// categoryItems in the correct rank, converted into "Categories".
+  Future<Categories> downloadUserCategories() async {
+    Categories userCategories =
+        Categories(categories: []); // holds all of the user's data
 
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
@@ -327,5 +327,44 @@ class FirebaseFunctions {
     }
 
     return userCategories;
+  }
+
+  /// Store the given Categories in the cache under the name
+  /// "<userId>-categories"
+  Future storeCategoriesInCache({required Categories userCategories}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String categoriesJson = userCategories.toJsonString(userCategories);
+      await prefs.setString(
+          '${auth.currentUser!.uid}-categories', categoriesJson);
+    } on Exception catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Retrieve the user's choice boards data depending on their connection:
+  /// - if connected to the internet:
+  ///   - download the data from Firebase
+  ///   - store it in the cache and return it
+  /// - if not connected to the internet:
+  ///   - return the data that's in the cache
+  ///   - Throw an exception if the cache is empty
+  Future<Categories> getUserCategories() async {
+    try {
+      // The device has internet connection.
+      Categories userCategories = await downloadUserCategories();
+      await storeCategoriesInCache(userCategories: userCategories);
+      return userCategories;
+    } catch (e) {
+      // The device has no internet connection.
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? categoriesJson =
+          prefs.getString('${auth.currentUser!.uid}-categories');
+      if (categoriesJson != null) {
+        return Categories(categories: []).fromJsonString(categoriesJson);
+      } else {
+        throw Exception("No data in the cache!");
+      }
+    }
   }
 }
