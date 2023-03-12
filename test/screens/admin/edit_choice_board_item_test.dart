@@ -11,15 +11,16 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
+import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
-  late DraggableListItem toastItem;
-  late DraggableList breakfastCategory;
+  late CategoryItem toastItem;
+  late Category breakfastCategory;
   late FirebaseAuth mockAuth;
   late FirebaseFirestore mockFirestore;
   late FirebaseStorage mockStorage;

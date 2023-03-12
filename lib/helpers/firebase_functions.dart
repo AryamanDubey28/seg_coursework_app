@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seg_coursework_app/models/categories.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
-import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/models/category.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A class which holds methods to manipulate the Firebase database
@@ -299,7 +301,7 @@ class FirebaseFunctions {
 
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       // holds the current category's categoryItems
-      List<DraggableListItem> categoryItems = [];
+      List<CategoryItem> categoryItems = [];
 
       final QuerySnapshot categoryItemsSnapshot = await firestore
           .collection('categoryItems/${category.id}/items')
@@ -307,7 +309,7 @@ class FirebaseFunctions {
           .get();
 
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
-        categoryItems.add(DraggableListItem(
+        categoryItems.add(CategoryItem(
           name: categoryItem.get("name"),
           availability: categoryItem.get("is_available"),
           id: categoryItem.id,
@@ -316,7 +318,7 @@ class FirebaseFunctions {
         ));
       }
 
-      userCategories.add(DraggableList(
+      userCategories.add(Category(
         title: category.get("title"),
         rank: category.get("rank"),
         items: categoryItems,

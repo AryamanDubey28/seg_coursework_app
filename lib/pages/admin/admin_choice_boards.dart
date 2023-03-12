@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
-import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/models/categories.dart';
+import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
@@ -24,7 +25,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 // fix any test errors
 
 class AdminChoiceBoards extends StatefulWidget {
-  final List<DraggableList>? draggableCategories;
+  final List<Category>? draggableCategories;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -188,8 +189,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
     );
   }
 
-  /// Converts a category from DraggableList to DragAndDropList to be shown
-  DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
+  /// Converts a category to DragAndDropList to be shown
+  DragAndDropList buildCategory(Category category) => DragAndDropList(
       header: Container(
           key: Key("categoryHeader-${category.id}"),
           padding: const EdgeInsets.all(8),
