@@ -51,7 +51,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
         return AlertDialog(
           key: Key("deleteItemAlert-${widget.itemId}"),
           title: Text('Confirmation'),
-          content: Text('Are you sure you want to delete ${widget.itemName}?'),
+          content: Text('Are you sure you want to delete ${widget.itemName}?\n\n(Delete Everywhere removes ${widget.itemName} from other categories too)'),
           actions: <Widget>[
             TextButton(
               key: Key("cancelItemDelete"),
@@ -62,9 +62,15 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             TextButton(
               key: Key("confirmItemDelete"),
-              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.amber)),
               onPressed: deleteItemFromFirestore,
               child: Text('Delete'),
+            ),
+            TextButton(
+              key: Key("confirmItemDeleteEverywhere"),
+              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              onPressed: deleteItemFromFirestore,
+              child: Text('Delete Everywhere'),
             ),
           ],
         );
