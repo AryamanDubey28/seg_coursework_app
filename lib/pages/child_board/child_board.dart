@@ -12,7 +12,12 @@ class ChildBoards extends StatefulWidget {
   // List<ClickableImage> images = [];
   const ChildBoards({Key? key}) : super(key: key);
   // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES, THIS SHOULD BE THE FUNCTION \/ DELETE THE CODE ABOVE
-  // const ChildBoards({Key? key, required this.categoryTitle, required this.categoryImage, required this.images}) : super(key: key);
+  // ChildBoards(
+  //     {Key? key,
+  //     required this.categoryTitle,
+  //     required this.categoryImage,
+  //     required this.images})
+  //     : super(key: key);
 
   @override
   State<ChildBoards> createState() => _ChildBoards();
@@ -23,6 +28,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // These are added to test while development
   // They will later be supplied from the database (TO BE DELETED)
   // DELETE AFTER ADDING A QUEERY TO GET IMAGES
+
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
@@ -71,7 +77,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         is_available: true),
   ];
   // DELETE DOWN TO HERE
-  
 
   @override
   void initState() {
@@ -108,8 +113,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
         alignment: Alignment.center,
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-          color: themeNotifier.getTheme().appBarTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(8)),
+            color: themeNotifier.getTheme().appBarTheme.backgroundColor,
+            borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
             getBackButton(themeNotifier),
@@ -168,7 +173,10 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       alignment: Alignment.center,
       decoration: BoxDecoration(
           border: Border.all(width: 3),
-          color: themeNotifier.getTheme().floatingActionButtonTheme.backgroundColor,
+          color: themeNotifier
+              .getTheme()
+              .floatingActionButtonTheme
+              .backgroundColor,
           borderRadius: BorderRadius.circular(100)),
       child: IconButton(
           alignment: Alignment.centerLeft,

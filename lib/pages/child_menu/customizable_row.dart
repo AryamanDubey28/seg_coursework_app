@@ -45,8 +45,16 @@ class CustomizableRow extends StatelessWidget {
         ),
         onTap: () {
           // PLACEHOLDER.
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ChildBoards()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ChildBoards()));
+          // MaterialPageRoute(
+          //     builder: (context) => ChildBoards(
+          //           categoryTitle: categoryTitle,
+          //           categoryImage: imagePreviews[0],
+          //           images: imagePreviews,
+          //         )
+          //         )
+          //         );
         },
       ),
     );
