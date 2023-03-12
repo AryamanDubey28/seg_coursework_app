@@ -6,6 +6,8 @@ class DraggableList {
   final List<DraggableListItem> items;
 
   DraggableList({required this.title, required this.items, required this.imageUrl, required this.id});
+
+  get children => items;
 }
 
 class DraggableListItem {
