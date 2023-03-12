@@ -19,7 +19,6 @@ Future main() async {
   final auth = Auth(auth: FirebaseAuth.instance);
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
-  print("i need a change for github to make a PR");
   runApp(ThemeProvider(
     themeNotifier: themeNotifier,
     child: MyApp(
