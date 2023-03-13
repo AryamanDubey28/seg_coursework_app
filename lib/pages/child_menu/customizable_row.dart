@@ -8,7 +8,7 @@ import '../../widgets/category_image.dart';
 import '../../widgets/category_row.dart';
 import '../../widgets/category_title.dart';
 
-class CustomizableRow extends StatelessWidget {
+class CustomizableRow extends StatefulWidget {
   final String categoryTitle; // e.g. Breakfast
   final List<ClickableImage>
       imagePreviews; // e.g. images of toast, cereal, etc.
@@ -17,8 +17,12 @@ class CustomizableRow extends StatelessWidget {
       {Key? key, required this.categoryTitle, required this.imagePreviews})
       : super(key: key);
 
+  @override
+  State<CustomizableRow> createState() => _CustomizableRowState();
+}
+
+class _CustomizableRowState extends State<CustomizableRow> {
   // Everything is wrapped in Material() and InkWell() so the onTap gesture shows
-  // a simple tap animation
 
   @override
   Widget build(BuildContext context) {
@@ -37,25 +41,26 @@ class CustomizableRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CategoryImage(
-                      imageLarge: Image.network(imagePreviews[0].imageUrl)),
-                  CategoryTitle(title: categoryTitle),
+                      imageLarge:
+                          Image.network(widget.imagePreviews[0].imageUrl)),
+                  CategoryTitle(title: widget.categoryTitle),
                 ],
               ),
               // Row of images within category that wraps should list become too long
-              CategoryImageRow(imagePreviews: imagePreviews),
+              CategoryImageRow(imagePreviews: widget.imagePreviews),
             ],
           ),
         ),
         onTap: () {
-          List<ClickableImage> newList = imagePreviews
-              .where((x) => imagePreviews.indexOf(x) != 0)
+          List<ClickableImage> newList = widget.imagePreviews
+              .where((x) => widget.imagePreviews.indexOf(x) != 0)
               .toList(); //category image is not an option
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ChildBoards(
-                        categoryTitle: categoryTitle,
-                        categoryImage: imagePreviews[
+                        categoryTitle: widget.categoryTitle,
+                        categoryImage: widget.imagePreviews[
                             0], //first image forms image of category
                         images: newList,
                       )));

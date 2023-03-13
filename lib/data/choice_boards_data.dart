@@ -1,6 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
+import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
+
+import '../models/categories.dart';
 
 // These are added to test while development
 // They will later be supplied from the database (TO BE DELETED)
@@ -75,6 +83,45 @@ final List<DraggableList> devCategories = [
         //         "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")
       ]),
 ];
+
+Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
+  FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+      auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
+      storage: FirebaseStorage.instance);
+
+  Categories futureUserCategories = await firebaseFunctions.getUserCategories();
+
+  // List<ClickableImage> categories = futureUserCategories
+  //     .getList()
+  //     .map((e) => buildClickableImage(e))
+  //     .toList();
+  //print("categories list = $categories");
+  List<List<ClickableImage>> categories = [];
+  for (var category in futureUserCategories.getList()) {
+    List<ClickableImage> data = [];
+    data.add(buildClickableImageFromCategory(category));
+    for (var item in category.items) {
+      data.add(buildClickableImageFromCategoryItem(item));
+    }
+    categories.add(data);
+  }
+  return categories;
+}
+
+ClickableImage buildClickableImageFromCategory(Category item) {
+  return ClickableImage(
+      name: item.title,
+      imageUrl: item.imageUrl,
+      is_available: item.availability);
+}
+
+ClickableImage buildClickableImageFromCategoryItem(CategoryItem item) {
+  return ClickableImage(
+      name: item.name,
+      imageUrl: item.imageUrl,
+      is_available: item.availability);
+}
 
 /// Used for Testing classes
 final List<DraggableList> testCategories = [

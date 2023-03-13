@@ -1,7 +1,14 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/categories.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
+import 'package:seg_coursework_app/models/category.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
@@ -45,7 +52,7 @@ class FirebaseFunctions {
     CollectionReference categoryItems =
         firestore.collection('categoryItems/$categoryId/items');
 
-    categoryItems.doc(itemId).set({
+    return categoryItems.doc(itemId).set({
       'illustration': imageUrl,
       'is_available': true,
       'name': name,
@@ -209,7 +216,7 @@ class FirebaseFunctions {
 
   /// Should be called after deleting a categoryItem. Decrement the ranks
   /// of all documents which have a rank higher than the deleted categoryItem
-  Future updateCategoryRanks(
+  Future updateCategoryItemsRanks(
       {required String categoryId, required int removedRank}) async {
     final QuerySnapshot querySnapshot = await firestore
         .collection('categoryItems/$categoryId/items')
@@ -254,6 +261,8 @@ class FirebaseFunctions {
     }
   }
 
+  // #### updating availabilities functions ####
+
   /// First, the method updates the availability status of the item [itemId] in the 'items' collection,
   /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
   /// If not, it returns boolean false.
@@ -274,19 +283,157 @@ class FirebaseFunctions {
             itemKey: itemId, currentValue: currentValue),
       );
     } catch (e) {
-      print(e);
       return false;
     }
     return true;
   }
 
-  /// When category reordering occurs, updates the new rank of each category in firebase.
-  /// The function creates an ordered list (depending on the ranks) of categories before the reordering,
-  /// applies reordering changes to the list and then upload to firebase the new position 
-  /// of the categories in the list as their updated ranks.
-  /// 
-  /// [oldRank] The initial index (position) of the dragged category.
-  /// [newRank] The new index (position) of the dragged category.
+  // #### Retrieving data functions ####
+
+  /// Return all of the current user's categories with their
+  /// categoryItems in the correct rank, converted into "Categories".
+  Future<Categories> downloadUserCategories() async {
+    Categories userCategories =
+        Categories(categories: []); // holds all of the user's data
+
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .orderBy('rank')
+        .get();
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      // holds the current category's categoryItems
+      List<CategoryItem> categoryItems = [];
+
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .orderBy('rank')
+          .get();
+
+      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
+        categoryItems.add(CategoryItem(
+          name: categoryItem.get("name"),
+          availability: categoryItem.get("is_available"),
+          id: categoryItem.id,
+          imageUrl: categoryItem.get("illustration"),
+          rank: categoryItem.get("rank"),
+        ));
+      }
+
+      userCategories.add(Category(
+        title: category.get("title"),
+        rank: category.get("rank"),
+        items: categoryItems,
+        imageUrl: category.get("illustration"),
+        id: category.id,
+        availability: category.get("is_available"),
+      ));
+    }
+
+    return userCategories;
+  }
+
+  /// Store the given Categories in the cache under the name
+  /// "<userId>-categories"
+  Future storeCategoriesInCache({required Categories userCategories}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String categoriesJson = userCategories.toJsonString(userCategories);
+      await prefs.setString(
+          '${auth.currentUser!.uid}-categories', categoriesJson);
+    } on Exception catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Retrieve the user's choice boards data depending on their connection:
+  /// - if connected to the internet:
+  ///   - download the data from Firebase
+  ///   - store it in the cache and return it
+  /// - if not connected to the internet:
+  ///   - return the data that's in the cache
+  ///   - Throw an exception if the cache is empty
+  Future<Categories> getUserCategories() async {
+    try {
+      // The device has internet connection.
+      Categories userCategories = await downloadUserCategories();
+      await storeCategoriesInCache(userCategories: userCategories);
+      return userCategories;
+    } catch (e) {
+      // The device has no internet connection.
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? categoriesJson =
+          prefs.getString('${auth.currentUser!.uid}-categories');
+      if (categoriesJson != null) {
+        return Categories(categories: []).fromJsonString(categoriesJson);
+      } else {
+        throw Exception("No data in the cache!");
+      }
+    }
+  }
+
+  StreamController<Categories> _streamController = StreamController();
+
+  Stream<Categories> getUserCategoriesAsStream() async* {
+    Categories userCategories =
+        Categories(categories: []); // holds all of the user's data
+
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .orderBy('rank')
+        .get();
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      // holds the current category's categoryItems
+      List<CategoryItem> categoryItems = [];
+
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .orderBy('rank')
+          .get();
+
+      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
+        categoryItems.add(CategoryItem(
+            name: categoryItem.get("name"),
+            availability: categoryItem.get("is_available"),
+            id: categoryItem.id,
+            imageUrl: categoryItem.get("illustration"),
+            rank: categoryItem.get("rank"),
+            key: Key("key-${categoryItem.id}")));
+      }
+
+      userCategories.add(Category(
+        title: category.get("title"),
+        rank: category.get("rank"),
+        items: categoryItems,
+        imageUrl: category.get("illustration"),
+        id: category.id,
+        availability: category.get("is_available"),
+      ));
+    }
+
+    yield userCategories;
+  }
+
+//--------------------------- To Delete ---------------------------------
+  Future updateCategoryRanks(
+      {required String categoryId, required int removedRank}) async {
+    final QuerySnapshot querySnapshot = await firestore
+        .collection('categoryItems/$categoryId/items')
+        .where('rank', isGreaterThan: removedRank)
+        .get();
+
+    for (final DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      final DocumentReference documentReference = firestore
+          .collection('categoryItems/$categoryId/items')
+          .doc(documentSnapshot.id);
+      await documentReference
+          .update({'rank': documentSnapshot.get('rank') - 1});
+    }
+  }
+
   Future saveCategoryOrder({required int oldRank, required int newRank}) async {
     try {
       // Retrieve all categories of user as an ordered list
@@ -319,14 +466,6 @@ class FirebaseFunctions {
     return true;
   }
 
-  /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.
-  /// The function creates an ordered list of categoryItems before the reordering,
-  /// applies reordering changes to the list and then upload to firebase the new position 
-  /// of the categoryItems in the list as their updated ranks.
-  /// 
-  /// [categoryId] The category concerned by the reordering.
-  /// [oldItemIndex] The initial index (position) of the dragged categoryItem.
-  /// [newItemIndex] The new index (position) of the dragged categoryItem.
   Future saveCategoryItemOrder(
       {required String categoryId,
       required int oldItemIndex,
