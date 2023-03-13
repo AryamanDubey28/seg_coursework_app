@@ -5,6 +5,7 @@ import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:seg_coursework_app/widgets/item_unavailable.dart';
 
+// Returns the grid of images, clickable and unavailable
 Expanded getMainImages(List<ClickableImage> images) {
   return Expanded(
     child: GridView.builder(
@@ -20,6 +21,7 @@ Expanded getMainImages(List<ClickableImage> images) {
   );
 }
 
+// Text to speech method
 Future speak(String text) async {
   final FlutterTts flutterTts = FlutterTts();
   await flutterTts.setSharedInstance(true);
@@ -53,11 +55,7 @@ FocusedMenuHolder getAvailableItem(List<ClickableImage> images, int index) {
   return FocusedMenuHolder(
     openWithTap: true,
     onPressed: () {
-      final player = AudioPlayer();
-      player.play(AssetSource('available.mp3'));
-      Future.delayed(Duration(milliseconds: 180), () { 
-        speak(images[index].name);
-      });
+      speak(images[index].name);
     },
     menuItems: const [],
     blurSize: 5.0,
@@ -96,6 +94,7 @@ FocusedMenuHolder getUnavailableItem(List<ClickableImage> images, int index) {
   );
 }
 
+// Make image as a container 
 Container simpleItemContainer(List<ClickableImage> images, int index) {
     return Container(
       margin: const EdgeInsets.all(5.0),

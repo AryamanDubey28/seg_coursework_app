@@ -43,7 +43,7 @@ class CustomizableRow extends StatelessWidget {
         onTap: () {
           // PLACEHOLDER.
           final player = AudioPlayer();
-          player.play(AssetSource('page_turning.mp3'));
+          player.play(AssetSource('category_click.mp3'));
           Navigator.push(context, MaterialPageRoute(builder: (context) => const ChildBoards()));
         },
       ),

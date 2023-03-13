@@ -183,8 +183,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             player.play(AssetSource('back_button.mp3'));
             Navigator.pop(context);
             },
-          //onPressed: () => Navigator.pop(context),
-          //backButtonFunction(),
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
