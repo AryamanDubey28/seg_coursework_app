@@ -52,6 +52,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Key('admin_boards_scaffold'),
       appBar: AppBar(
         key: Key('app_bar'),
         title: const Text('Edit Choice Boards'),
