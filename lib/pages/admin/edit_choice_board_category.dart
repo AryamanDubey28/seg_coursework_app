@@ -12,19 +12,19 @@ import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 
-class EditChoiceBoardItem extends StatefulWidget {
-  final String itemId;
-  final String itemName;
-  final String itemImageUrl;
+class EditChoiceBoardCategory extends StatefulWidget {
+  final String categoryId;
+  final String categoryName;
+  final String categoryImageUrl;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  EditChoiceBoardItem(
+  EditChoiceBoardCategory(
       {super.key,
-      required this.itemId,
-      required this.itemName,
-      required this.itemImageUrl,
+      required this.categoryId,
+      required this.categoryName,
+      required this.categoryImageUrl,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -34,14 +34,14 @@ class EditChoiceBoardItem extends StatefulWidget {
   }
 
   @override
-  State<EditChoiceBoardItem> createState() => _EditChoiceBoardItem();
+  State<EditChoiceBoardCategory> createState() => _EditChoiceBoardCategory();
 }
 
-/// A Popup card to edit an item (edits all categoryItems with the same id).
-class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
+/// A Popup card to edit a category
+class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   File? selectedImage; // hold the newly selected image by the user
-  // controller to retrieve the user input for item name
-  final itemNameController = TextEditingController();
+  // controller to retrieve the user input for category name
+  final categoryNameController = TextEditingController();
   final imagePickerFunctions = ImagePickerFunctions();
   late FirebaseFunctions firestoreFunctions;
 
@@ -61,7 +61,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
-          tag: "editItemHero-${widget.itemId}",
+          tag: "editCategoryHero-${widget.categoryId}",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
@@ -76,7 +76,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                   children: [
                     // shows the currently selected image
                     Card(
-                        key: Key("itemImageCard"),
+                        key: Key("categoryImageCard"),
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
@@ -92,7 +92,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                                 fit: BoxFit.cover,
                               )
                             : Image.network(
-                                widget.itemImageUrl,
+                                widget.categoryImageUrl,
                                 width: 160,
                                 height: 160,
                                 fit: BoxFit.cover,
@@ -131,14 +131,14 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                           }
                         }),
                     const SizedBox(height: 25),
-                    // field to enter the item name
+                    // field to enter the category name
                     TextField(
-                      key: Key("itemNameField"),
-                      controller: itemNameController,
+                      key: Key("categoryNameField"),
+                      controller: categoryNameController,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25.0),
                       decoration: InputDecoration(
-                          hintText: widget.itemName,
+                          hintText: widget.categoryName,
                           border: InputBorder.none,
                           hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
@@ -150,12 +150,12 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // submit to database button
                     TextButton.icon(
-                      key: const Key("editItemButton"),
-                      onPressed: () => editItemInFirestore(
+                      key: const Key("editCategoryButton"),
+                      onPressed: () => editCategoryInFirestore(
                           newImage: selectedImage,
-                          newName: itemNameController.text),
+                          newName: categoryNameController.text),
                       icon: Icon(Icons.edit),
-                      label: const Text("Edit item"),
+                      label: const Text("Edit category"),
                     )
                   ],
                 ),
@@ -171,7 +171,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   /// - Both the name and image changed
   /// - Only the name changed
   /// - Only the image changed
-  void editItemInFirestore(
+  void editCategoryInFirestore(
       {required File? newImage, required String? newName}) async {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
@@ -183,9 +183,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
             storage: widget.storage),
       ));
       try {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("No edits made")),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("No edits made!")));
       } catch (e) {
         print("No Scaffold to present to!\n${e.toString()}");
       }
@@ -197,37 +196,30 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
 
         // Both image and name changed
         if (newName.isNotEmpty && newImage != null) {
-          await firestoreFunctions.updateItemName(
-              itemId: widget.itemId, newName: newName);
-          await firestoreFunctions.updateCategoryItemsName(
-              itemId: widget.itemId, newName: newName);
+          await firestoreFunctions.updateCategoryName(
+              categoryId: widget.categoryId, newName: newName);
           await firestoreFunctions.deleteImageFromCloud(
-              imageUrl: widget.itemImageUrl);
+              imageUrl: widget.categoryImageUrl);
           String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
               image: newImage, name: newName);
-          await firestoreFunctions.updateItemImage(
-              itemId: widget.itemId, newImageUrl: newImageUrl!);
-          await firestoreFunctions.updateCategoryItemsImage(
-              itemId: widget.itemId, newImageUrl: newImageUrl);
+          await firestoreFunctions.updateCategoryImage(
+              categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
         // Only name changed
         else if (newName.isNotEmpty && newImage == null) {
-          await firestoreFunctions.updateItemName(
-              itemId: widget.itemId, newName: newName);
-          await firestoreFunctions.updateCategoryItemsName(
-              itemId: widget.itemId, newName: newName);
+          await firestoreFunctions.updateCategoryName(
+              categoryId: widget.categoryId, newName: newName);
         }
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
-          await firestoreFunctions.itemExists(itemId: widget.itemId);
+          await firestoreFunctions.categoryExists(
+              categoryId: widget.categoryId);
           await firestoreFunctions.deleteImageFromCloud(
-              imageUrl: widget.itemImageUrl);
+              imageUrl: widget.categoryImageUrl);
           String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
-              image: newImage, name: widget.itemName);
-          await firestoreFunctions.updateItemImage(
-              itemId: widget.itemId, newImageUrl: newImageUrl!);
-          await firestoreFunctions.updateCategoryItemsImage(
-              itemId: widget.itemId, newImageUrl: newImageUrl);
+              image: newImage, name: widget.categoryName);
+          await firestoreFunctions.updateCategoryImage(
+              categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
 
         LoadingIndicatorDialog().dismiss();
@@ -238,9 +230,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
               firestore: widget.firestore,
               storage: widget.storage),
         ));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Edits saved successfully!")),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Edits saved successfully!")));
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
         print(e);

@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/widgets/admin_switch.dart';
+import 'package:seg_coursework_app/widgets/delete_category_button.dart';
+import 'package:seg_coursework_app/widgets/edit_category_button.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
@@ -12,6 +14,7 @@ import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -24,12 +27,7 @@ class AdminChoiceBoards extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  AdminChoiceBoards(
-      {super.key,
-      required this.draggableCategories,
-      FirebaseAuth? auth,
-      FirebaseFirestore? firestore,
-      FirebaseStorage? storage}) {
+  AdminChoiceBoards({super.key, required this.draggableCategories, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -48,10 +46,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   void initState() {
     super.initState();
     categories = widget.draggableCategories.map(buildCategory).toList();
-    firebaseFunctions = FirebaseFunctions(
-        auth: widget.auth,
-        firestore: widget.firestore,
-        storage: widget.storage);
+    firebaseFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
   }
 
   @override
@@ -63,13 +58,11 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
-      floatingActionButton: buildAddButton(),
+      floatingActionButton: AddCategoryButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
-        listInnerDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20)),
+        listInnerDecoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(20)),
         children: categories,
         itemDivider: const Divider(
           thickness: 2,
@@ -113,45 +106,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
-  /// Builds the edit button for a category
-  IconButton buildEditButton({Key? key}) {
-    const editIcon = Icon(
-      Icons.edit,
-      color: Color.fromARGB(255, 0, 76, 153),
-    );
-
-    return IconButton(
-      key: key,
-      onPressed: editCategory,
-      icon: editIcon,
-      alignment: Alignment.centerRight,
-    );
-  }
-
-  /// Builds the add button for categories
-  TextButton buildAddButton() {
-    return TextButton.icon(
-      key: const Key("addCategoryButton"),
-      onPressed: addCategory,
-      icon: Icon(Icons.add),
-      label: const Text("Add a category"),
-    );
-  }
-
-  /// Builds the delete button
-  IconButton buildDeleteButton({Key? key}) {
-    const deleteIcon = Icon(
-      Icons.delete,
-      color: Colors.red,
-    );
-
-    return IconButton(
-      key: key,
-      onPressed: deleteCategory,
-      icon: deleteIcon,
-    );
-  }
-
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
@@ -160,8 +114,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           child: Row(
             children: [
               ImageSquare(
-                image: ImageDetails(
-                    name: category.title, imageUrl: category.imageUrl),
+                image: ImageDetails(name: category.title, imageUrl: category.imageUrl),
                 key: Key("categoryImage-${category.id}"),
                 height: 120,
                 width: 120,
@@ -170,12 +123,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               Text(
                 category.title,
                 key: Key("categoryTitle-${category.id}"),
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              buildDeleteButton(
-                  key: Key("deleteCategoryButton-${category.id}")),
-              buildEditButton(key: Key("editCategoryButton-${category.id}")),
+              DeleteCategoryButton(categoryId: category.id, categoryName: category.title, categoryImage: category.imageUrl),
+              EditCategoryButton(categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
               const Spacer(),
               AddItemButton(
                 categoryId: category.id,
@@ -239,23 +190,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   /// The logic behind reordering an item
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
     if (newCategoryIndex == oldCategoryIndex) {
-      final trigger = await firebaseFunctions.saveCategoryItemOrder(
-          categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,
-          oldItemIndex: oldItemIndex,
-          newItemIndex: newItemIndex);
+      final trigger = await firebaseFunctions.saveCategoryItemOrder(categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id, oldItemIndex: oldItemIndex, newItemIndex: newItemIndex);
       if (trigger) {
         setState(() {
-          final selectedItem =
-              categories[oldCategoryIndex].children.removeAt(oldItemIndex);
-          categories[oldCategoryIndex]
-              .children
-              .insert(newItemIndex, selectedItem);
+          final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          categories[oldCategoryIndex].children.insert(newItemIndex, selectedItem);
 
-          final selectedItemDrag = widget
-              .draggableCategories[oldCategoryIndex].children
-              .removeAt(oldItemIndex);
-          widget.draggableCategories[oldCategoryIndex].children
-              .insert(newItemIndex, selectedItemDrag);
+          final selectedItemDrag = widget.draggableCategories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          widget.draggableCategories[oldCategoryIndex].children.insert(newItemIndex, selectedItemDrag);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -270,8 +212,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
   /// The logic behind reordering a category
   void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
-    final trigger = await firebaseFunctions.saveCategoryOrder(
-        oldRank: oldCategoryIndex, newRank: newCategoryIndex);
+    final trigger = await firebaseFunctions.saveCategoryOrder(oldRank: oldCategoryIndex, newRank: newCategoryIndex);
     if (trigger) {
       setState(() {
         final selectedCategory = categories.removeAt(oldCategoryIndex);
@@ -289,13 +230,4 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       ));
     }
   }
-
-  /// redirects to the category edit page (to be implemented)
-  void editCategory() {}
-
-  /// deletes the category (to be implemented)
-  void deleteCategory() {}
-
-  /// redirects to the category add page (to be implemented)
-  void addCategory() {}
 }
