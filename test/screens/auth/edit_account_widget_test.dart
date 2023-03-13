@@ -409,4 +409,165 @@ void main() {
           find.text("Your password was successfully changed."), findsOneWidget);
     });
   });
+
+  testWidgets("Edit PIN works successfully when PIN is correct",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+            isTestMode: true,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      // Wait for the element to be found
+      await tester.runAsync(() async {
+        while (tester.widget(find.byKey(ValueKey('pin_text_field'))) == null) {
+          await Future.delayed(Duration(milliseconds: 50));
+        }
+      });
+
+      // Scroll until the element is visible
+      await tester.scrollUntilVisible(
+        find.byKey(ValueKey('pin_text_field')),
+        200, // scroll by 200 pixels each time
+      );
+
+      // Find the element now that it is visible
+      final pinTextField = find.byKey(ValueKey('pin_text_field'));
+      final confirmPin = find.byKey(Key('make_pin_submit'));
+
+      await tester.enterText(pinTextField, "0000");
+      await tester.pumpAndSettle();
+      await tester.tap(confirmPin, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Your PIN was successfully changed to 0000"),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets("Edit PIN gives correct error if PIN is too short",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+            isTestMode: true,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      // Wait for the element to be found
+      await tester.runAsync(() async {
+        while (tester.widget(find.byKey(ValueKey('pin_text_field'))) == null) {
+          await Future.delayed(Duration(milliseconds: 50));
+        }
+      });
+
+      // Scroll until the element is visible
+      await tester.scrollUntilVisible(
+        find.byKey(ValueKey('pin_text_field')),
+        200, // scroll by 200 pixels each time
+      );
+
+      // Find the element now that it is visible
+      final pinTextField = find.byKey(ValueKey('pin_text_field'));
+      final confirmPin = find.byKey(Key('make_pin_submit'));
+
+      await tester.enterText(pinTextField, "0");
+      await tester.pumpAndSettle();
+      await tester.tap(confirmPin, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Please ensure your PIN is 4 digits"), findsOneWidget);
+    });
+  });
+
+  testWidgets("Edit PIN gives correct error if PIN is too long",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+            isTestMode: true,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      // Wait for the element to be found
+      await tester.runAsync(() async {
+        while (tester.widget(find.byKey(ValueKey('pin_text_field'))) == null) {
+          await Future.delayed(Duration(milliseconds: 50));
+        }
+      });
+
+      // Scroll until the element is visible
+      await tester.scrollUntilVisible(
+        find.byKey(ValueKey('pin_text_field')),
+        200, // scroll by 200 pixels each time
+      );
+
+      // Find the element now that it is visible
+      final pinTextField = find.byKey(ValueKey('pin_text_field'));
+      final confirmPin = find.byKey(Key('make_pin_submit'));
+
+      await tester.enterText(pinTextField, "00000");
+      await tester.pumpAndSettle();
+      await tester.tap(confirmPin, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Please ensure your PIN is 4 digits"), findsOneWidget);
+    });
+  });
+
+  testWidgets("Edit PIN gives correct error if PIN is not only made of digits",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+            isTestMode: true,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      // Wait for the element to be found
+      await tester.runAsync(() async {
+        while (tester.widget(find.byKey(ValueKey('pin_text_field'))) == null) {
+          await Future.delayed(Duration(milliseconds: 50));
+        }
+      });
+
+      // Scroll until the element is visible
+      await tester.scrollUntilVisible(
+        find.byKey(ValueKey('pin_text_field')),
+        200, // scroll by 200 pixels each time
+      );
+
+      // Find the element now that it is visible
+      final pinTextField = find.byKey(ValueKey('pin_text_field'));
+      final confirmPin = find.byKey(Key('make_pin_submit'));
+
+      await tester.enterText(pinTextField, "0a0c");
+      await tester.pumpAndSettle();
+      await tester.tap(confirmPin, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Please ensure your PIN is 4 digits"), findsOneWidget);
+    });
+  });
 }

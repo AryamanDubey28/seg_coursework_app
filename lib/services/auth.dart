@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
@@ -28,6 +31,53 @@ class Auth {
       return user_email;
     } else {
       return "";
+    }
+  }
+
+  Future<String> getCurrentUserPIN() async {
+    try {
+      final query = FirebaseFirestore.instance
+          .collection('userPins')
+          .where('userId', isEqualTo: await getCurrentUserId());
+      final map = await query.get();
+      final pin = map.docs.first.data()['pin'];
+      return pin.toString();
+    } on FirebaseAuthException {
+      return "Error. Could not communicate with database";
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<bool> checkPINExists() async {
+    String pin = await getCurrentUserPIN();
+    return pin.length == 4 &&
+        num.tryParse(pin) != null; // unless PIN is 4 digits, return false
+  }
+
+  Future<String> createPIN(String pin) async {
+    if (await getCurrentUser() != null) {
+      try {
+        if (pin.length == 4 && num.tryParse(pin) != null) {
+          final docUser =
+              FirebaseFirestore.instance.collection('userPins').doc();
+          final entry = {
+            //pin is saved with user's ID
+            'pin': pin,
+            'userId': await getCurrentUserId(),
+          };
+          await docUser.set(entry); //adds PIN to database
+          return "Successfully made your pin: $pin";
+        } else {
+          return "Please ensure that your PIN is 4 digits";
+        }
+      } on FirebaseAuthException {
+        return "Error creating PIN. Could not communicate with database";
+      } catch (e) {
+        return e.toString();
+      }
+    } else {
+      return 'We could not verify your identity. Please log out and back in.';
     }
   }
 
@@ -71,10 +121,51 @@ class Auth {
     }
   }
 
+  Future<String> editCurrentUserPIN(String newPIN) async {
+    if (await getCurrentUser() != null) {
+      if (newPIN.length != 4 && num.tryParse(newPIN) != null) {
+        return "Please ensure your PIN is 4 digits";
+      }
+      try {
+        String docId = "";
+        //get the document id of the current user
+        final docUser = await FirebaseFirestore.instance
+            .collection('userPins')
+            .where('userId', isEqualTo: await getCurrentUserId())
+            .get()
+            .then((value) {
+          value.docs.forEach((element) {
+            docId = element.id;
+          });
+        });
+
+        //update the PIN to the newPIN
+        final updater =
+            FirebaseFirestore.instance.collection('userPins').doc(docId);
+        updater.update({
+          'pin': newPIN,
+        });
+        return "Your PIN was successfully changed to $newPIN";
+      } catch (e) {
+        return "There was an error: $e";
+      }
+    }
+    return "This attempt at changing your PIN was unsuccessful";
+  }
+
   Future<User?> getCurrentUser() async {
     var user = await auth.currentUser;
     if (user != null) {
       return user;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getCurrentUserId() async {
+    var user = await auth.currentUser;
+    if (user != null) {
+      return user.uid;
     } else {
       return null;
     }

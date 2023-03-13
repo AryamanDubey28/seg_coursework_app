@@ -45,7 +45,7 @@ class FirebaseFunctions {
     CollectionReference categoryItems =
         firestore.collection('categoryItems/$categoryId/items');
 
-    return categoryItems.doc(itemId).set({
+    categoryItems.doc(itemId).set({
       'illustration': imageUrl,
       'is_available': true,
       'name': name,
@@ -274,6 +274,85 @@ class FirebaseFunctions {
         (_) => availabilityMultiPathUpdate(
             itemKey: itemId, newAvailabilityValue: newAvailabilityValue),
       );
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return true;
+  }
+
+  /// When category reordering occurs, updates the new rank of each category in firebase.
+  /// The function creates an ordered list (depending on the ranks) of categories before the reordering,
+  /// applies reordering changes to the list and then upload to firebase the new position 
+  /// of the categories in the list as their updated ranks.
+  /// 
+  /// [oldRank] The initial index (position) of the dragged category.
+  /// [newRank] The new index (position) of the dragged category.
+  Future saveCategoryOrder({required int oldRank, required int newRank}) async {
+    try {
+      // Retrieve all categories of user as an ordered list
+      QuerySnapshot categories = await firestore
+          .collection('categories')
+          .where("userId", isEqualTo: auth.currentUser!.uid)
+          .get();
+
+      var lst = [];
+      for (var cat in categories.docs) {
+        lst.add(cat);
+      }
+
+      lst.sort((a, b) =>
+          (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
+
+      final cat = lst.removeAt(oldRank);
+      lst.insert(newRank, cat);
+
+      // loop through updated list and update database
+      for (var i = 0; i < lst.length; i++) {
+        await firestore
+            .collection("categories")
+            .doc(lst[i].id)
+            .update({"rank": i});
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.
+  /// The function creates an ordered list of categoryItems before the reordering,
+  /// applies reordering changes to the list and then upload to firebase the new position 
+  /// of the categoryItems in the list as their updated ranks.
+  /// 
+  /// [categoryId] The category concerned by the reordering.
+  /// [oldItemIndex] The initial index (position) of the dragged categoryItem.
+  /// [newItemIndex] The new index (position) of the dragged categoryItem.
+  Future saveCategoryItemOrder(
+      {required String categoryId,
+      required int oldItemIndex,
+      required int newItemIndex}) async {
+    try {
+      QuerySnapshot categoryItems =
+          await firestore.collection('categoryItems/$categoryId/items').get();
+
+      var lst = [];
+      for (var item in categoryItems.docs) {
+        lst.add(item);
+      }
+
+      lst.sort((a, b) =>
+          (a.data()["rank"] as num).compareTo(b.data()["rank"] as num));
+
+      final item = lst.removeAt(oldItemIndex);
+      lst.insert(newItemIndex, item);
+
+      for (var i = 0; i < lst.length; i++) {
+        await firestore
+            .collection("categoryItems/$categoryId/items")
+            .doc(lst[i].id)
+            .update({"rank": i});
+      }
     } catch (e) {
       return false;
     }

@@ -4,8 +4,8 @@ import 'package:seg_coursework_app/pages/authenticate/register_page.dart';
 
 void main() {
   testWidgets("Register page has all components", (WidgetTester tester) async {
-    
-    await tester.pumpWidget(MaterialApp(home: RegisterPage(showLoginPage: () {})));
+    await tester
+        .pumpWidget(MaterialApp(home: RegisterPage(showLoginPage: () {})));
 
     expect(find.byKey(const ValueKey("account_circle_icon")), findsOneWidget);
     expect(find.text("Register Here!"), findsOneWidget);
@@ -17,6 +17,12 @@ void main() {
     expect(find.byKey(const ValueKey("go_back_button")), findsOneWidget);
   });
 
-
-  
+  testWidgets("Visibility icon behaves as expected",
+      (WidgetTester tester) async {
+    await tester
+        .pumpWidget(MaterialApp(home: RegisterPage(showLoginPage: () {})));
+    await tester.tap(find.byKey(const Key("visibilityButton")).first);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.visibility), findsOneWidget);
+  });
 }

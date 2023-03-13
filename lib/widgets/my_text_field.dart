@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyTextField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
   final bool isPassword;
+  final isNumericKeyboard;
 
   const MyTextField({
     super.key,
     required this.hint,
     required this.controller,
     this.isPassword = false,
+    this.isNumericKeyboard = false,
   });
 
   @override
@@ -55,6 +58,7 @@ class _MyTextFieldState extends State<MyTextField> {
                     border: InputBorder.none,
                     hintText: widget.hint,
                     suffixIcon: IconButton(
+                      key: const Key("visibilityButton"),
                       color: Colors.grey[500],
                       icon: Icon(passwordVisible
                           ? Icons.visibility

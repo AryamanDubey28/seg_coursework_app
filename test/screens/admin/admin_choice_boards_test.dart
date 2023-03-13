@@ -15,6 +15,7 @@ import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 void main() {
   late FirebaseAuth mockAuth;
@@ -32,8 +33,7 @@ void main() {
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
-      'rank': 0,
-      'is_available': false,
+      'rank': 0
     });
 
     CollectionReference items = mockFirestore.collection('items');
@@ -90,10 +90,10 @@ void main() {
           findsOneWidget);
       expect(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")),
           findsOneWidget);
-      expect(find.byKey(ValueKey("categoryDrag")), findsWidgets);
       expect(
           find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")),
-          findsWidgets);
+          findsOneWidget);
+      expect(find.byKey(ValueKey("categoryDrag")), findsWidgets);
     });
   });
 
@@ -157,6 +157,7 @@ void main() {
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+
       await tester.tap(find.byKey(ValueKey("editItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
@@ -177,6 +178,7 @@ void main() {
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
+
       await tester
           .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
@@ -250,6 +252,50 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("confirmItemDelete")));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("Valid category item switch button works as expected",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+      await _createData();
+
+      await tester
+          .tap(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("Valid category item switch button works as expected",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+      await _createData();
+
+      await tester.tap(
+          find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")));
       await tester.pumpAndSettle();
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);

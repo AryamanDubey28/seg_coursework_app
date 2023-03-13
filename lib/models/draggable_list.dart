@@ -13,6 +13,8 @@ class DraggableList {
       required this.imageUrl,
       required this.id,
       required this.is_available});
+
+  get children => items;
 }
 
 class DraggableListItem {

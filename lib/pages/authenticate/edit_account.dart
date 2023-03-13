@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/widgets/edit_email_section.dart';
 import 'package:seg_coursework_app/widgets/edit_password_section.dart';
 import 'package:seg_coursework_app/services/auth.dart';
+import 'package:seg_coursework_app/widgets/edit_pin_section.dart';
 import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
@@ -47,7 +48,7 @@ class EditAccountPageState extends State<EditAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         key: Key('app_bar'),
         title: const Text('Edit Account'),
@@ -67,6 +68,9 @@ class EditAccountPageState extends State<EditAccountPage> {
                     EditPasswordSection(
                         authentitcationHelper: authentitcationHelper,
                         isTestMode: widget.isTestMode),
+                    EditPINSection(
+                        authentitcationHelper: authentitcationHelper,
+                        isTestMode: widget.isTestMode)
                   ],
                 )),
           ),
