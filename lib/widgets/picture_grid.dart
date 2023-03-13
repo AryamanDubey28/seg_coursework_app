@@ -30,46 +30,52 @@ class _PictureGridState extends State<PictureGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(7,0,7,7),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: SearchBar(onTextChanged: (text) {
-              setState(() {
-                _searchText = text;
-              });
-            }),
-          ),
-          Expanded(
-            flex: 9,
-            child: GridView.builder(
-              itemCount: _getFilteredItems().length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 4/3,
-                  mainAxisSpacing: 7,
-                  crossAxisSpacing: 7,
-                  ),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    widget.updateImagesList(_getFilteredItems()[index]);
-                  },
-                  child: Tooltip(
-                    message: _getFilteredItems()[index].name,
-                    child: ImageSquare(
-                      key: Key('gridImage$index'),
-                      image: _getFilteredItems()[index],
-                    ),
-                  ),
-                );
-              }
+    if(_getFilteredItems().isEmpty)
+    {
+      return Container(child: Text("No items to show. Add some in the 'Choice Board' page"),);
+    }
+    else{
+      return Container(
+        margin: EdgeInsets.fromLTRB(7,0,7,7),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: SearchBar(onTextChanged: (text) {
+                setState(() {
+                  _searchText = text;
+                });
+              }),
             ),
-          ),
-        ],
-      ),
-    );
+            Expanded(
+              flex: 9,
+              child: GridView.builder(
+                itemCount: _getFilteredItems().length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    childAspectRatio: 4/3,
+                    mainAxisSpacing: 7,
+                    crossAxisSpacing: 7,
+                    ),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      widget.updateImagesList(_getFilteredItems()[index]);
+                    },
+                    child: Tooltip(
+                      message: _getFilteredItems()[index].name,
+                      child: ImageSquare(
+                        key: Key('gridImage$index'),
+                        image: _getFilteredItems()[index],
+                      ),
+                    ),
+                  );
+                }
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

@@ -67,26 +67,22 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
           TextButton(
             child: Text('Submit'),
             onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                if(CheckConnection.isDeviceConnected)
-                {
-                  
-                  String title = _textEditingController.text;
-                  _textEditingController.clear();
-                  LoadingIndicatorDialog().show(context, text: "Saving timetable...");
-                  await widget.addTimetableToListOfLists(title, widget.imagesList);
-                  LoadingIndicatorDialog().dismiss();
-                  Navigator.pop(context);
-                }
-                else
-                {
-                  SnackBarManager.showSnackBarMessage(context, "Cannot save timetable. No connection.");
-                }
-              }
-              else
-              {
+              if(!_formKey.currentState!.validate()) {
                 SnackBarManager.showSnackBarMessage(context, "Title is not valid!");
+                return;
               }
+              if(!CheckConnection.isDeviceConnected)
+              {
+                SnackBarManager.showSnackBarMessage(context, "Cannot save timetable. No connection.");
+                return;
+              }
+                
+              String title = _textEditingController.text;
+              _textEditingController.clear();
+              LoadingIndicatorDialog().show(context, text: "Saving timetable...");
+              await widget.addTimetableToListOfLists(title, widget.imagesList);
+              LoadingIndicatorDialog().dismiss();
+              Navigator.pop(context);
             },
           ),
         ],

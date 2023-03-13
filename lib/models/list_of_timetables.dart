@@ -1,6 +1,3 @@
-
-import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
-
 import 'image_details.dart';
 import 'timetable.dart';
 
@@ -39,10 +36,10 @@ class ListOfTimetables {
     listOfLists.add(list);
   }
 
-  Future saveWorkflowToDatabase(Timetable timetable) async
-  {
-    await saveWorkflowToFirestore(timetable: timetable);
-  }
+  // Future saveWorkflowToDatabase(Timetable timetable) async
+  // {
+  //   await saveWorkflowToFirestore(timetable: timetable);
+  // }
 
   List<Timetable> getListOfLists()
   {
@@ -71,7 +68,7 @@ class ListOfTimetables {
   //     }
   //   }
   // }
-
+  bool isEmpty() => listOfLists.isEmpty;
   void removeAt(int index)
   {
     listOfLists.removeAt(index);

@@ -97,44 +97,72 @@ class FirebaseFunctions {
   Future<ListOfTimetables> getListOfTimetables() async
   {
     List<Timetable> listOfTimetablesTemp = [];
-    final QuerySnapshot workflowsSnapshot = await firestore.collection("workflows")
-    .where("userId", isEqualTo: auth.currentUser!.uid)
-    .get();
 
-    if (workflowsSnapshot.size == 0) {
-      return throw FirebaseException(plugin: "User has no timetables");
-    }
-
-    for (final DocumentSnapshot workflow in workflowsSnapshot.docs) {
-      final QuerySnapshot workflowItems = await firestore.collection('workflowItems/${workflow.id}/items').get();
-      Map<int, ImageDetails> temp = {};
-      for(final DocumentSnapshot workflowItem in workflowItems.docs)
-      {
-        temp[workflowItem.get('rank')] = ImageDetails(
-          name: workflowItem.get('name'), 
-          imageUrl: workflowItem.get("illustration"), 
-          itemId: workflowItem.id
+    try
+    {
+      final QuerySnapshot workflowsSnapshot = await firestore
+      .collection("workflows")
+      .where("userId", isEqualTo: auth.currentUser!.uid)
+      .get();
+      
+      if (workflowsSnapshot.size == 0) {
+        return throw FirebaseException(plugin: "User has no timetables");
+      }
+      
+      for (final DocumentSnapshot workflow in workflowsSnapshot.docs) {
+        final QuerySnapshot workflowItems = await firestore
+        .collection('workflowItems/${workflow.id}/items')
+        .orderBy('rank')
+        .get();
+      
+        List<ImageDetails> itemsList = [];
+        for(final DocumentSnapshot workflowItem in workflowItems.docs)
+        {
+          itemsList.add(
+            ImageDetails(
+              name: workflowItem.get('name'), 
+              imageUrl: workflowItem.get("illustration"), 
+              itemId: workflowItem.id
+            )
+          );
+        }
+      
+        listOfTimetablesTemp.add(
+          Timetable(
+            title: workflow.get("title"), 
+            listOfImages: itemsList, 
+            workflowId: workflow.id
+          )
         );
       }
-
-      List<ImageDetails> itemsList = [];
-      for (int i = 0; i < temp.length; i++) {
-        if(temp.containsKey(i))
-        {
-          itemsList.add(temp[i]!);
-        }
-      }
-
-      listOfTimetablesTemp.add(
-        Timetable(
-          title: workflow.get("title"), 
-          listOfImages: itemsList, 
-          workflowId: workflow.id
-        )
-      );
+    }
+    catch(e)
+    {
+      print(e);
     }
 
     return ListOfTimetables(listOfLists: listOfTimetablesTemp);
+  }
+
+  Future saveWorkflowToFirestore(
+        {required Timetable timetable}) async {
+
+    String workflowId = await createWorkflow(
+      title: timetable.title,
+    )
+    .onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
+    timetable.setID(id: workflowId);
+
+    for(int i = 0 ; i < timetable.length() ; i++)
+    {
+    
+      await createWorkflowItem(
+        workflowItem: timetable.get(i),
+        workflowId: workflowId,
+      )
+      .onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
+    }
+        
   }
 
   ///Create a new workflow and add it to the database.
@@ -398,21 +426,25 @@ class FirebaseFunctions {
 
   ///Delete a workflow.
   Future deleteWorkflow(
-      {required String workflowId}) async {
-    CollectionReference workflows =
-        firestore.collection('workflows');
-
-    DocumentSnapshot workflow = await workflows.doc(workflowId).get();
-    if (!workflow.exists) {
-      return throw FirebaseException(plugin: "workflow does not exist!");
+    {required Timetable timetable}) async {
+      String workflowId = timetable.workflowId;
+      try {
+        CollectionReference workflows = firestore.collection('workflows');
+        
+        DocumentSnapshot workflow = await workflows.doc(workflowId).get();
+        if (!workflow.exists) {
+          return throw FirebaseException(plugin: "workflow does not exist!");
+        }
+        
+        await deleteWorkflowItems(workflowId: workflowId);//.then((value) => null);
+        
+        return workflows.doc(workflowId).delete().onError((error, stackTrace) {
+          return throw FirebaseException(plugin: stackTrace.toString());
+        });
+      }catch (e) {
+        return throw FirebaseException(plugin: e.toString());
+      }
     }
-
-    await deleteWorkflowItems(workflowId: workflowId);//.then((value) => null);
-
-    return workflows.doc(workflowId).delete().onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
 
   ///Delete a workflow's associated items.
   Future deleteWorkflowItems(

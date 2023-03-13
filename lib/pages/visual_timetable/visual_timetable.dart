@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/add_timetable.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/save_timetable_dialog.dart';
+import '../../helpers/firebase_functions.dart';
 import '../../helpers/snackbar_manager.dart';
 import '../../models/image_details.dart';
 import '../../widgets/custom_loading_indicator.dart';
@@ -25,6 +28,12 @@ class VisualTimeTable extends StatefulWidget {
 /// The page for the admin to show the choice boards and make a timetable from that
 class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<VisualTimeTable> {//with WidgetsBindingObserver {
   // bool _isPictureGridLoaded = false;
+
+  FirebaseFunctions firestoreFunctions = FirebaseFunctions(
+        auth: FirebaseAuth.instance,
+        firestore: FirebaseFirestore.instance,
+        storage: FirebaseStorage.instance
+        );
 
   @override
   void initState() {
@@ -78,32 +87,45 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
 
   Future<void> _fetchTimetables() async
   {
-    savedTimetables = await fetchWorkflow();
+    try 
+    {
+      savedTimetables = await firestoreFunctions.getListOfTimetables();
+    } 
+    catch(e) 
+    {
+      SnackBarManager.showSnackBarMessage(context, "Error loading saved timetables. Check connection.");
+    }
   }
   Future<void> _fetchLibrary() async
   {
-    // LoadingIndicatorDialog().show(context);
-    filledImagesList = await fetchLibrary();
-    // LoadingIndicatorDialog().dismiss();
+    try
+    {
+      filledImagesList = await firestoreFunctions.getLibraryOfImages();
+    }
+    catch(e)
+    {
+      SnackBarManager.showSnackBarMessage(context, "Error loading saved items. Check connection.");
+    }
+    
   }
-   //
+   
 
 
   ///This makes a deep copy of a list to be saved in the savedTimetables 
   Timetable deepCopy(String title, List<ImageDetails> list) {
-  Timetable copy = Timetable(title: title, listOfImages: []);
-  // for (ImageDetails image in list) {
-  for (int i = 0 ; i < list.length; i++){
-    copy.add(
-      ImageDetails(
-      name: list[i].name,
-      imageUrl: list[i].imageUrl,
-      itemId: list[i].itemId,
-      )
-    );
+    Timetable copy = Timetable(title: title, listOfImages: []);
+    // for (ImageDetails image in list) {
+    for (int i = 0 ; i < list.length; i++){
+      copy.add(
+        ImageDetails(
+        name: list[i].name,
+        imageUrl: list[i].imageUrl,
+        itemId: list[i].itemId,
+        )
+      );
+    }
+    return copy;
   }
-  return copy;
-}
 
   ///This function is supplied to the PictureGrid and it adds the chosen image to the Timetable builder
   ///and hides the PictureGrid when 5 images are chosen for the Timetable
@@ -176,7 +198,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     Timetable temp = deepCopy(title, imagesList);
     if (!savedTimetables.existsIn(temp))
     {
-      await savedTimetables.saveWorkflowToDatabase(temp);
+      await firestoreFunctions.saveWorkflowToFirestore(timetable: temp);
       setState(() {
       savedTimetables.addList(temp);
       });
