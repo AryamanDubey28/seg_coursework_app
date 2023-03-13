@@ -11,8 +11,10 @@ class EditPINSection extends StatelessWidget {
   late BuildContext context;
   final _pinEditController = TextEditingController();
   late final Auth authentitcationHelper;
+  late bool isTestMode;
 
-  EditPINSection({required this.authentitcationHelper});
+  EditPINSection(
+      {required this.authentitcationHelper, required this.isTestMode});
 
   // Displays an alert dialog with the text passed as parameter.
   void show_alert_dialog(String text) {
@@ -29,7 +31,13 @@ class EditPINSection extends StatelessWidget {
     String pin = _pinEditController.text.trim();
     if (pin != "" && validatePin(pin)) {
       String pin = _pinEditController.text.trim();
+      if (!isTestMode) {
+        LoadingIndicatorDialog().show(context);
+      }
       response = await authentitcationHelper.editCurrentUserPIN(pin);
+      if (!isTestMode) {
+        LoadingIndicatorDialog().dismiss();
+      }
     } else {
       response =
           'You did not input a valid PIN so the change could not be made. Please try again. \nValid PINs are made up of 4 digits';

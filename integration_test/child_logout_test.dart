@@ -1,7 +1,5 @@
-import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/main.dart' as app;

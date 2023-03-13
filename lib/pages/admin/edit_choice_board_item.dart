@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -19,15 +20,18 @@ class EditChoiceBoardItem extends StatefulWidget {
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
+  late bool isTestMode;
 
   EditChoiceBoardItem(
       {super.key,
       required this.itemId,
       required this.itemName,
       required this.itemImageUrl,
+      bool? isTestMode,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
+    this.isTestMode = isTestMode ?? false;
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -191,7 +195,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       }
     } else {
       try {
-        if (widget.firestore is! FakeFirebaseFirestore) {
+        if (!widget.isTestMode) {
           LoadingIndicatorDialog().show(context);
         }
 
@@ -230,7 +234,9 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
               itemId: widget.itemId, newImageUrl: newImageUrl);
         }
 
-        LoadingIndicatorDialog().dismiss();
+        if (!widget.isTestMode) {
+          LoadingIndicatorDialog().dismiss();
+        }
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => AdminChoiceBoards(
               draggableCategories: devCategories,
@@ -242,15 +248,11 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           SnackBar(content: Text("Edits saved successfully!")),
         );
       } catch (e) {
-        LoadingIndicatorDialog().dismiss();
-        print(e);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                  content: Text(
-                      'An error occurred while communicating with the database'));
-            });
+        if (!widget.isTestMode) {
+          LoadingIndicatorDialog().dismiss();
+        }
+        ErrorDialogHelper(context: context).show_alert_dialog(
+            'An error occurred while communicating with the database');
       }
     }
   }

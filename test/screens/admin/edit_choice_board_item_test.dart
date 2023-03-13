@@ -33,7 +33,8 @@ void main() {
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
-      'rank': 0
+      'rank': 0,
+      'is_available': false,
     });
 
     CollectionReference items = mockFirestore.collection('items');
@@ -72,6 +73,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            isTestMode: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -97,6 +99,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            isTestMode: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -119,6 +122,7 @@ void main() {
             itemId: toastItem.id,
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
+            isTestMode: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -147,6 +151,7 @@ void main() {
             itemImageUrl: toastItem.imageUrl,
             itemName: toastItem.imageUrl,
             auth: mockAuth,
+            isTestMode: true,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
