@@ -4,23 +4,29 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
+import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../helpers/snackbar_manager.dart';
 import '../../models/timetable.dart';
+import '../../widgets/custom_loading_indicator.dart';
 import '../../widgets/timetable_list_dialog.dart';
 import '../../widgets/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
-  const AllSavedTimetables({super.key, required this.savedTimetables});
-  final ListOfTimetables savedTimetables;
+  const AllSavedTimetables({super.key, 
+  // required this.savedTimetables
+  });
+  // final ListOfTimetables savedTimetables;
 
   @override
   State<AllSavedTimetables> createState() => _AllSavedTimetablesState();
 }
 
 /// The page for the admin to see all the saved timetables and be able to delete unwanted ones.
-class _AllSavedTimetablesState extends State<AllSavedTimetables> {
+class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMixin<AllSavedTimetables>{
+
+  ListOfTimetables savedTimetables = ListOfTimetables(listOfLists: []);
 
   FirebaseFunctions firestoreFunctions = FirebaseFunctions(
         auth: FirebaseAuth.instance,
@@ -32,6 +38,34 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
   void dispose() {
     CheckConnection.startMonitoring();
     super.dispose();
+  }
+
+  @override
+  Future<void> load() async {
+    await _fetchData();
+  }
+
+  Future<void> _fetchData() async
+  { 
+    await Future.wait([
+      _fetchTimetables(),
+    ]);
+
+    setState(() {
+    //   _isPictureGridLoaded = true;
+    });
+  }
+
+  Future<void> _fetchTimetables() async
+  {
+    try 
+    {
+      savedTimetables = await firestoreFunctions.getListOfTimetables();
+    } 
+    catch(e) 
+    {
+      SnackBarManager.showSnackBarMessage(context, "Error loading saved timetables. Check connection.");
+    }
   }
 
 
@@ -59,55 +93,91 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
 
     LoadingIndicatorDialog().show(context, text: "Deleting timetable...");
     await Future.delayed(const Duration(seconds: 4), () async {
-      await firestoreFunctions.deleteWorkflow(timetable: widget.savedTimetables[index]);
+      await firestoreFunctions.deleteWorkflow(timetable: savedTimetables[index]);
     });
     
     LoadingIndicatorDialog().dismiss();
     setState(() {
-      widget.savedTimetables.removeAt(index);
+      savedTimetables.removeAt(index);
     });
     SnackBarManager.showSnackBarMessage(context, "Timetable removed successfully");
     
   }
 
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('All Saved Timetables'),
-        leading: IconButton(
+  IconButton buildBackButton(BuildContext context) {
+    return IconButton(
           key: const Key("backButton"),
           tooltip: "Back",
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: widget.savedTimetables.isEmpty() 
-      ? 
-      Center(child: Container(child: Text("No saved timetables. Save one in the 'Visual Timetable' page."),))
-      :
-      ListView.builder(
-        itemCount: widget.savedTimetables.length(),
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0,15,0,15),
-                child: TimetableRow(
-                  key: Key("timetableRow$index"),
-                  listOfImages: widget.savedTimetables[index],
-                  unsaveList: unsaveList,
-                  index: index,
-                  expandTimetable: expandTimetable
-                ),
-              ),
-              Divider()
-            ],
-          );
-        },
-      ),
-    );
+        );
   }
+
+
+  @override
+  Widget build(BuildContext context) {
+    if(loading)
+    {
+      return Scaffold(
+        appBar: AppBar(
+          key: Key ('app_bar'),
+          title: const Text ('Loading timetables'),
+          leading: buildBackButton(context),
+        ),
+        body: CustomLoadingIndicator(),
+      ); 
+    }
+    else if (hasError) {
+      return AlertDialog(
+        content: Text ('An error occurred while communicating with the database'), 
+        actions: <Widget>[
+          TextButton(
+            child: Text('Retry'),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+              MaterialPageRoute (builder: (context) =>  AllSavedTimetables()));
+            }
+          ),
+        ]
+      ); 
+    } 
+    else
+    {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('All Saved Timetables'),
+          leading: buildBackButton(context),
+        ),
+        body: savedTimetables.isEmpty() 
+        ? 
+        Center(child: Container(child: Text("No saved timetables. Save one in the 'Visual Timetable' page."),))
+        :
+        ListView.builder(
+          itemCount: savedTimetables.length(),
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0,15,0,15),
+                  child: TimetableRow(
+                    key: Key("timetableRow$index"),
+                    listOfImages: savedTimetables[index],
+                    unsaveList: unsaveList,
+                    index: index,
+                    expandTimetable: expandTimetable
+                  ),
+                ),
+                Divider()
+              ],
+            );
+          },
+        ),
+      );
+    }
+  }
+
+  
+  
+  
 }
 

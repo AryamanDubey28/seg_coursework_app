@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/snackbar_manager.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 
+import '../models/timetable.dart';
 import '../services/check_connection.dart';
 import 'loading_indicator.dart';
 
 
 class SaveTimetableDialog extends StatefulWidget {
-  SaveTimetableDialog({super.key, required this.imagesList, required this.addTimetableToListOfLists});
+  SaveTimetableDialog({super.key, required this.imagesList, required this.saveTimetable});
   
   List<ImageDetails> imagesList;
-  Function addTimetableToListOfLists;
+  Function saveTimetable;
 
   @override
   State<SaveTimetableDialog> createState() => _SaveTimetableDialogState();
@@ -22,7 +23,7 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
 
   @override
   void dispose() {
-    CheckConnection.startMonitoring();
+    CheckConnection.stopMonitoring();
     super.dispose();
   }
 
@@ -80,8 +81,9 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
               String title = _textEditingController.text;
               _textEditingController.clear();
               LoadingIndicatorDialog().show(context, text: "Saving timetable...");
-              await widget.addTimetableToListOfLists(title, widget.imagesList);
+              await widget.saveTimetable(timetable: Timetable(title: title, listOfImages: widget.imagesList));
               LoadingIndicatorDialog().dismiss();
+              SnackBarManager.showSnackBarMessage(context, "Timetable saved successfully");
               Navigator.pop(context);
             },
           ),

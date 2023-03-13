@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/models/list_of_timetables.dart';
-import 'package:seg_coursework_app/models/timetable.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/save_timetable_dialog.dart';
@@ -12,7 +10,6 @@ import '../../helpers/firebase_functions.dart';
 import '../../helpers/snackbar_manager.dart';
 import '../../models/image_details.dart';
 import '../../widgets/custom_loading_indicator.dart';
-import '../../widgets/loading_indicator.dart';
 import '../admin/admin_side_menu.dart';
 import '../../widgets/picture_grid.dart';
 import '../../widgets/timetable_list.dart';
@@ -26,8 +23,7 @@ class VisualTimeTable extends StatefulWidget {
 }
 
 /// The page for the admin to show the choice boards and make a timetable from that
-class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<VisualTimeTable> {//with WidgetsBindingObserver {
-  // bool _isPictureGridLoaded = false;
+class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<VisualTimeTable> {
 
   FirebaseFunctions firestoreFunctions = FirebaseFunctions(
         auth: FirebaseAuth.instance,
@@ -36,17 +32,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
         );
 
   @override
-  void initState() {
-    super.initState();
-    // WidgetsBinding.instance.addObserver(this);
-    // LoadingIndicatorDialog().show(context);
-    // _fetchData();
-    // LoadingIndicatorDialog().dismiss();
-  }
-
-  @override
   void dispose() {
-    // WidgetsBinding.instance.removeObserver(this);
     CheckConnection.stopMonitoring();
     super.dispose();
   }
@@ -56,23 +42,13 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     await _fetchData();
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.resumed && _isPictureGridLoaded) {
-  //     setState(() {});
-  //   }
-  // }
-
   Future<void> _fetchData() async
   { 
     await Future.wait([
       _fetchLibrary(),
-      _fetchTimetables(),
     ]);
 
-    setState(() {
-    //   _isPictureGridLoaded = true;
-    });
+    setState(() {});
   }
 
   bool isGridVisible = true;
@@ -82,20 +58,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
   //The images that will be fed into the PictureGrid (the choice board.)
   List<ImageDetails> filledImagesList = [];
 
-  //The list that holds the saved timetables
-  ListOfTimetables savedTimetables = ListOfTimetables(listOfLists: []);
-
-  Future<void> _fetchTimetables() async
-  {
-    try 
-    {
-      savedTimetables = await firestoreFunctions.getListOfTimetables();
-    } 
-    catch(e) 
-    {
-      SnackBarManager.showSnackBarMessage(context, "Error loading saved timetables. Check connection.");
-    }
-  }
   Future<void> _fetchLibrary() async
   {
     try
@@ -107,24 +69,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       SnackBarManager.showSnackBarMessage(context, "Error loading saved items. Check connection.");
     }
     
-  }
-   
-
-
-  ///This makes a deep copy of a list to be saved in the savedTimetables 
-  Timetable deepCopy(String title, List<ImageDetails> list) {
-    Timetable copy = Timetable(title: title, listOfImages: []);
-    // for (ImageDetails image in list) {
-    for (int i = 0 ; i < list.length; i++){
-      copy.add(
-        ImageDetails(
-        name: list[i].name,
-        imageUrl: list[i].imageUrl,
-        itemId: list[i].itemId,
-        )
-      );
-    }
-    return copy;
   }
 
   ///This function is supplied to the PictureGrid and it adds the chosen image to the Timetable builder
@@ -186,29 +130,13 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
         CheckConnection.isDeviceConnected?
         showDialog(
           context: context,
-          builder: (_) => SaveTimetableDialog(imagesList: imagesList, addTimetableToListOfLists: addTimetableToListOfLists,),
+          builder: (_) => SaveTimetableDialog(imagesList: imagesList, 
+          saveTimetable: firestoreFunctions.saveWorkflowToFirestore,
+          ),
         )
         : SnackBarManager.showSnackBarMessage(context, "Cannot save timetable. No connection.");
       },
     );
-  }
-
-  ///This function saves a timetable into the list of timetables.
-  void addTimetableToListOfLists(String title, List<ImageDetails> imagesList) async {
-    Timetable temp = deepCopy(title, imagesList);
-    if (!savedTimetables.existsIn(temp))
-    {
-      await firestoreFunctions.saveWorkflowToFirestore(timetable: temp);
-      setState(() {
-      savedTimetables.addList(temp);
-      });
-      SnackBarManager.showSnackBarMessage(context, "Timetable saved successfully.");
-    }
-    else
-    {
-      SnackBarManager.showSnackBarMessage(context, "Timetable is already saved.");
-    }
-    
   }
 
   @override
@@ -223,7 +151,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       return Scaffold(
         appBar: AppBar(
           key: Key ('app_bar'),
-          title: const Text ('Loading Choice Boards'),
+          title: const Text ('Loading items'),
         ),
         drawer: const AdminSideMenu(), 
         body: CustomLoadingIndicator(),
@@ -256,7 +184,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AllSavedTimetables(savedTimetables: savedTimetables),
+                    builder: (context) => AllSavedTimetables(),
                   ),
                 );
               }, 
@@ -318,6 +246,4 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       );
     }
   }
-  
-  
 }
