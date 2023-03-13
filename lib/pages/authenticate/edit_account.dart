@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/widgets/edit_email_section.dart';
 import 'package:seg_coursework_app/widgets/edit_password_section.dart';
 import 'package:seg_coursework_app/services/auth.dart';
+import 'package:seg_coursework_app/widgets/edit_pin_section.dart';
 import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
 class EditAccountPage extends StatefulWidget {
-  const EditAccountPage({
-    super.key,
-  });
+  late FirebaseAuth auth;
+  late bool isTestMode;
+
+  EditAccountPage({super.key, FirebaseAuth? auth, bool? isTestMode}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.isTestMode = isTestMode ?? false;
+  }
 
   @override
-  State<EditAccountPage> createState() => EditAccountPageState();
+  State<EditAccountPage> createState() => EditAccountPageState(auth);
 }
 
 class EditAccountPageState extends State<EditAccountPage> {
@@ -21,25 +26,14 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
+  late FirebaseAuth auth;
+
+  EditAccountPageState(this.auth);
 
   @override
   void initState() {
     super.initState();
-    authentitcationHelper = Auth(auth: FirebaseAuth.instance);
-  }
-
-  // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              text,
-              style: TextStyle(fontSize: 24),
-            ),
-          );
-        });
+    authentitcationHelper = Auth(auth: auth);
   }
 
   @override
@@ -54,7 +48,7 @@ class EditAccountPageState extends State<EditAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         key: Key('app_bar'),
         title: const Text('Edit Account'),
@@ -69,9 +63,14 @@ class EditAccountPageState extends State<EditAccountPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     EditEmailSection(
-                        authentitcationHelper: authentitcationHelper),
+                        authentitcationHelper: authentitcationHelper,
+                        isTestMode: widget.isTestMode),
                     EditPasswordSection(
-                        authentitcationHelper: authentitcationHelper),
+                        authentitcationHelper: authentitcationHelper,
+                        isTestMode: widget.isTestMode),
+                    EditPINSection(
+                        authentitcationHelper: authentitcationHelper,
+                        isTestMode: widget.isTestMode)
                   ],
                 )),
           ),

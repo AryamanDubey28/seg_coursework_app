@@ -1,44 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 import '../services/auth.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their email.
 class EditEmailSection extends StatelessWidget {
-  late BuildContext context;
+  late final BuildContext context;
   final _emailEditController = TextEditingController();
   late final Auth authentitcationHelper;
+  late bool isTestMode;
 
-  EditEmailSection({required this.authentitcationHelper});
-
-  // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              text,
-              style: TextStyle(fontSize: 24),
-            ),
-          );
-        });
-  }
+  EditEmailSection(
+      {super.key,
+      required this.authentitcationHelper,
+      required this.isTestMode});
 
   // Verify the validity of fields and execute the change of a user's email.
   Future commit_email_edit() async {
     String response;
     if (_emailEditController.text.trim() != "" &&
         authentitcationHelper.validEmail(_emailEditController.text.trim())) {
-      LoadingIndicatorDialog().show(context);
+      if (!isTestMode) {
+        LoadingIndicatorDialog().show(context);
+      }
       response = await authentitcationHelper
           .editCurrentUserEmail(_emailEditController.text.trim());
-      LoadingIndicatorDialog().dismiss();
+      if (!isTestMode) {
+        LoadingIndicatorDialog().dismiss();
+      }
     } else {
       response =
           'You did not input a valid email address so the change could not be made. Please try again.';
     }
-    show_alert_dialog(response);
+    ErrorDialogHelper(context: context).show_alert_dialog(response);
   }
 
   @override

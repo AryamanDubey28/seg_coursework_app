@@ -1,4 +1,5 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
@@ -9,13 +10,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/services/auth.dart';
+import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
 import '../../themes/themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
   final bool mock;
+
   const AdminSideMenu({Key? key, this.mock = false}) : super(key: key);
 
   @override
@@ -38,7 +43,13 @@ class AdminSideMenu extends StatelessWidget {
         ),
       );
 
+  // Displays an alert dialog with the text passed as parameter.
+  void show_alert_dialog(BuildContext context, String text) {
+    ShowAlertDialog.show_dialog(context, text);
+  }
+
   // The items of the side-menu
+
   Widget buildMenuItems(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
 
@@ -78,16 +89,34 @@ class AdminSideMenu extends StatelessWidget {
             )),
           ),
           ListTile(
-            key: const Key("childMode"),
-            leading: Icon(
-              Icons.child_care,
-            ),
-            title: const Text('Activate Child Mode'),
-            onTap: () =>
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => CustomizableColumn(),
-            )),
-          ),
+              key: const Key("childMode"),
+              leading: Icon(
+                Icons.child_care,
+              ),
+              title: const Text('Activate Child Mode'),
+              onTap: () async {
+                if (!mock) {
+                  final auth = Auth(auth: FirebaseAuth.instance);
+                  bool check = await auth.checkPINExists();
+                  if (check) {
+                    final pref = await SharedPreferences.getInstance();
+                    pref.setBool("isInChildMode",
+                        true); //isInChildMode boolean set to true as we are entering
+                    final String pin = await auth.getCurrentUserPIN();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => CustomizableColumn(),
+                    ));
+                  } else {
+                    show_alert_dialog(context,
+                        "Please first create a PIN in the 'Edit Account Details' section");
+                  }
+                } else {
+                  print("mocking");
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => CustomizableColumn(),
+                  ));
+                }
+              }),
           ListTile(
             key: const Key("appColours"),
             leading: Icon(
@@ -112,14 +141,16 @@ class AdminSideMenu extends StatelessWidget {
               Icons.account_box_outlined,
             ),
             title: const Text('Edit Account Details'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditAccountPage(),
-                ),
-              );
-            },
+            onTap: () => Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
+              if (!mock) {
+                return EditAccountPage();
+              } else {
+                return EditAccountPage(
+                  auth: MockFirebaseAuthentication(),
+                );
+              }
+            })),
           ),
           ListTile(
             key: const Key("logout"),
@@ -127,12 +158,18 @@ class AdminSideMenu extends StatelessWidget {
               Icons.logout_outlined,
             ),
             title: const Text('Log out'),
-            onTap: () {
+            onTap: () async {
               FirebaseAuth.instance.signOut();
+              final pref = await SharedPreferences.getInstance();
+              final auth = Auth(auth: FirebaseAuth.instance);
+              final String pin = await auth.getCurrentUserPIN();
+              final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Wrapper(),
+                    builder: (context) => Wrapper(
+                      isInChildMode: isInChildMode,
+                    ),
                   ));
             },
           ),
