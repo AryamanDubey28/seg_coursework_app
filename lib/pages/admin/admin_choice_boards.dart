@@ -6,12 +6,15 @@ import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/widgets/admin_switch_buttons.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
+import 'package:seg_coursework_app/widgets/delete_category_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
+import 'package:seg_coursework_app/widgets/edit_category_button.dart';
 import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -63,7 +66,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
         title: const Text('Edit Choice Boards'),
       ),
       drawer: const AdminSideMenu(),
-      floatingActionButton: buildAddButton(),
+      floatingActionButton: AddCategoryButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
@@ -113,45 +116,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
     }
   }
 
-  /// Builds the edit button for a category
-  IconButton buildEditButton({Key? key}) {
-    const editIcon = Icon(
-      Icons.edit,
-      color: Color.fromARGB(255, 0, 76, 153),
-    );
-
-    return IconButton(
-      key: key,
-      onPressed: editCategory,
-      icon: editIcon,
-      alignment: Alignment.centerRight,
-    );
-  }
-
-  /// Builds the add button for categories
-  TextButton buildAddButton() {
-    return TextButton.icon(
-      key: const Key("addCategoryButton"),
-      onPressed: addCategory,
-      icon: Icon(Icons.add),
-      label: const Text("Add a category"),
-    );
-  }
-
-  /// Builds the delete button
-  IconButton buildDeleteButton({Key? key}) {
-    const deleteIcon = Icon(
-      Icons.delete,
-      color: Colors.red,
-    );
-
-    return IconButton(
-      key: key,
-      onPressed: deleteCategory,
-      icon: deleteIcon,
-    );
-  }
-
   /// Converts a category from DraggableList to DragAndDropList to be shown
   DragAndDropList buildCategory(DraggableList category) => DragAndDropList(
       header: Container(
@@ -173,9 +137,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              buildDeleteButton(
-                  key: Key("deleteCategoryButton-${category.id}")),
-              buildEditButton(key: Key("editCategoryButton-${category.id}")),
+              DeleteCategoryButton(
+                  categoryId: category.id,
+                  categoryName: category.title,
+                  categoryImage: category.imageUrl),
+              EditCategoryButton(
+                  categoryId: category.id,
+                  categoryName: category.title,
+                  categoryImageUrl: category.imageUrl),
               AvailabilitySwitchToggle(
                 documentId: category.id,
                 documentAvailability: category.is_available,
@@ -247,7 +216,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
+      int newItemIndex, int newCategoryIndex) async {
     if (newCategoryIndex == oldCategoryIndex) {
       final trigger = await firebaseFunctions.saveCategoryItemOrder(
           categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,
@@ -299,13 +269,4 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       ));
     }
   }
-
-  /// redirects to the category edit page (to be implemented)
-  void editCategory() {}
-
-  /// deletes the category (to be implemented)
-  void deleteCategory() {}
-
-  /// redirects to the category add page (to be implemented)
-  void addCategory() {}
 }
