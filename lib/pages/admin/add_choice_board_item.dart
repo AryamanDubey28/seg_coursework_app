@@ -225,7 +225,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
               builder: (context) {
                 return AlertDialog(
                     content: Text(
-                        'An error occurred while communicating with the database'));
+                        'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.'));
               });
         }
       }

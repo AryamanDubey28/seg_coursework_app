@@ -77,8 +77,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
       );
     } else if (hasError) {
       return AlertDialog(
-        content:
-            Text('An error occurred while communicating with the database'),
+        content: Text(
+            'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.'),
         actions: <Widget>[
           TextButton(
             child: Text('Retry'),
@@ -104,9 +104,12 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(20)),
           children: categories,
+          contentsWhenEmpty: Text(
+              "Welcome! Click on \"Add a category\" to start",
+              style: TextStyle(fontSize: 30)),
           itemDivider: const Divider(
-            thickness: 2,
-            height: 2,
+            thickness: 4,
+            height: 4,
             color: Colors.black12,
           ),
           listDragHandle: buildDragHandle(isCategory: true),
@@ -188,6 +191,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
 
   /// Converts a category to DragAndDropList to be shown
   DragAndDropList buildCategory(Category category) => DragAndDropList(
+      // Category details
       header: Container(
           key: Key("categoryHeader-${category.id}"),
           padding: const EdgeInsets.all(8),
@@ -221,54 +225,74 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
               const Padding(padding: EdgeInsets.only(right: 35))
             ],
           )),
-      children: category.items
-          .map((item) => DragAndDropItem(
-                  child: ListTile(
-                key: Key("categoryItem-${item.id}"),
-                leading: ImageSquare(
-                  image: ImageDetails(name: item.name, imageUrl: item.imageUrl),
-                  key: Key("itemImage-${item.id}"),
-                  height: 90,
-                  width: 90,
-                ),
-                title: Text(
-                  item.name,
-                  key: Key("itemTitle-${item.id}"),
-                  style: TextStyle(color: Colors.black),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SwitchButton(
-                      itemId: item.id,
-                      itemAvailability: item.availability,
-                      key: Key("switchButton-${item.id}"),
-                      auth: widget.auth,
-                      firestore: widget.firestore,
-                      storage: widget.storage,
+      // Category items details
+      children: category.items.isEmpty
+          // Empty category
+          ? [
+              DragAndDropItem(
+                  child: Center(
+                child: Column(
+                  children: const [
+                    SizedBox(height: 10),
+                    Text(
+                      "Empty category! Click on \"Add an item\" to start",
+                      style: TextStyle(color: Colors.black87, fontSize: 20),
                     ),
-                    DeleteItemButton(
-                      categoryId: category.id,
-                      itemId: item.id,
-                      itemName: item.name,
-                      key: Key("deleteItemButton-${item.id}"),
-                      auth: widget.auth,
-                      firestore: widget.firestore,
-                      storage: widget.storage,
-                    ),
-                    EditItemButton(
-                      itemId: item.id,
-                      itemName: item.name,
-                      itemImageUrl: item.imageUrl,
-                      key: Key("editItemButton-${item.id}"),
-                      auth: widget.auth,
-                      firestore: widget.firestore,
-                      storage: widget.storage,
-                    ),
+                    SizedBox(height: 10),
                   ],
                 ),
-              )))
-          .toList());
+              ))
+            ]
+          // Non-empty category
+          : category.items
+              .map((item) => DragAndDropItem(
+                      child: ListTile(
+                    key: Key("categoryItem-${item.id}"),
+                    leading: ImageSquare(
+                      image: ImageDetails(
+                          name: item.name, imageUrl: item.imageUrl),
+                      key: Key("itemImage-${item.id}"),
+                      height: 90,
+                      width: 90,
+                    ),
+                    title: Text(
+                      item.name,
+                      key: Key("itemTitle-${item.id}"),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SwitchButton(
+                          itemId: item.id,
+                          itemAvailability: item.availability,
+                          key: Key("switchButton-${item.id}"),
+                          auth: widget.auth,
+                          firestore: widget.firestore,
+                          storage: widget.storage,
+                        ),
+                        DeleteItemButton(
+                          categoryId: category.id,
+                          itemId: item.id,
+                          itemName: item.name,
+                          key: Key("deleteItemButton-${item.id}"),
+                          auth: widget.auth,
+                          firestore: widget.firestore,
+                          storage: widget.storage,
+                        ),
+                        EditItemButton(
+                          itemId: item.id,
+                          itemName: item.name,
+                          itemImageUrl: item.imageUrl,
+                          key: Key("editItemButton-${item.id}"),
+                          auth: widget.auth,
+                          firestore: widget.firestore,
+                          storage: widget.storage,
+                        ),
+                      ],
+                    ),
+                  )))
+              .toList());
 
   /// The logic behind reordering an item
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
