@@ -92,9 +92,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     }
 
     LoadingIndicatorDialog().show(context, text: "Deleting timetable...");
-    await Future.delayed(const Duration(seconds: 4), () async {
       await firestoreFunctions.deleteWorkflow(timetable: savedTimetables[index]);
-    });
     
     LoadingIndicatorDialog().dismiss();
     setState(() {
