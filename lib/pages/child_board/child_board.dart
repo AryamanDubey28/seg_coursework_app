@@ -7,17 +7,17 @@ import '../../themes/themes.dart';
 
 class ChildBoards extends StatefulWidget {
   // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES
-  // String categoryTitle;
-  // ClickableImage categoryImage;
-  // List<ClickableImage> images = [];
-  const ChildBoards({Key? key}) : super(key: key);
+  String categoryTitle;
+  ClickableImage categoryImage;
+  List<ClickableImage> images = [];
+  //const ChildBoards({Key? key}) : super(key: key);
   // UNCOMMENT AFTER ADDING A QUEERY TO GET IMAGES, THIS SHOULD BE THE FUNCTION \/ DELETE THE CODE ABOVE
-  // ChildBoards(
-  //     {Key? key,
-  //     required this.categoryTitle,
-  //     required this.categoryImage,
-  //     required this.images})
-  //     : super(key: key);
+  ChildBoards(
+      {Key? key,
+      required this.categoryTitle,
+      required this.categoryImage,
+      required this.images})
+      : super(key: key);
 
   @override
   State<ChildBoards> createState() => _ChildBoards();
@@ -29,53 +29,53 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // They will later be supplied from the database (TO BE DELETED)
   // DELETE AFTER ADDING A QUEERY TO GET IMAGES
 
-  final ClickableImage categoryImage = ClickableImage(
-      name: "Toast",
-      imageUrl:
-          "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
-      is_available: true);
-  final List<ClickableImage> images = [
-    ClickableImage(
-        name: "Toast",
-        imageUrl:
-            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
-        is_available: false),
-    ClickableImage(
-        name: "Fruits",
-        imageUrl:
-            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
-        is_available: true),
-    ClickableImage(
-        name: "Football",
-        imageUrl:
-            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg",
-        is_available: false),
-    ClickableImage(
-        name: "Boxing",
-        imageUrl:
-            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325",
-        is_available: true),
-    ClickableImage(
-        name: "Swimming",
-        imageUrl:
-            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg",
-        is_available: false),
-    ClickableImage(
-        name: "Butter chicken",
-        imageUrl:
-            "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg",
-        is_available: false),
-    ClickableImage(
-        name: "Fish and chips",
-        imageUrl:
-            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg",
-        is_available: true),
-    ClickableImage(
-        name: "burgers",
-        imageUrl:
-            "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg",
-        is_available: true),
-  ];
+  // final ClickableImage categoryImage = ClickableImage(
+  //     name: "Toast",
+  //     imageUrl:
+  //         "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
+  //     is_available: true);
+  // final List<ClickableImage> images = [
+  //   ClickableImage(
+  //       name: "Toast",
+  //       imageUrl:
+  //           "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg",
+  //       is_available: false),
+  //   ClickableImage(
+  //       name: "Fruits",
+  //       imageUrl:
+  //           "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
+  //       is_available: true),
+  //   ClickableImage(
+  //       name: "Football",
+  //       imageUrl:
+  //           "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg",
+  //       is_available: false),
+  //   ClickableImage(
+  //       name: "Boxing",
+  //       imageUrl:
+  //           "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325",
+  //       is_available: true),
+  //   ClickableImage(
+  //       name: "Swimming",
+  //       imageUrl:
+  //           "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg",
+  //       is_available: false),
+  //   ClickableImage(
+  //       name: "Butter chicken",
+  //       imageUrl:
+  //           "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg",
+  //       is_available: false),
+  //   ClickableImage(
+  //       name: "Fish and chips",
+  //       imageUrl:
+  //           "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg",
+  //       is_available: true),
+  //   ClickableImage(
+  //       name: "burgers",
+  //       imageUrl:
+  //           "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg",
+  //       is_available: true),
+  // ];
   // DELETE DOWN TO HERE
 
   @override
@@ -98,7 +98,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           ),
           getTopMenu(themeNotifier),
           //this method is imported from clickable_image_grid in widgets
-          getMainImages(images),
+          getMainImages(widget.images),
         ]),
       ),
     );
@@ -138,7 +138,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   Text getCategoryTitle() {
     return Text(
       key: const Key("categoryTitle"),
-      categoryImage.name,
+      widget.categoryTitle,
       textAlign: TextAlign.right,
       textScaleFactor: 2,
     );
@@ -156,7 +156,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
             image: NetworkImage(
-              categoryImage.imageUrl,
+              widget.categoryImage.imageUrl,
             ),
             fit: BoxFit.cover,
           )),

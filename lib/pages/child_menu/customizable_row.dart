@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
 import '../../themes/themes.dart';
@@ -9,7 +10,8 @@ import '../../widgets/category_title.dart';
 
 class CustomizableRow extends StatelessWidget {
   final String categoryTitle; // e.g. Breakfast
-  final List imagePreviews; // e.g. images of toast, cereal, etc.
+  final List<ClickableImage>
+      imagePreviews; // e.g. images of toast, cereal, etc.
 
   CustomizableRow(
       {Key? key, required this.categoryTitle, required this.imagePreviews})
@@ -34,7 +36,8 @@ class CustomizableRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CategoryImage(imageLarge: imagePreviews[0]),
+                  CategoryImage(
+                      imageLarge: Image.network(imagePreviews[0].imageUrl)),
                   CategoryTitle(title: categoryTitle),
                 ],
               ),
@@ -44,17 +47,18 @@ class CustomizableRow extends StatelessWidget {
           ),
         ),
         onTap: () {
-          // PLACEHOLDER.
+          List<ClickableImage> newList = imagePreviews
+              .where((x) => imagePreviews.indexOf(x) != 0)
+              .toList(); //category image is not an option
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ChildBoards()));
-          // MaterialPageRoute(
-          //     builder: (context) => ChildBoards(
-          //           categoryTitle: categoryTitle,
-          //           categoryImage: imagePreviews[0],
-          //           images: imagePreviews,
-          //         )
-          //         )
-          //         );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChildBoards(
+                        categoryTitle: categoryTitle,
+                        categoryImage: imagePreviews[
+                            0], //first image forms image of category
+                        images: newList,
+                      )));
         },
       ),
     );

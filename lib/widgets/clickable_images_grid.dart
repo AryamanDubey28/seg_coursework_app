@@ -34,7 +34,9 @@ Padding getImage(int index, List<ClickableImage> images) {
 FocusedMenuHolder getAvailableItem(List<ClickableImage> images, int index) {
   return FocusedMenuHolder(
     openWithTap: true,
-    onPressed: () {},
+    onPressed: () {
+      print(images[index].name);
+    },
     menuItems: const [],
     blurSize: 5.0,
     menuItemExtent: 45,

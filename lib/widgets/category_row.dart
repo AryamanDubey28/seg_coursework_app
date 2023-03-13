@@ -34,7 +34,7 @@ class CategoryImageRow extends StatelessWidget {
                         width: 3,
                       ),
                       image: DecorationImage(
-                        image: image.image,
+                        image: Image.network(image.imageUrl).image,
                         fit: BoxFit.cover,
                       ),
                     ),
