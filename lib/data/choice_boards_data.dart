@@ -3,7 +3,6 @@ import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/category.dart';
 
 // These are added to test while development
-// They will later be supplied from the database
 final List<Category> devCategories = [
   Category(
       title: "Breakfast",

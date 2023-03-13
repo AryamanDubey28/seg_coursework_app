@@ -32,12 +32,13 @@ Future<void> main() async {
   });
 
   Future<DocumentSnapshot> _createCategory(
-      {required String id, int rank = 0}) async {
+      {required String id, int rank = 0, required bool is_available}) async {
     mockFirestore.collection('categories').doc(id).set({
       'name': "Drinks",
       'illustration': "drink.jpeg",
       'userId': mockUser.uid,
-      'rank': rank
+      'rank': rank,
+      'is_available': is_available
     });
     return mockFirestore.collection('categories').doc(id).get();
   }
@@ -235,7 +236,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
-    await _createCategory(id: categoryId);
+    await _createCategory(id: categoryId, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -269,8 +270,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -325,7 +326,7 @@ Future<void> main() async {
   test(
       "updating the name of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
-    await _createCategory(id: "00xx");
+    await _createCategory(id: "00xx", is_available: true);
     expect(
         await firebaseFunctions.updateCategoryItemsName(
             itemId: "doesn't exist", newName: "Nova Water"),
@@ -403,7 +404,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
-    await _createCategory(id: categoryId);
+    await _createCategory(id: categoryId, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -437,8 +438,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -493,7 +494,7 @@ Future<void> main() async {
   test(
       "updating the image of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
-    await _createCategory(id: "00xx");
+    await _createCategory(id: "00xx", is_available: true);
     expect(
         await firebaseFunctions.updateCategoryItemsImage(
             itemId: "doesn't exist", newImageUrl: "Hana-water.jpeg"),
@@ -969,7 +970,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -1003,8 +1004,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -1052,7 +1053,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -1101,7 +1102,7 @@ Future<void> main() async {
 
   test("Reordering non-existent categoryItems returns false", () async {
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
     expect(
         await firebaseFunctions.saveCategoryItemOrder(
             categoryId: categoryId1, oldItemIndex: 2, newItemIndex: 0),
@@ -1113,9 +1114,11 @@ Future<void> main() async {
     const String categoryId2 = "11yy";
     const String categoryId3 = "11zz";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1141,11 +1144,15 @@ Future<void> main() async {
     const String categoryId4 = "11aa";
     const String categoryId5 = "11bb";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
-    var cat4 = await _createCategory(id: categoryId4, rank: 3);
-    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1177,11 +1184,15 @@ Future<void> main() async {
     const String categoryId4 = "11aa";
     const String categoryId5 = "11bb";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
-    var cat4 = await _createCategory(id: categoryId4, rank: 3);
-    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1213,11 +1224,15 @@ Future<void> main() async {
     const String categoryId4 = "11aa";
     const String categoryId5 = "11bb";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
-    var cat4 = await _createCategory(id: categoryId4, rank: 3);
-    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1247,7 +1262,7 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
 
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -1317,7 +1332,7 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
 
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);

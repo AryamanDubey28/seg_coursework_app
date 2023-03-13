@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/forgot_password_page.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 
 class LogIn extends StatefulWidget {
   final VoidCallback showRegisterPage;
+  final FirebaseAuth auth;
 
   const LogIn({
     Key? key,
     required this.showRegisterPage,
+    required this.auth,
   }) : super(key: key);
 
   @override
@@ -21,12 +24,13 @@ class _LogInState extends State<LogIn> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   late final Auth auth;
+  late ErrorDialogHelper errorDialogHelper;
 
   @override
   void initState() {
     super.initState();
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    auth = Auth(auth: firebaseAuth);
+    auth = Auth(auth: widget.auth);
+    errorDialogHelper = ErrorDialogHelper(context: context);
   }
 
   //sign users in using Firebase method
@@ -34,17 +38,8 @@ class _LogInState extends State<LogIn> {
     final result = await auth.signIn(
         _emailController.text.trim(), _passwordController.text.trim());
     if (result != "Success") {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              key: Key('incorrect_email_or_password_dialog'),
-              content: Text(
-                'This user either does not exist or the password is incorrect. Try again or click Forgot Password or register again',
-                style: TextStyle(fontSize: 24),
-              ),
-            );
-          });
+      errorDialogHelper.show_alert_dialog(
+          'This user either does not exist or the password is incorrect. Try again or click Forgot Password or register again');
     }
   }
 

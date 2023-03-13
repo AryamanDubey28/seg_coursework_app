@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
+
 /// The logic behind the upload/take picture library is made
 /// with the help of: https://youtu.be/MSv38jO4EJk
 /// and https://youtu.be/u52TWx41oU4
@@ -22,15 +24,8 @@ class ImagePickerFunctions {
 
       return File(image.path);
     } on PlatformException catch (e) {
-      print(e);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                  "Couldn't upload/take a picture, make sure you have given image permissions in your device's settings"),
-            );
-          });
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          "Could not upload/take a picture, make sure you have given image permissions in your device's settings");
       return null;
     }
   }

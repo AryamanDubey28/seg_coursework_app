@@ -6,13 +6,13 @@ import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
-import 'package:seg_coursework_app/widgets/admin_switch.dart';
 import 'package:seg_coursework_app/widgets/delete_category_button.dart';
+import 'package:seg_coursework_app/widgets/delete_item_button.dart';
 import 'package:seg_coursework_app/widgets/edit_category_button.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/add_item_button.dart';
 import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
-import 'package:seg_coursework_app/widgets/delete_item_button.dart';
+import 'package:seg_coursework_app/widgets/admin_switch_buttons.dart';
 import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'admin_side_menu.dart';
@@ -168,7 +168,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                 height: 120,
                 width: 120,
               ),
-              const Padding(padding: EdgeInsets.all(8)),
+              const Padding(padding: EdgeInsets.only(right: 6)),
               Text(
                 category.title,
                 key: Key("categoryTitle-${category.id}"),
@@ -183,6 +183,15 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                   categoryId: category.id,
                   categoryName: category.title,
                   categoryImageUrl: category.imageUrl),
+              AvailabilitySwitchToggle(
+                documentId: category.id,
+                documentAvailability: category.availability,
+                isCategory: true,
+                key: Key("categorySwitchButton-${category.id}"),
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage,
+              ),
               const Spacer(),
               AddItemButton(
                 categoryId: category.id,
@@ -232,10 +241,11 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SwitchButton(
-                          itemId: item.id,
-                          itemAvailability: item.availability,
-                          key: Key("switchButton-${item.id}"),
+                        AvailabilitySwitchToggle(
+                          documentId: item.id,
+                          documentAvailability: item.availability,
+                          isCategory: false,
+                          key: Key("itemSwitchButton-${item.id}"),
                           auth: widget.auth,
                           firestore: widget.firestore,
                           storage: widget.storage,

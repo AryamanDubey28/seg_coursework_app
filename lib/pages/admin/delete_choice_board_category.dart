@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
-
 import '../../helpers/firebase_functions.dart';
 
 /// Deletes a choiceboard category given ID
@@ -70,13 +70,8 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
         } on Exception catch (e) {
           LoadingIndicatorDialog().dismiss();
           print(e);
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                    content: Text(
-                        'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.'));
-              });
+          ErrorDialogHelper(context: context).show_alert_dialog(
+              "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }
       },
     );
