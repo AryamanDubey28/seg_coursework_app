@@ -266,4 +266,26 @@ void main() {
       expect(find.byType(AdminChoiceBoards), findsWidgets);
     });
   });
+
+  testWidgets("Valid category item switch button works as expected",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            testCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+      await tester.pumpAndSettle();
+      await _createData();
+
+      await tester.tap(find.byKey(ValueKey("switchButton-${toastItem.id}")));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
 }

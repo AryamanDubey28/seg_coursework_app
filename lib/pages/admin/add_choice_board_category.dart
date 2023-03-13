@@ -11,17 +11,15 @@ import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
-class AddChoiceBoardItem extends StatefulWidget {
-  final String categoryId;
+class AddChoiceBoardCategory extends StatefulWidget {
   final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
   late final File? preSelectedImage;
 
-  AddChoiceBoardItem(
+  AddChoiceBoardCategory(
       {super.key,
-      required this.categoryId,
       this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
@@ -33,13 +31,13 @@ class AddChoiceBoardItem extends StatefulWidget {
   }
 
   @override
-  State<AddChoiceBoardItem> createState() => _AddChoiceBoardItem();
+  State<AddChoiceBoardCategory> createState() => _AddChoiceBoardCategory();
 }
 
-/// A Popup card to add a new item to a category.
-class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
-  // controller to retrieve the user input for item name
-  final itemNameController = TextEditingController();
+/// A Popup card to add a new category.
+class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
+  // controller to retrieve the user input for category name
+  final categoryNameController = TextEditingController();
   final imagePickerFunctions = ImagePickerFunctions();
   File? selectedImage; // hold the currently selected image by the user
   late FirebaseFunctions firestoreFunctions;
@@ -63,7 +61,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
-          tag: "addItemHero-${widget.categoryId}",
+          tag: "add-category-hero",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
@@ -78,7 +76,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   children: [
                     // shows the currently selected image
                     Card(
-                        key: Key("itemImageCard"),
+                        key: Key("categoryImageCard"),
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
@@ -132,14 +130,14 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                           }
                         }),
                     const SizedBox(height: 25),
-                    // field to enter the item name
+                    // field to enter the category name
                     TextField(
-                      key: Key("itemNameField"),
-                      controller: itemNameController,
+                      key: Key("categoryNameField"),
+                      controller: categoryNameController,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25.0),
                       decoration: InputDecoration(
-                          hintText: "Enter a name for the item",
+                          hintText: "Enter a name for the category",
                           border: InputBorder.none,
                           hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
@@ -151,12 +149,12 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // submit to database button
                     TextButton.icon(
-                      key: const Key("createItemButton"),
-                      onPressed: () => saveItemToFirestore(
+                      key: const Key("createCategoryButton"),
+                      onPressed: () => saveCategoryToFirestore(
                           image: selectedImage,
-                          itemName: itemNameController.text),
+                          categoryName: categoryNameController.text),
                       icon: Icon(Icons.add),
-                      label: const Text("Create new item"),
+                      label: const Text("Create new category"),
                     )
                   ],
                 ),
@@ -168,14 +166,13 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     );
   }
 
-  /// Given an item's image and name,
+  /// Given a category's image and name,
   /// - upload the image to the cloud storage
-  /// - create a new item with the uploaded image's Url in Firestore
-  /// - create a new categoryItem entry in the selected category
+  /// - create a new category with the uploaded image's Url in Firestore
   /// - Take the user back to the Choice Boards page
-  void saveItemToFirestore(
-      {required File? image, required String? itemName}) async {
-    if (itemName!.isEmpty || image == null) {
+  void saveCategoryToFirestore(
+      {required File? image, required String? categoryName}) async {
+    if (categoryName!.isEmpty || image == null) {
       showDialog(
           context: context,
           builder: (context) {
@@ -187,16 +184,11 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     } else {
       LoadingIndicatorDialog().show(context);
       String? imageUrl = await firestoreFunctions.uploadImageToCloud(
-          image: image, name: itemName);
+          image: image, name: categoryName);
       if (imageUrl != null) {
         try {
-          String itemId = await firestoreFunctions.createItem(
-              name: itemName, imageUrl: imageUrl);
-          await firestoreFunctions.createCategoryItem(
-              name: itemName,
-              imageUrl: imageUrl,
-              categoryId: widget.categoryId,
-              itemId: itemId);
+          await firestoreFunctions.createCategory(
+              name: categoryName, imageUrl: imageUrl);
 
           LoadingIndicatorDialog().dismiss();
           // go back to choice boards page
@@ -215,7 +207,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("$itemName added successfully.")),
+            SnackBar(content: Text("$categoryName added successfully.")),
           );
         } catch (e) {
           print(e);

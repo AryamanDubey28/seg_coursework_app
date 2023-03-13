@@ -16,6 +16,7 @@ void main() {
         (tester) async {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
+      await Future.delayed(Duration(seconds: 2));
       FirebaseAuth.instance.signInWithEmailAndPassword(
           email: "anton@test.com", password: "Hello123!");
       runApp(ThemeProvider(
@@ -333,6 +334,74 @@ void main() {
           find.text(
               "The new password confirmation does not match the new password you demanded. Please try again."),
           findsOneWidget);
+    });
+  });
+
+  group("PIN edit section", () {
+    testWidgets(
+        'Edit PIN calls proper method from Auth class when given a valid PIN',
+        (tester) async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
+      FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: "ary@test.com", password: "Password123");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 2));
+
+      final Finder pinField = find.byKey(Key('pin_text_field'));
+      final Finder pinChangeButton =
+          find.byKey(Key('make_pin_submit'), skipOffstage: false);
+
+      await tester.enterText(pinField, '0000');
+      await tester.pumpAndSettle();
+
+      await Future.delayed(Duration(seconds: 2));
+
+      await tester.tap(pinChangeButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 2));
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Your PIN was successfully changed to 0000"),
+          findsOneWidget);
+    });
+
+    testWidgets('Edit PIN gives error message when PIN is not valid',
+        (tester) async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp();
+      FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: "ary@test.com", password: "Password123");
+      runApp(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: EditAccountPage(),
+          )));
+      ;
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 2));
+
+      final Finder pinField = find.byKey(Key('pin_text_field'));
+      final Finder pinChangeButton =
+          find.byKey(Key('make_pin_submit'), skipOffstage: false);
+
+      await tester.enterText(pinField, '0');
+      await tester.pumpAndSettle();
+
+      await Future.delayed(Duration(seconds: 2));
+
+      await tester.tap(pinChangeButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 2));
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Please ensure your PIN is 4 digits"), findsOneWidget);
     });
   });
 }

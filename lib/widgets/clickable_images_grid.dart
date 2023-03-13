@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/widgets/item_unavailable.dart';
@@ -9,7 +10,7 @@ Expanded getMainImages(List<ClickableImage> images) {
     child: GridView.builder(
         key: const Key("mainGridOfPictures"),
         padding: const EdgeInsets.all(8.0),
-        physics: const NeverScrollableScrollPhysics(),
+        //physics: const NeverScrollableScrollPhysics(),
         itemCount: images.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 5, childAspectRatio: 4 / 3),
@@ -17,6 +18,24 @@ Expanded getMainImages(List<ClickableImage> images) {
           return getImage(index, images);
         }),
   );
+}
+
+//Method for the Text-To-Speech package Flutter TTS to speak a given text
+Future speak(String text) async {
+  final FlutterTts flutterTts = FlutterTts();
+  await flutterTts.setSharedInstance(true);
+
+  await flutterTts.setLanguage("en-US");
+
+  await flutterTts.setSpeechRate(0.5);
+
+  await flutterTts.setVolume(1.0);
+
+  await flutterTts.setPitch(0.7);
+
+  await flutterTts.isLanguageAvailable("en-US");
+
+  await flutterTts.speak(text);
 }
 
 // Returns one image that on click blurs the background and is available
@@ -34,7 +53,9 @@ Padding getImage(int index, List<ClickableImage> images) {
 FocusedMenuHolder getAvailableItem(List<ClickableImage> images, int index) {
   return FocusedMenuHolder(
     openWithTap: true,
-    onPressed: () {},
+    onPressed: () {
+      speak(images[index].name);
+    },
     menuItems: const [],
     blurSize: 5.0,
     menuItemExtent: 45,

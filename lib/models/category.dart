@@ -17,6 +17,8 @@ class Category {
       required this.id,
       required this.availability});
 
+  get children => items;
+
   /// Convert a Category back from json data
   factory Category.fromJson(Map<String, dynamic> json) {
     final items = (json['items'] as List<dynamic>)

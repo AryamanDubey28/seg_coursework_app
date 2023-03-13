@@ -26,7 +26,7 @@ final List<Category> devCategories = [
             id: "Eaawa8YiQRaTYnXmcJNp",
             name: "Fruits",
             imageUrl:
-                "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80")
+                "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
       ]),
   Category(
       id: "vvKsFHrHvkP1SL8MlWKk",

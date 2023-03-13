@@ -53,8 +53,7 @@ final deepOrangeTheme = CustomThemeDetails(
 );
 
 ///This class manages the default themes, the custom themes, and the cached theme.
-class CustomTheme with ChangeNotifier
-{
+class CustomTheme with ChangeNotifier {
   CustomThemeDetails? _cachedTheme;
   ThemeData _themeData = defaultTheme.getCustomThemeData();
   CustomThemeDetails _themeDetails = defaultTheme;
@@ -70,8 +69,7 @@ class CustomTheme with ChangeNotifier
     _cachedTheme = await readCachedThemeDetails();
     if (_cachedTheme != null) {
       setTheme(_cachedTheme!);
-      if(!themesListContainsTheme(_cachedTheme!))
-      {
+      if (!themesListContainsTheme(_cachedTheme!)) {
         addTheme(_cachedTheme!);
       }
     }
@@ -88,20 +86,25 @@ class CustomTheme with ChangeNotifier
   ThemeData getTheme() => _themeData;
   CustomThemeDetails getThemeDetails() => _themeDetails;
 
-  List<CustomThemeDetails> _themesList = [defaultTheme, redTheme, deepPurpleTheme, lightGreenTheme, greenTheme, deepOrangeTheme];
+  List<CustomThemeDetails> _themesList = [
+    defaultTheme,
+    redTheme,
+    deepPurpleTheme,
+    lightGreenTheme,
+    greenTheme,
+    deepOrangeTheme
+  ];
   List<CustomThemeDetails> getThemes() => _themesList;
 
   ///Adds the theme to the themesList if its not already in there.
-  bool addTheme(CustomThemeDetails themeToAdd)
-  {
-    if(themesListContainsTheme(themeToAdd)) return false;
+  bool addTheme(CustomThemeDetails themeToAdd) {
+    if (themesListContainsTheme(themeToAdd)) return false;
     _themesList.insert(1, themeToAdd);
     return true;
   }
 
   ///Changes the app theme to the passed theme.
-  setTheme(CustomThemeDetails customThemeDetails) async
-  {
+  setTheme(CustomThemeDetails customThemeDetails) async {
     _themeData = customThemeDetails.getCustomThemeData();
     _themeDetails = customThemeDetails;
     notifyListeners();
@@ -110,23 +113,25 @@ class CustomTheme with ChangeNotifier
 
   ///This reads the saved theme from cache
   static Future<CustomThemeDetails?> readCachedThemeDetails() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? themeString = prefs.getString('cached_theme');
-  if (themeString != null) {
-    Map<String, dynamic> jsonMap = json.decode(themeString);
-    CustomThemeDetails temp = CustomThemeDetails(
-      name: jsonMap['name'],
-      menuColor: Color(jsonMap['menuColor']),
-      backgroundColor: Color(jsonMap['backgroundColor']),
-      buttonsColor: Color(jsonMap['buttonsColor']),
-      iconsAndTextsColor: Color(jsonMap['iconsAndTextsColor']),);
-    return temp;
-  }
-  return null;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? themeString = prefs.getString('cached_theme');
+    if (themeString != null) {
+      Map<String, dynamic> jsonMap = json.decode(themeString);
+      CustomThemeDetails temp = CustomThemeDetails(
+        name: jsonMap['name'],
+        menuColor: Color(jsonMap['menuColor']),
+        backgroundColor: Color(jsonMap['backgroundColor']),
+        buttonsColor: Color(jsonMap['buttonsColor']),
+        iconsAndTextsColor: Color(jsonMap['iconsAndTextsColor']),
+      );
+      return temp;
+    }
+    return null;
   }
 
   ///This saves the passed theme to cache
-  Future<void> saveThemeDetailsToCache(CustomThemeDetails customThemeDetails) async {
+  Future<void> saveThemeDetailsToCache(
+      CustomThemeDetails customThemeDetails) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonMap = {
       'name': customThemeDetails.name,
