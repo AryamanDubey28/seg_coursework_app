@@ -21,11 +21,8 @@ void main() {
       (WidgetTester tester) async {
     await tester
         .pumpWidget(MaterialApp(home: RegisterPage(showLoginPage: () {})));
-
-    await tester.tap(find.byKey(const ValueKey("visibilityButton")).first);
-
+    await tester.tap(find.byKey(const Key("visibilityButton")).first);
     await tester.pumpAndSettle();
-
     expect(find.byIcon(Icons.visibility), findsOneWidget);
   });
 }

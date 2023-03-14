@@ -15,25 +15,25 @@ class ThemeGrid extends StatelessWidget {
     final themeNotifier = Provider.of<CustomTheme>(context);
 
     return GridView.builder(
-      itemCount: themeList.length,
-      padding: const EdgeInsets.all(20),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
+        itemCount: themeList.length,
+        padding: const EdgeInsets.all(20),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
         ),
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            themeNotifier.setTheme(themeList[index]);
-          },
-          child: Tooltip(
-            message: themeList[index].name,
-            child: ThemeGridSquare(key: Key('themeSquare$index'), themeDetails: themeList[index]),
-          ),
-        );
-      }
-    );
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              themeNotifier.setTheme(themeList[index]);
+            },
+            child: Tooltip(
+              message: themeList[index].name,
+              child: ThemeGridSquare(
+                  key: Key('themeSquare$index'),
+                  themeDetails: themeList[index]),
+            ),
+          );
+        });
   }
 }
-

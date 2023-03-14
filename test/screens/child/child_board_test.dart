@@ -30,10 +30,15 @@ void main() {
 
       // Verify that the category image is displayed
       expect(find.byKey(const ValueKey("categoryImage")), findsWidgets);
+      // Verify that the category image is displayed
+      expect(find.byKey(const ValueKey("categoryImage")), findsWidgets);
 
       // Verify that the images grid is displayed
       expect(find.byKey(const ValueKey("mainGridOfPictures")), findsOneWidget);
+      // Verify that the images grid is displayed
+      expect(find.byKey(const ValueKey("mainGridOfPictures")), findsOneWidget);
 
+      // Verify that the back button is displayed
       // Verify that the back button is displayed
       expect(find.byKey(const ValueKey("backButton")), findsWidgets);
 
@@ -49,9 +54,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: CustomizableColumn(
-              mock: true,
-            ),
+            home: CustomizableColumn(),
           )));
 
       // Verify that the CustomizableColumn page is displayed

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -66,9 +67,9 @@ void main() {
               mock: true,
             ),
           )));
-      await tester.tap(find.byKey(const ValueKey("childMode")));
+      final Finder childModeButton = find.byKey(Key("childMode"));
+      await tester.tap(childModeButton);
       await tester.pumpAndSettle();
-
       expect(find.byType(CustomizableColumn), findsOneWidget);
     });
   });
