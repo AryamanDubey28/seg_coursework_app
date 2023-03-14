@@ -62,7 +62,9 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AdminSideMenu(),
+            home: AdminSideMenu(
+              mock: true,
+            ),
           )));
       await tester.tap(find.byKey(const ValueKey("childMode")));
       await tester.pumpAndSettle();

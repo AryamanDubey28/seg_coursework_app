@@ -143,3 +143,39 @@ final List<DraggableList> testCategories = [
             imageUrl: "Football.jpg"),
       ])
 ];
+
+final ClickableImage test_pic1 =
+    ClickableImage(name: "pic1", imageUrl: "Toast.jpg", is_available: true);
+
+final List<Map<String, dynamic>> rowConfigs = [
+  {
+    'categoryTitle': 'Category 1',
+    'images': [
+      test_pic1,
+      test_pic1,
+    ],
+  },
+  {
+    'categoryTitle': 'Category 2',
+    'images': [
+      test_pic1,
+      test_pic1,
+      test_pic1,
+      test_pic1,
+    ],
+  },
+  {
+    'categoryTitle': 'Category 3',
+    'images': [
+      test_pic1,
+      test_pic1,
+    ],
+  },
+];
+
+final List<ClickableImage> test_list_clickable_images = [
+  test_pic1,
+  test_pic1,
+  test_pic1,
+  test_pic1
+];

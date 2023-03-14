@@ -84,7 +84,9 @@ class AdminSideMenu extends StatelessWidget {
             ),
             title: const Text('Activate Child Mode'),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => CustomizableColumn(),
+              builder: (context) => CustomizableColumn(
+                mock: mock,
+              ),
             )),
           ),
           ListTile(
