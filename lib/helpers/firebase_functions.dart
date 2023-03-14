@@ -172,19 +172,19 @@ class FirebaseFunctions {
 
   /// Delete any categoryItems that exist for a given item in any collection
   Future deleteAllCategoryItemsForItem({required String itemId}) async {
-    final QuerySnapshot categoryItemsSnapshot = await firestore.collection('categoryItems').where("userId", isEqualTo: auth.currentUser!.uid).get();
+    final QuerySnapshot categoriesSnapshot = await firestore.collection('categories').where("userId", isEqualTo: auth.currentUser!.uid).get();
 
-    if (categoryItemsSnapshot.size == 0) {
-      return throw FirebaseException(plugin: "User has no categoryItems");
+    if (categoriesSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no categories");
     }
 
-    for (final DocumentSnapshot categoryItemsDoc in categoryItemsSnapshot.docs) {
-      final QuerySnapshot itemsQuerySnapshot = await firestore.collection('categoryItems').doc(categoryItemsDoc.id).collection('items').get();
-      for (final itemDoc in itemsQuerySnapshot.docs) {
-        if (itemDoc.id == itemId) {
-          // Delete the document
-          await itemDoc.reference.delete();
-        }
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      final QuerySnapshot categoryItemsSnapshot = await firestore.collection('categoryItems/${category.id}/items').where(FieldPath.documentId, isEqualTo: itemId).get();
+
+      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
+        final DocumentReference categoryItemReference = firestore.collection('categoryItems/${category.id}/items').doc(categoryItem.id);
+
+        await categoryItemReference.delete();
       }
     }
   }
