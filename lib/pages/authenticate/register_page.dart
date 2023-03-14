@@ -5,11 +5,17 @@ import '../../widgets/my_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
+  late bool isTestMode;
+  late FirebaseAuth auth;
 
-  const RegisterPage({
-    super.key,
-    required this.showLoginPage,
-  });
+  RegisterPage(
+      {super.key,
+      required this.showLoginPage,
+      FirebaseAuth? auth,
+      bool? isTestMode}) {
+    this.isTestMode = isTestMode ?? false;
+    this.auth = auth ?? FirebaseAuth.instance;
+  }
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -25,16 +31,18 @@ class _RegisterPageState extends State<RegisterPage> {
         _passwordConfirmationController.text.trim() != "" &&
         _emailController.text.trim() != "") {
       if (passwordConfirmed()) {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Center(
-                  child: CircularProgressIndicator(
-                color: Colors.deepPurple[400],
-              ));
-            });
+        if (!widget.isTestMode) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: Colors.deepPurple[400],
+                ));
+              });
+        }
         try {
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await widget.auth.createUserWithEmailAndPassword(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
           );

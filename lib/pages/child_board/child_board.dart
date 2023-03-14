@@ -1,9 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../themes/themes.dart';
 
@@ -26,6 +28,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   // They will later be supplied from the database (TO BE DELETED)
 
   // DELETE AFTER ADDING A QUEERY TO GET IMAGES
+  final FlutterTts flutterTts = FlutterTts();
   final ClickableImage categoryImage = ClickableImage(
       name: "Toast",
       imageUrl:
@@ -180,8 +183,13 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           padding: const EdgeInsets.all(8.0),
           iconSize: 50,
           hoverColor: Colors.transparent,
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            final player = AudioPlayer();
+            player.play(AssetSource('back_button.mp3'));
+            Navigator.pop(context);
+            },
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
+
 }
