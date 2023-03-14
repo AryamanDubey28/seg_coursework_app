@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,6 +35,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddChoiceBoardCategory(
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -44,19 +44,23 @@ void main() {
 
       expect(find.byKey(const ValueKey("categoryImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
-      expect(find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
       expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);
       expect(find.byKey(const ValueKey("categoryNameField")), findsOneWidget);
-      expect(find.byKey(const ValueKey("createCategoryButton")), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey("createCategoryButton")), findsOneWidget);
     });
   });
 
-  testWidgets("name and image missing shows alert", (WidgetTester tester) async {
+  testWidgets("name and image missing shows alert",
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddChoiceBoardCategory(
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -75,6 +79,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddChoiceBoardCategory(
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -97,6 +102,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddChoiceBoardCategory(
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -109,12 +115,14 @@ void main() {
     });
   });
 
-  testWidgets("successful category creation takes user to choice boards page", (WidgetTester tester) async {
+  testWidgets("successful category creation takes user to choice boards page",
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddChoiceBoardCategory(
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,

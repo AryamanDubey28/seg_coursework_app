@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
@@ -85,7 +86,6 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   }
 
   /// Handle deleting an item from firestore:
-  /// - delete the "item" document
   /// - delete the "categoryItem" document
   /// - Update the ranks of the categoryItems of that category
   void deleteItemFromFirestore() async {
@@ -97,20 +97,26 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
               categoryId: widget.categoryId, itemId: widget.itemId);
       await firestoreFunctions.deleteCategoryItem(
           categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.updateCategoryRanks(
+      await firestoreFunctions.updateCategoryItemsRanks(
           categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
-      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => AdminChoiceBoards(
+            auth: widget.auth,
+            firestore: widget.firestore,
+            storage: widget.storage),
+      ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${widget.itemName} deleted successfully.")),
       );
     } on Exception catch (e) {
       LoadingIndicatorDialog().dismiss();
+      print(e);
       ErrorDialogHelper(context: context).show_alert_dialog(
-          'An error occurred while communicating with the database');
+          "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
     }
   }
 }

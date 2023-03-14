@@ -24,7 +24,7 @@ void main() {
   late MockUser mockUser;
 
   setUpAll(() {
-    breakfastCategoryId = testCategories.first.id;
+    breakfastCategoryId = testCategories.getList().first.id;
 
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
@@ -40,6 +40,7 @@ void main() {
           child: MaterialApp(
             home: AddChoiceBoardItem(
               categoryId: breakfastCategoryId,
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -64,6 +65,7 @@ void main() {
           child: MaterialApp(
             home: AddChoiceBoardItem(
               categoryId: breakfastCategoryId,
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -83,6 +85,7 @@ void main() {
           child: MaterialApp(
             home: AddChoiceBoardItem(
               categoryId: breakfastCategoryId,
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
@@ -106,9 +109,11 @@ void main() {
           child: MaterialApp(
             home: AddChoiceBoardItem(
               categoryId: breakfastCategoryId,
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
+              preSelectedImage: File("assets/test_image.png"),
             ),
           )));
 
@@ -126,6 +131,7 @@ void main() {
           child: MaterialApp(
             home: AddChoiceBoardItem(
               categoryId: breakfastCategoryId,
+              mock: true,
               auth: mockAuth,
               firestore: mockFirestore,
               storage: mockStorage,
