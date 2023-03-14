@@ -878,4 +878,28 @@ Future<void> main() async {
     expect(item1.get('rank'), 0);
     expect(item2.get('rank'), 1);
   });
+
+  test("Deleting all categoryItems that exist for a given item is successful", () async {
+    String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "testItem");
+    String testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: imageUrl!);
+    String catId = await firebaseFunctions.createCategory(name: "newCat", imageUrl: imageUrl);
+    await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: imageUrl, categoryId: catId, itemId: testId);
+
+    await firebaseFunctions.deleteAllCategoryItemsForItem(itemId: testId);
+    expect(await firebaseFunctions.categoryItemExists(categoryId: catId, itemId: testId), false);
+  });
+
+  test("deleting an item is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    DocumentSnapshot item = await mockFirestore.collection("items").doc(newItemId).get();
+    expect(item.exists, true);
+
+    await firebaseFunctions.deleteItem(itemId: newItemId);
+
+    item = await mockFirestore.collection("items").doc(newItemId).get();
+    expect(item.exists, false);
+  });
 }
