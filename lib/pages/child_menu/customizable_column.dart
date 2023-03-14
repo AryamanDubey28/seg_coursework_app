@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -99,10 +97,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             false); //isInChildMode boolean set to false as we are leaving
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) => AdminChoiceBoards(
-                    draggableCategories: devCategories,
-                  )),
+          MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
         );
       } else {
         Navigator.of(context).pop();
@@ -120,10 +115,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-            builder: (context) => AdminChoiceBoards(
-                  draggableCategories: devCategories,
-                )),
+        MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
       );
     }
     pin_controller.clear();

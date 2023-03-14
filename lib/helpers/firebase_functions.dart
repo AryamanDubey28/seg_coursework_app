@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seg_coursework_app/models/categories.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
+import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// A class which holds methods to manipulate the Firebase database
 class FirebaseFunctions {
@@ -219,7 +224,7 @@ class FirebaseFunctions {
 
   /// Should be called after deleting a categoryItem. Decrement the ranks
   /// of all documents which have a rank higher than the deleted categoryItem
-  Future updateCategoryRanks(
+  Future updateCategoryItemsRanks(
       {required String categoryId, required int removedRank}) async {
     final QuerySnapshot querySnapshot = await firestore
         .collection('categoryItems/$categoryId/items')
@@ -332,6 +337,61 @@ class FirebaseFunctions {
     }
   }
 
+  /// Delete category document from categories collection
+  /// Delete associated categoryItems document
+  Future deleteCategory({required String categoryId}) async {
+    CollectionReference categories = firestore.collection('categories');
+
+    DocumentSnapshot category = await categories.doc(categoryId).get();
+    if (!category.exists) {
+      return throw FirebaseException(plugin: "category does not exist!");
+    }
+
+    await deleteCategoryItems(categoryId: categoryId);
+
+    // ignore: void_checks
+    return categories.doc(categoryId).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  ///Delete a category's associated items.
+  Future deleteCategoryItems({required String categoryId}) async {
+    final QuerySnapshot categoryItemFolder =
+        await firestore.collection('categoryItems/$categoryId/items').get();
+
+    for (final DocumentSnapshot categoryItem in categoryItemFolder.docs) {
+      final DocumentReference categoryItemReference = firestore
+          .collection('categoryItems/$categoryId/items')
+          .doc(categoryItem.id);
+      await categoryItemReference.delete();
+    }
+  }
+
+  // #### updating availabilities functions ####
+
+  /// First, the method updates the availability status of the category [categoryId] in the 'categories' collection,
+  /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
+  /// If not, it returns boolean false.
+  Future updateCategoryAvailability({required String categoryId}) async {
+    try {
+      final DocumentReference itemRef =
+          firestore.collection("categories").doc(categoryId);
+      final DocumentSnapshot documentSnapshot = await itemRef.get();
+      final Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+      final bool? currentValue = data["is_available"];
+      // Items collection update
+      await firestore
+          .collection("categories")
+          .doc(categoryId)
+          .update({"is_available": !currentValue!});
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
@@ -386,6 +446,8 @@ class FirebaseFunctions {
     }
     return true;
   }
+
+  // #### updating ranks functions ####
 
   /// When category reordering occurs, updates the new rank of each category in firebase.
   /// The function creates an ordered list (depending on the ranks) of categories before the reordering,
@@ -465,56 +527,88 @@ class FirebaseFunctions {
     return true;
   }
 
-  /// First, the method updates the availability status of the category [categoryId] in the 'categories' collection,
-  /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
-  /// If not, it returns boolean false.
-  Future updateCategoryAvailability({required String categoryId}) async {
+  // #### Retrieving data functions ####
+
+  /// Return all of the current user's categories with their
+  /// categoryItems in the correct rank, converted into "Categories".
+  Future<Categories> downloadUserCategories() async {
+    Categories userCategories =
+        Categories(categories: []); // holds all of the user's data
+
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .orderBy('rank')
+        .get();
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      // holds the current category's categoryItems
+      List<CategoryItem> categoryItems = [];
+
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .orderBy('rank')
+          .get();
+
+      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
+        categoryItems.add(CategoryItem(
+          name: categoryItem.get("name"),
+          availability: categoryItem.get("is_available"),
+          id: categoryItem.id,
+          imageUrl: categoryItem.get("illustration"),
+          rank: categoryItem.get("rank"),
+        ));
+      }
+
+      userCategories.add(Category(
+        title: category.get("title"),
+        rank: category.get("rank"),
+        items: categoryItems,
+        imageUrl: category.get("illustration"),
+        id: category.id,
+        availability: category.get("is_available"),
+      ));
+    }
+
+    return userCategories;
+  }
+
+  /// Store the given Categories in the cache under the name
+  /// "<userId>-categories"
+  Future storeCategoriesInCache({required Categories userCategories}) async {
     try {
-      final DocumentReference itemRef =
-          firestore.collection("categories").doc(categoryId);
-      final DocumentSnapshot documentSnapshot = await itemRef.get();
-      final Map<String, dynamic> data =
-          documentSnapshot.data() as Map<String, dynamic>;
-      final bool? currentValue = data["is_available"];
-      // Items collection update
-      await firestore
-          .collection("categories")
-          .doc(categoryId)
-          .update({"is_available": !currentValue!});
-    } catch (e) {
-      return false;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String categoriesJson = userCategories.toJsonString(userCategories);
+      await prefs.setString(
+          '${auth.currentUser!.uid}-categories', categoriesJson);
+    } on Exception catch (e) {
+      rethrow;
     }
-    return true;
   }
 
-  /// Delete category document from categories collection
-  /// Delete associated categoryItems document
-  Future deleteCategory({required String categoryId}) async {
-    CollectionReference categories = firestore.collection('categories');
-
-    DocumentSnapshot category = await categories.doc(categoryId).get();
-    if (!category.exists) {
-      return throw FirebaseException(plugin: "category does not exist!");
+  /// Retrieve the user's choice boards data depending on their connection:
+  /// - if connected to the internet:
+  ///   - download the data from Firebase
+  ///   - store it in the cache and return it
+  /// - if not connected to the internet:
+  ///   - return the data that's in the cache
+  ///   - Throw an exception if the cache is empty
+  Future<Categories> getUserCategories() async {
+    if (CheckConnection.isDeviceConnected) {
+      // The device has internet connection.
+      Categories userCategories = await downloadUserCategories();
+      await storeCategoriesInCache(userCategories: userCategories);
+      return userCategories;
     }
 
-    await deleteCategoryItems(categoryId: categoryId);
-
-    // ignore: void_checks
-    return categories.doc(categoryId).delete().onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
-  ///Delete a category's associated items.
-  Future deleteCategoryItems({required String categoryId}) async {
-    final QuerySnapshot categoryItemFolder =
-        await firestore.collection('categoryItems/$categoryId/items').get();
-
-    for (final DocumentSnapshot categoryItem in categoryItemFolder.docs) {
-      final DocumentReference categoryItemReference = firestore
-          .collection('categoryItems/$categoryId/items')
-          .doc(categoryItem.id);
-      await categoryItemReference.delete();
+    // The device has no internet connection.
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? categoriesJson =
+        prefs.getString('${auth.currentUser!.uid}-categories');
+    if (categoriesJson != null) {
+      return Categories(categories: []).fromJsonString(categoriesJson);
+    } else {
+      throw Exception("No data in the cache!");
     }
   }
 }

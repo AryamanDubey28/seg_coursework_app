@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -16,6 +16,7 @@ class EditChoiceBoardCategory extends StatefulWidget {
   final String categoryId;
   final String categoryName;
   final String categoryImageUrl;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -25,6 +26,7 @@ class EditChoiceBoardCategory extends StatefulWidget {
       required this.categoryId,
       required this.categoryName,
       required this.categoryImageUrl,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -176,11 +178,18 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => AdminChoiceBoards(
-            draggableCategories: devCategories,
-            auth: widget.auth,
-            firestore: widget.firestore,
-            storage: widget.storage),
+        builder: (context) {
+          if (widget.mock) {
+            return AdminChoiceBoards(
+                mock: true,
+                testCategories: testCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage);
+          } else {
+            return AdminChoiceBoards();
+          }
+        },
       ));
       try {
         ScaffoldMessenger.of(context)
@@ -190,7 +199,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
       }
     } else {
       try {
-        if (widget.firestore is! FakeFirebaseFirestore) {
+        if (!widget.mock) {
           LoadingIndicatorDialog().show(context);
         }
 
@@ -224,24 +233,26 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
 
         LoadingIndicatorDialog().dismiss();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => AdminChoiceBoards(
-              draggableCategories: devCategories,
-              auth: widget.auth,
-              firestore: widget.firestore,
-              storage: widget.storage),
+          builder: (context) {
+            if (widget.mock) {
+              return AdminChoiceBoards(
+                  mock: true,
+                  testCategories: testCategories,
+                  auth: widget.auth,
+                  firestore: widget.firestore,
+                  storage: widget.storage);
+            } else {
+              return AdminChoiceBoards();
+            }
+          },
         ));
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Edits saved successfully!")));
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
         print(e);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                  content: Text(
-                      'An error occurred while communicating with the database'));
-            });
+        ErrorDialogHelper(context: context).show_alert_dialog(
+            "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
       }
     }
   }

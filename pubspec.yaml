@@ -67,6 +67,8 @@ dependencies:
   flutter_tts: ^3.6.3
   image_picker: ^0.8.6+4
   firebase_storage: ^11.0.14
+  connectivity_plus: ^3.0.3
+  internet_connection_checker: ^1.0.0+1
 
 dev_dependencies:
   integration_test:
