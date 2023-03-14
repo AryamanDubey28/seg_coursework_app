@@ -27,12 +27,7 @@ class AdminChoiceBoards extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  AdminChoiceBoards(
-      {super.key,
-      required this.draggableCategories,
-      FirebaseAuth? auth,
-      FirebaseFirestore? firestore,
-      FirebaseStorage? storage}) {
+  AdminChoiceBoards({super.key, required this.draggableCategories, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -51,10 +46,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
   void initState() {
     super.initState();
     categories = widget.draggableCategories.map(buildCategory).toList();
-    firebaseFunctions = FirebaseFunctions(
-        auth: widget.auth,
-        firestore: widget.firestore,
-        storage: widget.storage);
+    firebaseFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
   }
 
   @override
@@ -70,9 +62,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: DragAndDropLists(
         listPadding: const EdgeInsets.all(30),
-        listInnerDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20)),
+        listInnerDecoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(20)),
         children: categories,
         itemDivider: const Divider(
           thickness: 2,
@@ -124,8 +114,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           child: Row(
             children: [
               ImageSquare(
-                image: ImageDetails(
-                    name: category.title, imageUrl: category.imageUrl),
+                image: ImageDetails(name: category.title, imageUrl: category.imageUrl),
                 key: Key("categoryImage-${category.id}"),
                 height: 120,
                 width: 120,
@@ -134,17 +123,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
               Text(
                 category.title,
                 key: Key("categoryTitle-${category.id}"),
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              DeleteCategoryButton(
-                  categoryId: category.id,
-                  categoryName: category.title,
-                  categoryImage: category.imageUrl),
-              EditCategoryButton(
-                  categoryId: category.id,
-                  categoryName: category.title,
-                  categoryImageUrl: category.imageUrl),
+              DeleteCategoryButton(categoryId: category.id, categoryName: category.title, categoryImage: category.imageUrl),
+              EditCategoryButton(categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
               AvailabilitySwitchToggle(
                 documentId: category.id,
                 documentAvailability: category.is_available,
@@ -196,6 +178,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
                       categoryId: category.id,
                       itemId: item.id,
                       itemName: item.name,
+                      imageUrl: item.imageUrl,
                       key: Key("deleteItemButton-${item.id}"),
                       auth: widget.auth,
                       firestore: widget.firestore,
@@ -216,26 +199,16 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
           .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
-      int newItemIndex, int newCategoryIndex) async {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
     if (newCategoryIndex == oldCategoryIndex) {
-      final trigger = await firebaseFunctions.saveCategoryItemOrder(
-          categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id,
-          oldItemIndex: oldItemIndex,
-          newItemIndex: newItemIndex);
+      final trigger = await firebaseFunctions.saveCategoryItemOrder(categoryId: widget.draggableCategories.elementAt(oldCategoryIndex).id, oldItemIndex: oldItemIndex, newItemIndex: newItemIndex);
       if (trigger) {
         setState(() {
-          final selectedItem =
-              categories[oldCategoryIndex].children.removeAt(oldItemIndex);
-          categories[oldCategoryIndex]
-              .children
-              .insert(newItemIndex, selectedItem);
+          final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          categories[oldCategoryIndex].children.insert(newItemIndex, selectedItem);
 
-          final selectedItemDrag = widget
-              .draggableCategories[oldCategoryIndex].children
-              .removeAt(oldItemIndex);
-          widget.draggableCategories[oldCategoryIndex].children
-              .insert(newItemIndex, selectedItemDrag);
+          final selectedItemDrag = widget.draggableCategories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          widget.draggableCategories[oldCategoryIndex].children.insert(newItemIndex, selectedItemDrag);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -250,8 +223,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> {
 
   /// The logic behind reordering a category
   void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
-    final trigger = await firebaseFunctions.saveCategoryOrder(
-        oldRank: oldCategoryIndex, newRank: newCategoryIndex);
+    final trigger = await firebaseFunctions.saveCategoryOrder(oldRank: oldCategoryIndex, newRank: newCategoryIndex);
     if (trigger) {
       setState(() {
         final selectedCategory = categories.removeAt(oldCategoryIndex);

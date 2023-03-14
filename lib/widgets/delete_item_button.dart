@@ -12,11 +12,12 @@ class DeleteItemButton extends StatefulWidget {
   final String categoryId;
   final String itemName;
   final String itemId;
+  final String imageUrl;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, required this.imageUrl, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -52,7 +53,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
         return AlertDialog(
           key: Key("deleteItemAlert-${widget.itemId}"),
           title: Text('Confirmation'),
-          content: Text('Are you sure you want to delete ${widget.itemName}?\n\n(Delete Everywhere removes ${widget.itemName} from other categories too)'),
+          content: Text('Are you sure you want to delete ${widget.itemName}?\n\n(Delete Everywhere removes it from other categories too)'),
           actions: <Widget>[
             TextButton(
               key: Key("cancelItemDelete"),
@@ -64,13 +65,13 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             TextButton(
               key: Key("confirmItemDelete"),
               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.amber)),
-              onPressed: deleteItemFromFirestore,
+              onPressed: deleteCategoryItemFromFirestore,
               child: Text('Delete'),
             ),
             TextButton(
               key: Key("confirmItemDeleteEverywhere"),
               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
-              onPressed: deleteItemFromFirestore,
+              onPressed: deleteItemEverywhere,
               child: Text('Delete Everywhere'),
             ),
           ],
@@ -79,11 +80,10 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
     );
   }
 
-  /// Handle deleting an item from firestore:
-  /// - delete the "item" document
+  /// Handle deleting a categoryItem from firestore:
   /// - delete the "categoryItem" document
   /// - Update the ranks of the categoryItems of that category
-  void deleteItemFromFirestore() async {
+  void deleteCategoryItemFromFirestore() async {
     try {
       LoadingIndicatorDialog().show(context);
 
@@ -98,6 +98,21 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${widget.itemName} deleted successfully.")),
       );
+    } on Exception catch (e) {
+      LoadingIndicatorDialog().dismiss();
+      ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
+    }
+  }
+
+  /// Handle deleting an item from firestore:
+  /// - delete the "item" document
+  /// - delete any "categoryItem" documents
+  /// - Update the ranks of the other categoryItems
+  void deleteItemEverywhere() async {
+    try {
+      await firestoreFunctions.deleteItem(itemId: widget.itemId);
+      await firestoreFunctions.deleteAllCategoryItemsForItem(itemId: widget.itemId);
+      await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.imageUrl);
     } on Exception catch (e) {
       LoadingIndicatorDialog().dismiss();
       ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
