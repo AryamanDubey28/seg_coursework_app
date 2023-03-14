@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
@@ -12,12 +14,13 @@ class DeleteItemButton extends StatefulWidget {
   final String categoryId;
   final String itemName;
   final String itemId;
+  final bool mock;
   final String imageUrl;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, required this.imageUrl, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -37,6 +40,22 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   }
 
   @override
+  void dispose() {
+    if (!widget.mock) {
+      CheckConnection.stopMonitoring();
+    }
+    super.dispose();
+  }
+
+  @override
+  void dispose() {
+    if (!widget.mock) {
+      CheckConnection.stopMonitoring();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _showAlertDialog(context),
@@ -46,6 +65,11 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
 
   /// Alert dialog to make the user confirm deleting the item (in one category or all other categories)
   Future<void> _showAlertDialog(BuildContext context) async {
+    if (!widget.mock && !CheckConnection.isDeviceConnected) {
+      // User has no internet connection
+      ErrorDialogHelper(context: context).show_alert_dialog("Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
+      return;
+    }
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // User must tap button to close dialog
@@ -82,7 +106,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
     );
   }
 
-  /// Handle deleting a categoryItem from firestore:
+  /// Handle deleting an item from firestore:
   /// - delete the "categoryItem" document
   /// - Update the ranks of the categoryItems of that category
   void deleteCategoryItemFromFirestore() async {
@@ -91,11 +115,13 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
 
       int deletedCategoryItemRank = await firestoreFunctions.getCategoryItemRank(categoryId: widget.categoryId, itemId: widget.itemId);
       await firestoreFunctions.deleteCategoryItem(categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.updateCategoryRanks(categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
+      await firestoreFunctions.updateCategoryItemsRanks(categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
-      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => AdminChoiceBoards(auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+      ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${widget.itemName} deleted successfully.")),
@@ -128,6 +154,8 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
     } on Exception catch (e) {
       LoadingIndicatorDialog().dismiss();
       ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
+      print(e);
+      ErrorDialogHelper(context: context).show_alert_dialog("An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
     }
   }
 }

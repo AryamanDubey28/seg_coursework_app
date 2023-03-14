@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -12,12 +13,19 @@ import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
 class AddChoiceBoardCategory extends StatefulWidget {
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
   late final File? preSelectedImage;
 
-  AddChoiceBoardCategory({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, this.preSelectedImage}) {
+  AddChoiceBoardCategory(
+      {super.key,
+      this.mock = false,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
+      this.preSelectedImage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -38,7 +46,10 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
     if (widget.preSelectedImage != null) {
       selectedImage = widget.preSelectedImage;
     }
@@ -48,13 +59,15 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "add-category-hero",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -88,7 +101,10 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                     Text(
                       "Pick an image",
                       key: Key("instructionsText"),
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87),
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
@@ -97,7 +113,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.gallery, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.gallery, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -107,7 +124,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.camera, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.camera, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -119,7 +137,10 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                       controller: categoryNameController,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25.0),
-                      decoration: InputDecoration(hintText: "Enter a name for the category", border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)),
+                      decoration: InputDecoration(
+                          hintText: "Enter a name for the category",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
@@ -130,7 +151,9 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
                     // submit to database button
                     TextButton.icon(
                       key: const Key("createCategoryButton"),
-                      onPressed: () => saveCategoryToFirestore(image: selectedImage, categoryName: categoryNameController.text),
+                      onPressed: () => saveCategoryToFirestore(
+                          image: selectedImage,
+                          categoryName: categoryNameController.text),
                       icon: Icon(Icons.add),
                       label: const Text("Create new category"),
                     )
@@ -148,7 +171,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
   /// - upload the image to the cloud storage
   /// - create a new category with the uploaded image's Url in Firestore
   /// - Take the user back to the Choice Boards page
-  void saveCategoryToFirestore({required File? image, required String? categoryName}) async {
+  void saveCategoryToFirestore(
+      {required File? image, required String? categoryName}) async {
     if (categoryName!.isEmpty || image == null) {
       showDialog(
           context: context,
@@ -160,15 +184,28 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           });
     } else {
       LoadingIndicatorDialog().show(context);
-      String? imageUrl = await firestoreFunctions.uploadImageToCloud(image: image, name: categoryName);
+      String? imageUrl = await firestoreFunctions.uploadImageToCloud(
+          image: image, name: categoryName);
       if (imageUrl != null) {
         try {
-          await firestoreFunctions.createCategory(name: categoryName, imageUrl: imageUrl);
+          await firestoreFunctions.createCategory(
+              name: categoryName, imageUrl: imageUrl);
 
           LoadingIndicatorDialog().dismiss();
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+            builder: (context) {
+              if (widget.mock) {
+                return AdminChoiceBoards(
+                    mock: true,
+                    testCategories: testCategories,
+                    auth: widget.auth,
+                    firestore: widget.firestore,
+                    storage: widget.storage);
+              } else {
+                return AdminChoiceBoards();
+              }
+            },
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(
@@ -177,11 +214,8 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
         } catch (e) {
           print(e);
           LoadingIndicatorDialog().dismiss();
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(content: Text('An error occurred while communicating with the database'));
-              });
+          ErrorDialogHelper(context: context).show_alert_dialog(
+              "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }
       }
     }

@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
+import 'package:seg_coursework_app/models/categories.dart';
 
 Future<void> main() async {
   late FirebaseFunctions firebaseFunctions;
@@ -18,6 +19,7 @@ Future<void> main() async {
   late MockUser mockUser;
 
   setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
     mockAuth = MockFirebaseAuthentication();
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
@@ -31,7 +33,7 @@ Future<void> main() async {
   });
 
   Future<DocumentSnapshot> _createCategory({required String id, int rank = 0, required bool is_available}) async {
-    mockFirestore.collection('categories').doc(id).set({'name': "Drinks", 'illustration': "drink.jpeg", 'userId': mockUser.uid, 'rank': rank, 'is_available': is_available});
+    mockFirestore.collection('categories').doc(id).set({'title': "Drinks", 'illustration': "drink.jpeg", 'userId': mockUser.uid, 'rank': rank, 'is_available': is_available});
     return mockFirestore.collection('categories').doc(id).get();
   }
 
@@ -399,7 +401,7 @@ Future<void> main() async {
     expect(firebaseFunctions.getCategoryItemRank(categoryId: "00xx", itemId: "empty"), throwsA(isA<FirebaseException>()));
   });
 
-  test("updateCategoryRanks decrements all ranks of categoryItems higher than given rank", () async {
+  test("updateCategoryItemsRanks decrements all ranks of categoryItems higher than given rank", () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
@@ -415,14 +417,14 @@ Future<void> main() async {
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 1);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId3), 2);
 
-    await firebaseFunctions.updateCategoryRanks(categoryId: categoryId, removedRank: await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId1));
+    await firebaseFunctions.updateCategoryItemsRanks(categoryId: categoryId, removedRank: await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId1));
     await firebaseFunctions.deleteCategoryItem(categoryId: categoryId, itemId: newItemId1); // delete isn't necessary
 
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 0);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId3), 1);
   });
 
-  test("updateCategoryRanks does nothing if the deleted categoryItem had highest rank", () async {
+  test("updateCategoryItemsRanks does nothing if the deleted categoryItem had highest rank", () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
@@ -438,20 +440,17 @@ Future<void> main() async {
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId1), 0);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 1);
 
-    await firebaseFunctions.updateCategoryRanks(categoryId: categoryId, removedRank: await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId3));
+    await firebaseFunctions.updateCategoryItemsRanks(categoryId: categoryId, removedRank: await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId3));
     await firebaseFunctions.deleteCategoryItem(categoryId: categoryId, itemId: newItemId3); // delete isn't necessary
 
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId1), 0);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 1);
   });
 
-  test("updateCategoryRanks does nothing if given non existing categoryId", () async {
-    expect(await firebaseFunctions.updateCategoryRanks(categoryId: "00xx", removedRank: 1), null);
+  test("updateCategoryItemsRanks does nothing if given non existing categoryId", () async {
+    expect(await firebaseFunctions.updateCategoryItemsRanks(categoryId: "00xx", removedRank: 1), null);
   });
 
-  ///
-  ///
-  ///
   test("create category is successful", () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
@@ -816,7 +815,7 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
 
-    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -850,7 +849,7 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
 
-    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -919,5 +918,38 @@ Future<void> main() async {
 
     item = await mockFirestore.collection("items").doc(newItemId).get();
     expect(item.exists, false);
+  });
+
+  test("downloadUserCategories converts choice board's data correctly into Categories datatype", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: false, rank: 1);
+
+    String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId1);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId2);
+
+    Categories userCategories = await firebaseFunctions.downloadUserCategories();
+
+    expect(userCategories.getList().length, 2);
+    expect(userCategories.getList()[0].id, categoryId1);
+    expect(userCategories.getList()[1].id, categoryId2);
+    expect(userCategories.getList()[0].availability, true);
+    expect(userCategories.getList()[1].availability, false);
+    expect(userCategories.getList()[0].children.length, 1);
+    expect(userCategories.getList()[1].children.length, 2);
+  });
+
+  test("downloadUserCategories returns an empty Categories datatype if user has no choice boards data", () async {
+    Categories userCategories = await firebaseFunctions.downloadUserCategories();
+    expect(userCategories.getList().length, 0);
   });
 }

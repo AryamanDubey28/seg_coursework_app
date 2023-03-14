@@ -10,14 +10,14 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/models/draggable_list.dart';
+import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_category.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
-  late DraggableList breakfastCategory;
+  late Category breakfastCategory;
   late FirebaseAuth mockAuth;
   late FirebaseFirestore mockFirestore;
   late FirebaseStorage mockStorage;
@@ -33,7 +33,7 @@ void main() {
   }
 
   setUpAll(() {
-    breakfastCategory = testCategories.first;
+    breakfastCategory = testCategories.getList().first;
 
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
@@ -48,6 +48,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: EditChoiceBoardCategory(
+            mock: true,
             categoryId: breakfastCategory.id,
             categoryImageUrl: "food.jpeg",
             categoryName: "food.jpeg",
@@ -73,6 +74,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: EditChoiceBoardCategory(
+            mock: true,
             categoryId: breakfastCategory.id,
             categoryImageUrl: "food.jpeg",
             categoryName: "food.jpeg",
@@ -95,6 +97,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: EditChoiceBoardCategory(
+            mock: true,
             categoryId: breakfastCategory.id,
             categoryImageUrl: "food.jpeg",
             categoryName: "food",
@@ -122,6 +125,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: EditChoiceBoardCategory(
+            mock: true,
             categoryId: breakfastCategory.id,
             categoryImageUrl: "food.jpeg",
             categoryName: "food",

@@ -15,12 +15,13 @@ import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
 class AddChoiceBoardItem extends StatefulWidget {
   final String categoryId;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
   late final File? preSelectedImage;
 
-  AddChoiceBoardItem({super.key, required this.categoryId, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, this.preSelectedImage}) {
+  AddChoiceBoardItem({super.key, required this.categoryId, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, this.preSelectedImage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -189,7 +190,13 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
           LoadingIndicatorDialog().dismiss();
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+            builder: (context) {
+              if (widget.mock) {
+                return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+              } else {
+                return AdminChoiceBoards();
+              }
+            },
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(
@@ -198,7 +205,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
         } catch (e) {
           print(e);
           LoadingIndicatorDialog().dismiss();
-          ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
+          ErrorDialogHelper(context: context).show_alert_dialog("An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }
       }
     }
