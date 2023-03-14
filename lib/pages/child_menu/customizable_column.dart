@@ -24,23 +24,30 @@ import 'customizable_row.dart';
 //
 
 class CustomizableColumn extends StatefulWidget {
+  final bool mock;
+
+  CustomizableColumn({this.mock = false});
+
   @override
   State<CustomizableColumn> createState() => _CustomizableColumnState();
 }
 
 class _CustomizableColumnState extends State<CustomizableColumn> {
   // List of categories, their titles, and images within them
-  final Auth auth = Auth(auth: FirebaseAuth.instance);
+  late Key key;
   late Timer timer;
 
   @override
   initState() {
     super.initState();
+    key = Key("CustomizableColumn");
     timer = Timer.periodic(Duration(seconds: 5), (timer) {
       setState(
           () {}); //page updates every 5 seconds therefore gets new data from db every 5 seconds
     });
   }
+
+  ///Used only when testing
 
   @override
   void dispose() {
@@ -56,7 +63,10 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
       for (var item in category.items) {
         data.add(buildClickableImageFromCategoryItem(item));
       }
-      categories.add(data);
+      if (data.length > 1) {
+        //only add category if it contains items
+        categories.add(data);
+      }
     }
     return categories;
   }
@@ -64,39 +74,63 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   // Construct a column of rows using category title and images
   @override
   Widget build(BuildContext context) {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
-        auth: FirebaseAuth.instance,
-        firestore: FirebaseFirestore.instance,
-        storage: FirebaseStorage.instance);
-    return Scaffold(
-      appBar: AppBar(),
-      body: StreamBuilder(
-        stream: firebaseFunctions
-            .getUserCategoriesAsStream(), //retrieves a list from the database of categories and items associated with the category
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            Categories temp_categories = snapshot.data as Categories;
-            List<List<ClickableImage>> categories = getList(temp_categories);
-
-            return ListView.separated(
-              itemBuilder: (context, index) {
-                return CustomizableRow(
-                  key: Key("row$index"),
-                  categoryTitle: categories[index][0].name,
-                  imagePreviews: categories[index],
-                );
-              },
-              itemCount: 3,
-              separatorBuilder: (context, index) {
-                return Divider(height: 2);
-              },
+    if (!widget.mock) {
+      print("-------------> NOT mocking as mock value = ${widget.mock}");
+      FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+          auth: FirebaseAuth.instance,
+          firestore: FirebaseFirestore.instance,
+          storage: FirebaseStorage.instance);
+      return Scaffold(
+        appBar: AppBar(),
+        body: StreamBuilder(
+          stream: firebaseFunctions
+              .getUserCategoriesAsStream(), //retrieves a list from the database of categories and items associated with the category
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              Categories temp_categories = snapshot.data as Categories;
+              List<List<ClickableImage>> categories = getList(temp_categories);
+              return ListView.separated(
+                itemBuilder: (context, index) {
+                  return CustomizableRow(
+                    key: Key("row$index"),
+                    categoryTitle: categories[index][0].name,
+                    imagePreviews: categories[index],
+                  );
+                },
+                itemCount: categories.length,
+                separatorBuilder: (context, index) {
+                  return Divider(height: 2);
+                },
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        ),
+      );
+    } else {
+      //mocking therefore show base layout
+      print("-------------> mocking");
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Child Mode"),
+          automaticallyImplyLeading: false,
+        ),
+        body: ListView.separated(
+          itemBuilder: (context, index) {
+            return CustomizableRow(
+              key: Key("row$index"),
+              categoryTitle: rowConfigs[index]['categoryTitle'],
+              imagePreviews: rowConfigs[index]['images'],
             );
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
-      ),
-    );
+          },
+          itemCount: rowConfigs.length,
+          separatorBuilder: (context, index) {
+            return Divider(height: 2);
+          },
+        ),
+      );
+    }
 
     // return Scaffold(
     //   appBar: AppBar(),
