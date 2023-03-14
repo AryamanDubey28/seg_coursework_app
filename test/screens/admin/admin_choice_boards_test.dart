@@ -26,11 +26,12 @@ void main() {
   late MockUser mockUser;
   late DraggableListItem toastItem;
   late DraggableList breakfastCategory;
+  late FirebaseFunctions firebaseFunctions;
 
   Future<void> _createData() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
 
-    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({'name': "Breakfast", 'illustration': "food.jpeg", 'userId': mockUser.uid, 'rank': 0});
+    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({'name': "Breakfast", 'illustration': "food.jpeg", 'userId': mockUser.uid, 'is_available': true, 'rank': 0});
 
     CollectionReference items = mockFirestore.collection('items');
 
@@ -47,6 +48,7 @@ void main() {
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
     when(mockAuth.currentUser).thenReturn(mockUser);
+    firebaseFunctions = FirebaseFunctions(auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
   });
 
   testWidgets("Category header has all components", (WidgetTester tester) async {
@@ -218,6 +220,35 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("Confirm deleting item everywhere deletes item and all categoryItems", (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+      await _createData();
+
+      var imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "testItem");
+      var testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: imageUrl!);
+      await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: imageUrl, categoryId: breakfastCategory.id, itemId: testId);
+
+      // These mimic tapping the delete icon then tapping 'Delete Everywhere"
+      // Due to how the choice board testing data is set up (hardcoded)
+      await firebaseFunctions.deleteImageFromCloud(imageUrl: imageUrl);
+      await firebaseFunctions.deleteItem(itemId: testId);
+      await firebaseFunctions.deleteAllCategoryItemsForItem(itemId: testId);
+
+      expect(await firebaseFunctions.itemExists(itemId: testId), false);
+      expect(await firebaseFunctions.categoryItemExists(categoryId: breakfastCategory.id, itemId: testId), false);
+      expect(mockStorage.refFromURL(imageUrl), isNotNull);
     });
   });
 

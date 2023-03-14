@@ -42,6 +42,13 @@ class FirebaseFunctions {
     });
   }
 
+  /// Behaves as an assertion to check that a categoryItem exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> categoryItemExists({required String categoryId, required String itemId}) async {
+    DocumentSnapshot categoryItem = await firestore.collection('categoryItems/$categoryId/items').doc(itemId).get();
+    return categoryItem.exists;
+  }
+
   /// Return an appropriate rank for a new categoryItem in the
   /// given category (one more than the highest rank or zero if empty)
   Future<int> getNewCategoryItemRank({required String categoryId}) async {

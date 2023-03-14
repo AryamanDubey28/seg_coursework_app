@@ -100,6 +100,7 @@ class ItemsGrid extends StatelessWidget {
                   }
                 },
                 child: GridTile(
+                  key: ValueKey(item.id),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image(
