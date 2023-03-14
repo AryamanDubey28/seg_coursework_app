@@ -181,6 +181,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         builder: (context) {
           if (widget.mock) {
             return AdminChoiceBoards(
+                mock: true,
                 testCategories: testCategories,
                 auth: widget.auth,
                 firestore: widget.firestore,
@@ -235,6 +236,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
           builder: (context) {
             if (widget.mock) {
               return AdminChoiceBoards(
+                  mock: true,
                   testCategories: testCategories,
                   auth: widget.auth,
                   firestore: widget.firestore,

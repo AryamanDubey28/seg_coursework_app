@@ -29,10 +29,12 @@ class AdminChoiceBoards extends StatefulWidget {
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
+  late final bool mock;
 
   AdminChoiceBoards(
       {super.key,
       this.testCategories,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -81,7 +83,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
     } else if (hasError) {
       return AlertDialog(
         content: Text(
-            'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.'),
+            'An error occurred while communicating with the database. \nPlease retry.'),
         actions: <Widget>[
           TextButton(
             child: Text('Retry'),
@@ -99,7 +101,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
           title: const Text('Edit Choice Boards'),
         ),
         drawer: const AdminSideMenu(),
-        floatingActionButton: AddCategoryButton(),
+        floatingActionButton: AddCategoryButton(
+          mock: widget.mock,
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         body: DragAndDropLists(
           listPadding: const EdgeInsets.all(30),
@@ -176,14 +180,17 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               DeleteCategoryButton(
+                  mock: widget.mock,
                   categoryId: category.id,
                   categoryName: category.title,
                   categoryImage: category.imageUrl),
               EditCategoryButton(
+                  mock: widget.mock,
                   categoryId: category.id,
                   categoryName: category.title,
                   categoryImageUrl: category.imageUrl),
               AvailabilitySwitchToggle(
+                mock: widget.mock,
                 documentId: category.id,
                 documentAvailability: category.availability,
                 isCategory: true,
@@ -194,6 +201,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
               ),
               const Spacer(),
               AddItemButton(
+                mock: widget.mock,
                 categoryId: category.id,
                 key: Key("addItemButton-${category.id}"),
                 auth: widget.auth,
@@ -242,6 +250,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AvailabilitySwitchToggle(
+                          mock: widget.mock,
                           documentId: item.id,
                           documentAvailability: item.availability,
                           isCategory: false,
@@ -251,6 +260,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                           storage: widget.storage,
                         ),
                         DeleteItemButton(
+                          mock: widget.mock,
                           categoryId: category.id,
                           itemId: item.id,
                           itemName: item.name,
@@ -260,6 +270,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                           storage: widget.storage,
                         ),
                         EditItemButton(
+                          mock: widget.mock,
                           itemId: item.id,
                           itemName: item.name,
                           itemImageUrl: item.imageUrl,

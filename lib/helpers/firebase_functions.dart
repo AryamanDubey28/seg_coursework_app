@@ -5,6 +5,7 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
 import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// A class which holds methods to manipulate the Firebase database
@@ -593,21 +594,21 @@ class FirebaseFunctions {
   ///   - return the data that's in the cache
   ///   - Throw an exception if the cache is empty
   Future<Categories> getUserCategories() async {
-    try {
+    if (CheckConnection.isDeviceConnected) {
       // The device has internet connection.
       Categories userCategories = await downloadUserCategories();
       await storeCategoriesInCache(userCategories: userCategories);
       return userCategories;
-    } catch (e) {
-      // The device has no internet connection.
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? categoriesJson =
-          prefs.getString('${auth.currentUser!.uid}-categories');
-      if (categoriesJson != null) {
-        return Categories(categories: []).fromJsonString(categoriesJson);
-      } else {
-        throw Exception("No data in the cache!");
-      }
+    }
+
+    // The device has no internet connection.
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? categoriesJson =
+        prefs.getString('${auth.currentUser!.uid}-categories');
+    if (categoriesJson != null) {
+      return Categories(categories: []).fromJsonString(categoriesJson);
+    } else {
+      throw Exception("No data in the cache!");
     }
   }
 }

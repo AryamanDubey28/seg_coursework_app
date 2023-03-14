@@ -199,6 +199,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             builder: (context) {
               if (widget.mock) {
                 return AdminChoiceBoards(
+                    mock: true,
                     testCategories: testCategories,
                     auth: widget.auth,
                     firestore: widget.firestore,

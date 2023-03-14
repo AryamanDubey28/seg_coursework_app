@@ -70,11 +70,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
 
       await tester.pumpAndSettle();
 
@@ -106,11 +106,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
 
       await tester.pumpAndSettle();
 
@@ -135,11 +135,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
 
       await tester.pumpAndSettle();
 
@@ -159,11 +159,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("editItemButton-${toastItem.id}")));
@@ -181,11 +181,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
 
       await tester
@@ -203,11 +203,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
 
       await tester
@@ -226,11 +226,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
       await _createData();
 
@@ -251,11 +251,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
       await _createData();
 
@@ -277,11 +277,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
       await _createData();
 
@@ -300,11 +300,11 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AdminChoiceBoards(
-            testCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
+                  testCategories: testCategories,
+                  auth: mockAuth,
+                  firestore: mockFirestore,
+                  storage: mockStorage,
+                  mock: true))));
       await tester.pumpAndSettle();
       await _createData();
 

@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 
 ///This widget is used to create toggleSwitches able to switch the is_available value
 ///of a database document (categories or items).
@@ -11,6 +12,7 @@ class AvailabilitySwitchToggle extends StatefulWidget {
   final String documentId;
   final bool documentAvailability;
   final bool isCategory;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -20,6 +22,7 @@ class AvailabilitySwitchToggle extends StatefulWidget {
       required this.documentId,
       required this.documentAvailability,
       required this.isCategory,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -35,6 +38,14 @@ class AvailabilitySwitchToggle extends StatefulWidget {
 class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
   late FirebaseFunctions firebaseFunctions;
   late bool isAvailable;
+
+  @override
+  void dispose() {
+    if (!widget.mock) {
+      CheckConnection.stopMonitoring();
+    }
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -79,12 +90,18 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       key: const Key("adminSwitch"),
       value: isAvailable,
       onChanged: (bool value) async {
-        final bool trigger =
-            await switchAvailabilityValue(widget.documentId, widget.isCategory);
-        if (trigger) {
-          setState(() {
-            isAvailable = value;
-          });
+        if (!widget.mock && !CheckConnection.isDeviceConnected) {
+          // User has no internet connection
+          ErrorDialogHelper(context: context).show_alert_dialog(
+              "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
+        } else {
+          final bool trigger = await switchAvailabilityValue(
+              widget.documentId, widget.isCategory);
+          if (trigger) {
+            setState(() {
+              isAvailable = value;
+            });
+          }
         }
       },
     );
