@@ -13,6 +13,25 @@ class CategoryItem {
       required this.imageUrl,
       required this.id});
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryItem &&
+          runtimeType == other.runtimeType &&
+          availability == other.availability &&
+          name == other.name &&
+          imageUrl == other.imageUrl &&
+          id == other.id &&
+          rank == other.rank;
+
+  @override
+  int get hashCode =>
+      availability.hashCode ^
+      name.hashCode ^
+      imageUrl.hashCode ^
+      id.hashCode ^
+      rank.hashCode;
+
   /// Convert a CategoryItem back from json data
   factory CategoryItem.fromJson(Map<String, dynamic> json) {
     return CategoryItem(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' as helper;
 import 'package:seg_coursework_app/models/category_item.dart';
 
 /// A datatype model which mimics a 'Category' entry in Firestore
@@ -18,6 +19,22 @@ class Category {
       required this.availability});
 
   get children => items;
+
+  @override
+  bool operator ==(other) {
+    if (identical(this, other)) return true;
+    return other is Category &&
+        other.availability == availability &&
+        other.title == title &&
+        other.imageUrl == imageUrl &&
+        other.id == id &&
+        other.rank == rank &&
+        helper.listEquals(other.items, items);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      availability, title, imageUrl, id, rank, Object.hashAll(items));
 
   /// Convert a Category back from json data
   factory Category.fromJson(Map<String, dynamic> json) {
