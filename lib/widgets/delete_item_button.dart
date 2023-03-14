@@ -44,7 +44,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
     );
   }
 
-  /// Alert dialog to make the user confirm deleting the item
+  /// Alert dialog to make the user confirm deleting the item (in one category or all other categories)
   Future<void> _showAlertDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -114,7 +114,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
 
       await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.imageUrl);
       await firestoreFunctions.deleteItem(itemId: widget.itemId);
-      await firestoreFunctions.deleteAllCategoryItemsForItem(itemId: widget.itemId);
+      await firestoreFunctions.deleteAllCategoryItemsForItem(itemId: widget.itemId); // This function also handles updating ranks of categoryItems
 
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page

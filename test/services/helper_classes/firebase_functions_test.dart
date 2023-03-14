@@ -889,6 +889,24 @@ Future<void> main() async {
     expect(await firebaseFunctions.categoryItemExists(categoryId: catId, itemId: testId), false);
   });
 
+  test("deleteAllCategoryItemsForItem function correctly updates ranks", () async {
+    String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "testItem");
+    String testId1 = await firebaseFunctions.createItem(name: "testItem", imageUrl: imageUrl!);
+    String testId2 = await firebaseFunctions.createItem(name: "testItem2", imageUrl: imageUrl);
+    String catId = await firebaseFunctions.createCategory(name: "newCat", imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(name: "testItem1", imageUrl: imageUrl, categoryId: catId, itemId: testId1);
+    await firebaseFunctions.createCategoryItem(name: "testItem2", imageUrl: imageUrl, categoryId: catId, itemId: testId2);
+
+    expect(await firebaseFunctions.getCategoryItemRank(categoryId: catId, itemId: testId1), 0);
+    expect(await firebaseFunctions.getCategoryItemRank(categoryId: catId, itemId: testId2), 1);
+
+    await firebaseFunctions.deleteAllCategoryItemsForItem(itemId: testId1);
+    expect(await firebaseFunctions.categoryItemExists(categoryId: catId, itemId: testId1), false);
+
+    expect(await firebaseFunctions.getCategoryItemRank(categoryId: catId, itemId: testId2), 0);
+  });
+
   test("deleting an item is successful", () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
