@@ -26,30 +26,15 @@ void main() {
   late DraggableList breakfastCategory;
 
   Future<void> _createData() async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
-        auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
+    FirebaseFunctions firebaseFunctions = FirebaseFunctions(auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
 
-    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
-      'name': "Breakfast",
-      'illustration': "food.jpeg",
-      'userId': mockUser.uid,
-      'rank': 0
-    });
+    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({'name': "Breakfast", 'illustration': "food.jpeg", 'userId': mockUser.uid, 'rank': 0});
 
     CollectionReference items = mockFirestore.collection('items');
 
-    items.doc(toastItem.id).set({
-      'name': toastItem.name,
-      'illustration': toastItem.imageUrl,
-      'is_available': true,
-      'userId': mockUser.uid
-    });
+    items.doc(toastItem.id).set({'name': toastItem.name, 'illustration': toastItem.imageUrl, 'is_available': true, 'userId': mockUser.uid});
 
-    await firebaseFunctions.createCategoryItem(
-        name: toastItem.name,
-        imageUrl: toastItem.imageUrl,
-        categoryId: breakfastCategory.id,
-        itemId: toastItem.id);
+    await firebaseFunctions.createCategoryItem(name: toastItem.name, imageUrl: toastItem.imageUrl, categoryId: breakfastCategory.id, itemId: toastItem.id);
   }
 
   setUpAll(() {
@@ -62,8 +47,7 @@ void main() {
     when(mockAuth.currentUser).thenReturn(mockUser);
   });
 
-  testWidgets("Category header has all components",
-      (WidgetTester tester) async {
+  testWidgets("Category header has all components", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -77,22 +61,13 @@ void main() {
 
       expect(find.byKey(const ValueKey("addCategoryButton")), findsOneWidget);
 
-      expect(find.byKey(ValueKey("categoryHeader-${breakfastCategory.id}")),
-          findsOneWidget);
-      expect(find.byKey(ValueKey("categoryImage-${breakfastCategory.id}")),
-          findsOneWidget);
-      expect(find.byKey(ValueKey("categoryTitle-${breakfastCategory.id}")),
-          findsOneWidget);
-      expect(find.byKey(ValueKey("editCategoryButton-${breakfastCategory.id}")),
-          findsOneWidget);
-      expect(
-          find.byKey(ValueKey("deleteCategoryButton-${breakfastCategory.id}")),
-          findsOneWidget);
-      expect(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")),
-          findsOneWidget);
-      expect(
-          find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")),
-          findsOneWidget);
+      expect(find.byKey(ValueKey("categoryHeader-${breakfastCategory.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("categoryImage-${breakfastCategory.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("categoryTitle-${breakfastCategory.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("editCategoryButton-${breakfastCategory.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("deleteCategoryButton-${breakfastCategory.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")), findsOneWidget);
       expect(find.byKey(ValueKey("categoryDrag")), findsWidgets);
     });
   });
@@ -109,22 +84,17 @@ void main() {
             storage: mockStorage,
           ))));
 
-      expect(
-          find.byKey(ValueKey("categoryItem-${toastItem.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("categoryItem-${toastItem.id}")), findsOneWidget);
       expect(find.byKey(ValueKey("itemImage-${toastItem.id}")), findsOneWidget);
       expect(find.byKey(ValueKey("itemTitle-${toastItem.id}")), findsOneWidget);
-      expect(find.byKey(ValueKey("editItemButton-${toastItem.id}")),
-          findsOneWidget);
-      expect(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")),
-          findsOneWidget);
-      expect(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")),
-          findsOneWidget);
+      expect(find.byKey(ValueKey("editItemButton-${toastItem.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")), findsOneWidget);
       expect(find.byKey(ValueKey("itemDrag")), findsWidgets);
     });
   });
 
-  testWidgets("Add item button does correct page navigation",
-      (WidgetTester tester) async {
+  testWidgets("Add item button does correct page navigation", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -136,17 +106,14 @@ void main() {
             storage: mockStorage,
           ))));
 
-      await tester
-          .tap(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")));
+      await tester.tap(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(ValueKey("addItemHero-${breakfastCategory.id}")),
-          findsOneWidget);
+      expect(find.byKey(ValueKey("addItemHero-${breakfastCategory.id}")), findsOneWidget);
     });
   });
 
-  testWidgets("Edit item button does correct page navigation",
-      (WidgetTester tester) async {
+  testWidgets("Edit item button does correct page navigation", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -161,13 +128,11 @@ void main() {
       await tester.tap(find.byKey(ValueKey("editItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
-      expect(
-          find.byKey(ValueKey("editItemHero-${toastItem.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("editItemHero-${toastItem.id}")), findsOneWidget);
     });
   });
 
-  testWidgets("Delete item button shows confirmation alert",
-      (WidgetTester tester) async {
+  testWidgets("Delete item button shows confirmation alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -179,16 +144,14 @@ void main() {
             storage: mockStorage,
           ))));
 
-      await tester
-          .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
+      await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(ValueKey("deleteItemAlert-${toastItem.id}")),
-          findsOneWidget);
+      expect(find.byKey(ValueKey("deleteItemAlert-${toastItem.id}")), findsOneWidget);
     });
   });
 
-  testWidgets("Delete item alert has two buttons", (WidgetTester tester) async {
+  testWidgets("Delete item alert has three buttons", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -200,13 +163,13 @@ void main() {
             storage: mockStorage,
           ))));
 
-      await tester
-          .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
+      await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
       expect(find.byKey(ValueKey("cancelItemDelete")), findsOneWidget);
       expect(find.byKey(ValueKey("confirmItemDelete")), findsOneWidget);
-      expect(find.byType(TextButton), findsNWidgets(2));
+      expect(find.byKey(ValueKey("confirmItemDeleteEverywhere")), findsOneWidget);
+      expect(find.byType(TextButton), findsNWidgets(3));
     });
   });
 
@@ -223,8 +186,7 @@ void main() {
           ))));
       await _createData();
 
-      await tester
-          .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
+      await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("cancelItemDelete")));
@@ -247,8 +209,7 @@ void main() {
           ))));
       await _createData();
 
-      await tester
-          .tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
+      await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("confirmItemDelete")));
@@ -258,8 +219,7 @@ void main() {
     });
   });
 
-  testWidgets("Valid category item switch button works as expected",
-      (WidgetTester tester) async {
+  testWidgets("Confirm deleting item everywhere hides alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -272,16 +232,17 @@ void main() {
           ))));
       await _createData();
 
-      await tester
-          .tap(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")));
+      await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(ValueKey("confirmItemDeleteEverywhere")));
       await tester.pumpAndSettle();
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
 
-  testWidgets("Valid category item switch button works as expected",
-      (WidgetTester tester) async {
+  testWidgets("Valid category item switch button works as expected", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -294,8 +255,27 @@ void main() {
           ))));
       await _createData();
 
-      await tester.tap(
-          find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")));
+      await tester.tap(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("Valid category item switch button works as expected", (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+      await _createData();
+
+      await tester.tap(find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")));
       await tester.pumpAndSettle();
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);

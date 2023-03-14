@@ -14,6 +14,7 @@ import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/pages/admin/add_choice_board_item.dart';
 import 'package:seg_coursework_app/pages/admin/add_existing_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -39,7 +40,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AddChoiceBoardItem(
+            home: AddExistingItem(
               categoryId: breakfastCategoryId,
               auth: mockAuth,
               firestore: mockFirestore,
@@ -47,14 +48,9 @@ void main() {
             ),
           )));
 
-      expect(find.byKey(const ValueKey("itemImageCard")), findsOneWidget);
-      expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
-      expect(find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
-      expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);
-      expect(find.byKey(const ValueKey("itemNameField")), findsOneWidget);
-      expect(find.byKey(const ValueKey("useExistingItemButton")), findsOneWidget);
-      expect(find.text("or"), findsOneWidget);
-      expect(find.byKey(const ValueKey("createItemButton")), findsOneWidget);
+      expect(find.byType(ItemsGrid), findsOneWidget);
+      expect(find.byType(AdminSideMenu), findsOneWidget);
+      expect(find.byType(AppBar), findsOneWidget);
     });
   });
 
