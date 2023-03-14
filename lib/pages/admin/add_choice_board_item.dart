@@ -133,27 +133,29 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     Row(
                       children: [
                         Spacer(),
-                        // use preexisting item to create categoryItem
-                        TextButton.icon(
-                          key: const Key("useExistingItemButton"),
-                          onPressed: () => {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId),
-                            ))
-                          },
-                          icon: Icon(Icons.add),
-                          label: const Text("Use existing item"),
+                        Expanded(
+                          child: TextButton.icon(
+                            key: const Key("useExistingItemButton"),
+                            onPressed: () => {
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId),
+                              ))
+                            },
+                            icon: Icon(Icons.add),
+                            label: const Text("Use existing item"),
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 20, right: 20),
                           child: Text("or"),
                         ),
-                        // submit to database button
-                        TextButton.icon(
-                          key: const Key("createItemButton"),
-                          onPressed: () => saveItemToFirestore(image: selectedImage, itemName: itemNameController.text),
-                          icon: Icon(Icons.add),
-                          label: const Text("Create new item"),
+                        Expanded(
+                          child: TextButton.icon(
+                            key: const Key("createItemButton"),
+                            onPressed: () => saveItemToFirestore(image: selectedImage, itemName: itemNameController.text),
+                            icon: Icon(Icons.add),
+                            label: const Text("Create new item"),
+                          ),
                         ),
                         Spacer()
                       ],
