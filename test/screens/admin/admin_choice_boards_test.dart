@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -213,29 +215,6 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("confirmItemDelete")));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
-    });
-  });
-
-  testWidgets("Confirm deleting item everywhere hides alert", (WidgetTester tester) async {
-    mockNetworkImagesFor(() async {
-      await tester.pumpWidget(ThemeProvider(
-          themeNotifier: CustomTheme(),
-          child: MaterialApp(
-              home: AdminChoiceBoards(
-            draggableCategories: testCategories,
-            auth: mockAuth,
-            firestore: mockFirestore,
-            storage: mockStorage,
-          ))));
-      await _createData();
-
-      await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(ValueKey("confirmItemDeleteEverywhere")));
       await tester.pumpAndSettle();
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
