@@ -62,12 +62,14 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
                 Navigator.of(context).pop();
               },
             ),
+            // Deletes categoryItem from current category only
             TextButton(
               key: Key("confirmItemDelete"),
               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.amber)),
               onPressed: deleteCategoryItemFromFirestore,
               child: Text('Delete'),
             ),
+            // Deletes all categoryItems from all possible categories for a particular item
             TextButton(
               key: Key("confirmItemDeleteEverywhere"),
               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),

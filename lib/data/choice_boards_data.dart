@@ -15,7 +15,7 @@ final List<DraggableList> devCategories = [
 
 /// Used for Testing classes
 final List<DraggableList> testCategories = [
-  DraggableList(title: "Breakfast", id: "0", imageUrl: "breakfast.jpg", is_available: false, items: [DraggableListItem(availability: true, id: "1", name: "Toast", imageUrl: "https://via.placeholder.com/600x400"), DraggableListItem(availability: true, id: "2", name: "Fruits", imageUrl: "Fruits.png")]),
+  DraggableList(title: "Breakfast", id: "0", imageUrl: "breakfast.jpg", is_available: false, items: [DraggableListItem(availability: true, id: "1", name: "Toast", imageUrl: "Toast.jpg"), DraggableListItem(availability: true, id: "2", name: "Fruits", imageUrl: "Fruits.png")]),
   DraggableList(id: "3", title: "Activities", is_available: false, imageUrl: "Activities.png", items: [
     DraggableListItem(availability: true, id: "4", name: "Football", imageUrl: "Football.jpg"),
   ])

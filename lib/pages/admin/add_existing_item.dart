@@ -7,8 +7,10 @@ import '../../helpers/firebase_functions.dart';
 import 'admin_choice_boards.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
+/// Creates a page that presents all existing items created by user and allows
+/// adding them to a specific category
 class AddExistingItem extends StatefulWidget {
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
@@ -25,7 +27,6 @@ class AddExistingItem extends StatefulWidget {
   State<AddExistingItem> createState() => _AddExistingItem();
 }
 
-/// The page for admins to edit choice boards
 class _AddExistingItem extends State<AddExistingItem> {
   late List<DragAndDropList> categories;
 
@@ -47,6 +48,7 @@ class _AddExistingItem extends State<AddExistingItem> {
   }
 }
 
+/// Creates a grid consisting of item illustrations
 class ItemsGrid extends StatelessWidget {
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
@@ -83,8 +85,8 @@ class ItemsGrid extends StatelessWidget {
               final imageUrl = item['illustration'];
               return GestureDetector(
                 onTap: () async {
-                  // To do: check categoryItem doesn't exist already
                   DocumentSnapshot categoryItem = await firestore.collection('categoryItems/$categoryId/items').doc(item.id).get();
+                  // Only create new categoryItem for item if it doens't already exist
                   if (!categoryItem.exists) {
                     await firestoreFunctions.createCategoryItem(name: item['name'], imageUrl: item['illustration'], categoryId: categoryId, itemId: item.id);
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
