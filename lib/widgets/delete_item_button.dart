@@ -110,9 +110,19 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   /// - Update the ranks of the other categoryItems
   void deleteItemEverywhere() async {
     try {
+      LoadingIndicatorDialog().show(context);
+
+      await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.imageUrl);
       await firestoreFunctions.deleteItem(itemId: widget.itemId);
       await firestoreFunctions.deleteAllCategoryItemsForItem(itemId: widget.itemId);
-      await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.imageUrl);
+
+      LoadingIndicatorDialog().dismiss();
+      // go back to choice boards page
+      Navigator.of(context).pop();
+      // update message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.itemName} successfully deleted from everywhere.")),
+      );
     } on Exception catch (e) {
       LoadingIndicatorDialog().dismiss();
       ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
