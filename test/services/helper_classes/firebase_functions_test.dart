@@ -32,12 +32,13 @@ Future<void> main() async {
   });
 
   Future<DocumentSnapshot> _createCategory(
-      {required String id, int rank = 0}) async {
+      {required String id, int rank = 0, required bool is_available}) async {
     mockFirestore.collection('categories').doc(id).set({
       'name': "Drinks",
       'illustration': "drink.jpeg",
       'userId': mockUser.uid,
-      'rank': rank
+      'rank': rank,
+      'is_available': is_available
     });
     return mockFirestore.collection('categories').doc(id).get();
   }
@@ -235,7 +236,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
-    await _createCategory(id: categoryId);
+    await _createCategory(id: categoryId, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -269,8 +270,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -325,7 +326,7 @@ Future<void> main() async {
   test(
       "updating the name of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
-    await _createCategory(id: "00xx");
+    await _createCategory(id: "00xx", is_available: true);
     expect(
         await firebaseFunctions.updateCategoryItemsName(
             itemId: "doesn't exist", newName: "Nova Water"),
@@ -356,7 +357,7 @@ Future<void> main() async {
 
   test("Uploading image to cloud is successful", () async {
     String? imageUrl = await firebaseFunctions.uploadImageToCloud(
-        image: File("assets/test_image.png"), itemName: "Water");
+        image: File("assets/test_image.png"), name: "Water");
 
     expect(imageUrl, isA<String>());
     expect(mockStorage.refFromURL(imageUrl!), isNotNull);
@@ -364,7 +365,7 @@ Future<void> main() async {
 
   test("Deleting image from cloud is successful", () async {
     String? imageUrl = await firebaseFunctions.uploadImageToCloud(
-        image: File("assets/test_image.png"), itemName: "Water");
+        image: File("assets/test_image.png"), name: "Water");
 
     expect(mockStorage.refFromURL(imageUrl!), isNotNull);
     await firebaseFunctions.deleteImageFromCloud(imageUrl: imageUrl);
@@ -403,7 +404,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
-    await _createCategory(id: categoryId);
+    await _createCategory(id: categoryId, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -437,8 +438,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -493,7 +494,7 @@ Future<void> main() async {
   test(
       "updating the image of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
-    await _createCategory(id: "00xx");
+    await _createCategory(id: "00xx", is_available: true);
     expect(
         await firebaseFunctions.updateCategoryItemsImage(
             itemId: "doesn't exist", newImageUrl: "Hana-water.jpeg"),
@@ -768,6 +769,182 @@ Future<void> main() async {
         null);
   });
 
+  ///
+  ///
+  ///
+  test("create category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId, isA<String>());
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('title'), name);
+    expect(category.get('illustration'), imageUrl);
+    expect(category.get('userId'), "user1");
+    expect(category.get('rank'), 0);
+  });
+
+  test("create catgories gives unique ids", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId1, isNot(newCategoryId2));
+  });
+
+  test("user can create more than one category", () async {
+    const String title1 = "Water";
+    const String imageUrl1 = "Nova-water.jpeg";
+    const String title2 = "Apple juice";
+    const String imageUrl2 = "Nova-Juice.jpeg";
+
+    String newCategoryId1 = await firebaseFunctions.createCategory(
+        name: title1, imageUrl: imageUrl1);
+    String newCategoryId2 = await firebaseFunctions.createCategory(
+        name: title2, imageUrl: imageUrl2);
+
+    DocumentSnapshot category1 =
+        await mockFirestore.collection('categories').doc(newCategoryId1).get();
+    DocumentSnapshot category2 =
+        await mockFirestore.collection('categories').doc(newCategoryId2).get();
+
+    final QuerySnapshot categoriesQuerySnapshot =
+        await mockFirestore.collection('categories').get();
+
+    expect(categoriesQuerySnapshot.size, 2);
+    expect(category1.get('title'), title1);
+    expect(category2.get('title'), title2);
+    expect(category1.get('illustration'), imageUrl1);
+    expect(category2.get('illustration'), imageUrl2);
+    expect(category1.get('userId'), "user1");
+    expect(category2.get('userId'), "user1");
+  });
+
+  test(
+      "new category rank is one more than highest rank (using getNewCategoryRank)",
+      () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    DocumentSnapshot newCategory1 =
+        await mockFirestore.collection('categories').doc(newCategoryId1).get();
+    DocumentSnapshot newCategory2 =
+        await mockFirestore.collection('categories').doc(newCategoryId2).get();
+
+    expect(newCategory1.get('rank'), 0);
+    expect(newCategory2.get('rank'), 1);
+  });
+
+  test("update category name edits the category's name successfully", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+
+    expect(category.get('title'), name);
+    await firebaseFunctions.updateCategoryName(
+        categoryId: newCategoryId, newName: "Lunch");
+
+    category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('title'), "Lunch");
+  });
+
+  test("updating the name of a category that doesn't exist throws an exception",
+      () async {
+    expect(
+        firebaseFunctions.updateCategoryName(
+            categoryId: "doesnt exist", newName: "doesnt matter"),
+        throwsA(isInstanceOf<FirebaseException>()));
+  });
+
+  test("update category image edits the category's image successfully",
+      () async {
+    const String name = "Dinner";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+
+    expect(category.get('illustration'), imageUrl);
+    await firebaseFunctions.updateCategoryImage(
+        categoryId: newCategoryId, newImageUrl: "Hana-water.jpeg");
+
+    category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('illustration'), "Hana-water.jpeg");
+  });
+
+  test(
+      "updating the image of a category that doesn't exist throws an exception",
+      () async {
+    expect(
+        firebaseFunctions.updateCategoryImage(
+            categoryId: "doesn't exist", newImageUrl: "Hana-water.jpeg"),
+        throwsA(isInstanceOf<FirebaseException>()));
+  });
+
+  test("deleting a category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.exists, true);
+
+    await firebaseFunctions.deleteCategory(categoryId: newCategoryId);
+
+    category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.exists, false);
+  });
+
+  test("deleting a non existing category throws exception", () async {
+    expect(firebaseFunctions.deleteCategory(categoryId: "0022xx"),
+        throwsA(isA<FirebaseException>()));
+  });
+
+  test("getCategoryRank returns correct rank", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(
+        await firebaseFunctions.getCategoryRank(categoryId: newCategoryId1), 0);
+    expect(
+        await firebaseFunctions.getCategoryRank(categoryId: newCategoryId2), 1);
+  });
+
+  test("getCategoryRank throws exception for non existing categories",
+      () async {
+    expect(firebaseFunctions.getCategoryRank(categoryId: "00xx"),
+        throwsA(isA<FirebaseException>()));
+  });
+
   test(
       "update item availability status edits the is_available field successfully (1 item)",
       () async {
@@ -796,7 +973,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -830,8 +1007,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -879,7 +1056,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -928,7 +1105,7 @@ Future<void> main() async {
 
   test("Reordering non-existent categoryItems returns false", () async {
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
     expect(
         await firebaseFunctions.saveCategoryItemOrder(
             categoryId: categoryId1, oldItemIndex: 2, newItemIndex: 0),
@@ -940,9 +1117,11 @@ Future<void> main() async {
     const String categoryId2 = "11yy";
     const String categoryId3 = "11zz";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -968,11 +1147,15 @@ Future<void> main() async {
     const String categoryId4 = "11aa";
     const String categoryId5 = "11bb";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
-    var cat4 = await _createCategory(id: categoryId4, rank: 3);
-    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1004,11 +1187,15 @@ Future<void> main() async {
     const String categoryId4 = "11aa";
     const String categoryId5 = "11bb";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
-    var cat4 = await _createCategory(id: categoryId4, rank: 3);
-    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1040,11 +1227,15 @@ Future<void> main() async {
     const String categoryId4 = "11aa";
     const String categoryId5 = "11bb";
 
-    var cat1 = await _createCategory(id: categoryId1);
-    var cat2 = await _createCategory(id: categoryId2, rank: 1);
-    var cat3 = await _createCategory(id: categoryId3, rank: 2);
-    var cat4 = await _createCategory(id: categoryId4, rank: 3);
-    var cat5 = await _createCategory(id: categoryId5, rank: 4);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
 
     expect(cat1.get('rank'), 0);
     expect(cat2.get('rank'), 1);
@@ -1074,7 +1265,7 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
 
-    var cat1 = await _createCategory(id: categoryId1);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -1144,7 +1335,7 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
 
-    var cat1 = await _createCategory(id: categoryId1);
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);

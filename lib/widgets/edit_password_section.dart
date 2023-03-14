@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 import '../services/auth.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their password.
 class EditPasswordSection extends StatelessWidget {
-  late BuildContext context;
+  late final BuildContext context;
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
+  late bool isTestMode;
 
-  EditPasswordSection({required this.authentitcationHelper});
-
-  // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              text,
-              style: TextStyle(fontSize: 24),
-            ),
-          );
-        });
-  }
+  EditPasswordSection(
+      {super.key,
+      required this.authentitcationHelper,
+      required this.isTestMode});
 
   // Verify the validity of fields and execute the change of a user's password.
   Future commit_password_edit() async {
@@ -35,11 +26,15 @@ class EditPasswordSection extends StatelessWidget {
         _confirmPasswordController.text.trim() != "") {
       if (_newPasswordController.text.trim() ==
           _confirmPasswordController.text.trim()) {
-        LoadingIndicatorDialog().show(context);
+        if (!isTestMode) {
+          LoadingIndicatorDialog().show(context);
+        }
         response = await authentitcationHelper.editCurrentUserPassword(
             _currentPasswordController.text.trim(),
             _newPasswordController.text.trim());
-        LoadingIndicatorDialog().dismiss();
+        if (!isTestMode) {
+          LoadingIndicatorDialog().dismiss();
+        }
       } else {
         response =
             'The new password confirmation does not match the new password you demanded. Please try again.';
@@ -48,7 +43,7 @@ class EditPasswordSection extends StatelessWidget {
       response =
           'Some fields required to operate your password change were not filled in. Please try again.';
     }
-    show_alert_dialog(response);
+    ErrorDialogHelper(context: context).show_alert_dialog(response);
   }
 
   @override
@@ -115,7 +110,9 @@ class EditPasswordSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: commit_password_edit,
+                onPressed: () {
+                  commit_password_edit();
+                },
                 child: Text("Change Password"),
               ),
             ),

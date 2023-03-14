@@ -5,40 +5,32 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
-class AddChoiceBoardItem extends StatefulWidget {
-  final String categoryId;
+class AddChoiceBoardCategory extends StatefulWidget {
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
   late final File? preSelectedImage;
 
-  AddChoiceBoardItem(
-      {super.key,
-      required this.categoryId,
-      FirebaseAuth? auth,
-      FirebaseFirestore? firestore,
-      FirebaseStorage? storage,
-      this.preSelectedImage}) {
+  AddChoiceBoardCategory({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, this.preSelectedImage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
   }
 
   @override
-  State<AddChoiceBoardItem> createState() => _AddChoiceBoardItem();
+  State<AddChoiceBoardCategory> createState() => _AddChoiceBoardCategory();
 }
 
-/// A Popup card to add a new item to a category.
-class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
-  // controller to retrieve the user input for item name
-  final itemNameController = TextEditingController();
+/// A Popup card to add a new category.
+class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
+  // controller to retrieve the user input for category name
+  final categoryNameController = TextEditingController();
   final imagePickerFunctions = ImagePickerFunctions();
   File? selectedImage; // hold the currently selected image by the user
   late FirebaseFunctions firestoreFunctions;
@@ -46,10 +38,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(
-        auth: widget.auth,
-        firestore: widget.firestore,
-        storage: widget.storage);
+    firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
     if (widget.preSelectedImage != null) {
       selectedImage = widget.preSelectedImage;
     }
@@ -59,15 +48,13 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
-          tag: "addItemHero-${widget.categoryId}",
+          tag: "add-category-hero",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -77,7 +64,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   children: [
                     // shows the currently selected image
                     Card(
-                        key: Key("itemImageCard"),
+                        key: Key("categoryImageCard"),
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
@@ -101,10 +88,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     Text(
                       "Pick an image",
                       key: Key("instructionsText"),
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87),
+                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
@@ -113,8 +97,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                         label: Text("Choose from Gallery"),
                         icon: Icon(Icons.image),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(
-                              source: ImageSource.gallery, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.gallery, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -124,23 +107,19 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                         label: Text("Take a Picture"),
                         icon: Icon(Icons.camera_alt),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(
-                              source: ImageSource.camera, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.camera, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
                         }),
                     const SizedBox(height: 25),
-                    // field to enter the item name
+                    // field to enter the category name
                     TextField(
-                      key: Key("itemNameField"),
-                      controller: itemNameController,
+                      key: Key("categoryNameField"),
+                      controller: categoryNameController,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 25.0),
-                      decoration: InputDecoration(
-                          hintText: "Enter a name for the item",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
+                      decoration: InputDecoration(hintText: "Enter a name for the category", border: InputBorder.none, hintStyle: TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
@@ -150,12 +129,10 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // submit to database button
                     TextButton.icon(
-                      key: const Key("createItemButton"),
-                      onPressed: () => saveItemToFirestore(
-                          image: selectedImage,
-                          itemName: itemNameController.text),
+                      key: const Key("createCategoryButton"),
+                      onPressed: () => saveCategoryToFirestore(image: selectedImage, categoryName: categoryNameController.text),
                       icon: Icon(Icons.add),
-                      label: const Text("Create new item"),
+                      label: const Text("Create new category"),
                     )
                   ],
                 ),
@@ -167,48 +144,44 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
     );
   }
 
-  /// Given an item's image and name,
+  /// Given a category's image and name,
   /// - upload the image to the cloud storage
-  /// - create a new item with the uploaded image's Url in Firestore
-  /// - create a new categoryItem entry in the selected category
+  /// - create a new category with the uploaded image's Url in Firestore
   /// - Take the user back to the Choice Boards page
-  void saveItemToFirestore(
-      {required File? image, required String? itemName}) async {
-    if (itemName!.isEmpty || image == null) {
-      ErrorDialogHelper(context: context)
-          .show_alert_dialog("A field or more are missing!");
+  void saveCategoryToFirestore({required File? image, required String? categoryName}) async {
+    if (categoryName!.isEmpty || image == null) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              key: Key("FieldsMissingAlert"),
+              content: Text("A field or more are missing!"),
+            );
+          });
     } else {
       LoadingIndicatorDialog().show(context);
-      String? imageUrl = await firestoreFunctions.uploadImageToCloud(
-          image: image, name: itemName);
+      String? imageUrl = await firestoreFunctions.uploadImageToCloud(image: image, name: categoryName);
       if (imageUrl != null) {
         try {
-          String itemId = await firestoreFunctions.createItem(
-              name: itemName, imageUrl: imageUrl);
-          await firestoreFunctions.createCategoryItem(
-              name: itemName,
-              imageUrl: imageUrl,
-              categoryId: widget.categoryId,
-              itemId: itemId);
+          await firestoreFunctions.createCategory(name: categoryName, imageUrl: imageUrl);
 
           LoadingIndicatorDialog().dismiss();
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => AdminChoiceBoards(
-                draggableCategories: devCategories,
-                auth: widget.auth,
-                firestore: widget.firestore,
-                storage: widget.storage),
+            builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("$itemName added successfully.")),
+            SnackBar(content: Text("$categoryName added successfully.")),
           );
         } catch (e) {
           print(e);
           LoadingIndicatorDialog().dismiss();
-          ErrorDialogHelper(context: context).show_alert_dialog(
-              'An error occurred while communicating with the database');
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(content: Text('An error occurred while communicating with the database'));
+              });
         }
       }
     }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import '../../widgets/my_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -20,39 +21,36 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordConfirmationController = TextEditingController();
 
   Future signUp() async {
-    if (passwordConfirmed()) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return Center(
-                child: CircularProgressIndicator(
-              color: Colors.deepPurple[400],
-            ));
-          });
-      try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-        Navigator.of(context).pop();
-      } on FirebaseAuthException catch (e) {
-        Navigator.of(context).pop();
+    if (_passwordController.text.trim() != "" &&
+        _passwordConfirmationController.text.trim() != "" &&
+        _emailController.text.trim() != "") {
+      if (passwordConfirmed()) {
         showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(
-                content: Text(e.message.toString()),
-              );
+              return Center(
+                  child: CircularProgressIndicator(
+                color: Colors.deepPurple[400],
+              ));
             });
+        try {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
+          Navigator.of(context).pop();
+        } on FirebaseAuthException catch (e) {
+          Navigator.of(context).pop();
+          ErrorDialogHelper(context: context)
+              .show_alert_dialog(e.message.toString());
+        }
+      } else {
+        ErrorDialogHelper(context: context).show_alert_dialog(
+            'Password confirmation did not match. Please try again.');
       }
     } else {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-                content: Text(
-                    'Password confirmation did not match. Please try again.'));
-          });
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          'One or more field was not filled. Please try again.');
     }
   }
 

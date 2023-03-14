@@ -9,52 +9,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
-import 'package:seg_coursework_app/pages/admin/edit_choice_board_item.dart';
+import 'package:seg_coursework_app/pages/admin/edit_choice_board_category.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
 void main() {
-  late DraggableListItem toastItem;
   late DraggableList breakfastCategory;
   late FirebaseAuth mockAuth;
   late FirebaseFirestore mockFirestore;
   late FirebaseStorage mockStorage;
   late MockUser mockUser;
 
-  Future<void> _createData() async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
-        auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
-
+  Future<void> createData() async {
     await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
       'name': "Breakfast",
       'illustration': "food.jpeg",
       'userId': mockUser.uid,
-      'rank': 0,
-      'is_available': false,
+      'rank': 0
     });
-
-    CollectionReference items = mockFirestore.collection('items');
-
-    items.doc(toastItem.id).set({
-      'name': toastItem.name,
-      'illustration': toastItem.imageUrl,
-      'is_available': true,
-      'userId': mockUser.uid
-    });
-
-    await firebaseFunctions.createCategoryItem(
-        name: toastItem.name,
-        imageUrl: toastItem.imageUrl,
-        categoryId: breakfastCategory.id,
-        itemId: toastItem.id);
   }
 
   setUpAll(() {
-    toastItem = testCategories.first.items.first;
     breakfastCategory = testCategories.first;
 
     mockUser = MockUser(uid: "user1");
@@ -69,23 +47,22 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-              home: EditChoiceBoardItem(
-            itemId: toastItem.id,
-            itemImageUrl: toastItem.imageUrl,
-            itemName: toastItem.imageUrl,
-            isTestMode: true,
+              home: EditChoiceBoardCategory(
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: "food.jpeg",
+            categoryName: "food.jpeg",
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
 
-      expect(find.byKey(const ValueKey("itemImageCard")), findsOneWidget);
+      expect(find.byKey(const ValueKey("categoryImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
       expect(
           find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
       expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);
-      expect(find.byKey(const ValueKey("itemNameField")), findsOneWidget);
-      expect(find.byKey(const ValueKey("editItemButton")), findsOneWidget);
+      expect(find.byKey(const ValueKey("categoryNameField")), findsOneWidget);
+      expect(find.byKey(const ValueKey("editCategoryButton")), findsOneWidget);
     });
   });
 
@@ -95,19 +72,18 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-              home: EditChoiceBoardItem(
-            itemId: toastItem.id,
-            itemImageUrl: toastItem.imageUrl,
-            itemName: toastItem.imageUrl,
-            isTestMode: true,
+              home: EditChoiceBoardCategory(
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: "food.jpeg",
+            categoryName: "food.jpeg",
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
 
-      await _createData();
+      await createData();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -118,49 +94,47 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-              home: EditChoiceBoardItem(
-            itemId: toastItem.id,
-            itemImageUrl: toastItem.imageUrl,
-            itemName: toastItem.imageUrl,
-            isTestMode: true,
+              home: EditChoiceBoardCategory(
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: "food.jpeg",
+            categoryName: "food",
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
 
-      await _createData();
+      await createData();
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
-      await tester.enterText(nameField, "Eggs");
+      final nameField = find.byKey(ValueKey("categoryNameField"));
+      await tester.enterText(nameField, "Lunch");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
 
-  testWidgets("editing an item that doesn't exist shows error",
+  testWidgets("editing a category that doesn't exist shows error",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-              home: EditChoiceBoardItem(
-            itemId: toastItem.id,
-            itemImageUrl: toastItem.imageUrl,
-            itemName: toastItem.imageUrl,
+              home: EditChoiceBoardCategory(
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: "food.jpeg",
+            categoryName: "food",
             auth: mockAuth,
-            isTestMode: true,
             firestore: mockFirestore,
             storage: mockStorage,
           ))));
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
-      await tester.enterText(nameField, "Eggs");
+      final nameField = find.byKey(ValueKey("categoryNameField"));
+      await tester.enterText(nameField, "Dinner");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });

@@ -90,6 +90,9 @@ void main() {
           findsOneWidget);
       expect(find.byKey(ValueKey("addItemButton-${breakfastCategory.id}")),
           findsOneWidget);
+      expect(
+          find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")),
+          findsOneWidget);
       expect(find.byKey(ValueKey("categoryDrag")), findsWidgets);
     });
   });
@@ -114,8 +117,8 @@ void main() {
           findsOneWidget);
       expect(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")),
           findsOneWidget);
-      expect(
-          find.byKey(ValueKey("switchButton-${toastItem.id}")), findsOneWidget);
+      expect(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")),
+          findsOneWidget);
       expect(find.byKey(ValueKey("itemDrag")), findsWidgets);
     });
   });
@@ -255,7 +258,8 @@ void main() {
     });
   });
 
-  testWidgets("Valid category item switch button works as expected", (WidgetTester tester) async {
+  testWidgets("Valid category item switch button works as expected",
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -269,7 +273,29 @@ void main() {
       await _createData();
 
       await tester
-          .tap(find.byKey(ValueKey("switchButton-${toastItem.id}")));
+          .tap(find.byKey(ValueKey("itemSwitchButton-${toastItem.id}")));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("Valid category item switch button works as expected",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: AdminChoiceBoards(
+            draggableCategories: testCategories,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+      await _createData();
+
+      await tester.tap(
+          find.byKey(ValueKey("categorySwitchButton-${breakfastCategory.id}")));
       await tester.pumpAndSettle();
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);

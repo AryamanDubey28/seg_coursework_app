@@ -110,8 +110,11 @@ class FirebaseFunctions {
 
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
-  Future deleteImageFromCloud({required String imageUrl}) {
-    return storage.refFromURL(imageUrl).delete().onError((error, stackTrace) {
+  Future deleteImageFromCloud({required String imageUrl}) async {
+    return storage
+        .refFromURL(imageUrl)
+        .delete()
+        .catchError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
   }
@@ -119,9 +122,8 @@ class FirebaseFunctions {
   /// Take an image and upload it to Firestore Cloud Storage with
   /// a unique name. Return the URL of the image from the cloud
   Future<String?> uploadImageToCloud(
-      {required File image, required String itemName}) async {
-    String uniqueName =
-        itemName + DateTime.now().millisecondsSinceEpoch.toString();
+      {required File image, required String name}) async {
+    String uniqueName = name + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
     Reference imageRef = storage.ref().child('images').child(uniqueName);
     try {
@@ -171,6 +173,14 @@ class FirebaseFunctions {
         await categoryItemReference.update({'illustration': newImageUrl});
       }
     }
+  }
+
+  /// Behaves as an assertion to check that an item exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> itemExists({required String itemId}) async {
+    DocumentSnapshot item =
+        await firestore.collection('items').doc(itemId).get();
+    return item.exists;
   }
 
   // #### Deleting items functions ####
@@ -225,10 +235,107 @@ class FirebaseFunctions {
     }
   }
 
+  // #### Adding categories functions ####
+
+  /// Add a new entry to the 'categories' collection in Firestore with
+  /// the given item information. Return the created category's id
+  Future<String> createCategory(
+      {required String name, required String imageUrl}) async {
+    CollectionReference categories = firestore.collection('categories');
+
+    return categories
+        .add({
+          'userId': auth.currentUser!.uid,
+          'title': name,
+          'illustration': imageUrl,
+          'rank': await getNewCategoryRank(uid: auth.currentUser!.uid),
+          "is_available": true
+        })
+        .then((category) => category.id)
+        .catchError((error, stackTrace) {
+          return throw FirebaseException(plugin: stackTrace.toString());
+        });
+  }
+
+  /// Return an appropriate rank for a new category
+  /// (one more than the highest rank or zero if empty)
+  Future<int> getNewCategoryRank({required String uid}) async {
+    final QuerySnapshot querySnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: uid)
+        .get();
+    return querySnapshot.size;
+  }
+
+  // #### Editing categories functions ####
+
+  /// Update category title with new name
+  Future updateCategoryName(
+      {required String categoryId, required String newName}) {
+    CollectionReference categories = firestore.collection('categories');
+
+    return categories
+        .doc(categoryId)
+        .update({'title': newName}).catchError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  /// Change category image to new provided image
+  Future updateCategoryImage(
+      {required String categoryId, required String newImageUrl}) {
+    CollectionReference categories = firestore.collection('categories');
+
+    return categories
+        .doc(categoryId)
+        .update({'illustration': newImageUrl}).catchError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  /// Behaves as an assertion to check that a category exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> categoryExists({required String categoryId}) async {
+    DocumentSnapshot category =
+        await firestore.collection('categories').doc(categoryId).get();
+    return category.exists;
+  }
+
+  // #### Deleting categories functions ####
+
+  /// Return the rank field of a category given the categoryId and
+  Future<dynamic> getCategoryRank({required String categoryId}) {
+    return firestore
+        .collection('categories')
+        .doc(categoryId)
+        .get()
+        .then((category) {
+      return category.get("rank");
+    }).onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  /// Decrement ranks of higher ranking categories
+  Future updateAllCategoryRanks({required int removedRank}) async {
+    final QuerySnapshot querySnapshot = await firestore
+        .collection('categories')
+        .where('userId', isEqualTo: auth.currentUser!.uid)
+        .where('rank', isGreaterThan: removedRank)
+        .get();
+
+    for (final DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      final DocumentReference documentReference =
+          firestore.collection('categories').doc(documentSnapshot.id);
+      await documentReference
+          .update({'rank': documentSnapshot.get('rank') - 1});
+    }
+  }
+
   /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
-      {required String itemKey, required bool currentValue}) async {
+      {required String itemKey, required bool newAvailabilityValue}) async {
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
@@ -249,7 +356,7 @@ class FirebaseFunctions {
             .collection('categoryItems/${category.id}/items')
             .doc(item.id);
 
-        await itemReference.update({"is_available": !currentValue});
+        await itemReference.update({"is_available": newAvailabilityValue});
       }
     }
   }
@@ -271,7 +378,7 @@ class FirebaseFunctions {
           .doc(itemId)
           .update({"is_available": !currentValue!}).then(
         (_) => availabilityMultiPathUpdate(
-            itemKey: itemId, currentValue: currentValue),
+            itemKey: itemId, newAvailabilityValue: !currentValue),
       );
     } catch (e) {
       print(e);
@@ -282,9 +389,9 @@ class FirebaseFunctions {
 
   /// When category reordering occurs, updates the new rank of each category in firebase.
   /// The function creates an ordered list (depending on the ranks) of categories before the reordering,
-  /// applies reordering changes to the list and then upload to firebase the new position 
+  /// applies reordering changes to the list and then upload to firebase the new position
   /// of the categories in the list as their updated ranks.
-  /// 
+  ///
   /// [oldRank] The initial index (position) of the dragged category.
   /// [newRank] The new index (position) of the dragged category.
   Future saveCategoryOrder({required int oldRank, required int newRank}) async {
@@ -321,9 +428,9 @@ class FirebaseFunctions {
 
   /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.
   /// The function creates an ordered list of categoryItems before the reordering,
-  /// applies reordering changes to the list and then upload to firebase the new position 
+  /// applies reordering changes to the list and then upload to firebase the new position
   /// of the categoryItems in the list as their updated ranks.
-  /// 
+  ///
   /// [categoryId] The category concerned by the reordering.
   /// [oldItemIndex] The initial index (position) of the dragged categoryItem.
   /// [newItemIndex] The new index (position) of the dragged categoryItem.
@@ -356,5 +463,58 @@ class FirebaseFunctions {
       return false;
     }
     return true;
+  }
+
+  /// First, the method updates the availability status of the category [categoryId] in the 'categories' collection,
+  /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
+  /// If not, it returns boolean false.
+  Future updateCategoryAvailability({required String categoryId}) async {
+    try {
+      final DocumentReference itemRef =
+          firestore.collection("categories").doc(categoryId);
+      final DocumentSnapshot documentSnapshot = await itemRef.get();
+      final Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+      final bool? currentValue = data["is_available"];
+      // Items collection update
+      await firestore
+          .collection("categories")
+          .doc(categoryId)
+          .update({"is_available": !currentValue!});
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  /// Delete category document from categories collection
+  /// Delete associated categoryItems document
+  Future deleteCategory({required String categoryId}) async {
+    CollectionReference categories = firestore.collection('categories');
+
+    DocumentSnapshot category = await categories.doc(categoryId).get();
+    if (!category.exists) {
+      return throw FirebaseException(plugin: "category does not exist!");
+    }
+
+    await deleteCategoryItems(categoryId: categoryId);
+
+    // ignore: void_checks
+    return categories.doc(categoryId).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  ///Delete a category's associated items.
+  Future deleteCategoryItems({required String categoryId}) async {
+    final QuerySnapshot categoryItemFolder =
+        await firestore.collection('categoryItems/$categoryId/items').get();
+
+    for (final DocumentSnapshot categoryItem in categoryItemFolder.docs) {
+      final DocumentReference categoryItemReference = firestore
+          .collection('categoryItems/$categoryId/items')
+          .doc(categoryItem.id);
+      await categoryItemReference.delete();
+    }
   }
 }
