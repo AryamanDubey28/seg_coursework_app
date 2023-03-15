@@ -20,7 +20,7 @@ class DeleteItemButton extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, required this.imageUrl, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -37,14 +37,6 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   void initState() {
     super.initState();
     firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
-  }
-
-  @override
-  void dispose() {
-    if (!widget.mock) {
-      CheckConnection.stopMonitoring();
-    }
-    super.dispose();
   }
 
   @override
@@ -141,12 +133,14 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       LoadingIndicatorDialog().show(context);
 
       await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.imageUrl);
-      await firestoreFunctions.deleteItem(itemId: widget.itemId);
       await firestoreFunctions.deleteAllCategoryItemsForItem(itemId: widget.itemId); // This function also handles updating ranks of categoryItems
+      await firestoreFunctions.deleteItem(itemId: widget.itemId);
 
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
-      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => AdminChoiceBoards(auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+      ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${widget.itemName} successfully deleted from everywhere.")),

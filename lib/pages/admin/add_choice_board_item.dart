@@ -139,7 +139,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                             key: const Key("useExistingItemButton"),
                             onPressed: () => {
                               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId),
+                                builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId, mock: widget.mock),
                               ))
                             },
                             icon: Icon(Icons.add),

@@ -28,7 +28,7 @@ void main() {
   late FirebaseFunctions firebaseFunctions;
 
   setUpAll(() {
-    breakfastCategoryId = testCategories.first.id;
+    breakfastCategoryId = testCategories.categories.first.id;
 
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
@@ -44,6 +44,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddExistingItem(
+              mock: true,
               categoryId: breakfastCategoryId,
               auth: mockAuth,
               firestore: mockFirestore,
@@ -61,6 +62,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: AddExistingItem(
+            mock: true,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -68,9 +70,9 @@ void main() {
           ))));
 
       await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
       await tester.tap(find.byType(GridTile));
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
       expect(find.byType(SnackBar), findsOneWidget);
@@ -84,6 +86,7 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: AddExistingItem(
+              mock: true,
               categoryId: breakfastCategoryId,
               auth: mockAuth,
               firestore: mockFirestore,

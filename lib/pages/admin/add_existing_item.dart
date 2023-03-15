@@ -16,8 +16,9 @@ class AddExistingItem extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
   late final String categoryId;
+  late final bool mock;
 
-  AddExistingItem({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, required this.categoryId}) {
+  AddExistingItem({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, required this.categoryId, this.mock = false}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -44,7 +45,7 @@ class _AddExistingItem extends State<AddExistingItem> {
         ),
         drawer: const AdminSideMenu(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        body: ItemsGrid(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId));
+        body: ItemsGrid(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId, mock: widget.mock));
   }
 }
 
@@ -55,8 +56,9 @@ class ItemsGrid extends StatelessWidget {
   late final FirebaseStorage storage;
   late final FirebaseFunctions firestoreFunctions;
   late final String categoryId;
+  late final bool mock;
 
-  ItemsGrid({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, required this.categoryId}) {
+  ItemsGrid({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, required this.categoryId, this.mock = false}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -71,6 +73,15 @@ class ItemsGrid extends StatelessWidget {
         if (!snapshot.hasData) return CircularProgressIndicator();
 
         final items = snapshot.data!.docs;
+        if (items.isEmpty) {
+          return Center(
+            child: Text(
+              'No existing items!',
+              style: TextStyle(fontSize: 18.0),
+            ),
+          );
+        }
+
         return Padding(
           padding: const EdgeInsets.all(30),
           child: GridView.builder(
@@ -85,21 +96,7 @@ class ItemsGrid extends StatelessWidget {
               final imageUrl = item['illustration'];
               return GestureDetector(
                 onTap: () async {
-                  DocumentSnapshot categoryItem = await firestore.collection('categoryItems/$categoryId/items').doc(item.id).get();
-                  // Only create new categoryItem for item if it doens't already exist
-                  if (!categoryItem.exists) {
-                    await firestoreFunctions.createCategoryItem(name: item['name'], imageUrl: item['illustration'], categoryId: categoryId, itemId: item.id);
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => AdminChoiceBoards(draggableCategories: devCategories, auth: auth, firestore: firestore, storage: storage),
-                    ));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("${item['name']} added to category!")),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("${item['name']} already exists in this category!")),
-                    );
-                  }
+                  addItemAsCategoryItem(item: item, context: context);
                 },
                 child: GridTile(
                   key: ValueKey(item.id),
@@ -117,5 +114,30 @@ class ItemsGrid extends StatelessWidget {
         );
       },
     );
+  }
+
+  void addItemAsCategoryItem({required QueryDocumentSnapshot<Object?> item, required BuildContext context}) async {
+    DocumentSnapshot categoryItem = await firestore.collection('categoryItems/$categoryId/items').doc(item.id).get();
+    // Only create new categoryItem for item if it doens't already exist
+    if (!categoryItem.exists) {
+      await firestoreFunctions.createCategoryItem(name: item['name'], imageUrl: item['illustration'], categoryId: categoryId, itemId: item.id);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) {
+          if (mock) {
+            return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: auth, firestore: firestore, storage: storage);
+          } else {
+            return AdminChoiceBoards();
+          }
+        },
+      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${item['name']} added to category!")),
+      );
+    } else {
+      // If categoryItem already exists for this item, don't add as duplicate
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${item['name']} already exists in this category!")),
+      );
+    }
   }
 }

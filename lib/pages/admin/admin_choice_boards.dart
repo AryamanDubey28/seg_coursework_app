@@ -236,6 +236,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
                           categoryId: category.id,
                           itemId: item.id,
                           itemName: item.name,
+                          imageUrl: item.imageUrl,
                           key: Key("deleteItemButton-${item.id}"),
                           auth: widget.auth,
                           firestore: widget.firestore,

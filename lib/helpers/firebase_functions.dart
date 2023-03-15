@@ -196,8 +196,8 @@ class FirebaseFunctions {
       for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
         final DocumentReference categoryItemReference = firestore.collection('categoryItems/${category.id}/items').doc(categoryItem.id);
 
+        await updateCategoryItemsRanks(categoryId: category.id, removedRank: await getCategoryItemRank(categoryId: category.id, itemId: itemId));
         await categoryItemReference.delete();
-        await updateCategoryRanks(categoryId: category.id, removedRank: await getCategoryRank(categoryId: category.id));
       }
     }
   }
