@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/delete_category_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
@@ -55,6 +56,15 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
       _futureUserCategories; // holds the user categories (if not mocking)
 
   @override
+  void dispose() {
+    if (!widget.mock) {
+      print("\n\nGETS HERE??\n\n");
+      CheckConnection.stopMonitoring();
+    }
+    super.dispose();
+  }
+
+  @override
   Future<void> load() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(
         auth: widget.auth,
@@ -64,7 +74,20 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
     if (widget.testCategories != null) {
       categories = widget.testCategories!.getList().map(buildCategory).toList();
     } else {
-      _futureUserCategories = await firebaseFunctions.getUserCategories();
+      if (CheckConnection.isDeviceConnected) {
+        // The device has internet connection.
+        // get the data from Firebase and store in the cache
+        _futureUserCategories =
+            await firebaseFunctions.downloadUserCategories();
+
+        await firebaseFunctions.storeCategoriesInCache(
+            userCategories: _futureUserCategories);
+      } else {
+        // The device has no internet connection.
+        // get the data the cache
+        _futureUserCategories =
+            await firebaseFunctions.getUserCategoriesFromCache();
+      }
       categories = _futureUserCategories.getList().map(buildCategory).toList();
     }
   }

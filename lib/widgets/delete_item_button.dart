@@ -121,6 +121,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       // go back to choice boards page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => AdminChoiceBoards(
+            mock: widget.mock,
             auth: widget.auth,
             firestore: widget.firestore,
             storage: widget.storage),

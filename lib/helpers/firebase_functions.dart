@@ -586,22 +586,9 @@ class FirebaseFunctions {
     }
   }
 
-  /// Retrieve the user's choice boards data depending on their connection:
-  /// - if connected to the internet:
-  ///   - download the data from Firebase
-  ///   - store it in the cache and return it
-  /// - if not connected to the internet:
-  ///   - return the data that's in the cache
-  ///   - Throw an exception if the cache is empty
-  Future<Categories> getUserCategories() async {
-    if (CheckConnection.isDeviceConnected) {
-      // The device has internet connection.
-      Categories userCategories = await downloadUserCategories();
-      await storeCategoriesInCache(userCategories: userCategories);
-      return userCategories;
-    }
-
-    // The device has no internet connection.
+  /// Return the user's choice boards data that's in the cache.
+  /// Throw an exception if the cache is empty
+  Future<Categories> getUserCategoriesFromCache() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? categoriesJson =
         prefs.getString('${auth.currentUser!.uid}-categories');
