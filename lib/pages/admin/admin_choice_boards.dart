@@ -58,7 +58,6 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
   @override
   void dispose() {
     if (!widget.mock) {
-      print("\n\nGETS HERE??\n\n");
       CheckConnection.stopMonitoring();
     }
     super.dispose();
