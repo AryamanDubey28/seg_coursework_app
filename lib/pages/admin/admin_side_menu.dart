@@ -103,7 +103,9 @@ class AdminSideMenu extends StatelessWidget {
                         true); //isInChildMode boolean set to true as we are entering
                     final String pin = await auth.getCurrentUserPIN();
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => CustomizableColumn(),
+                      builder: (context) => CustomizableColumn(
+                        mock: mock,
+                      ),
                     ));
                   } else {
                     show_alert_dialog(context,
@@ -112,7 +114,9 @@ class AdminSideMenu extends StatelessWidget {
                 } else {
                   print("mocking");
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => CustomizableColumn(),
+                    builder: (context) => CustomizableColumn(
+                      mock: mock,
+                    ),
                   ));
                 }
               }),

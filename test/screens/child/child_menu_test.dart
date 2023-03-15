@@ -34,7 +34,6 @@ void main() {
     auth = Auth(auth: _mockAuth);
   });
   testWidgets('Test column (with rows) is present', (tester) async {
-<<<<<<< HEAD
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -43,15 +42,6 @@ void main() {
               mock: true,
             ),
           )));
-=======
-    await tester.pumpWidget(ThemeProvider(
-        themeNotifier: CustomTheme(),
-        child: MaterialApp(
-          home: CustomizableColumn(
-            mock: true,
-          ), //mock PIN
-        )));
->>>>>>> master
 
       expect(find.byType(CustomizableColumn), findsWidgets);
       expect(find.byType(CustomizableRow), findsWidgets);
@@ -66,15 +56,9 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-<<<<<<< HEAD
             home: CustomizableRow(
                 categoryTitle: "Title",
                 imagePreviews: test_list_clickable_images),
-=======
-            home: CustomizableRow(categoryTitle: "Title", imagePreviews: [
-              Image.asset("test/assets/test_image.png"),
-            ]),
->>>>>>> master
           )));
 
       await tester.tap(find.byType(CustomizableRow));

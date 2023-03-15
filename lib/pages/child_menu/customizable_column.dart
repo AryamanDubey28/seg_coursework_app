@@ -38,15 +38,14 @@ class CustomizableColumn extends StatefulWidget {
 }
 
 class _CustomizableColumnState extends State<CustomizableColumn> {
-  // List of categories, their titles, and images within them
-  late TextEditingController pin_controller;
+  TextEditingController pin_controller = TextEditingController();
   late Key key;
   late Timer timer;
 
   @override
   void initState() {
     super.initState();
-    pin_controller = TextEditingController();
+    //pin_controller = TextEditingController();
     key = Key("CustomizableColumn");
     timer = Timer.periodic(Duration(seconds: 5), (timer) {
       setState(
@@ -76,35 +75,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     }
     return categories;
   }
-
-  final List<Map<String, dynamic>> rowConfigs = [
-    {
-      'categoryTitle': 'Category 1',
-      'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-      ],
-    },
-    {
-      'categoryTitle': 'Category 2',
-      'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-      ],
-    },
-    {
-      'categoryTitle': 'Category 3',
-      'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-      ],
-    },
-  ];
 
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
@@ -173,7 +143,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   @override
   Widget build(BuildContext context) {
     if (!widget.mock) {
-      print("-------------> NOT mocking as mock value = ${widget.mock}");
       FirebaseFunctions firebaseFunctions = FirebaseFunctions(
           auth: FirebaseAuth.instance,
           firestore: FirebaseFirestore.instance,
@@ -223,7 +192,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
       );
     } else {
       //mocking therefore show base layout
-      print("-------------> mocking");
       return Scaffold(
         appBar: AppBar(
           title: Text("Child Mode"),

@@ -54,7 +54,9 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: CustomizableColumn(),
+            home: CustomizableColumn(
+              mock: true,
+            ),
           )));
 
       // Verify that the CustomizableColumn page is displayed
