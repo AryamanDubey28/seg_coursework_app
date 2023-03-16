@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
@@ -402,7 +403,10 @@ class FirebaseFunctions {
   /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
   Future availabilityMultiPathUpdate(
-      {required String itemKey, required bool newAvailabilityValue}) async {
+      {required String itemKey,
+      required bool newAvailabilityValue,
+      required VoidCallback refresh}) async {
+    var numOfUpdates;
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
@@ -418,6 +422,8 @@ class FirebaseFunctions {
           .where(FieldPath.documentId, isEqualTo: itemKey)
           .get();
 
+      numOfUpdates = categoryItemsSnapshot.size + 1;
+
       for (final DocumentSnapshot item in categoryItemsSnapshot.docs) {
         final DocumentReference itemReference = firestore
             .collection('categoryItems/${category.id}/items')
@@ -426,12 +432,16 @@ class FirebaseFunctions {
         await itemReference.update({"is_available": newAvailabilityValue});
       }
     }
+    if (numOfUpdates > 1) {
+      refresh();
+    }
   }
 
   /// First, the method updates the availability status of the item [itemId] in the 'items' collection,
   /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
   /// If not, it returns boolean false.
-  Future updateItemAvailability({required String itemId}) async {
+  Future updateItemAvailability(
+      {required String itemId, required VoidCallback refresh}) async {
     try {
       final DocumentReference itemRef =
           firestore.collection("items").doc(itemId);
@@ -445,7 +455,9 @@ class FirebaseFunctions {
           .doc(itemId)
           .update({"is_available": !currentValue!}).then(
         (_) => availabilityMultiPathUpdate(
-            itemKey: itemId, newAvailabilityValue: !currentValue),
+            itemKey: itemId,
+            newAvailabilityValue: !currentValue,
+            refresh: refresh),
       );
     } catch (e) {
       print(e);
