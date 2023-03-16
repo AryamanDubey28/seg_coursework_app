@@ -8,10 +8,13 @@ import 'loading_indicator.dart';
 
 
 class SaveTimetableDialog extends StatefulWidget {
-  SaveTimetableDialog({super.key, required this.imagesList, required this.saveTimetable});
+  
+
+  SaveTimetableDialog({super.key, required this.imagesList, required this.saveTimetable, this.isMock = false});
   
   List<ImageDetails> imagesList;
   Function saveTimetable;
+  final bool isMock;
 
   @override
   State<SaveTimetableDialog> createState() => _SaveTimetableDialogState();
@@ -23,7 +26,9 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
 
   @override
   void dispose() {
-    CheckConnection.stopMonitoring();
+    if(!widget.isMock) {
+      CheckConnection.stopMonitoring();
+    }
     super.dispose();
   }
 
@@ -39,6 +44,7 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
         content: Form(
           key: _formKey,
           child: TextFormField(
+            key: Key("titleField"),
             maxLength: 30,
             controller: _textEditingController,
             decoration: InputDecoration(hintText: 'Timetable title'),
@@ -66,13 +72,14 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
             },
           ),
           TextButton(
+            key: Key("submitButton"),
             child: Text('Submit'),
             onPressed: () async {
               if(!_formKey.currentState!.validate()) {
                 SnackBarManager.showSnackBarMessage(context, "Title is not valid!");
                 return;
               }
-              if(!CheckConnection.isDeviceConnected)
+              if(!widget.isMock && !CheckConnection.isDeviceConnected)
               {
                 SnackBarManager.showSnackBarMessage(context, "Cannot save timetable. No connection.");
                 return;
@@ -80,9 +87,14 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
                 
               String title = _textEditingController.text;
               _textEditingController.clear();
-              LoadingIndicatorDialog().show(context, text: "Saving timetable...");
+              if(!widget.isMock)
+              {
+                LoadingIndicatorDialog().show(context, text: "Saving timetable...");
+              }
               await widget.saveTimetable(timetable: Timetable(title: title, listOfImages: widget.imagesList));
-              LoadingIndicatorDialog().dismiss();
+              if (!widget.isMock) {
+                LoadingIndicatorDialog().dismiss();
+              }
               SnackBarManager.showSnackBarMessage(context, "Timetable saved successfully");
               Navigator.pop(context);
             },

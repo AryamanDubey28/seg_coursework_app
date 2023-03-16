@@ -14,10 +14,10 @@ import '../../widgets/timetable_list_dialog.dart';
 import '../../widgets/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
-  const AllSavedTimetables({super.key, 
-  // required this.savedTimetables
-  });
-  // final ListOfTimetables savedTimetables;
+  final FirebaseFunctions firestoreFunctions;
+  final bool isMock;
+
+  const AllSavedTimetables({super.key, required this.firestoreFunctions, this.isMock = false});
 
   @override
   State<AllSavedTimetables> createState() => _AllSavedTimetablesState();
@@ -28,15 +28,11 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
 
   ListOfTimetables savedTimetables = ListOfTimetables(listOfLists: []);
 
-  FirebaseFunctions firestoreFunctions = FirebaseFunctions(
-        auth: FirebaseAuth.instance,
-        firestore: FirebaseFirestore.instance,
-        storage: FirebaseStorage.instance
-        );
-
   @override
   void dispose() {
-    CheckConnection.startMonitoring();
+    if (!widget.isMock) {
+      CheckConnection.stopMonitoring();
+    }
     super.dispose();
   }
 
@@ -51,16 +47,14 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
       _fetchTimetables(),
     ]);
 
-    setState(() {
-    //   _isPictureGridLoaded = true;
-    });
+    setState(() {});
   }
 
   Future<void> _fetchTimetables() async
   {
     try 
     {
-      savedTimetables = await firestoreFunctions.getListOfTimetables();
+      savedTimetables = await widget.firestoreFunctions.getListOfTimetables();
     } 
     catch(e) 
     {
@@ -71,11 +65,14 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
 
   void expandTimetable(Timetable test)
   {
+    final isLandscapeMode = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
     showDialog(
       context: context,
       builder: (_) {
         return Dialog(
-          child: TimetableListDialog(timetable: test),
+          child: Center(
+            child: TimetableListDialog(timetable: test)
+            ),
         );
       }
     );
@@ -85,16 +82,20 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
   ///This function is fed into the TimetableRow and will unsave the timetable from the list of saved timetables.
   void unsaveList(int index) async
   {
-    if(!CheckConnection.isDeviceConnected)
+    if(!widget.isMock && !CheckConnection.isDeviceConnected)
     {
       SnackBarManager.showSnackBarMessage(context, "Cannot remove timetable. No connection.");
       return;
     }
 
-    LoadingIndicatorDialog().show(context, text: "Deleting timetable...");
-      await firestoreFunctions.deleteWorkflow(timetable: savedTimetables[index]);
+    if(!widget.isMock) {
+      LoadingIndicatorDialog().show(context, text: "Deleting timetable...");
+    }
+    await widget.firestoreFunctions.deleteWorkflow(timetable: savedTimetables[index]);
     
-    LoadingIndicatorDialog().dismiss();
+    if(!widget.isMock) {
+      LoadingIndicatorDialog().dismiss();
+    }
     setState(() {
       savedTimetables.removeAt(index);
     });
@@ -133,7 +134,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
             child: Text('Retry'),
             onPressed: () {
               Navigator.of(context).pushReplacement(
-              MaterialPageRoute (builder: (context) =>  AllSavedTimetables()));
+              MaterialPageRoute (builder: (context) =>  AllSavedTimetables(firestoreFunctions: widget.firestoreFunctions,)));
             }
           ),
         ]
@@ -173,9 +174,4 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
       );
     }
   }
-
-  
-  
-  
 }
-

@@ -16,7 +16,20 @@ import '../../widgets/timetable_list.dart';
 import 'all_saved_timetables.dart';
 
 class VisualTimeTable extends StatefulWidget {
-  const VisualTimeTable({super.key});
+  VisualTimeTable({super.key,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
+      this.isMock = false}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
+
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+  final bool isMock;
 
   @override
   State<VisualTimeTable> createState() => _VisualTimeTableState();
@@ -25,15 +38,26 @@ class VisualTimeTable extends StatefulWidget {
 /// The page for the admin to show the choice boards and make a timetable from that
 class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<VisualTimeTable> {
 
-  FirebaseFunctions firestoreFunctions = FirebaseFunctions(
-        auth: FirebaseAuth.instance,
-        firestore: FirebaseFirestore.instance,
-        storage: FirebaseStorage.instance
+
+  late FirebaseFunctions firestoreFunctions;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage
         );
+
+  }
 
   @override
   void dispose() {
-    CheckConnection.stopMonitoring();
+    if(!widget.isMock) {
+      CheckConnection.stopMonitoring();
+    }
     super.dispose();
   }
 
@@ -106,7 +130,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
   ///This function returns a hide/show button (for the PictureGrid.)
   FloatingActionButton buildHideButton() {
     return FloatingActionButton(
-      heroTag: "hideShowButton",
+      heroTag: "hideShowButton1",
       key: const Key("hideShowButton"),
       onPressed: _toggleGrid,
       tooltip: 'Show/Hide',
@@ -127,14 +151,29 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
         Icons.add,
       ),
       onPressed: () {
-        CheckConnection.isDeviceConnected?
-        showDialog(
-          context: context,
-          builder: (_) => SaveTimetableDialog(imagesList: imagesList, 
-          saveTimetable: firestoreFunctions.saveWorkflowToFirestore,
-          ),
-        )
-        : SnackBarManager.showSnackBarMessage(context, "Cannot save timetable. No connection.");
+        if(!widget.isMock)
+        {
+          CheckConnection.isDeviceConnected?
+          showDialog(
+            context: context,
+            builder: (_) => SaveTimetableDialog(imagesList: imagesList, 
+            saveTimetable: firestoreFunctions.saveWorkflowToFirestore,
+            isMock: widget.isMock,
+            ),
+          )
+          : SnackBarManager.showSnackBarMessage(context, "Cannot save timetable. No connection.");
+        }
+        else
+        {
+          
+          showDialog(
+            context: context,
+            builder: (_) => SaveTimetableDialog(imagesList: imagesList, 
+            saveTimetable: firestoreFunctions.saveWorkflowToFirestore,
+            isMock: widget.isMock,
+            ),
+          );
+        }
       },
     );
   }
@@ -146,6 +185,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       imagesList: imagesList,
       popImagesList: popImagesList
     );
+    final isLandscapeMode = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
 
     if(loading) {
       return Scaffold(
@@ -184,7 +224,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AllSavedTimetables(),
+                    builder: (context) => AllSavedTimetables(firestoreFunctions: firestoreFunctions, isMock: widget.isMock,),
                   ),
                 );
               }, 
@@ -193,39 +233,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
           ],
         ),
         drawer: const AdminSideMenu(),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 4,
-              child: Center(
-                child: Container(
-                  //width here is set depending on the screen size. 6/6 represents the whole screen
-                  // 5/6 allows it to be centered and have a bit of padding on the left and right side.
-                  // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
-                  //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
-                  width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
-                  height: 200,
-                  alignment: Alignment.center,
-                  child: Align(alignment: Alignment.center ,child: timetableList),
-                ),
-              )
-            ),
-            isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
-            Expanded(
-              //This will make the timetable bigger if the PictureGrid is not visible
-              flex: isGridVisible ? 8 : 0,
-              child: Visibility(
-                visible: isGridVisible,
-                child: PictureGrid(
-                  imagesList: filledImagesList, 
-                  updateImagesList: updateImagesList
-                ),
-              ),
-            ),
-          ],
-        ),
-
         //This is to add two floatingActionButtons and allign them to the corners of the screen.
         floatingActionButton: Padding(
           padding: const EdgeInsets.all(8),
@@ -242,6 +249,38 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
               ),
             ],
           ),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              flex: 4,
+              child: Center(
+                child: Container(
+                  //width here is set depending on the screen size. 6/6 represents the whole screen
+                  // 5/6 allows it to be centered and have a bit of padding on the left and right side.
+                  // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
+                  //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
+                  width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
+                  height: isLandscapeMode? MediaQuery.of(context).size.height/4 : MediaQuery.of(context).size.height/6.4,
+                  alignment: Alignment.center,
+                  child: Align(alignment: Alignment.center ,child: timetableList,),
+                ),
+              )
+            ),
+            isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
+            Expanded(
+              //This will make the timetable bigger if the PictureGrid is not visible
+              flex: isGridVisible ? 8 : 0,
+              child: Visibility(
+                visible: isGridVisible,
+                child: PictureGrid(
+                  imagesList: filledImagesList, 
+                  updateImagesList: updateImagesList
+                ),
+              ),
+            ),
+          ],
         ),
       );
     }

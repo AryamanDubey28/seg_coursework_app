@@ -78,7 +78,7 @@ class FirebaseFunctions {
       .get();
 
       if (itemsSnapshot.size == 0) {
-      return throw FirebaseException(plugin: "User has no items");
+      return library;
       }
 
       for (final DocumentSnapshot item in itemsSnapshot.docs) {
@@ -106,7 +106,7 @@ class FirebaseFunctions {
       .get();
       
       if (workflowsSnapshot.size == 0) {
-        return throw FirebaseException(plugin: "User has no timetables");
+        return ListOfTimetables(listOfLists: listOfTimetablesTemp);
       }
       
       for (final DocumentSnapshot workflow in workflowsSnapshot.docs) {

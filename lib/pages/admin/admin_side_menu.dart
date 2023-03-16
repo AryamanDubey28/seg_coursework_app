@@ -74,7 +74,21 @@ class AdminSideMenu extends StatelessWidget {
             title: const Text('Visual Timetable'),
             onTap: () =>
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const VisualTimeTable(),
+              builder: (context) {
+                if(!mock)
+                {
+                  return VisualTimeTable();
+                }
+                else
+                {
+                  return VisualTimeTable(
+                    isMock: mock,
+                    auth: MockFirebaseAuthentication(),
+                    firestore: FakeFirebaseFirestore(),
+                    storage: MockFirebaseStorage(),
+                  );
+                }
+              }
             )),
           ),
           ListTile(

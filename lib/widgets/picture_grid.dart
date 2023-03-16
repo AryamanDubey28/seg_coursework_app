@@ -30,7 +30,7 @@ class _PictureGridState extends State<PictureGrid> {
 
   @override
   Widget build(BuildContext context) {
-    if(_getFilteredItems().isEmpty)
+    if(widget.imagesList.isEmpty)
     {
       return Container(child: Text("No items to show. Add some in the 'Choice Board' page"),);
     }

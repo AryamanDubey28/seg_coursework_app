@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icon_decoration/icon_decoration.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
@@ -8,55 +9,100 @@ import '../themes/themes.dart';
 
 ///This widget builds a timetable with the arrows to be shown in the visual timetable page.
 ///Not to be confused with TimetableRow which is shown in the all saved timetables page.
-class TimetableListDialog extends StatelessWidget {
+class TimetableListDialog extends StatefulWidget {
   const TimetableListDialog({super.key, required this.timetable});
-
   final Timetable timetable;
+
+  @override
+  State<TimetableListDialog> createState() => _TimetableListDialogState();
+}
+
+class _TimetableListDialogState extends State<TimetableListDialog> {
+  Set<int> _selectedIndices = {};
 
   // This function returns the list of images already saved in the timetable.
   Timetable getImagesList()
   {
-    return timetable;
+    return widget.timetable;
   }
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
+    final isLandscapeMode = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
 
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: timetable.length(),
-      itemBuilder: (context, index) {
-        return Row(
-          children: <Widget>[
-            Tooltip(
-              message: timetable.get(index).name,
-              child: ImageSquare(
-                //This width is set to make the image less wide than 1/5 of the screen. FIX LATER
-                width: MediaQuery.of(context).size.width/(timetable.length()+1),
-                height: MediaQuery.of(context).size.height/timetable.length(),
-                key: Key('timetableImage$index'),
-                image: timetable.get(index),
-              ),
-            ),
-            //this is to prevent showing an arrow after the last image.
-            if (index != timetable.length() - 1)
-              //size is set to this arbitrary number to scale the arrows as the screen gets bigger.
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  (themeNotifier.getTheme().iconTheme.color == Colors.white) ?
-                    Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35, color: Colors.black,)
-                    :
-                    Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35, color: Colors.white,),
-                  
-                  Icon(Icons.arrow_right, size: MediaQuery.of(context).size.width/35-10),
-                  
-                ],
-              ),
-          ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          width: (constraints.maxWidth * (5/6) + (constraints.maxWidth/35*4)),
+          height: constraints.maxWidth/(widget.timetable.length()+1),//isLandscapeMode? constraints.maxHeight/4 : constraints.maxHeight/6.4,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: widget.timetable.length(),
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    if(_selectedIndices.contains(index))
+                    {
+                      _selectedIndices.remove(index);
+                    }
+                    else
+                    {
+                      _selectedIndices.add(index);
+                    }
+                  });
+                },
+                child: Stack(
+                  children: <Widget>[
+                    ImageSquare(
+                      //This width is set to make the image less wide than 1/5 of the screen.
+                      width: constraints.maxWidth/(widget.timetable.length()+1),
+                      height: constraints.maxWidth/(widget.timetable.length()+1),//isLandscapeMode? constraints.maxHeight/4 : constraints.maxHeight/6.4,
+                      key: Key('timetableDialogImage$index'),
+                      image: widget.timetable.get(index),
+                    ),
+                    if (_selectedIndices.contains(index))
+                      Positioned.fill(
+                        child: Container(
+                          key: Key("cross$index"),
+                          decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.red.withOpacity(0.5),
+                        ),
+                        width: constraints.maxWidth/6,
+                        height: isLandscapeMode? constraints.maxHeight/4 : constraints.maxHeight/6.4,
+                        clipBehavior: Clip.hardEdge,
+                          child: Center(
+                            child: DecoratedIcon(
+                              decoration: IconDecoration(border: IconBorder(width: 5)),
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.red,
+                                size: (constraints.maxWidth + constraints.maxHeight) / 3 / widget.timetable.length(),
+                              )
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+            //This is so there's no arrow after the last picture.
+            separatorBuilder: (context, index) {
+              bool isWhite = themeNotifier.getTheme().iconTheme.color == Colors.white;
+              return DecoratedIcon(
+                decoration: IconDecoration(border: IconBorder(width: 5, color: isWhite ? Colors.black : Colors.white)),
+                icon: Icon(
+                  Icons.arrow_right,
+                  size: constraints.maxWidth/35
+                )
+              );
+            },
+          ),
         );
-      },
+      }
     );
   }
 }

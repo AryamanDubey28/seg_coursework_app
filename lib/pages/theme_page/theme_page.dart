@@ -53,10 +53,7 @@ class _ThemePageState extends State<ThemePage> {
         }, 
       ),
       body: Center(
-        child: Container(
-          width: 500,
-          child: ThemeGrid(themeList: themeList)
-        )
+        child: ThemeGrid(themeList: themeList)
       ),
     );
   }
