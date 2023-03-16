@@ -13,6 +13,7 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
+import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
@@ -36,34 +37,6 @@ late MockUser mockUser;
 late CategoryItem toastItem;
 late Category breakfastCategory;
 
-Future<void> _createData() async {
-  FirebaseFunctions firebaseFunctions = FirebaseFunctions(
-      auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
-
-  await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
-    'name': "Breakfast",
-    'illustration': "food.jpeg",
-    'userId': mockUser.uid,
-    'is_available': true,
-    'rank': 0
-  });
-
-  CollectionReference items = mockFirestore.collection('items');
-
-  items.doc(toastItem.id).set({
-    'name': toastItem.name,
-    'illustration': toastItem.imageUrl,
-    'is_available': true,
-    'userId': mockUser.uid
-  });
-
-  await firebaseFunctions.createCategoryItem(
-      name: toastItem.name,
-      imageUrl: toastItem.imageUrl,
-      categoryId: breakfastCategory.id,
-      itemId: toastItem.id);
-}
-
 void main() {
   late Auth auth;
   const _email = 'ilyas@yopmail.com';
@@ -76,6 +49,50 @@ void main() {
     displayName: _displayName,
   );
 
+  Future<void> _createData() async {
+    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+        auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
+
+    await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
+      'name': "Breakfast",
+      'illustration': "food.jpeg",
+      'userId': mockUser.uid,
+      'is_available': true,
+      'rank': 0
+    });
+
+    CollectionReference items = mockFirestore.collection('items');
+
+    items.doc(toastItem.id).set({
+      'name': toastItem.name,
+      'illustration': toastItem.imageUrl,
+      'is_available': true,
+      'userId': mockUser.uid
+    });
+
+    await firebaseFunctions.createCategoryItem(
+        name: toastItem.name,
+        imageUrl: toastItem.imageUrl,
+        categoryId: breakfastCategory.id,
+        itemId: toastItem.id);
+  }
+
+  List<List<ClickableImage>> getList(Categories futureUserCategories) {
+    List<List<ClickableImage>> categories = [];
+    for (var category in futureUserCategories.getList()) {
+      List<ClickableImage> data = [];
+      data.add(buildClickableImageFromCategory(category));
+      for (var item in category.items) {
+        data.add(buildClickableImageFromCategoryItem(item));
+      }
+      if (data.length > 1) {
+        //only add category if it contains items
+        categories.add(data);
+      }
+    }
+    return categories;
+  }
+
   setUpAll(() async {
     final MockFirebaseAuth _mockAuth = MockFirebaseAuth();
     final MockFirebaseStorage _mockStorage = MockFirebaseStorage();
@@ -85,14 +102,15 @@ void main() {
         firestore: fakeFirebaseFirestore,
         storage: _mockStorage);
     auth = Auth(auth: _mockAuth);
-    toastItem = testCategories.getList().first.items.first;
-    breakfastCategory = testCategories.getList().first;
+    toastItem = myTestCategories.getList().first.items.first;
+    breakfastCategory = myTestCategories.getList().first;
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
     when(mockAuth.currentUser).thenReturn(mockUser);
   });
+
   testWidgets('Test column (with rows) is present', (tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
@@ -128,6 +146,24 @@ void main() {
       expect(find.byKey(const ValueKey("categoryTitle")), findsWidgets);
       expect(find.byKey(const ValueKey("categoryImage")), findsWidgets);
       expect(find.byKey(const ValueKey("mainGridOfPictures")), findsWidgets);
+    });
+  });
+
+  testWidgets("Categories from database show on Child UI", (tester) async {
+    mockNetworkImagesFor(() async {
+      FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+          auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
+      Categories categories =
+          await firebaseFunctions.getUserCategories(); //get categories from db
+      List<List<ClickableImage>> categories_list = getList(categories);
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: CustomizableColumn(
+            mock: true,
+            testList: categories_list,
+          ))));
+      expect(find.byType(CustomizableRow), findsWidgets);
     });
   });
 

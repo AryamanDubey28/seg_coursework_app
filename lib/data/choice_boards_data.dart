@@ -12,6 +12,45 @@ import '../models/categories.dart';
 
 // These are added to test while development
 // They will later be supplied from the database (TO BE DELETED)
+final List<Category> categories = [
+  Category(
+      title: "Breakfast",
+      rank: 0,
+      id: "0",
+      imageUrl: "breakfast.jpg",
+      availability: true,
+      items: [
+        CategoryItem(
+            availability: true,
+            id: "1",
+            rank: 0,
+            name: "Toast",
+            imageUrl: "Toast.jpg"),
+        CategoryItem(
+            availability: true,
+            id: "2",
+            rank: 1,
+            name: "Fruits",
+            imageUrl: "Fruits.png")
+      ]),
+  Category(
+      id: "3",
+      rank: 1,
+      title: "Activities",
+      imageUrl: "Activities.png",
+      availability: true,
+      items: [
+        CategoryItem(
+            availability: true,
+            rank: 0,
+            id: "4",
+            name: "Football",
+            imageUrl: "Football.jpg"),
+      ])
+];
+
+final Categories myTestCategories = Categories(categories: categories);
+
 final List<DraggableList> devCategories = [
   DraggableList(
       title: "Breakfast",
