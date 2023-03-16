@@ -91,12 +91,6 @@ Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
       storage: FirebaseStorage.instance);
 
   Categories futureUserCategories = await firebaseFunctions.getUserCategories();
-
-  // List<ClickableImage> categories = futureUserCategories
-  //     .getList()
-  //     .map((e) => buildClickableImage(e))
-  //     .toList();
-  //print("categories list = $categories");
   List<List<ClickableImage>> categories = [];
   for (var category in futureUserCategories.getList()) {
     List<ClickableImage> data = [];
@@ -104,7 +98,10 @@ Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
     for (var item in category.items) {
       data.add(buildClickableImageFromCategoryItem(item));
     }
-    categories.add(data);
+    if (data.length > 1) {
+      //only add category if it contains items
+      categories.add(data);
+    }
   }
   return categories;
 }
@@ -173,9 +170,25 @@ final List<Map<String, dynamic>> rowConfigs = [
   },
 ];
 
-final List<ClickableImage> test_list_clickable_images = [
+final List<List<ClickableImage>> test_list_clickable_images = [
+  [test_pic1, test_pic1, test_pic1, test_pic1],
+  [
+    test_pic1,
+    test_pic1,
+  ],
+  [
+    test_pic1,
+    test_pic1,
+  ],
+];
+
+final List<ClickableImage> imageRow = [
   test_pic1,
   test_pic1,
   test_pic1,
   test_pic1
+];
+
+final List<List<ClickableImage>> test_list_clickable_images_zero = [
+  [test_pic1]
 ];

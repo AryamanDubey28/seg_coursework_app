@@ -13,7 +13,6 @@ class ClickableImage {
   factory ClickableImage.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     final data = documentSnapshot.data()!;
-    print("3");
     return ClickableImage(
         name: data["title"],
         imageUrl: data["illustration"],

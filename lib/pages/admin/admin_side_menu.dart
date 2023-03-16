@@ -98,6 +98,7 @@ class AdminSideMenu extends StatelessWidget {
                   final auth = Auth(auth: FirebaseAuth.instance);
                   bool check = await auth.checkPINExists();
                   if (check) {
+                    //PIN exists
                     final pref = await SharedPreferences.getInstance();
                     pref.setBool("isInChildMode",
                         true); //isInChildMode boolean set to true as we are entering
@@ -112,7 +113,6 @@ class AdminSideMenu extends StatelessWidget {
                         "Please first create a PIN in the 'Edit Account Details' section");
                   }
                 } else {
-                  print("mocking");
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => CustomizableColumn(
                       mock: mock,

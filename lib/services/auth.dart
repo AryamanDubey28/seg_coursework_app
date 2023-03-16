@@ -35,7 +35,6 @@ class Auth {
   }
 
   Future<String> getCurrentUserPIN() async {
-    print("fetching PIN from auth class");
     try {
       final query = FirebaseFirestore.instance
           .collection('userPins')
@@ -55,11 +54,9 @@ class Auth {
       Admin admin = Admin(user: auth.currentUser);
       String pin =
           (!mock) ? await getCurrentUserPIN() : await admin.getCurrentUserPIN();
-      print("---------> pin = $pin");
       return pin.length == 4 &&
           num.tryParse(pin) != null; // unless PIN is 4 digits, return false
     } else {
-      print("User does not exist");
       return false;
     }
   }
@@ -69,7 +66,6 @@ class Auth {
       try {
         if (pin.length == 4 && num.tryParse(pin) != null) {
           if (!mock) {
-            print("--------> Not mocking in Auth");
             final docUser =
                 FirebaseFirestore.instance.collection('userPins').doc();
 
@@ -80,7 +76,6 @@ class Auth {
             };
             await docUser.set(entry); //adds PIN to database
           } else {
-            print("--------> Mocking in Auth");
             Admin admin = Admin(user: auth.currentUser);
             admin.createUserPIN(pin);
           }

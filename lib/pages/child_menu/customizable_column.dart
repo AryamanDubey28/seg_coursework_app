@@ -30,8 +30,10 @@ import 'customizable_row.dart';
 
 class CustomizableColumn extends StatefulWidget {
   final bool mock;
-
-  CustomizableColumn({this.mock = false});
+  static int customizableColumnRequestCounter = 0; //used for testing
+  List<List<ClickableImage>> testList; //used for testing
+  CustomizableColumn({this.mock = false, testList})
+      : testList = testList ?? test_list_clickable_images;
 
   @override
   State<CustomizableColumn> createState() => _CustomizableColumnState();
@@ -45,7 +47,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   @override
   void initState() {
     super.initState();
-    //pin_controller = TextEditingController();
     key = Key("CustomizableColumn");
     timer = Timer.periodic(Duration(seconds: 5), (timer) {
       setState(
@@ -57,7 +58,8 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   void dispose() {
     pin_controller.dispose();
     super.dispose();
-    timer.cancel();
+    timer
+        .cancel(); //cancels timer so it does not keep refreshing in the background
   }
 
   List<List<ClickableImage>> getList(Categories futureUserCategories) {
@@ -107,12 +109,14 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         final pref = await SharedPreferences.getInstance();
         pref.setBool("isInChildMode",
             false); //isInChildMode boolean set to false as we are leaving
+        Navigator.pop(context);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => AdminChoiceBoards(
                     draggableCategories: devCategories,
-                  )),
+                  ),
+              maintainState: false),
         );
       } else {
         Navigator.of(context).pop();
@@ -164,13 +168,13 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             )
           ],
         ),
-        body: StreamBuilder(
-          stream: firebaseFunctions
-              .getUserCategoriesAsStream(), //retrieves a list from the database of categories and items associated with the category
+        body: FutureBuilder(
+          future:
+              getListFromChoiceBoards(), //retrieves a list from the database of categories and items associated with the category
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              Categories temp_categories = snapshot.data as Categories;
-              List<List<ClickableImage>> categories = getList(temp_categories);
+              List<List<ClickableImage>> categories =
+                  snapshot.data as List<List<ClickableImage>>;
               return ListView.separated(
                 itemBuilder: (context, index) {
                   return CustomizableRow(
@@ -185,27 +189,28 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
                 },
               );
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
           },
         ),
       );
     } else {
       //mocking therefore show base layout
+      List<List<ClickableImage>> mockingList = widget.testList;
+      CustomizableColumn.customizableColumnRequestCounter++;
       return Scaffold(
-        appBar: AppBar(
-          title: Text("Child Mode"),
-          automaticallyImplyLeading: false,
-        ),
+        appBar: AppBar(),
         body: ListView.separated(
           itemBuilder: (context, index) {
-            return CustomizableRow(
-              key: Key("row$index"),
-              categoryTitle: rowConfigs[index]['categoryTitle'],
-              imagePreviews: rowConfigs[index]['images'],
-            );
+            if (mockingList[index].length > 1) {
+              return CustomizableRow(
+                key: Key("row$index"),
+                categoryTitle: mockingList[index][0].name,
+                imagePreviews: mockingList[index],
+              );
+            }
           },
-          itemCount: rowConfigs.length,
+          itemCount: mockingList.length,
           separatorBuilder: (context, index) {
             return Divider(height: 2);
           },
@@ -213,33 +218,75 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
       );
     }
 
-    // return Scaffold(
-    //   appBar: AppBar(),
-    //   body: StreamBuilder(
-    //     stream:
-    //         getListFromChoiceBoards(), //retrieves a list from the database of categories and items associated with the category
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData) {
-    //         List<List<ClickableImage>> snapshotDataList =
-    //             snapshot.data as List<List<ClickableImage>>;
-    //         return ListView.separated(
-    //           itemBuilder: (context, index) {
-    //             return CustomizableRow(
-    //               key: Key("row$index"),
-    //               categoryTitle: snapshotDataList[index][0].name,
-    //               imagePreviews: snapshotDataList[index],
-    //             );
-    //           },
-    //           itemCount: snapshotDataList.length,
-    //           separatorBuilder: (context, index) {
-    //             return Divider(height: 2);
-    //           },
-    //         );
-    //       } else {
-    //         return CircularProgressIndicator();
-    //       }
-    //     },
-    //   ),
-    // );
+    // if (!widget.mock) {
+    //   FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+    //       auth: FirebaseAuth.instance,
+    //       firestore: FirebaseFirestore.instance,
+    //       storage: FirebaseStorage.instance);
+    //   return Scaffold(
+    //     appBar: AppBar(
+    //       title: Text("Child Mode"),
+    //       automaticallyImplyLeading: false,
+    //       actions: [
+    //         Padding(
+    //           padding: const EdgeInsets.only(right: 20.0),
+    //           child: GestureDetector(
+    //               key: Key("logoutButton"),
+    //               //only triggers when its pressed for some time and swiped up
+    //               onLongPressUp: () async {
+    //                 openLogoutDialog(context);
+    //               },
+    //               child: Icon(Icons.exit_to_app)),
+    //         )
+    //       ],
+    //     ),
+    //     body: StreamBuilder(
+    //       stream: firebaseFunctions
+    //           .getUserCategoriesAsStream(), //retrieves a list from the database of categories and items associated with the category
+    //       builder: (context, snapshot) {
+    //         if (snapshot.hasData) {
+    //           Categories temp_categories = snapshot.data as Categories;
+    //           List<List<ClickableImage>> categories = getList(temp_categories);
+    //           return ListView.separated(
+    //             itemBuilder: (context, index) {
+    //               return CustomizableRow(
+    //                 key: Key("row$index"),
+    //                 categoryTitle: categories[index][0].name,
+    //                 imagePreviews: categories[index],
+    //               );
+    //             },
+    //             itemCount: categories.length,
+    //             separatorBuilder: (context, index) {
+    //               return Divider(height: 2);
+    //             },
+    //           );
+    //         } else {
+    //           return CircularProgressIndicator();
+    //         }
+    //       },
+    //     ),
+    //   );
+    // } else {
+    //   //mocking therefore show base layout
+    //   List<List<ClickableImage>> mockingList = widget.testList;
+    //   return Scaffold(
+    //     appBar: AppBar(),
+    //     body: ListView.separated(
+    //       itemBuilder: (context, index) {
+    //         if (mockingList[index].length > 1) {
+    //           return CustomizableRow(
+    //             key: Key("row$index"),
+    //             categoryTitle: mockingList[index][0].name,
+    //             imagePreviews: mockingList[index],
+    //           );
+    //         }
+    //       },
+    //       itemCount: mockingList.length,
+    //       separatorBuilder: (context, index) {
+    //         return Divider(height: 2);
+    //       },
+    //     ),
+    //   );
+    // }
   }
 }
