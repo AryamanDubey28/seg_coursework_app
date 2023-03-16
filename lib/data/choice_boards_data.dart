@@ -12,6 +12,7 @@ final List<Category> devCategories = [
   Category(id: "JSgepdChaNV0hCMGDrIb", rank: 2, title: "Lunch", availability: true, imageUrl: "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/02/18/16/hawksmoor-express-lunch-1802a.jpg?width=968", items: [CategoryItem(availability: true, rank: 0, id: "placeholder", name: "Butter chicken", imageUrl: "https://www.cookingclassy.com/wp-content/uploads/2021/01/butter-chicken-4.jpg"), CategoryItem(availability: true, rank: 1, id: "placeholder", name: "Fish and chips", imageUrl: "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"), CategoryItem(availability: true, rank: 2, id: "placeholder", name: "burgers", imageUrl: "https://burgerandbeyond.co.uk/wp-content/uploads/2021/04/129119996_199991198289259_8789341653858239668_n-1.jpg")]),
 ];
 
+
 /// Used for Testing classes
 final Categories testCategories = Categories(categories: categories);
 

@@ -66,6 +66,21 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   mainAxisSize: MainAxisSize.min,
                   // page (Hero) contents
                   children: [
+                    Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 8), child: Text("Already have an item in mind?"),),
+                    Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TextButton.icon(
+                      key: const Key("useExistingItemButton"),
+                      onPressed: () => {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId, mock: widget.mock),
+                        ))
+                      },
+                      icon: Icon(Icons.add_to_photos_rounded),
+                      label: const Text("Use existing item"),
+                    )),
+                    const Divider(
+                      color: Colors.black38,
+                      thickness: 0.2,
+                    ),
                     // shows the currently selected image
                     Card(
                         key: Key("itemImageCard"),
@@ -131,36 +146,12 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                       thickness: 0.2,
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Spacer(),
-                        Expanded(
-                          child: TextButton.icon(
-                            key: const Key("useExistingItemButton"),
-                            onPressed: () => {
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId, mock: widget.mock),
-                              ))
-                            },
-                            icon: Icon(Icons.add),
-                            label: const Text("Use existing item"),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          child: Text("or"),
-                        ),
-                        Expanded(
-                          child: TextButton.icon(
-                            key: const Key("createItemButton"),
-                            onPressed: () => saveItemToFirestore(image: selectedImage, itemName: itemNameController.text),
-                            icon: Icon(Icons.add),
-                            label: const Text("Create new item"),
-                          ),
-                        ),
-                        Spacer()
-                      ],
-                    )
+                    TextButton.icon(
+                      key: const Key("createItemButton"),
+                      onPressed: () => saveItemToFirestore(image: selectedImage, itemName: itemNameController.text),
+                      icon: Icon(Icons.add),
+                      label: const Text("Create new item"),
+                    ),
                   ],
                 ),
               ),
