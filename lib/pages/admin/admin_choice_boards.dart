@@ -7,6 +7,7 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
+import 'package:seg_coursework_app/widgets/choice_boards_scaffold.dart';
 import 'package:seg_coursework_app/widgets/delete_category_button.dart';
 import 'package:seg_coursework_app/widgets/delete_item_button.dart';
 import 'package:seg_coursework_app/widgets/edit_category_button.dart';
@@ -16,7 +17,6 @@ import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/admin_switch_buttons.dart';
 import 'package:seg_coursework_app/widgets/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
-import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
@@ -94,59 +94,53 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return Scaffold(
-        appBar: AppBar(
-          key: Key('app_bar'),
-          title: const Text('Loading Choice Boards'),
-        ),
-        drawer: const AdminSideMenu(),
-        body: CustomLoadingIndicator(),
-      );
+      // Loading user's choice boards data
+      return ChoiceBoardsScaffold(
+          title: "Loading Choice Boards", bodyWidget: CustomLoadingIndicator());
     } else if (hasError) {
-      return AlertDialog(
-        content: Text(
-            'An error occurred while communicating with the database. \nPlease retry.'),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Retry'),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => AdminChoiceBoards()));
-            },
-          ),
-        ],
-      );
+      // Error occured while loading user's choice boards data
+      return ChoiceBoardsScaffold(
+          title: "Error loading Choice Boards",
+          bodyWidget: AlertDialog(
+            content: Text(
+                'An error occurred while communicating with the database. \nPlease press retry, or try to log-out and log-in again.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Retry'),
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => AdminChoiceBoards()));
+                },
+              ),
+            ],
+          ));
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          key: Key('app_bar'),
-          title: const Text('Edit Choice Boards'),
-        ),
-        drawer: const AdminSideMenu(),
-        floatingActionButton: AddCategoryButton(
-          mock: widget.mock,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        body: DragAndDropLists(
-          listPadding: const EdgeInsets.all(30),
-          listInnerDecoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(20)),
-          children: categories,
-          contentsWhenEmpty: Text(
-              "Welcome! Click on \"Add a category\" to start",
-              style: TextStyle(fontSize: 30)),
-          itemDivider: const Divider(
-            thickness: 4,
-            height: 4,
-            color: Colors.black12,
+      // User's choice boards data loaded successfully
+      return ChoiceBoardsScaffold(
+          title: 'Edit Choice Boards',
+          floatingButton: AddCategoryButton(
+            mock: widget.mock,
           ),
-          listDragHandle: buildDragHandle(isCategory: true),
-          itemDragHandle: buildDragHandle(),
-          onItemReorder: onReorderCategoryItem,
-          onListReorder: onReorderCategory,
-        ),
-      );
+          floatingButtonLocation: FloatingActionButtonLocation.endTop,
+          bodyWidget: DragAndDropLists(
+            listPadding: const EdgeInsets.all(30),
+            listInnerDecoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(20)),
+            children: categories,
+            contentsWhenEmpty: Text(
+                "Welcome! Click on \"Add a category\" to start",
+                style: TextStyle(fontSize: 30)),
+            itemDivider: const Divider(
+              thickness: 4,
+              height: 4,
+              color: Colors.black12,
+            ),
+            listDragHandle: buildDragHandle(isCategory: true),
+            itemDragHandle: buildDragHandle(),
+            onItemReorder: onReorderCategoryItem,
+            onListReorder: onReorderCategory,
+          ));
     }
   }
 
