@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,10 +11,8 @@ import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import 'package:seg_coursework_app/services/image_controller.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../models/categories.dart';
-import '../../services/storage_service.dart';
 import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
