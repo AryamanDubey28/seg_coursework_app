@@ -59,22 +59,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         .cancel(); //cancels timer so it does not keep refreshing in the background
   }
 
-  List<List<ClickableImage>> getList(Categories futureUserCategories) {
-    List<List<ClickableImage>> categories = [];
-    for (var category in futureUserCategories.getList()) {
-      List<ClickableImage> data = [];
-      data.add(buildClickableImageFromCategory(category));
-      for (var item in category.items) {
-        data.add(buildClickableImageFromCategoryItem(item));
-      }
-      if (data.length > 1) {
-        //only add category if it contains items
-        categories.add(data);
-      }
-    }
-    return categories;
-  }
-
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
