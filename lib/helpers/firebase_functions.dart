@@ -406,7 +406,8 @@ class FirebaseFunctions {
       {required String itemKey,
       required bool newAvailabilityValue,
       required VoidCallback refresh}) async {
-    var numOfUpdates;
+    int numOfUpdates = 0;
+
     final QuerySnapshot categoriesSnapshot = await firestore
         .collection('categories')
         .where("userId", isEqualTo: auth.currentUser!.uid)
@@ -422,12 +423,12 @@ class FirebaseFunctions {
           .where(FieldPath.documentId, isEqualTo: itemKey)
           .get();
 
-      numOfUpdates = categoryItemsSnapshot.size + 1;
-
       for (final DocumentSnapshot item in categoryItemsSnapshot.docs) {
         final DocumentReference itemReference = firestore
             .collection('categoryItems/${category.id}/items')
             .doc(item.id);
+            
+        numOfUpdates += 1;
 
         await itemReference.update({"is_available": newAvailabilityValue});
       }
