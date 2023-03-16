@@ -97,7 +97,8 @@ final List<Category> categories = [
       title: "Breakfast",
       rank: 0,
       id: "0",
-      imageUrl: "breakfast.jpg",
+      imageUrl:
+          "https://firebasestorage.googleapis.com/v0/b/some-bucket/o/imagesBreakfast",
       availability: true,
       items: [
         CategoryItem(
@@ -105,19 +106,22 @@ final List<Category> categories = [
             id: "1",
             rank: 0,
             name: "Toast",
-            imageUrl: "Toast.jpg"),
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/some-bucket/o/imagesToast"),
         CategoryItem(
             availability: true,
             id: "2",
             rank: 1,
             name: "Fruits",
-            imageUrl: "Fruits.png")
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/some-bucket/o/imagesFruits")
       ]),
   Category(
       id: "3",
       rank: 1,
       title: "Activities",
-      imageUrl: "Activities.png",
+      imageUrl:
+          "https://firebasestorage.googleapis.com/v0/b/some-bucket/o/imagesActivities",
       availability: true,
       items: [
         CategoryItem(
@@ -125,6 +129,7 @@ final List<Category> categories = [
             rank: 0,
             id: "4",
             name: "Football",
-            imageUrl: "Football.jpg"),
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/some-bucket/o/imagesFootball"),
       ])
 ];

@@ -16,6 +16,7 @@ class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
   final String itemName;
   final String itemImageUrl;
+  late final File? newPreSelectedImage;
   final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
@@ -27,6 +28,7 @@ class EditChoiceBoardItem extends StatefulWidget {
       required this.itemName,
       required this.itemImageUrl,
       this.mock = false,
+      this.newPreSelectedImage,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -54,6 +56,9 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
+    if (widget.newPreSelectedImage != null) {
+      selectedImage = widget.newPreSelectedImage;
+    }
   }
 
   @override

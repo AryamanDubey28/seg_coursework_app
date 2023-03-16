@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_category.dart';
@@ -24,10 +26,19 @@ void main() {
   late MockUser mockUser;
 
   Future<void> createData() async {
+    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+        auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
+
+    await firebaseFunctions.uploadImageToCloud(
+        image: File("assets/test_image.png"),
+        name: breakfastCategory.title,
+        overrideUniqueName: true);
+
     await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
-      'name': "Breakfast",
-      'illustration': "food.jpeg",
+      'name': breakfastCategory.title,
+      'illustration': breakfastCategory.imageUrl,
       'userId': mockUser.uid,
+      'is_available': true,
       'rank': 0
     });
   }
@@ -50,8 +61,8 @@ void main() {
               home: EditChoiceBoardCategory(
             mock: true,
             categoryId: breakfastCategory.id,
-            categoryImageUrl: "food.jpeg",
-            categoryName: "food.jpeg",
+            categoryImageUrl: breakfastCategory.imageUrl,
+            categoryName: breakfastCategory.title,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -76,8 +87,8 @@ void main() {
               home: EditChoiceBoardCategory(
             mock: true,
             categoryId: breakfastCategory.id,
-            categoryImageUrl: "food.jpeg",
-            categoryName: "food.jpeg",
+            categoryImageUrl: breakfastCategory.imageUrl,
+            categoryName: breakfastCategory.title,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -91,7 +102,7 @@ void main() {
     });
   });
 
-  testWidgets("changing only name is successful", (WidgetTester tester) async {
+  testWidgets("changing only title is successful", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -99,8 +110,61 @@ void main() {
               home: EditChoiceBoardCategory(
             mock: true,
             categoryId: breakfastCategory.id,
-            categoryImageUrl: "food.jpeg",
-            categoryName: "food",
+            categoryImageUrl: breakfastCategory.imageUrl,
+            categoryName: breakfastCategory.title,
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+
+      await createData();
+
+      final nameField = find.byKey(ValueKey("categoryNameField"));
+      await tester.enterText(nameField, "Lunch");
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("changing only image is successful", (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardCategory(
+            mock: true,
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: breakfastCategory.imageUrl,
+            categoryName: breakfastCategory.title,
+            newPreSelectedImage: File("assets/test_image.png"),
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+
+      await createData();
+
+      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("changing both title and image is successful",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardCategory(
+            mock: true,
+            categoryId: breakfastCategory.id,
+            categoryImageUrl: breakfastCategory.imageUrl,
+            categoryName: breakfastCategory.title,
+            newPreSelectedImage: File("assets/test_image.png"),
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,
@@ -127,8 +191,8 @@ void main() {
               home: EditChoiceBoardCategory(
             mock: true,
             categoryId: breakfastCategory.id,
-            categoryImageUrl: "food.jpeg",
-            categoryName: "food",
+            categoryImageUrl: breakfastCategory.imageUrl,
+            categoryName: breakfastCategory.title,
             auth: mockAuth,
             firestore: mockFirestore,
             storage: mockStorage,

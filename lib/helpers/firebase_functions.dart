@@ -127,10 +127,17 @@ class FirebaseFunctions {
   /// Take an image and upload it to Firestore Cloud Storage with
   /// a unique name. Return the URL of the image from the cloud
   Future<String?> uploadImageToCloud(
-      {required File image, required String name}) async {
+      {required File image,
+      required String name,
+      bool overrideUniqueName = false}) async {
     String uniqueName = name + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
-    Reference imageRef = storage.ref().child('images').child(uniqueName);
+    Reference imageRef;
+    if (!overrideUniqueName) {
+      imageRef = storage.ref().child('images').child(uniqueName);
+    } else {
+      imageRef = storage.ref().child('images').child(name);
+    }
     try {
       await imageRef.putFile(image);
       return await imageRef.getDownloadURL();
