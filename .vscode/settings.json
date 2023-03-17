@@ -1,5 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "cmake.sourceDirectory": "${workspaceFolder}/linux",
     "cSpell.words": [
         "firestore"

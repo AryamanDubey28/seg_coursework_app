@@ -36,12 +36,13 @@ dependencies:
   json_path: 0.4.1
   page_transition: 2.0.4
   provider: 6.0.4
-  shared_preferences: 2.0.15
+  shared_preferences: ^2.0.18
   sqflite: 2.2.0+2
   timeago: 3.2.2
   url_launcher: 6.1.5
   firebase_database: ^10.0.10
   indexed: ^0.0.8
+  audioplayers: 1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -58,13 +59,14 @@ dependencies:
   mockito: ^5.3.2
   network_image_mock: ^2.1.1
   popup_card: ^0.1.0
-  image_picker: ^0.8.6+2
   path_provider: ^2.0.12
-  firebase_storage: ^11.0.13
   build_runner: ^2.3.3
   fake_cloud_firestore: ^2.4.0
   firebase_storage_mocks: ^0.6.1
   flex_color_picker: ^3.1.0
+  flutter_tts: ^3.6.3
+  image_picker: ^0.8.6+4
+  firebase_storage: ^11.0.14
   connectivity_plus: ^3.0.3
   internet_connection_checker: ^1.0.0+1
   icon_decoration: ^1.0.1
@@ -94,7 +96,8 @@ flutter:
   uses-material-design: true
 
   assets:
-  - test/assets/
+    - assets/
+    - test/assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
+import 'package:seg_coursework_app/models/categories.dart';
 
 Future<void> main() async {
   late FirebaseFunctions firebaseFunctions;
@@ -18,6 +19,7 @@ Future<void> main() async {
   late MockUser mockUser;
 
   setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
     mockAuth = MockFirebaseAuthentication();
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
@@ -31,13 +33,16 @@ Future<void> main() async {
     mockFirestore = FakeFirebaseFirestore();
   });
 
-  Future<void> _createCategory({required String id}) {
-    return mockFirestore.collection('categories').doc(id).set({
-      'name': "Drinks",
+  Future<DocumentSnapshot> _createCategory(
+      {required String id, int rank = 0, required bool is_available}) async {
+    mockFirestore.collection('categories').doc(id).set({
+      'title': "Drinks",
       'illustration': "drink.jpeg",
       'userId': mockUser.uid,
-      'rank': 0
+      'rank': rank,
+      'is_available': is_available
     });
+    return mockFirestore.collection('categories').doc(id).get();
   }
 
   test("create item is successful", () async {
@@ -233,7 +238,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
-    await _createCategory(id: categoryId);
+    await _createCategory(id: categoryId, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -267,8 +272,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -323,7 +328,7 @@ Future<void> main() async {
   test(
       "updating the name of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
-    await _createCategory(id: "00xx");
+    await _createCategory(id: "00xx", is_available: true);
     expect(
         await firebaseFunctions.updateCategoryItemsName(
             itemId: "doesn't exist", newName: "Nova Water"),
@@ -354,7 +359,7 @@ Future<void> main() async {
 
   test("Uploading image to cloud is successful", () async {
     String? imageUrl = await firebaseFunctions.uploadImageToCloud(
-        image: File("assets/test_image.png"), itemName: "Water");
+        image: File("assets/test_image.png"), name: "Water");
 
     expect(imageUrl, isA<String>());
     expect(mockStorage.refFromURL(imageUrl!), isNotNull);
@@ -362,7 +367,7 @@ Future<void> main() async {
 
   test("Deleting image from cloud is successful", () async {
     String? imageUrl = await firebaseFunctions.uploadImageToCloud(
-        image: File("assets/test_image.png"), itemName: "Water");
+        image: File("assets/test_image.png"), name: "Water");
 
     expect(mockStorage.refFromURL(imageUrl!), isNotNull);
     await firebaseFunctions.deleteImageFromCloud(imageUrl: imageUrl);
@@ -401,7 +406,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId = "00xx";
-    await _createCategory(id: categoryId);
+    await _createCategory(id: categoryId, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -435,8 +440,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -491,7 +496,7 @@ Future<void> main() async {
   test(
       "updating the image of a categoryItem that doesn't exist (when categories exist) does nothing",
       () async {
-    await _createCategory(id: "00xx");
+    await _createCategory(id: "00xx", is_available: true);
     expect(
         await firebaseFunctions.updateCategoryItemsImage(
             itemId: "doesn't exist", newImageUrl: "Hana-water.jpeg"),
@@ -647,7 +652,7 @@ Future<void> main() async {
   });
 
   test(
-      "updateCategoryRanks decrements all ranks of categoryItems higher than given rank",
+      "updateCategoryItemsRanks decrements all ranks of categoryItems higher than given rank",
       () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
@@ -685,7 +690,7 @@ Future<void> main() async {
             categoryId: categoryId, itemId: newItemId3),
         2);
 
-    await firebaseFunctions.updateCategoryRanks(
+    await firebaseFunctions.updateCategoryItemsRanks(
         categoryId: categoryId,
         removedRank: await firebaseFunctions.getCategoryItemRank(
             categoryId: categoryId, itemId: newItemId1));
@@ -703,7 +708,7 @@ Future<void> main() async {
   });
 
   test(
-      "updateCategoryRanks does nothing if the deleted categoryItem had highest rank",
+      "updateCategoryItemsRanks does nothing if the deleted categoryItem had highest rank",
       () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
@@ -741,7 +746,7 @@ Future<void> main() async {
             categoryId: categoryId, itemId: newItemId2),
         1);
 
-    await firebaseFunctions.updateCategoryRanks(
+    await firebaseFunctions.updateCategoryItemsRanks(
         categoryId: categoryId,
         removedRank: await firebaseFunctions.getCategoryItemRank(
             categoryId: categoryId, itemId: newItemId3));
@@ -758,12 +763,185 @@ Future<void> main() async {
         1);
   });
 
-  test("updateCategoryRanks does nothing if given non existing categoryId",
+  test("updateCategoryItemsRanks does nothing if given non existing categoryId",
       () async {
     expect(
-        await firebaseFunctions.updateCategoryRanks(
+        await firebaseFunctions.updateCategoryItemsRanks(
             categoryId: "00xx", removedRank: 1),
         null);
+  });
+
+  test("create category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId, isA<String>());
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('title'), name);
+    expect(category.get('illustration'), imageUrl);
+    expect(category.get('userId'), "user1");
+    expect(category.get('rank'), 0);
+  });
+
+  test("create catgories gives unique ids", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId1, isNot(newCategoryId2));
+  });
+
+  test("user can create more than one category", () async {
+    const String title1 = "Water";
+    const String imageUrl1 = "Nova-water.jpeg";
+    const String title2 = "Apple juice";
+    const String imageUrl2 = "Nova-Juice.jpeg";
+
+    String newCategoryId1 = await firebaseFunctions.createCategory(
+        name: title1, imageUrl: imageUrl1);
+    String newCategoryId2 = await firebaseFunctions.createCategory(
+        name: title2, imageUrl: imageUrl2);
+
+    DocumentSnapshot category1 =
+        await mockFirestore.collection('categories').doc(newCategoryId1).get();
+    DocumentSnapshot category2 =
+        await mockFirestore.collection('categories').doc(newCategoryId2).get();
+
+    final QuerySnapshot categoriesQuerySnapshot =
+        await mockFirestore.collection('categories').get();
+
+    expect(categoriesQuerySnapshot.size, 2);
+    expect(category1.get('title'), title1);
+    expect(category2.get('title'), title2);
+    expect(category1.get('illustration'), imageUrl1);
+    expect(category2.get('illustration'), imageUrl2);
+    expect(category1.get('userId'), "user1");
+    expect(category2.get('userId'), "user1");
+  });
+
+  test(
+      "new category rank is one more than highest rank (using getNewCategoryRank)",
+      () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    DocumentSnapshot newCategory1 =
+        await mockFirestore.collection('categories').doc(newCategoryId1).get();
+    DocumentSnapshot newCategory2 =
+        await mockFirestore.collection('categories').doc(newCategoryId2).get();
+
+    expect(newCategory1.get('rank'), 0);
+    expect(newCategory2.get('rank'), 1);
+  });
+
+  test("update category name edits the category's name successfully", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+
+    expect(category.get('title'), name);
+    await firebaseFunctions.updateCategoryName(
+        categoryId: newCategoryId, newName: "Lunch");
+
+    category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('title'), "Lunch");
+  });
+
+  test("updating the name of a category that doesn't exist throws an exception",
+      () async {
+    expect(
+        firebaseFunctions.updateCategoryName(
+            categoryId: "doesnt exist", newName: "doesnt matter"),
+        throwsA(isInstanceOf<FirebaseException>()));
+  });
+
+  test("update category image edits the category's image successfully",
+      () async {
+    const String name = "Dinner";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+
+    expect(category.get('illustration'), imageUrl);
+    await firebaseFunctions.updateCategoryImage(
+        categoryId: newCategoryId, newImageUrl: "Hana-water.jpeg");
+
+    category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('illustration'), "Hana-water.jpeg");
+  });
+
+  test(
+      "updating the image of a category that doesn't exist throws an exception",
+      () async {
+    expect(
+        firebaseFunctions.updateCategoryImage(
+            categoryId: "doesn't exist", newImageUrl: "Hana-water.jpeg"),
+        throwsA(isInstanceOf<FirebaseException>()));
+  });
+
+  test("deleting a category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.exists, true);
+
+    await firebaseFunctions.deleteCategory(categoryId: newCategoryId);
+
+    category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.exists, false);
+  });
+
+  test("deleting a non existing category throws exception", () async {
+    expect(firebaseFunctions.deleteCategory(categoryId: "0022xx"),
+        throwsA(isA<FirebaseException>()));
+  });
+
+  test("getCategoryRank returns correct rank", () async {
+    const String name = "Breakfast";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(
+        await firebaseFunctions.getCategoryRank(categoryId: newCategoryId1), 0);
+    expect(
+        await firebaseFunctions.getCategoryRank(categoryId: newCategoryId2), 1);
+  });
+
+  test("getCategoryRank throws exception for non existing categories",
+      () async {
+    expect(firebaseFunctions.getCategoryRank(categoryId: "00xx"),
+        throwsA(isA<FirebaseException>()));
   });
 
   test(
@@ -794,7 +972,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -828,8 +1006,8 @@ Future<void> main() async {
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
     const String categoryId2 = "11yy";
-    await _createCategory(id: categoryId1);
-    await _createCategory(id: categoryId2);
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -877,7 +1055,7 @@ Future<void> main() async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
     const String categoryId1 = "00xx";
-    await _createCategory(id: categoryId1);
+    await _createCategory(id: categoryId1, is_available: true);
 
     String newItemId =
         await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
@@ -915,6 +1093,361 @@ Future<void> main() async {
   test(
       "update item availability status of non-existent item returns a boolean False",
       () async {
-    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"), false);
+    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"),
+        false);
+  });
+
+  test("Reordering non-existent categories returns false", () async {
+    expect(await firebaseFunctions.saveCategoryOrder(oldRank: 2, newRank: 0),
+        false);
+  });
+
+  test("Reordering non-existent categoryItems returns false", () async {
+    const String categoryId1 = "00xx";
+    await _createCategory(id: categoryId1, is_available: true);
+    expect(
+        await firebaseFunctions.saveCategoryItemOrder(
+            categoryId: categoryId1, oldItemIndex: 2, newItemIndex: 0),
+        false);
+  });
+
+  test("Reordering 3 categories updates all rank fields correctly", () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 2, newRank: 0);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+
+    expect(cat1.get('rank'), 1);
+    expect(cat2.get('rank'), 2);
+    expect(cat3.get('rank'), 0);
+  });
+
+  test(
+      "Reordering 5 categories from the lowest rank to highest one updates all rank fields correctly",
+      () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+    const String categoryId4 = "11aa";
+    const String categoryId5 = "11bb";
+
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+    expect(cat4.get('rank'), 3);
+    expect(cat5.get('rank'), 4);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 4, newRank: 0);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+    cat4 = await mockFirestore.collection('categories').doc(categoryId4).get();
+    cat5 = await mockFirestore.collection('categories').doc(categoryId5).get();
+
+    expect(cat1.get('rank'), 1);
+    expect(cat2.get('rank'), 2);
+    expect(cat3.get('rank'), 3);
+    expect(cat4.get('rank'), 4);
+    expect(cat5.get('rank'), 0);
+  });
+
+  test(
+      "Reordering 5 categories from middle ranks update all rank fields correctly",
+      () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+    const String categoryId4 = "11aa";
+    const String categoryId5 = "11bb";
+
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+    expect(cat4.get('rank'), 3);
+    expect(cat5.get('rank'), 4);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 3, newRank: 1);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+    cat4 = await mockFirestore.collection('categories').doc(categoryId4).get();
+    cat5 = await mockFirestore.collection('categories').doc(categoryId5).get();
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 2);
+    expect(cat3.get('rank'), 3);
+    expect(cat4.get('rank'), 1);
+    expect(cat5.get('rank'), 4);
+  });
+
+  test(
+      "Reordering 5 categories from highest to lowest rank updates all rank fields correctly",
+      () async {
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+    const String categoryId3 = "11zz";
+    const String categoryId4 = "11aa";
+    const String categoryId5 = "11bb";
+
+    var cat1 = await _createCategory(id: categoryId1, is_available: true);
+    var cat2 =
+        await _createCategory(id: categoryId2, rank: 1, is_available: true);
+    var cat3 =
+        await _createCategory(id: categoryId3, rank: 2, is_available: true);
+    var cat4 =
+        await _createCategory(id: categoryId4, rank: 3, is_available: true);
+    var cat5 =
+        await _createCategory(id: categoryId5, rank: 4, is_available: true);
+
+    expect(cat1.get('rank'), 0);
+    expect(cat2.get('rank'), 1);
+    expect(cat3.get('rank'), 2);
+    expect(cat4.get('rank'), 3);
+    expect(cat5.get('rank'), 4);
+
+    await firebaseFunctions.saveCategoryOrder(oldRank: 0, newRank: 4);
+
+    cat1 = await mockFirestore.collection('categories').doc(categoryId1).get();
+    cat2 = await mockFirestore.collection('categories').doc(categoryId2).get();
+    cat3 = await mockFirestore.collection('categories').doc(categoryId3).get();
+    cat4 = await mockFirestore.collection('categories').doc(categoryId4).get();
+    cat5 = await mockFirestore.collection('categories').doc(categoryId5).get();
+
+    expect(cat1.get('rank'), 4);
+    expect(cat2.get('rank'), 0);
+    expect(cat3.get('rank'), 1);
+    expect(cat4.get('rank'), 2);
+    expect(cat5.get('rank'), 3);
+  });
+
+  test(
+      "Reordering 3 categoryItems from lowest to highest rank updates all rank fields correctly",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+
+    await _createCategory(id: categoryId1, is_available: true);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId1 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId2 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId1);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId2);
+
+    var item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    var item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    var item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 0);
+    expect(item1.get('rank'), 1);
+    expect(item2.get('rank'), 2);
+
+    await firebaseFunctions.saveCategoryItemOrder(
+        categoryId: categoryId1, oldItemIndex: 2, newItemIndex: 0);
+
+    item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 1);
+    expect(item1.get('rank'), 2);
+    expect(item2.get('rank'), 0);
+  });
+
+  test(
+      "Reordering 3 categoryItems from highest to lowest rank updates all rank fields correctly",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+
+    await _createCategory(id: categoryId1, is_available: true);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId1 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId2 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId1);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId2);
+
+    var item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    var item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    var item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 0);
+    expect(item1.get('rank'), 1);
+    expect(item2.get('rank'), 2);
+
+    await firebaseFunctions.saveCategoryItemOrder(
+        categoryId: categoryId1, oldItemIndex: 0, newItemIndex: 2);
+
+    item = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId)
+        .get();
+    item1 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId1)
+        .get();
+    item2 = await mockFirestore
+        .collection('categoryItems/$categoryId1/items')
+        .doc(newItemId2)
+        .get();
+
+    expect(item.get('rank'), 2);
+    expect(item1.get('rank'), 0);
+    expect(item2.get('rank'), 1);
+  });
+
+  test(
+      "downloadUserCategories converts choice board's data correctly into Categories datatype",
+      () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+    const String categoryId1 = "00xx";
+    const String categoryId2 = "11yy";
+
+    await _createCategory(id: categoryId1, is_available: true);
+    await _createCategory(id: categoryId2, is_available: false, rank: 1);
+
+    String newItemId =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId1 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+    String newItemId2 =
+        await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
+
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId1,
+        itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId2,
+        itemId: newItemId1);
+    await firebaseFunctions.createCategoryItem(
+        name: name,
+        imageUrl: imageUrl,
+        categoryId: categoryId2,
+        itemId: newItemId2);
+
+    Categories userCategories =
+        await firebaseFunctions.downloadUserCategories();
+
+    expect(userCategories.getList().length, 2);
+    expect(userCategories.getList()[0].id, categoryId1);
+    expect(userCategories.getList()[1].id, categoryId2);
+    expect(userCategories.getList()[0].availability, true);
+    expect(userCategories.getList()[1].availability, false);
+    expect(userCategories.getList()[0].children.length, 1);
+    expect(userCategories.getList()[1].children.length, 2);
+  });
+
+  test(
+      "downloadUserCategories returns an empty Categories datatype if user has no choice boards data",
+      () async {
+    Categories userCategories =
+        await firebaseFunctions.downloadUserCategories();
+    expect(userCategories.getList().length, 0);
   });
 }

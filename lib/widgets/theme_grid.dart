@@ -23,18 +23,18 @@ class ThemeGrid extends StatelessWidget {
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
         ),
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            themeNotifier.setTheme(themeList[index]);
-          },
-          child: Tooltip(
-            message: themeList[index].name,
-            child: ThemeGridSquare(key: Key('themeSquare$index'), themeDetails: themeList[index]),
-          ),
-        );
-      }
-    );
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              themeNotifier.setTheme(themeList[index]);
+            },
+            child: Tooltip(
+              message: themeList[index].name,
+              child: ThemeGridSquare(
+                  key: Key('themeSquare$index'),
+                  themeDetails: themeList[index]),
+            ),
+          );
+        });
   }
 }
-

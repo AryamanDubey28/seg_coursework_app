@@ -1,12 +1,11 @@
-import 'package:flutter/rendering.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:integration_test/integration_test.dart';
+
 import 'package:seg_coursework_app/main.dart' as app;
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  //IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('sign in tests', () {
     testWidgets('input correct email and password, verify sign in',
@@ -20,7 +19,7 @@ void main() {
       final Finder passwordField = find.byKey(Key('password_text_field'));
       final Finder signInButton = find.byKey(Key('sign_in_button'));
 
-      await tester.enterText(emailField, 'test@gmail.com');
+      await tester.enterText(emailField, 'ary@test.com');
       await tester.pumpAndSettle();
       await tester.enterText(passwordField, "Password123");
       await tester.pumpAndSettle();
@@ -28,9 +27,20 @@ void main() {
 
       await tester.tap(signInButton);
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 5));
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
+
+      final ScaffoldState state =
+          tester.firstState(find.byKey(Key("admin_boards_scaffold")));
+      state.openDrawer();
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 2));
+
+      final Finder logoutButton = find.byKey(Key("logout"));
+      await tester.tap(logoutButton);
+      await tester.pumpAndSettle();
+      await Future.delayed(Duration(seconds: 2));
     });
 
     // Need to figure out how to press on side menu drawer to access log out button
