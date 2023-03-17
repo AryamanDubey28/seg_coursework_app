@@ -623,7 +623,7 @@ PODS:
   - Firebase/Firestore (10.3.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 10.3.0)
-  - Firebase/Storage (10.3.0):
+  - Firebase/Storage (10.6.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 10.3.0)
   - firebase_auth (4.2.9):
@@ -638,7 +638,7 @@ PODS:
     - firebase_core
     - Flutter
   - firebase_storage (11.0.14):
-    - Firebase/Storage (= 10.3.0)
+    - Firebase/Storage (= 10.6.0)
     - firebase_core
     - Flutter
   - FirebaseAppCheckInterop (10.5.0)
