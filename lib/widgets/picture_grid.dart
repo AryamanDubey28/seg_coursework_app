@@ -54,6 +54,7 @@ class _PictureGridState extends State<PictureGrid> {
                 height: 15,
               ),
               SizedBox(
+                //the height of the column minus height of the search bar, the sized box, and the margin.
                 height: constraints.maxHeight - 75 - 7,
                 child: GridView.builder(
                     itemCount: _getFilteredItems().length,
