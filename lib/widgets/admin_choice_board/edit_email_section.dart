@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
-import '../services/auth.dart';
+
+import '../../services/auth.dart';
+import '../loading_indicators/loading_indicator.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their email.
 class EditEmailSection extends StatelessWidget {
   late final BuildContext context;
   final _emailEditController = TextEditingController();
   late final Auth authentitcationHelper;
-  late bool isTestMode;
+  late final bool isTestMode;
 
   EditEmailSection(
       {super.key,
@@ -46,7 +47,7 @@ class EditEmailSection extends StatelessWidget {
         AsyncSnapshot<String> snapshot,
       ) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
             return const Text('Error');
@@ -54,7 +55,7 @@ class EditEmailSection extends StatelessWidget {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Align(
+                const Align(
                     alignment: Alignment.centerLeft,
                     key: const Key("edit_email_prompt"),
                     child: Padding(
@@ -64,11 +65,11 @@ class EditEmailSection extends StatelessWidget {
                             fontSize: 30,
                           )),
                     )),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 MyTextField(
-                  key: Key('email_text_field'),
+                  key: const Key('email_text_field'),
                   hint: snapshot.data as String,
                   controller: _emailEditController,
                 ),
@@ -78,14 +79,14 @@ class EditEmailSection extends StatelessWidget {
                 Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: SizedBox(
                         height: 60,
                         width: 250,
                         child: ElevatedButton(
-                          key: Key('edit_email_submit'),
+                          key: const Key('edit_email_submit'),
                           style: ElevatedButton.styleFrom(
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -94,7 +95,7 @@ class EditEmailSection extends StatelessWidget {
                             ),
                           ),
                           onPressed: commit_email_edit,
-                          child: Text("Change Email"),
+                          child: const Text("Change Email"),
                         ),
                       ),
                     )),

@@ -2,7 +2,6 @@
 // It was created by Rafael Perez on June 10th, 2021.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 // This widget is used to display a circular loading indicator in the middle of the screen.
 class LoadingIndicatorDialog {
@@ -36,9 +35,8 @@ class LoadingIndicatorDialog {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 16, top: 16, right: 16),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 16, top: 16, right: 16),
                         child: CircularProgressIndicator(),
                       ),
                       Padding(

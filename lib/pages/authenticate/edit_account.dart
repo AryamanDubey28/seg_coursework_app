@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/widgets/edit_email_section.dart';
-import 'package:seg_coursework_app/widgets/edit_password_section.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import 'package:seg_coursework_app/widgets/edit_pin_section.dart';
+import '../../widgets/admin_choice_board/edit_email_section.dart';
+import '../../widgets/admin_choice_board/edit_password_section.dart';
+import '../../widgets/admin_choice_board/edit_pin_section.dart';
 import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
+// ignore: must_be_immutable
 class EditAccountPage extends StatefulWidget {
-  late FirebaseAuth auth;
-  late bool isTestMode;
+  late final FirebaseAuth auth;
+  late final bool isTestMode;
 
   EditAccountPage({super.key, FirebaseAuth? auth, bool? isTestMode}) {
     this.auth = auth ?? FirebaseAuth.instance;
@@ -17,6 +18,7 @@ class EditAccountPage extends StatefulWidget {
   }
 
   @override
+  // ignore: no_logic_in_create_state
   State<EditAccountPage> createState() => EditAccountPageState(auth);
 }
 
@@ -50,7 +52,7 @@ class EditAccountPageState extends State<EditAccountPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        key: Key('app_bar'),
+        key: const Key('app_bar'),
         title: const Text('Edit Account'),
       ),
       drawer: const AdminSideMenu(),

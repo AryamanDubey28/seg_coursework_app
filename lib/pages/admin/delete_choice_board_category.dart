@@ -4,8 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import '../../helpers/firebase_functions.dart';
+import '../../widgets/loading_indicators/loading_indicator.dart';
 
 /// Deletes a choiceboard category given ID
 class DeleteChoiceBoardCategory extends StatelessWidget {
@@ -36,7 +36,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     // Return to admin screen if user cancels choice
     Widget cancelButton = TextButton(
-      child: Text("Cancel"),
+      child: const Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
       },
@@ -46,7 +46,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
     Widget deleteButton = TextButton(
       style: const ButtonStyle(
           backgroundColor: MaterialStatePropertyAll(Colors.red)),
-      child: Text("Delete"),
+      child: const Text("Delete"),
       onPressed: () async {
         try {
           LoadingIndicatorDialog().show(context);
@@ -78,8 +78,8 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      key: Key("confirmationAlert"),
-      title: Text("Warning!"),
+      key: const Key("confirmationAlert"),
+      title: const Text("Warning!"),
       content: Text("Are you sure you want to delete '$categoryName'?"),
       actions: [
         cancelButton,

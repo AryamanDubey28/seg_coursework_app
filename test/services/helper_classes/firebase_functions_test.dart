@@ -958,7 +958,10 @@ Future<void> main() async {
 
     expect(newCategoryItem.get('is_available'), true);
 
-    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+    await firebaseFunctions.updateItemAvailability(
+      itemId: newItemId,
+      refresh: () {},
+    );
 
     DocumentSnapshot upCategoryItem =
         await mockFirestore.collection('items').doc(newItemId).get();
@@ -989,7 +992,10 @@ Future<void> main() async {
         .get();
 
     expect(newCategoryItem1.get('is_available'), true);
-    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+    await firebaseFunctions.updateItemAvailability(
+      itemId: newItemId,
+      refresh: () {},
+    );
 
     newCategoryItem1 = await mockFirestore
         .collection('categoryItems/$categoryId1/items')
@@ -1034,7 +1040,10 @@ Future<void> main() async {
 
     expect(newCategoryItem1.get('is_available'), true);
     expect(newCategoryItem2.get('is_available'), true);
-    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+    await firebaseFunctions.updateItemAvailability(
+      itemId: newItemId,
+      refresh: () {},
+    );
 
     newCategoryItem1 = await mockFirestore
         .collection('categoryItems/$categoryId1/items')
@@ -1072,7 +1081,10 @@ Future<void> main() async {
         .get();
 
     expect(newCategoryItem1.get('is_available'), true);
-    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+    await firebaseFunctions.updateItemAvailability(
+      itemId: newItemId,
+      refresh: () {},
+    );
 
     newCategoryItem1 = await mockFirestore
         .collection('categoryItems/$categoryId1/items')
@@ -1080,7 +1092,8 @@ Future<void> main() async {
         .get();
 
     expect(newCategoryItem1.get('is_available'), false);
-    await firebaseFunctions.updateItemAvailability(itemId: newItemId);
+    await firebaseFunctions.updateItemAvailability(
+        itemId: newItemId, refresh: () {});
 
     newCategoryItem1 = await mockFirestore
         .collection('categoryItems/$categoryId1/items')
@@ -1093,7 +1106,9 @@ Future<void> main() async {
   test(
       "update item availability status of non-existent item returns a boolean False",
       () async {
-    expect(await firebaseFunctions.updateItemAvailability(itemId: "wrongId"),
+    expect(
+        await firebaseFunctions.updateItemAvailability(
+            itemId: "wrongId", refresh: () {}),
         false);
   });
 

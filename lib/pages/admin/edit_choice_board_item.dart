@@ -8,9 +8,10 @@ import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
-import 'package:seg_coursework_app/widgets/pick_image_button.dart';
+import 'package:seg_coursework_app/widgets/admin_choice_board/pick_image_button.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+
+import '../../widgets/loading_indicators/loading_indicator.dart';
 
 class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
@@ -46,7 +47,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
   File? selectedImage; // hold the newly selected image by the user
   // controller to retrieve the user input for item name
   final itemNameController = TextEditingController();
-  final imagePickerFunctions = ImagePickerFunctions();
+  final imagePickerFunctions = const ImagePickerFunctions();
   late FirebaseFunctions firestoreFunctions;
 
   @override
@@ -83,7 +84,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                   children: [
                     // shows the currently selected image
                     Card(
-                        key: Key("itemImageCard"),
+                        key: const Key("itemImageCard"),
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
@@ -105,7 +106,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                                 fit: BoxFit.cover,
                               )),
                     // instructions text
-                    Text(
+                    const Text(
                       "Pick an image",
                       key: Key("instructionsText"),
                       style: TextStyle(
@@ -116,9 +117,9 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     const SizedBox(height: 20),
                     // buttons to take/upload images
                     PickImageButton(
-                        key: Key("pickImageFromGallery"),
-                        label: Text("Choose from Gallery"),
-                        icon: Icon(Icons.image),
+                        key: const Key("pickImageFromGallery"),
+                        label: const Text("Choose from Gallery"),
+                        icon: const Icon(Icons.image),
                         onPressed: () async {
                           File? newImage = await imagePickerFunctions.pickImage(
                               source: ImageSource.gallery, context: context);
@@ -127,9 +128,9 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                           }
                         }),
                     PickImageButton(
-                        key: Key("takeImageWithCamera"),
-                        label: Text("Take a Picture"),
-                        icon: Icon(Icons.camera_alt),
+                        key: const Key("takeImageWithCamera"),
+                        label: const Text("Take a Picture"),
+                        icon: const Icon(Icons.camera_alt),
                         onPressed: () async {
                           File? newImage = await imagePickerFunctions.pickImage(
                               source: ImageSource.camera, context: context);
@@ -140,14 +141,14 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                     const SizedBox(height: 25),
                     // field to enter the item name
                     TextField(
-                      key: Key("itemNameField"),
+                      key: const Key("itemNameField"),
                       controller: itemNameController,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 25.0),
+                      style: const TextStyle(fontSize: 25.0),
                       decoration: InputDecoration(
                           hintText: widget.itemName,
                           border: InputBorder.none,
-                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
+                          hintStyle: const TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
@@ -161,7 +162,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
                       onPressed: () => editItemInFirestore(
                           newImage: selectedImage,
                           newName: itemNameController.text),
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       label: const Text("Edit item"),
                     )
                   ],
@@ -198,7 +199,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       ));
       try {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("No edits made")),
+          const SnackBar(content: Text("No edits made")),
         );
       } catch (e) {
         print("No Scaffold to present to!\n${e.toString()}");
@@ -262,11 +263,10 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           },
         ));
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Edits saved successfully!")),
+          const SnackBar(content: Text("Edits saved successfully!")),
         );
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
-        print(e);
         ErrorDialogHelper(context: context).show_alert_dialog(
             'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.');
       }

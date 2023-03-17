@@ -1,20 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
-import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
-import '../services/auth.dart';
+
+import '../../services/auth.dart';
+import '../dialogs/show_alert_dialog.dart';
+import '../loading_indicators/loading_indicator.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their email.
 class EditPINSection extends StatelessWidget {
-  late BuildContext context;
+  late final BuildContext context;
   final _pinEditController = TextEditingController();
   late final Auth authentitcationHelper;
-  late bool isTestMode;
+  late final bool isTestMode;
 
   EditPINSection(
-      {required this.authentitcationHelper, required this.isTestMode});
+      {super.key, required this.authentitcationHelper, required this.isTestMode});
 
   // Displays an alert dialog with the text passed as parameter.
   void show_alert_dialog(String text) {
@@ -48,10 +48,10 @@ class EditPINSection extends StatelessWidget {
   Future makePin(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text(
+            title: const Text(
                 "Enter a PIN that you would like to lock the child account with"),
             content: TextField(
-              key: Key("enterPINTextField"),
+              key: const Key("enterPINTextField"),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(
@@ -63,9 +63,9 @@ class EditPINSection extends StatelessWidget {
             ),
             actions: [
               TextButton(
-                  key: Key("submitButton"),
+                  key: const Key("submitButton"),
                   onPressed: () => submit(context),
-                  child: Text("SUBMIT"))
+                  child: const Text("SUBMIT"))
             ],
           ));
 
@@ -86,14 +86,14 @@ class EditPINSection extends StatelessWidget {
         AsyncSnapshot<String> snapshot,
       ) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError || !validatePin(snapshot.data as String)) {
             //if snapshot has an error, it cannot read the user's PIN from the database therefore, prompts user to make a PIN
             return ElevatedButton(
-              key: Key('make_pin_submit'),
+              key: const Key('make_pin_submit'),
               style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -104,15 +104,15 @@ class EditPINSection extends StatelessWidget {
               onPressed: () async {
                 makePin(context);
               },
-              child: Text("Create PIN"),
+              child: const Text("Create PIN"),
             );
           } else if (snapshot.hasData) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Align(
+                const Align(
                     alignment: Alignment.centerLeft,
-                    key: const Key("edit_pin_prompt"),
+                    key: Key("edit_pin_prompt"),
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text("Edit your PIN:",
@@ -120,11 +120,11 @@ class EditPINSection extends StatelessWidget {
                             fontSize: 30,
                           )),
                     )),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 MyTextField(
-                  key: Key('pin_text_field'),
+                  key: const Key('pin_text_field'),
                   hint: snapshot.data as String,
                   isNumericKeyboard: true,
                   controller: _pinEditController,
@@ -135,14 +135,14 @@ class EditPINSection extends StatelessWidget {
                 Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: SizedBox(
                         height: 60,
                         width: 250,
                         child: ElevatedButton(
-                          key: Key('edit_pin_submit'),
+                          key: const Key('edit_pin_submit'),
                           style: ElevatedButton.styleFrom(
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -151,7 +151,7 @@ class EditPINSection extends StatelessWidget {
                             ),
                           ),
                           onPressed: commit_pin_edit,
-                          child: Text("Change PIN"),
+                          child: const Text("Change PIN"),
                         ),
                       ),
                     )),

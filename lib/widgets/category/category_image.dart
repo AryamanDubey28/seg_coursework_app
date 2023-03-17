@@ -15,7 +15,7 @@ class CategoryImage extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(30, 30, 30, 15),
+          padding: const EdgeInsetsDirectional.fromSTEB(30, 30, 30, 15),
           child: Container(
             width: 250,
             height: 250,

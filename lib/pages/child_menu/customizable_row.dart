@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
 import '../../themes/themes.dart';
-import '../../widgets/category_image.dart';
-import '../../widgets/category_row.dart';
-import '../../widgets/category_title.dart';
+import '../../widgets/category/category_image.dart';
+import '../../widgets/category/category_image_row.dart';
+import '../../widgets/category/category_title.dart';
 
 class CustomizableRow extends StatelessWidget {
   final String categoryTitle; // e.g. Breakfast
   final List<Widget> imagePreviews; // e.g. images of toast, cereal, etc.
 
-  CustomizableRow({Key? key, required this.categoryTitle, required this.imagePreviews}) : super(key: key);
+  const CustomizableRow({Key? key, required this.categoryTitle, required this.imagePreviews}) : super(key: key);
 
   // Everything is wrapped in Material() and InkWell() so the onTap gesture shows
   // a simple tap animation
@@ -22,7 +22,7 @@ class CustomizableRow extends StatelessWidget {
       color: themeNotifier.getTheme().scaffoldBackgroundColor,
       child: InkWell(
         child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [

@@ -7,18 +7,18 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
-import 'package:seg_coursework_app/widgets/delete_category_button.dart';
-import 'package:seg_coursework_app/widgets/delete_item_button.dart';
-import 'package:seg_coursework_app/widgets/edit_category_button.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/add_item_button.dart';
-import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
-import 'package:seg_coursework_app/widgets/admin_switch_buttons.dart';
-import 'package:seg_coursework_app/widgets/edit_item_button.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import '../../widgets/admin_choice_board/add_category_button.dart';
+import '../../widgets/admin_choice_board/add_item_button.dart';
+import '../../widgets/admin_choice_board/admin_switch_buttons.dart';
+import '../../widgets/admin_choice_board/delete_category_button.dart';
+import '../../widgets/admin_choice_board/delete_item_button.dart';
+import '../../widgets/admin_choice_board/edit_category_button.dart';
+import '../../widgets/admin_choice_board/edit_item_button.dart';
+import '../../widgets/loading_indicators/custom_loading_indicator.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -96,19 +96,19 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
     if (loading) {
       return Scaffold(
         appBar: AppBar(
-          key: Key('app_bar'),
+          key: const Key('app_bar'),
           title: const Text('Loading Choice Boards'),
         ),
         drawer: const AdminSideMenu(),
-        body: CustomLoadingIndicator(),
+        body: const CustomLoadingIndicator(),
       );
     } else if (hasError) {
       return AlertDialog(
-        content: Text(
+        content: const Text(
             'An error occurred while communicating with the database. \nPlease retry.'),
         actions: <Widget>[
           TextButton(
-            child: Text('Retry'),
+            child: const Text('Retry'),
             onPressed: () {
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => AdminChoiceBoards()));
@@ -119,7 +119,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
     } else {
       return Scaffold(
         appBar: AppBar(
-          key: Key('app_bar'),
+          key: const Key('app_bar'),
           title: const Text('Edit Choice Boards'),
         ),
         drawer: const AdminSideMenu(),
@@ -133,7 +133,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(20)),
           children: categories,
-          contentsWhenEmpty: Text(
+          contentsWhenEmpty: const Text(
               "Welcome! Click on \"Add a category\" to start",
               style: TextStyle(fontSize: 30)),
           itemDivider: const Divider(
@@ -266,7 +266,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                     title: Text(
                       item.name,
                       key: Key("itemTitle-${item.id}"),
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -339,7 +339,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
               .insert(newItemIndex, selectedItemDrag);
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 3),
           content: Text(
             'Reordering could not be done. Please ensure you are connected to internet.',
@@ -368,7 +368,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
         userCategories.getList().insert(newCategoryIndex, dragList);
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         duration: Duration(seconds: 3),
         content: Text(
           'Reordering could not be done. Please ensure you are connected to internet.',

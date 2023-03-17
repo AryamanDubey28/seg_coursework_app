@@ -3,7 +3,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:seg_coursework_app/widgets/item_unavailable.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/item_unavailable.dart';
 
 // Returns the grid of images, clickable and unavailable
 Expanded getMainImages(List<ClickableImage> images) {

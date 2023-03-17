@@ -17,8 +17,8 @@ class ImageSquare extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Image.network(
@@ -26,7 +26,7 @@ class ImageSquare extends StatelessWidget {
           fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object exception,
               StackTrace? stackTrace) {
-            return Center(child: Icon(Icons.network_check_rounded, color: Colors.red,));
+            return const Center(child: Icon(Icons.network_check_rounded, color: Colors.red,));
           },
         ),
       ),

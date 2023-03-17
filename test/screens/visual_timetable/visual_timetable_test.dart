@@ -4,7 +4,7 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/picture_grid.dart';
+import 'package:seg_coursework_app/widgets/timetable/picture_grid.dart';
 
 void main() {
   testWidgets('PictureGrid is shown by default', (WidgetTester tester) async {

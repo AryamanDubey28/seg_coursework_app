@@ -23,7 +23,7 @@ class CategoryImageRow extends StatelessWidget {
         children: imagePreviews
             .sublist(1)
             .map((image) => Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(30, 30, 30, 30),
+                  padding: const EdgeInsetsDirectional.fromSTEB(30, 30, 30, 30),
                   child: Container(
                     width: 110,
                     height: 110,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/image_details.dart';
-import 'image_square.dart';
+import '../../models/image_details.dart';
+import '../categoryItem/image_square.dart';
 
 ///This widget builds a timetable but without the arrows to be shown in the all saved timetables page.
 ///Not to be confused with TimetableList which is shown in the main visual timetable page.
@@ -34,7 +34,7 @@ class TimetableRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
       width: MediaQuery.of(context).size.width,
       child: Row(

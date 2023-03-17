@@ -1,5 +1,4 @@
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -8,11 +7,9 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/category_image.dart';
-import 'package:seg_coursework_app/widgets/category_row.dart';
-import 'package:seg_coursework_app/widgets/category_title.dart';
-import 'package:mockito/mockito.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:seg_coursework_app/widgets/category/category_image.dart';
+import 'package:seg_coursework_app/widgets/category/category_image_row.dart';
+import 'package:seg_coursework_app/widgets/category/category_title.dart';
 
 // Test ensures that column of rows (categories) is displayed on screen
 void main() {
@@ -34,7 +31,7 @@ void main() {
   testWidgets('Test column (with rows) is present', (tester) async {
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
-        child: MaterialApp(
+        child: const MaterialApp(
           home: CustomizableColumn(
             mock: true,
           ), //mock PIN

@@ -1,23 +1,23 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/custom_theme_details.dart';
-import '../themes/themes.dart';
+import '../../models/custom_theme_details.dart';
+import '../../themes/themes.dart';
 
 class ThemeControls extends StatefulWidget {
-  List<CustomThemeDetails> themeList;
+  final List<CustomThemeDetails> themeList;
   
-  Function updateThemeList;
+  final Function updateThemeList;
 
-  Function setMenuColor;
+  final Function setMenuColor;
 
-  Function setBackgroundColor;
+  final Function setBackgroundColor;
 
-  Function setButtonsColor;
+  final Function setButtonsColor;
 
-  Function setIconsAndTextsColor;
+  final Function setIconsAndTextsColor;
 
-  ThemeControls({super.key, 
+  const ThemeControls({super.key, 
   required this.setMenuColor, 
   required this.setBackgroundColor, 
   required this.setButtonsColor, 
@@ -64,10 +64,10 @@ class _ThemeControlsState extends State<ThemeControls> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select a color'),
+          title: const Text('Select a color'),
           actions: <Widget>[
             Container(
-              key: Key("blackButton"),
+              key: const Key("blackButton"),
               width: 50,
               height: 50,
               decoration: BoxDecoration(
@@ -82,7 +82,7 @@ class _ThemeControlsState extends State<ThemeControls> {
               ),
             ),
             Container(
-              key: Key("whiteButton"),
+              key: const Key("whiteButton"),
               width: 50,
               height: 50,
               decoration: BoxDecoration(
@@ -103,9 +103,9 @@ class _ThemeControlsState extends State<ThemeControls> {
   }
 
   ///A text button that saves the current theme settings.
-  TextButton BuildSaveButton(CustomTheme themeNotifier) {
+  TextButton buildSaveButton(CustomTheme themeNotifier) {
     return TextButton(
-      key: Key("saveButton"),
+      key: const Key("saveButton"),
       onPressed: () => setState(() {
         CustomThemeDetails temp = CustomThemeDetails(
           name: "Custom theme", 
@@ -120,7 +120,7 @@ class _ThemeControlsState extends State<ThemeControls> {
         widget.updateThemeList(widget.themeList, themeNotifier);
       
       }),
-      child: Text("Save")
+      child: const Text("Save")
     );
   }
 
@@ -130,12 +130,12 @@ class _ThemeControlsState extends State<ThemeControls> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(
+        SizedBox(
           width: 300,
           height: 60,
           child: ListTile(
-            key: Key("menuColorListTile"),
-            title: Text("Menu color"),
+            key: const Key("menuColorListTile"),
+            title: const Text("Menu color"),
             trailing: Container(
               width: 50,
               height: 50,
@@ -158,12 +158,12 @@ class _ThemeControlsState extends State<ThemeControls> {
             }
           ),
         ),
-        Container(
+        SizedBox(
           width: 300,
           height: 60,
           child: ListTile(
-            key: Key("backgroundColorListTile"),
-            title: Text("Background color"),
+            key: const Key("backgroundColorListTile"),
+            title: const Text("Background color"),
             trailing: Container(
               width: 50,
               height: 50,
@@ -177,21 +177,19 @@ class _ThemeControlsState extends State<ThemeControls> {
                 context, 
                 backgroundColor!
               );
-              if (newBackgroundColor != null) {
-                setState(() {
-                  backgroundColor = newBackgroundColor;
-                  widget.setBackgroundColor(newBackgroundColor);
-                });
-              }
+              setState(() {
+                backgroundColor = newBackgroundColor;
+                widget.setBackgroundColor(newBackgroundColor);
+              });
             }
           ),
         ),
-        Container(
+        SizedBox(
           width: 300,
           height: 60,
           child: ListTile(
-            key: Key("buttonsColorListTile"),
-            title: Text("Buttons color"),
+            key: const Key("buttonsColorListTile"),
+            title: const Text("Buttons color"),
             trailing: Container(
               width: 50,
               height: 50,
@@ -214,12 +212,12 @@ class _ThemeControlsState extends State<ThemeControls> {
             }
           ),
         ),
-        Container(
+        SizedBox(
           width: 300,
           height: 60,
           child: ListTile(
-            key: Key("iconsAndTextsColorListTile"),
-            title: Text("Icons and texts color"),
+            key: const Key("iconsAndTextsColorListTile"),
+            title: const Text("Icons and texts color"),
             trailing: Container(
               width: 50,
               height: 50,
@@ -248,7 +246,7 @@ class _ThemeControlsState extends State<ThemeControls> {
             },
           ),
         ),
-        BuildSaveButton(themeNotifier),
+        buildSaveButton(themeNotifier),
       ],
     );
   }
