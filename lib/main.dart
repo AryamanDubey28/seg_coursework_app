@@ -8,7 +8,6 @@ import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'pages/authenticate/wrapper.dart';
 import 'themes/theme_provider.dart';

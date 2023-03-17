@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
@@ -167,7 +164,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
         ),
         body: savedTimetables.isEmpty() 
         ? 
-        Center(child: Container(child: Text("No saved timetables. Save one in the 'Visual Timetable' page."),))
+        Center(child: Text("No saved timetables. Save one in the 'Visual Timetable' page."))
         :
         ListView.builder(
           itemCount: savedTimetables.length(),
