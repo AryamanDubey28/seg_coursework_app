@@ -40,6 +40,13 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
 
 
   late FirebaseFunctions firestoreFunctions;
+
+  bool isGridVisible = true;
+  //The images that will be fed into the timetable. (No pictures are chosen by default.)
+  List<ImageDetails> imagesList = [];
+
+  //The images that will be fed into the PictureGrid (the choice board.)
+  List<ImageDetails> filledImagesList = [];
   
   @override
   void initState() {
@@ -66,6 +73,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     await _fetchData();
   }
 
+  ///Fetches data from database if theres connection, fetches data from cache otherwise TO BE DONE.
   Future<void> _fetchData() async
   { 
     await Future.wait([
@@ -75,13 +83,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     setState(() {});
   }
 
-  bool isGridVisible = true;
-  //The images that will be fed into the timetable. (No pictures are chosen by default.)
-  List<ImageDetails> imagesList = [];
-
-  //The images that will be fed into the PictureGrid (the choice board.)
-  List<ImageDetails> filledImagesList = [];
-
+  ///Fetches items from database.
   Future<void> _fetchLibrary() async
   {
     try
@@ -140,7 +142,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     );
   }
 
-  ///This function returns a button that saves the timetable to a list of timetables.
+  ///This function returns a button that shows the dialog to save the timetable to the database.
   FloatingActionButton buildAddButton(List<ImageDetails> imagesList)
   {
     return FloatingActionButton(
@@ -185,7 +187,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       imagesList: imagesList,
       popImagesList: popImagesList
     );
-    final isLandscapeMode = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
 
     if(loading) {
       return Scaffold(
@@ -212,76 +213,81 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       ); 
     } 
     else {
-      return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        appBar: AppBar(
-          title: const Text("Visual Timetable"),
-          actions: <Widget> [
-            IconButton(
-              key: const Key("allTimetablesButton"),
-              tooltip: "View all saved timetables",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AllSavedTimetables(firestoreFunctions: firestoreFunctions, isMock: widget.isMock,),
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final isLandscapeMode = constraints.maxWidth > constraints.maxHeight;
+
+          return Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            appBar: AppBar(
+              title: const Text("Visual Timetable"),
+              actions: <Widget> [
+                IconButton(
+                  key: const Key("allTimetablesButton"),
+                  tooltip: "View all saved timetables",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllSavedTimetables(firestoreFunctions: firestoreFunctions, isMock: widget.isMock,),
+                      ),
+                    );
+                  }, 
+                icon: const Icon(Icons.list)
+                ),
+              ],
+            ),
+            drawer: const AdminSideMenu(),
+            //This is to add two floatingActionButtons and allign them to the corners of the screen.
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Stack(
+                children: <Widget>[
+                  //This makes sure that a timetable can't be saved if it has one or no elements.
+                  if (imagesList.length >= 2) Align(
+                    alignment: Alignment.bottomLeft,
+                    child: buildAddButton(imagesList),
                   ),
-                );
-              }, 
-            icon: const Icon(Icons.list)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: buildHideButton(),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-        drawer: const AdminSideMenu(),
-        //This is to add two floatingActionButtons and allign them to the corners of the screen.
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Stack(
-            children: <Widget>[
-              //This makes sure that a timetable can't be saved if it has one or no elements.
-              if (imagesList.length >= 2) Align(
-                alignment: Alignment.bottomLeft,
-                child: buildAddButton(imagesList),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: buildHideButton(),
-              ),
-            ],
-          ),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 4,
-              child: Center(
-                child: Container(
-                  //width here is set depending on the screen size. 6/6 represents the whole screen
-                  // 5/6 allows it to be centered and have a bit of padding on the left and right side.
-                  // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
-                  //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
-                  width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
-                  height: isLandscapeMode? MediaQuery.of(context).size.height/4 : MediaQuery.of(context).size.height/6.4,
-                  alignment: Alignment.center,
-                  child: Align(alignment: Alignment.center ,child: timetableList,),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  flex: 4,
+                  child: Center(
+                    child: Container(
+                      //width here is set depending on the screen size. 6/6 represents the whole screen
+                      // 5/6 allows it to be centered and have a bit of padding on the left and right side.
+                      // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
+                      //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
+                      width: (constraints.maxWidth * (5/6) + (constraints.maxWidth/35*4)),
+                      height: isLandscapeMode? constraints.maxHeight/4 : constraints.maxHeight/6.4,
+                      child: timetableList,
+                    ),
+                  )
                 ),
-              )
-            ),
-            isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
-            Expanded(
-              //This will make the timetable bigger if the PictureGrid is not visible
-              flex: isGridVisible ? 8 : 0,
-              child: Visibility(
-                visible: isGridVisible,
-                child: PictureGrid(
-                  imagesList: filledImagesList, 
-                  updateImagesList: updateImagesList
+                isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
+                Expanded(
+                  //This will make the timetable bigger if the PictureGrid is not visible
+                  flex: isGridVisible ? 8 : 0,
+                  child: Visibility(
+                    visible: isGridVisible,
+                    child: PictureGrid(
+                      imagesList: filledImagesList, 
+                      updateImagesList: updateImagesList
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          );
+        }
       );
     }
   }

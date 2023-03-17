@@ -6,7 +6,7 @@ import '../models/timetable.dart';
 import '../services/check_connection.dart';
 import 'loading_indicator.dart';
 
-
+///This widget shows the dialog that allows the user to enter a title and save a timetable
 class SaveTimetableDialog extends StatefulWidget {
   
 
@@ -21,6 +21,7 @@ class SaveTimetableDialog extends StatefulWidget {
 }
 
 class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
+  //To validate inputs.
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -29,11 +30,13 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
     if(!widget.isMock) {
       CheckConnection.stopMonitoring();
     }
+    _textEditingController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    //This is so when the user clicks outside the dialog it clears the text.
     return WillPopScope(
       onWillPop: () async {
         _textEditingController.clear();

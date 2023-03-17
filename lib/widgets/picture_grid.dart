@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/models/timetable.dart';
 import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'package:seg_coursework_app/widgets/search_bar.dart';
 
@@ -20,6 +19,7 @@ class _PictureGridState extends State<PictureGrid> {
 
   String _searchText = '';
 
+  ///This function gets the items filtered by the searchbar.
   List<ImageDetails> _getFilteredItems() {
     if (_searchText.isEmpty) {
       return widget.imagesList; // the list of all items to be displayed in the grid view

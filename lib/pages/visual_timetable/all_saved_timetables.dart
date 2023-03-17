@@ -41,6 +41,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     await _fetchData();
   }
 
+  ///Fetches data from database if theres connection, fetches data from cache otherwise TO BE DONE.
   Future<void> _fetchData() async
   { 
     await Future.wait([
@@ -50,6 +51,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     setState(() {});
   }
 
+  ///Fetches timetables from database.
   Future<void> _fetchTimetables() async
   {
     try 
@@ -62,10 +64,9 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     }
   }
 
-
+  ///Expands the timetable and shows it to the user.
   void expandTimetable(Timetable test)
   {
-    final isLandscapeMode = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
     showDialog(
       context: context,
       builder: (_) {
@@ -79,7 +80,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
   }
 
 
-  ///This function is fed into the TimetableRow and will unsave the timetable from the list of saved timetables.
+  ///This function is fed into the TimetableRow and will unsave the timetable from the database.
   void unsaveList(int index) async
   {
     if(!widget.isMock && !CheckConnection.isDeviceConnected)
