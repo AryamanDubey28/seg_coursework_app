@@ -36,11 +36,6 @@ class ListOfTimetables {
     listOfLists.add(list);
   }
 
-  // Future saveWorkflowToDatabase(Timetable timetable) async
-  // {
-  //   await saveWorkflowToFirestore(timetable: timetable);
-  // }
-
   List<Timetable> getListOfLists()
   {
     return listOfLists;
@@ -56,21 +51,23 @@ class ListOfTimetables {
     return listOfLists[index];
   }
 
-  //Prints the list for debug purposes. Delete later.
-  // void printList()
-  // {
-  //   for(int i = 0 ; i < listOfLists.length ; i++)
-  //   {
-  //     print("\n" + i.toString() + " List\n");
-  //     for(ImageDetails j in listOfLists[i])
-  //     {
-  //       print(j.name + " ");
-  //     }
-  //   }
-  // }
   bool isEmpty() => listOfLists.isEmpty;
   void removeAt(int index)
   {
     listOfLists.removeAt(index);
+  }
+
+  factory ListOfTimetables.fromJson(Map<String, dynamic> json) {
+    final list = json['listOfLists'] as List<dynamic>;
+    final listOfLists = list
+        .map((item) => Timetable.fromJson(item as Map<String, dynamic>))
+        .toList();
+    return ListOfTimetables(listOfLists: listOfLists);
+  }
+
+  Map<String, dynamic> toJson() {
+    final jsonListOfLists =
+        listOfLists.map((item) => item.toJson()).toList();
+    return {'listOfLists': jsonListOfLists};
   }
 }

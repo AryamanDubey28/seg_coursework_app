@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/cache_manager.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/save_timetable_dialog.dart';
@@ -73,7 +74,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     await _fetchData();
   }
 
-  ///Fetches data from database if theres connection, fetches data from cache otherwise TO BE DONE.
+  ///Fetches data.
   Future<void> _fetchData() async
   { 
     await Future.wait([
@@ -83,16 +84,32 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     setState(() {});
   }
 
-  ///Fetches items from database.
+  ///Fetches items from database if theres connection, from cache otherwise.
   Future<void> _fetchLibrary() async
   {
-    try
+    if(!widget.isMock)
+    {
+      if(CheckConnection.isDeviceConnected)
+      {
+        try
+        {
+          filledImagesList = await firestoreFunctions.getLibraryOfImages();
+          await CacheManager.storeLibraryInCache(userItems: filledImagesList);
+        }
+        catch(e)
+        {
+          SnackBarManager.showSnackBarMessage(context, "Error loading saved items. Check connection.");
+        }
+      }
+      else
+      {
+        filledImagesList = await CacheManager.getLibraryFromCache();
+        SnackBarManager.showSnackBarMessage(context, "No connection. Loading local data.");
+      }
+    }
+    else
     {
       filledImagesList = await firestoreFunctions.getLibraryOfImages();
-    }
-    catch(e)
-    {
-      SnackBarManager.showSnackBarMessage(context, "Error loading saved items. Check connection.");
     }
     
   }

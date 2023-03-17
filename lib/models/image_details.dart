@@ -10,4 +10,22 @@ class ImageDetails {
   {
     return imageUrl == other.imageUrl;
   }
+  
+  /// Convert an ImageDetails back from json data
+  factory ImageDetails.fromJson(Map<String, dynamic> json) {
+    return ImageDetails(
+      name: json['name'] as String,
+      imageUrl: json['imageUrl'] as String,
+      itemId: json['itemId'] as String,
+    );
+  }
+
+  /// Convert the current ImageDetails to json data
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'imageUrl': imageUrl,
+      'itemId': itemId,
+    };
+  }
 }

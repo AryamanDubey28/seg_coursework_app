@@ -264,4 +264,22 @@ void main() {
     });
   });
 
+  testWidgets(
+      'Having no items will show text to the user.',
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+
+      // Build our app and trigger a frame.
+      await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: VisualTimeTable(auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+            isMock: true,),)));
+
+      await tester.pumpAndSettle();
+
+      expect(find.text("No items to show. Add some in the 'Choice Board' page"), findsOneWidget);
+
+    });
+  });
+
 }

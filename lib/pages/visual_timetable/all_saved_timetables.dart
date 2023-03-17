@@ -6,6 +6,7 @@ import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
+import '../../helpers/cache_manager.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../helpers/snackbar_manager.dart';
 import '../../models/timetable.dart';
@@ -41,7 +42,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     await _fetchData();
   }
 
-  ///Fetches data from database if theres connection, fetches data from cache otherwise TO BE DONE.
+  ///Fetches data.
   Future<void> _fetchData() async
   { 
     await Future.wait([
@@ -51,16 +52,32 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     setState(() {});
   }
 
-  ///Fetches timetables from database.
+  ///Fetches timetables from database if theres connection, from cache otherwise.
   Future<void> _fetchTimetables() async
   {
-    try 
+    if(!widget.isMock)
+    {
+      if(CheckConnection.isDeviceConnected)
+      {
+        try 
+        {
+          savedTimetables = await widget.firestoreFunctions.getListOfTimetables();
+          await CacheManager.storeTimetablesInCache(listOfTimetables: savedTimetables);
+        } 
+        catch(e) 
+        {
+          SnackBarManager.showSnackBarMessage(context, "Error loading saved timetables. Check connection.");
+        }
+      }
+      else
+      {
+        savedTimetables = await CacheManager.getTimetablesFromCache();
+        SnackBarManager.showSnackBarMessage(context, "No connection. Loading local data.");
+      }
+    }
+    else
     {
       savedTimetables = await widget.firestoreFunctions.getListOfTimetables();
-    } 
-    catch(e) 
-    {
-      SnackBarManager.showSnackBarMessage(context, "Error loading saved timetables. Check connection.");
     }
   }
 
