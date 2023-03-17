@@ -89,25 +89,36 @@ class ItemsGrid extends StatelessWidget {
               maxCrossAxisExtent: 200,
               crossAxisSpacing: 30,
               mainAxisSpacing: 30,
+              childAspectRatio: 0.9
             ),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
               final imageUrl = item['illustration'];
+              final itemName = item['name'];
               return GestureDetector(
                 onTap: () async {
                   addItemAsCategoryItem(item: item, context: context);
                 },
-                child: GridTile(
-                  key: ValueKey(item.id),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image(
-                      image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,
+                child: Column(children: [
+                  Expanded(child: GridTile(
+                    key: ValueKey(item.id),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image(
+                        width: 200,
+                        height: 200,
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                ),
+                  )),
+                  // Expanded(child: 
+                  //   Padding(padding: const EdgeInsets.only(top: 8), child: Text(itemName, style: TextStyle(fontSize: 18))),
+                  // ),
+                  Padding(padding: const EdgeInsets.only(top: 8), child: Text(itemName, style: TextStyle(fontSize: 18))),
+                ],
+                )
               );
             },
           ),

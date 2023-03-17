@@ -78,6 +78,13 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
                 Navigator.of(context).pop();
               },
             ),
+            // Opens an additional alert to ask confirmation before deleting everywhere
+            TextButton(
+              key: Key("confirmItemDeleteEverywhere"),
+              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 236, 99, 92))),
+              onPressed: showDeleteEverywhereConfirmation,
+              child: Text('Delete Everywhere'),
+            ),
             // Deletes categoryItem from current category only
             TextButton(
               key: Key("confirmItemDelete"),
@@ -85,12 +92,41 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
               onPressed: deleteCategoryItemFromFirestore,
               child: Text('Delete'),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Alert dialog to make the user confirm deleting the item (in one category or all other categories)
+  void showDeleteEverywhereConfirmation() async {
+    if (!widget.mock && !CheckConnection.isDeviceConnected) {
+      // User has no internet connection
+      ErrorDialogHelper(context: context).show_alert_dialog("Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
+      return;
+    }
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button to close dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          key: Key("deleteItemAlert-${widget.itemId}"),
+          title: Text('Confirmation'),
+          content: Text('Are you sure you want to delete ${widget.itemName}? This removes it from all other categories too.'),
+          actions: <Widget>[
+            TextButton(
+              key: Key("cancelItemDeleteEverywhere"),
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
             // Deletes all categoryItems from all possible categories for a particular item
             TextButton(
               key: Key("confirmItemDeleteEverywhere"),
               style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
               onPressed: deleteItemEverywhere,
-              child: Text('Delete Everywhere'),
+              child: Text('Delete'),
             ),
           ],
         );
