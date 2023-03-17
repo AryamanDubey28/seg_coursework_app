@@ -16,8 +16,8 @@ import '../../widgets/admin_choice_board/delete_category_button.dart';
 import '../../widgets/admin_choice_board/delete_item_button.dart';
 import '../../widgets/admin_choice_board/edit_category_button.dart';
 import '../../widgets/admin_choice_board/edit_item_button.dart';
+import '../../widgets/admin_choice_board/choice_boards_scaffold.dart';
 import '../../widgets/loading_indicators/custom_loading_indicator.dart';
-import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
 /* 
@@ -94,59 +94,53 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return Scaffold(
-        appBar: AppBar(
-          key: const Key('app_bar'),
-          title: const Text('Loading Choice Boards'),
-        ),
-        drawer: const AdminSideMenu(),
-        body: const CustomLoadingIndicator(),
-      );
+      // Loading user's choice boards data
+      return const ChoiceBoardsScaffold(
+          title: "Loading Choice Boards", bodyWidget: CustomLoadingIndicator());
     } else if (hasError) {
-      return AlertDialog(
-        content: const Text(
-            'An error occurred while communicating with the database. \nPlease retry.'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Retry'),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => AdminChoiceBoards()));
-            },
-          ),
-        ],
-      );
+      // Error occured while loading user's choice boards data
+      return ChoiceBoardsScaffold(
+          title: "Error loading Choice Boards",
+          bodyWidget: AlertDialog(
+            content: const Text(
+                'An error occurred while communicating with the database. \nPlease press retry, or try to log-out and log-in again.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Retry'),
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => AdminChoiceBoards()));
+                },
+              ),
+            ],
+          ));
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          key: const Key('app_bar'),
-          title: const Text('Edit Choice Boards'),
-        ),
-        drawer: const AdminSideMenu(),
-        floatingActionButton: AddCategoryButton(
-          mock: widget.mock,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        body: DragAndDropLists(
-          listPadding: const EdgeInsets.all(30),
-          listInnerDecoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(20)),
-          children: categories,
-          contentsWhenEmpty: const Text(
-              "Welcome! Click on \"Add a category\" to start",
-              style: TextStyle(fontSize: 30)),
-          itemDivider: const Divider(
-            thickness: 4,
-            height: 4,
-            color: Colors.black12,
+      // User's choice boards data loaded successfully
+      return ChoiceBoardsScaffold(
+          title: 'Edit Choice Boards',
+          floatingButton: AddCategoryButton(
+            mock: widget.mock,
           ),
-          listDragHandle: buildDragHandle(isCategory: true),
-          itemDragHandle: buildDragHandle(),
-          onItemReorder: onReorderCategoryItem,
-          onListReorder: onReorderCategory,
-        ),
-      );
+          floatingButtonLocation: FloatingActionButtonLocation.endTop,
+          bodyWidget: DragAndDropLists(
+            listPadding: const EdgeInsets.all(30),
+            listInnerDecoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(20)),
+            children: categories,
+            contentsWhenEmpty: const Text(
+                "Welcome! Click on \"Add a category\" to start",
+                style: TextStyle(fontSize: 30)),
+            itemDivider: const Divider(
+              thickness: 4,
+              height: 4,
+              color: Colors.black12,
+            ),
+            listDragHandle: buildDragHandle(isCategory: true),
+            itemDragHandle: buildDragHandle(),
+            onItemReorder: onReorderCategoryItem,
+            onListReorder: onReorderCategory,
+          ));
     }
   }
 
