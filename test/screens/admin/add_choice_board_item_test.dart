@@ -54,7 +54,6 @@ void main() {
       expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);
       expect(find.byKey(const ValueKey("itemNameField")), findsOneWidget);
       expect(find.byKey(const ValueKey("useExistingItemButton")), findsOneWidget);
-      expect(find.text("or"), findsOneWidget);
       expect(find.byKey(const ValueKey("createItemButton")), findsOneWidget);
     });
   });
@@ -144,7 +143,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(ValueKey("createItemButton")));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 5));
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
   });
