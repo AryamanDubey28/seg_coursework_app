@@ -135,7 +135,10 @@ Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
     List<ClickableImage> data = [];
     data.add(buildClickableImageFromCategory(category));
     for (var item in category.items) {
-      data.add(buildClickableImageFromCategoryItem(item));
+      if (item.availability) {
+        //only add item if its available
+        data.add(buildClickableImageFromCategoryItem(item));
+      }
     }
     if (data.length > 1) {
       //only add category if it contains items
