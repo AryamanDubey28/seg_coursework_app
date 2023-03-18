@@ -960,7 +960,6 @@ Future<void> main() async {
 
     await firebaseFunctions.updateItemAvailability(
       itemId: newItemId,
-      refresh: () {},
     );
 
     DocumentSnapshot upCategoryItem =
@@ -994,7 +993,6 @@ Future<void> main() async {
     expect(newCategoryItem1.get('is_available'), true);
     await firebaseFunctions.updateItemAvailability(
       itemId: newItemId,
-      refresh: () {},
     );
 
     newCategoryItem1 = await mockFirestore
@@ -1042,7 +1040,6 @@ Future<void> main() async {
     expect(newCategoryItem2.get('is_available'), true);
     await firebaseFunctions.updateItemAvailability(
       itemId: newItemId,
-      refresh: () {},
     );
 
     newCategoryItem1 = await mockFirestore
@@ -1083,7 +1080,6 @@ Future<void> main() async {
     expect(newCategoryItem1.get('is_available'), true);
     await firebaseFunctions.updateItemAvailability(
       itemId: newItemId,
-      refresh: () {},
     );
 
     newCategoryItem1 = await mockFirestore
@@ -1093,7 +1089,7 @@ Future<void> main() async {
 
     expect(newCategoryItem1.get('is_available'), false);
     await firebaseFunctions.updateItemAvailability(
-        itemId: newItemId, refresh: () {});
+        itemId: newItemId);
 
     newCategoryItem1 = await mockFirestore
         .collection('categoryItems/$categoryId1/items')
@@ -1108,7 +1104,7 @@ Future<void> main() async {
       () async {
     expect(
         await firebaseFunctions.updateItemAvailability(
-            itemId: "wrongId", refresh: () {}),
+            itemId: "wrongId"),
         false);
   });
 

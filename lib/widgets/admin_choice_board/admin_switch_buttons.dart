@@ -60,7 +60,15 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
 
   void refresh() {
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => AdminChoiceBoards()));
+      MaterialPageRoute(
+        builder: (context) => AdminChoiceBoards(
+          mock: widget.mock,
+          auth: widget.auth,
+          firestore: widget.firestore,
+          storage: widget.storage,
+        ),
+      ),
+    );
   }
 
   Future<bool> switchAvailabilityValue(
@@ -70,8 +78,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       val = await firebaseFunctions.updateCategoryAvailability(
           categoryId: documentId);
     } else {
-      val = await firebaseFunctions.updateItemAvailability(
-          itemId: documentId, refresh: refresh);
+      val = await firebaseFunctions.updateItemAvailability(itemId: documentId);
     }
 
     if (val) {
@@ -108,6 +115,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
             setState(() {
               isAvailable = value;
             });
+            refresh();
           }
         }
       },
