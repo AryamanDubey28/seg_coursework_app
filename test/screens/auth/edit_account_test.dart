@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -44,6 +45,20 @@ class MyMockFirebaseAuth extends MockFirebaseAuth {
   MyMockFirebaseAuth({super.mockUser}) {}
 }
 
+class MyMockFirebaseFirestore extends FakeFirebaseFirestore {
+  String userId;
+  MyMockFirebaseFirestore({required this.userId}) {}
+
+  @override
+  CollectionReference<Map<String, dynamic>> collection(String path) {
+    var map = {"userId": userId, "pin": "0000"};
+    CollectionReference collectionReference = super.collection(path);
+    print("in inherited method! uid = $userId");
+    collectionReference.add(map);
+    return collectionReference as CollectionReference<Map<String, dynamic>>;
+  }
+}
+
 void main() async {
   late Auth auth;
   const _email = 'ilyas@yopmail.com';
@@ -58,7 +73,8 @@ void main() async {
 
   setUp(() {
     final _mockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
-    final _mockFirestore = FakeFirebaseFirestore();
+    final _mockFirestore = MyMockFirebaseFirestore(userId: "sampleUid");
+    _mockFirestore.saveDocument("userPins");
     auth = Auth(auth: _mockAuth, mock: true, firestore: _mockFirestore);
   });
 
@@ -159,5 +175,9 @@ void main() async {
         "Your PIN was successfully changed to 9999");
   });
 
-  // test("description", () => null);
+  test("Get Current User's PIN returns a PIN", () async {
+    await auth.signIn(_email, _password);
+    String pin = await auth.getCurrentUserPIN();
+    expect(pin, "0000");
+  });
 }
