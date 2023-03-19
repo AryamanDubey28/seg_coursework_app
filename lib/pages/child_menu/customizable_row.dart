@@ -60,10 +60,6 @@ class _CustomizableRowState extends State<CustomizableRow> {
               .where((x) => widget.unfilteredImages.indexOf(x) != 0)
               .toList();
 
-          // List<ClickableImage> newList = widget.imagePreviews
-          //     .where((x) => widget.imagePreviews.indexOf(x) != 0)
-          //     .toList(); //category image is not an option
-
           Navigator.push(
               context,
               MaterialPageRoute(

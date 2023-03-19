@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -45,7 +46,8 @@ void main() {
       final Finder logoutButton = find.byKey(Key("logoutButton"));
       final Finder passwordTextField = find.byKey(Key("logoutTextField"));
       final Finder submitButton = find.byKey(Key("submitButton"));
-      final Auth auth = Auth(auth: FirebaseAuth.instance);
+      final Auth auth = Auth(
+          auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
       final String currentPin = await auth.getCurrentUserPIN();
       await tester.tap(logoutButton);
       await tester.pumpAndSettle();

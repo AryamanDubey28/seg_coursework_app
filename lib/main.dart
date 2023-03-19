@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ Future main() async {
   final themeNotifier = CustomTheme();
   await Firebase.initializeApp();
   final pref = await SharedPreferences.getInstance();
-  final auth = Auth(auth: FirebaseAuth.instance);
+  final auth =
+      Auth(auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
   runApp(ThemeProvider(

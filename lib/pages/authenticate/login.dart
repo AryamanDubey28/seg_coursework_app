@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/services/auth.dart';
@@ -26,7 +27,8 @@ class _LogInState extends State<LogIn> {
   void initState() {
     super.initState();
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    auth = Auth(auth: firebaseAuth);
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    auth = Auth(auth: firebaseAuth, firestore: firebaseFirestore);
   }
 
   //sign users in using Firebase method

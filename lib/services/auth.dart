@@ -7,8 +7,9 @@ import 'package:seg_coursework_app/services/admin.dart';
 // This class concentrates all method relative to communicating with the Firebase Authentication service.
 class Auth {
   late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
   final bool mock;
-  Auth({required this.auth, this.mock = false});
+  Auth({required this.auth, this.mock = false, required this.firestore});
 
   Stream<User?> get user => auth.authStateChanges();
 
@@ -36,7 +37,7 @@ class Auth {
 
   Future<String> getCurrentUserPIN() async {
     try {
-      final query = FirebaseFirestore.instance
+      final query = firestore
           .collection('userPins')
           .where('userId', isEqualTo: await getCurrentUserId());
       final map = await query.get();

@@ -98,7 +98,8 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   Future<void> submit(BuildContext context) async {
     //verifys password is correct, if so then navigates back. otherwise says incorrect
     if (!widget.mock) {
-      final auth = Auth(auth: FirebaseAuth.instance);
+      final auth = Auth(
+          auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
       String currentPin = await auth.getCurrentUserPIN();
       if (pin_controller.text.trim() == currentPin) {
         final pref = await SharedPreferences.getInstance();

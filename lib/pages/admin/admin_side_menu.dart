@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,9 @@ class AdminSideMenu extends StatelessWidget {
               title: const Text('Activate Child Mode'),
               onTap: () async {
                 if (!mock) {
-                  final auth = Auth(auth: FirebaseAuth.instance);
+                  final auth = Auth(
+                      auth: FirebaseAuth.instance,
+                      firestore: FirebaseFirestore.instance);
                   bool check = await auth.checkPINExists();
                   if (check) {
                     //PIN exists
@@ -162,7 +165,9 @@ class AdminSideMenu extends StatelessWidget {
             onTap: () async {
               FirebaseAuth.instance.signOut();
               final pref = await SharedPreferences.getInstance();
-              final auth = Auth(auth: FirebaseAuth.instance);
+              final auth = Auth(
+                  auth: FirebaseAuth.instance,
+                  firestore: FirebaseFirestore.instance);
               final String pin = await auth.getCurrentUserPIN();
               final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(

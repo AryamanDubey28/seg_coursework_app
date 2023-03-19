@@ -1,3 +1,4 @@
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:seg_coursework_app/services/auth.dart';
@@ -16,7 +17,8 @@ void main() async {
 
   setUp(() {
     final _mockAuth = MockFirebaseAuth(mockUser: _mockUser);
-    auth = Auth(auth: _mockAuth);
+    final _mockFirestore = FakeFirebaseFirestore();
+    auth = Auth(auth: _mockAuth, firestore: _mockFirestore);
   });
 
   tearDown(() {});
