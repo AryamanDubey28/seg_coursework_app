@@ -101,7 +101,7 @@ void main() {
         auth: _mockAuth,
         firestore: fakeFirebaseFirestore,
         storage: _mockStorage);
-    auth = Auth(auth: _mockAuth);
+    auth = Auth(auth: _mockAuth, firestore: fakeFirebaseFirestore);
     toastItem = myTestCategories.getList().first.items.first;
     breakfastCategory = myTestCategories.getList().first;
     mockUser = MockUser(uid: "user1");
@@ -135,7 +135,10 @@ void main() {
           themeNotifier: CustomTheme(),
           child: MaterialApp(
             home: CustomizableRow(
-                categoryTitle: "Title", imagePreviews: imageRow),
+              categoryTitle: "Title",
+              imagePreviews: imageRow,
+              unfilteredImages: imageRow,
+            ),
           )));
 
       await tester.tap(find.byType(CustomizableRow));

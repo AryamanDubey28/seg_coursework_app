@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/widgets/edit_email_section.dart';
@@ -26,7 +27,8 @@ class EditAccountPageState extends State<EditAccountPage> {
   @override
   void initState() {
     super.initState();
-    authentitcationHelper = Auth(auth: FirebaseAuth.instance);
+    authentitcationHelper = Auth(
+        auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
   }
 
   // Displays an alert dialog with the text passed as parameter.

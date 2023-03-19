@@ -1,3 +1,4 @@
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,7 +58,8 @@ void main() async {
 
   setUp(() {
     final _mockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
-    auth = Auth(auth: _mockAuth, mock: true);
+    final _mockFirestore = FakeFirebaseFirestore();
+    auth = Auth(auth: _mockAuth, mock: true, firestore: _mockFirestore);
   });
 
   tearDown(() {});
@@ -156,4 +158,6 @@ void main() async {
     expect(await auth.editCurrentUserPIN("9999"),
         "Your PIN was successfully changed to 9999");
   });
+
+  // test("description", () => null);
 }
