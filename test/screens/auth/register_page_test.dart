@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/authenticate/register_page.dart';
 
 import '../../services/auth/auth_test.mocks.dart';
@@ -114,7 +112,7 @@ void main() {
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminChoiceBoards), findsNothing);
+      expect(find.byType(AdminChoiceBoard), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(
           find.text("The email address is badly formatted."), findsOneWidget);
@@ -145,7 +143,7 @@ void main() {
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminChoiceBoards), findsNothing);
+      expect(find.byType(AdminChoiceBoard), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(
           find.text("Password confirmation did not match. Please try again."),
@@ -176,7 +174,7 @@ void main() {
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminChoiceBoards), findsNothing);
+      expect(find.byType(AdminChoiceBoard), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text("One or more field was not filled. Please try again."),
           findsOneWidget);
@@ -206,7 +204,7 @@ void main() {
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminChoiceBoards), findsNothing);
+      expect(find.byType(AdminChoiceBoard), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text("One or more field was not filled. Please try again."),
           findsOneWidget);
@@ -237,7 +235,7 @@ void main() {
       await tester.tap(signUpButton);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminChoiceBoards), findsNothing);
+      expect(find.byType(AdminChoiceBoard), findsNothing);
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text("One or more field was not filled. Please try again."),
           findsOneWidget);

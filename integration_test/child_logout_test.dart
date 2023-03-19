@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/child/child_menu.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 
 void main() {
@@ -56,7 +56,7 @@ void main() {
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+      expect(find.byType(AdminChoiceBoard), findsOneWidget);
     });
 
     testWidgets(
@@ -96,7 +96,7 @@ void main() {
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
-      expect(find.byType(CustomizableColumn), findsOneWidget);
+      expect(find.byType(ChildMenu), findsOneWidget);
     });
   });
 }

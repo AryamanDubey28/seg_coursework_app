@@ -8,9 +8,8 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
-import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-
-import 'package:seg_coursework_app/pages/admin/delete_choice_board_category.dart';
+import '../../../lib/helpers/mock_firebase_authentication.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/delete_category.dart';
 
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 
@@ -19,7 +18,7 @@ void main() {
   late FirebaseFirestore mockFirestore;
   late FirebaseStorage mockStorage;
   late MockUser mockUser;
-  late DeleteChoiceBoardCategory deleteChoiceBoardCategory;
+  late DeleteCategory deleteChoiceBoardCategory;
 
   // Test values
   const categoryId = '1234';
@@ -32,7 +31,7 @@ void main() {
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
     when(mockAuth.currentUser).thenReturn(mockUser);
-    deleteChoiceBoardCategory = DeleteChoiceBoardCategory(
+    deleteChoiceBoardCategory = DeleteCategory(
         categoryId: categoryId,
         categoryName: categoryName,
         categoryImage: categoryImage,
@@ -41,7 +40,7 @@ void main() {
         storage: mockStorage);
   });
 
-  testWidgets('DeleteChoiceBoardCategory - should show confirmation dialog',
+  testWidgets('DeleteCategory - should show confirmation dialog',
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(MaterialApp(home: deleteChoiceBoardCategory));

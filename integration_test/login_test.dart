@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 
 void main() {
   //IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +28,7 @@ void main() {
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 5));
 
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+      expect(find.byType(AdminChoiceBoard), findsOneWidget);
 
       final ScaffoldState state =
           tester.firstState(find.byKey(Key("admin_boards_scaffold")));

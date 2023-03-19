@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/forgot_password_page.dart';
-import 'package:seg_coursework_app/widgets/my_text_field.dart';
+import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
 
+// Enables the user to login using their email and password.
 class LogIn extends StatefulWidget {
   final VoidCallback showRegisterPage;
   final FirebaseAuth auth;

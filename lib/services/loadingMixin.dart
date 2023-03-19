@@ -1,7 +1,6 @@
 // Mixin taken from: https://github.com/ali2236/loader
 
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 mixin LoadingMixin<T extends StatefulWidget> on State<T> {
@@ -34,17 +33,19 @@ mixin LoadingMixin<T extends StatefulWidget> on State<T> {
     if (!_loaded) {
       _loaded = true;
       load().then((data) {
-        if (mounted)
+        if (mounted) {
           setState(() {
             loading = false;
           });
+        }
       }).catchError((e) {
-        if (mounted)
+        if (mounted) {
           setState(() {
             loading = false;
             hasError = true;
             error = e.toString();
           });
+        }
       });
     }
   }

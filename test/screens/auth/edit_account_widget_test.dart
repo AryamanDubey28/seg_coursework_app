@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
+import '../../../lib/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';

@@ -9,8 +9,8 @@ import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 /// with the help of: https://youtu.be/MSv38jO4EJk
 /// and https://youtu.be/u52TWx41oU4
 
-/// A class added to make the image picking functions reusable and
-/// reduces code duplication.
+/// A class added to make the image picking functions reusable and to
+/// reduce code duplication.
 class ImagePickerFunctions {
   const ImagePickerFunctions();
 

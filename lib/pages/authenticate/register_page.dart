@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import '../../widgets/my_text_field.dart';
+import '../../widgets/general/my_text_field.dart';
 
+// Enables the creation of an account by providing an email and password.
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
   late bool isTestMode;

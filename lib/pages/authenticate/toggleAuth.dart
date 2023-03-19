@@ -3,6 +3,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:seg_coursework_app/pages/authenticate/login.dart';
 import 'package:seg_coursework_app/pages/authenticate/register_page.dart';
 
+// This class supports the log in infrastructure by enabling using classes to switch the logged in status
+// (logged in or logged out) of a user.
 class ToggleAuth extends StatefulWidget {
   final FirebaseAuth auth;
 

@@ -1,13 +1,11 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
-import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
-import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_side_menu.dart';
+import 'package:seg_coursework_app/pages/child/child_menu.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -40,7 +38,7 @@ void main() {
       await tester.tap(find.byKey(const ValueKey("choiceBoards")));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+      expect(find.byType(AdminChoiceBoard), findsOneWidget);
     });
   });
 
@@ -72,7 +70,7 @@ void main() {
       final Finder childModeButton = find.byKey(Key("childMode"));
       await tester.tap(childModeButton);
       await tester.pumpAndSettle();
-      expect(find.byType(CustomizableColumn), findsOneWidget);
+      expect(find.byType(ChildMenu), findsOneWidget);
     });
   });
 

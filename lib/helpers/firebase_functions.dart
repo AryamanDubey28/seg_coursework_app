@@ -22,6 +22,8 @@ class FirebaseFunctions {
   /// Add a new entry to the 'items' collection in Firestore with
   /// the given name and image URL.
   /// Return the created item's id
+  /// [name] the item's name.
+  /// [imageUrl] the url of the item's image.
   Future<String> createItem(
       {required String name, required String imageUrl}) async {
     CollectionReference items = firestore.collection('items');
@@ -42,6 +44,10 @@ class FirebaseFunctions {
   /// Add a new entry to the 'categoryItems' collection in Firestore with
   /// the given item and category information.
   /// Note: the categoryItem will have the same id as the item
+  /// [name] The name of the categoryItem.
+  /// [imageUrl] the url of the categoryItem's illustration.
+  /// [categoryId] the id of the category for which to create a categoryItem.
+  /// [itemId] the id of the item linked with that categoryItem.
   Future createCategoryItem(
       {required String name,
       required String imageUrl,
@@ -64,6 +70,7 @@ class FirebaseFunctions {
 
   /// Return an appropriate rank for a new categoryItem in the
   /// given category (one more than the highest rank or zero if empty)
+  /// [categoryId] the id of teh category the item is added to.
   Future<int> getNewCategoryItemRank({required String categoryId}) async {
     final QuerySnapshot querySnapshot =
         await firestore.collection('categoryItems/$categoryId/items').get();
@@ -73,6 +80,8 @@ class FirebaseFunctions {
   // #### Edting items functions ####
 
   /// Update the name of the given item (only in the "items" collection)
+  /// [itemId] the id of the item to update.
+  /// [newName] the name value to update to.
   Future updateItemName({required String itemId, required String newName}) {
     CollectionReference items = firestore.collection('items');
 
@@ -86,6 +95,8 @@ class FirebaseFunctions {
 
   /// Update the name of all the "categoryItems" which have
   /// the given itemId as their id
+  /// [itemId] the id of the item.
+  /// [newName] the name to update to.
   Future updateCategoryItemsName(
       {required String itemId, required String newName}) async {
     final QuerySnapshot categoriesSnapshot = await firestore
@@ -115,6 +126,7 @@ class FirebaseFunctions {
 
   /// Delete the image in Firestore Cloud Storage which holds
   /// the given imageUrl
+  /// [imageUrl] the url of the image to delete.
   Future deleteImageFromCloud({required String imageUrl}) async {
     return storage
         .refFromURL(imageUrl)
@@ -126,6 +138,8 @@ class FirebaseFunctions {
 
   /// Take an image and upload it to Firestore Cloud Storage with
   /// a unique name. Return the URL of the image from the cloud
+  /// [image] the file to upload.
+  /// [name] the name of he image.
   Future<String?> uploadImageToCloud(
       {required File image, required String name}) async {
     String uniqueName = name + DateTime.now().millisecondsSinceEpoch.toString();
@@ -140,6 +154,8 @@ class FirebaseFunctions {
   }
 
   /// Update the image (illustration) of the given item (only in the "items" collection)
+  /// [itemId] the id of the item to update.
+  /// [newImageUrl] the new value of the illustration.
   Future updateItemImage(
       {required String itemId, required String newImageUrl}) {
     CollectionReference items = firestore.collection('items');
@@ -164,6 +180,7 @@ class FirebaseFunctions {
       return throw FirebaseException(plugin: "User has no categories");
     }
 
+    // Update the image for the relevant categoryItems of each category.
     for (final DocumentSnapshot category in categoriesSnapshot.docs) {
       final QuerySnapshot categoryItemsSnapshot = await firestore
           .collection('categoryItems/${category.id}/items')
@@ -337,8 +354,8 @@ class FirebaseFunctions {
     }
   }
 
-  /// Delete category document from categories collection
-  /// Delete associated categoryItems document
+  /// Delete category document from categories collection.
+  /// Delete associated categoryItems document.
   Future deleteCategory({required String categoryId}) async {
     CollectionReference categories = firestore.collection('categories');
 
@@ -368,7 +385,7 @@ class FirebaseFunctions {
     }
   }
 
-  // #### updating availabilities functions ####
+  // #### Updating availabilities functions ####
 
   /// First, the method updates the availability status of the category [categoryId] in the 'categories' collection,
   /// then, if the operation is successful, it calls availabilityMultiPathUpdate method.
@@ -574,7 +591,8 @@ class FirebaseFunctions {
   }
 
   /// Store the given Categories in the cache under the name
-  /// "<userId>-categories"
+  /// "<userId>-categories".
+  /// [userCategories] the categories associated with a user.
   Future storeCategoriesInCache({required Categories userCategories}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

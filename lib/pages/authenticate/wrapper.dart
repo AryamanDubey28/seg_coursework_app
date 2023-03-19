@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/child/child_menu.dart';
 import 'toggleAuth.dart';
 
+// This class supports the logging in infrastructure by handling the reactions to a user's action to login
+// or to log out and showing LogIn to users that are not yet logged in and AdminChoiceBoard or ChildBoard
+// to the users that are.
 class Wrapper extends StatelessWidget {
   final bool isInChildMode;
   late FirebaseAuth auth;
@@ -22,10 +25,10 @@ class Wrapper extends StatelessWidget {
         stream: auth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            //if we are trying to sign in and snapshot contains user data, we are logged in
-            return isInChildMode ? CustomizableColumn() : AdminChoiceBoards();
+            // If we are trying to sign in and snapshot contains user data, we are logged in
+            return isInChildMode ? ChildMenu() : AdminChoiceBoard();
           } else {
-            //snapshot does not contain user data therefore, not logged in
+            // Snapshot does not contain user data therefore, not logged in
             return ToggleAuth(auth: auth);
           }
         },

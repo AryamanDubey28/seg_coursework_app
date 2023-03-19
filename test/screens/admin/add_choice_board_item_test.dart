@@ -10,9 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/pages/admin/add_choice_board_item.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import '../../../lib/helpers/mock_firebase_authentication.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/create_item.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -38,7 +38,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AddChoiceBoardItem(
+            home: CreateItem(
               categoryId: breakfastCategoryId,
               mock: true,
               auth: mockAuth,
@@ -63,7 +63,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AddChoiceBoardItem(
+            home: CreateItem(
               categoryId: breakfastCategoryId,
               mock: true,
               auth: mockAuth,
@@ -83,7 +83,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AddChoiceBoardItem(
+            home: CreateItem(
               categoryId: breakfastCategoryId,
               mock: true,
               auth: mockAuth,
@@ -107,7 +107,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AddChoiceBoardItem(
+            home: CreateItem(
               categoryId: breakfastCategoryId,
               mock: true,
               auth: mockAuth,
@@ -129,7 +129,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: AddChoiceBoardItem(
+            home: CreateItem(
               categoryId: breakfastCategoryId,
               mock: true,
               auth: mockAuth,
@@ -145,7 +145,7 @@ void main() {
 
       await tester.tap(find.byKey(ValueKey("createItemButton")));
       await tester.pumpAndSettle();
-      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+      expect(find.byType(AdminChoiceBoard), findsOneWidget);
     });
   });
 }

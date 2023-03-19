@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Helps other classes show simple error dialogs while avoiding code duplication.
+// Helps other classes show a simple error dialog while avoiding code duplication.
 class ErrorDialogHelper {
   late dynamic context;
 

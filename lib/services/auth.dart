@@ -12,6 +12,7 @@ class Auth {
 
   Stream<User?> get user => auth.authStateChanges();
 
+  // Creates an account for a given email and password.
   Future<String?> createAccount(String email, String password) async {
     try {
       await auth.createUserWithEmailAndPassword(
@@ -34,6 +35,7 @@ class Auth {
     }
   }
 
+  // Returns the pin of the currently logged in user.
   Future<String> getCurrentUserPIN() async {
     try {
       final query = FirebaseFirestore.instance
@@ -49,12 +51,14 @@ class Auth {
     }
   }
 
+  // Check if the currently logged in user has a pin.
   Future<bool> checkPINExists() async {
     String pin = await getCurrentUserPIN();
     return pin.length == 4 &&
         num.tryParse(pin) != null; // unless PIN is 4 digits, return false
   }
 
+  // Creates a pin for the currently logged in user.
   Future<String> createPIN(String pin) async {
     if (await getCurrentUser() != null) {
       try {
@@ -121,6 +125,7 @@ class Auth {
     }
   }
 
+  // Edit the pin of the currenly logged in user.
   Future<String> editCurrentUserPIN(String newPIN) async {
     if (await getCurrentUser() != null) {
       if (newPIN.length != 4 && num.tryParse(newPIN) != null) {
@@ -153,6 +158,7 @@ class Auth {
     return "This attempt at changing your PIN was unsuccessful";
   }
 
+  // Return the User object referring to the currenly logged in user.
   Future<User?> getCurrentUser() async {
     var user = await auth.currentUser;
     if (user != null) {
@@ -162,6 +168,7 @@ class Auth {
     }
   }
 
+  // Returns the id (as String) of the currently logged in user.
   Future<String?> getCurrentUserId() async {
     var user = await auth.currentUser;
     if (user != null) {
@@ -171,6 +178,7 @@ class Auth {
     }
   }
 
+  // Logs in a user with their email and password.
   Future<String?> signIn(String email, String password) async {
     try {
       if (!validEmail(email)) {
@@ -186,6 +194,7 @@ class Auth {
     }
   }
 
+  // Logs out the currenly logged in user.
   Future<String?> signOut() async {
     try {
       await auth.signOut();
@@ -197,9 +206,10 @@ class Auth {
     }
   }
 
-  bool validEmail(String email) {
+  // Verify if a given string is a valid email or not .
+  bool validEmail(String stringToTest) {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
+        .hasMatch(stringToTest);
   }
 }

@@ -8,7 +8,7 @@ import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
-import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
+import '../../../lib/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 
 Future<void> main() async {
