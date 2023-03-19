@@ -110,4 +110,37 @@ void main() {
       expect(find.text("testItem already exists in this category!"), findsOneWidget);
     });
   });
+
+  testWidgets('Search bar filters picture grid.', (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+
+      // Build our app and trigger a frame.
+      await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(
+            home: AddExistingItem(
+              mock: true,
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+            ),
+          )));
+
+      await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+      final searchBar = find.byKey(const ValueKey("searchBar"));
+
+      expect(find.byKey(const ValueKey("gridImage0")), findsOneWidget);
+
+      await tester.tap(searchBar);
+      await tester.enterText(searchBar, "notItem");
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+
+      expect(find.byKey(const ValueKey("gridImage0")), findsNothing);
+
+      await tester.enterText(searchBar, "testItem");
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey("gridImage0")), findsOneWidget);
+    });
+  });
 }
