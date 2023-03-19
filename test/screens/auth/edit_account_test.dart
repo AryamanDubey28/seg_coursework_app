@@ -140,6 +140,12 @@ void main() async {
         'We could not verify your identity. Please log out and back in.');
   });
 
+  test("Get current user's id returns an id", () async {
+    await auth.signIn(_email, _password);
+    String? uid = await auth.getCurrentUserId(); //mocking returns sampleUid
+    expect(uid, "sampleUid");
+  });
+
   test("Cannot set a PIN longer than 4 digits", () async {
     await auth.signIn(_email, _password);
     expect(await auth.createPIN("12345"),
