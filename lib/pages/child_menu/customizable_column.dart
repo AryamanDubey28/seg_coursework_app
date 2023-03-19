@@ -39,27 +39,27 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     {
       'categoryTitle': 'Category 1',
       'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
       ],
     },
     {
       'categoryTitle': 'Category 2',
       'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
       ],
     },
     {
       'categoryTitle': 'Category 3',
       'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
       ],
     },
   ];

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/clickable_images_grid.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
 import '../../themes/themes.dart';
 
@@ -120,7 +122,14 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             const SizedBox(
               width: 30,
             ),
-            getCategoryImage(),
+            // Category Image
+            ImageSquare(
+                key: const Key("categoryImage"),
+                width: 90,
+                height: 90,
+                image: ImageDetails(
+                    name: categoryImage.name,
+                    imageUrl: categoryImage.imageUrl)),
             //box for spacing
             const SizedBox(
               width: 30,
@@ -139,25 +148,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
       categoryImage.name,
       textAlign: TextAlign.right,
       textScaleFactor: 2,
-    );
-  }
-
-  // Returns category image that shows on menu
-  Container getCategoryImage() {
-    return Container(
-      key: const Key("categoryImage"),
-      margin: const EdgeInsets.all(8.0),
-      height: 90,
-      width: 90,
-      decoration: BoxDecoration(
-          border: Border.all(width: 3),
-          borderRadius: BorderRadius.circular(8),
-          image: DecorationImage(
-            image: NetworkImage(
-              categoryImage.imageUrl,
-            ),
-            fit: BoxFit.cover,
-          )),
     );
   }
 
@@ -185,9 +175,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             final player = AudioPlayer();
             player.play(AssetSource('back_button.mp3'));
             Navigator.pop(context);
-            },
+          },
           icon: const Icon(Icons.arrow_back_rounded)),
     );
   }
-
 }

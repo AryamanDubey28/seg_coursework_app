@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -99,11 +100,19 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                                 height: 160,
                                 fit: BoxFit.cover,
                               )
-                            : Image.network(
-                                widget.categoryImageUrl,
+                            : CachedNetworkImage(
+                                key: UniqueKey(),
+                                imageUrl: widget.categoryImageUrl,
+                                fit: BoxFit.cover,
                                 width: 160,
                                 height: 160,
-                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const Center(
+                                      child: Icon(
+                                    Icons.network_check_rounded,
+                                    color: Colors.red,
+                                  ));
+                                },
                               )),
                     // instructions text
                     const Text(
@@ -148,7 +157,8 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                       decoration: InputDecoration(
                           hintText: widget.categoryName,
                           border: InputBorder.none,
-                          hintStyle: const TextStyle(fontWeight: FontWeight.bold)),
+                          hintStyle:
+                              const TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
