@@ -5,6 +5,7 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
 import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -409,6 +410,32 @@ class FirebaseFunctions {
       return false;
     }
     return true;
+  }
+
+  ///Fetches all items created by the user.
+  Future<List<ImageDetails>> getLibraryOfImages() async
+  {
+    List<ImageDetails> library = [];
+    try{
+      final QuerySnapshot itemsSnapshot = await firestore.collection("items")
+      .where("userId", isEqualTo: auth.currentUser!.uid)
+      .get();
+
+      if (itemsSnapshot.size == 0) {
+      return library;
+      }
+
+      for (final DocumentSnapshot item in itemsSnapshot.docs) {
+        library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+      }
+    }
+    catch(e)
+    {
+      print(e);
+    }
+    
+
+    return library;
   }
 
   /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.

@@ -18,6 +18,8 @@ import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/existing_items_grid.dart';
+import 'package:seg_coursework_app/widgets/image_square.dart';
 
 void main() {
   late String breakfastCategoryId;
@@ -51,7 +53,10 @@ void main() {
               storage: mockStorage,
             ),
           )));
-      expect(find.byType(ItemsGrid), findsOneWidget);
+      
+      await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      expect(find.byType(ExistingItemsGrid), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
     });
   });
@@ -71,7 +76,7 @@ void main() {
 
       await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
       await tester.pumpAndSettle(const Duration(seconds: 3));
-      await tester.tap(find.byType(GridTile));
+      await tester.tap(find.byType(ImageSquare));
       await tester.pumpAndSettle(const Duration(seconds: 3));
 
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
@@ -97,7 +102,7 @@ void main() {
       var testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
       await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: "image.jpg", categoryId: breakfastCategoryId, itemId: testId);
       await tester.pumpAndSettle(const Duration(seconds: 1));
-      await tester.tap(find.byKey(ValueKey(testId)));
+      await tester.tap(find.byKey(ValueKey("gridImage0")));
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AddExistingItem), findsOneWidget);
