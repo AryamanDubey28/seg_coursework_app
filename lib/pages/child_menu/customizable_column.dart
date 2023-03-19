@@ -25,15 +25,14 @@ import 'customizable_row.dart';
 
 // The child menu is formed essentially by creating a column of rows,
 // with rowConfigs outlining the category's title and images
-// (1st image is category image and those after are the smaller previews
-//
 
 class CustomizableColumn extends StatefulWidget {
   final bool mock;
   static int customizableColumnRequestCounter = 0; //used for testing
   List<List<ClickableImage>> testList; //used for testing
   CustomizableColumn({this.mock = false, testList})
-      : testList = testList ?? test_list_clickable_images;
+      : testList = testList ??
+            test_list_clickable_images; //testList = passed in testList from constructor but if none is passed it, testList = test_list_clickable_images
 
   @override
   State<CustomizableColumn> createState() => _CustomizableColumnState();
