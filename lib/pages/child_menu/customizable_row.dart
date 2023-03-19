@@ -60,8 +60,8 @@ class _CustomizableRowState extends State<CustomizableRow> {
               .where((x) => widget.unfilteredImages.indexOf(x) != 0)
               .toList();
           // PLACEHOLDER.
-          // final player = AudioPlayer();
-          // player.play(AssetSource('category_click.mp3'));
+          final player = AudioPlayer();
+          player.play(AssetSource('category_click.mp3'));
 
           Navigator.push(
               context,
