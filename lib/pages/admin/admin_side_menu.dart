@@ -66,10 +66,11 @@ class AdminSideMenu extends StatelessWidget {
             onTap: () => Navigator.of(context)
                 .pushReplacement(MaterialPageRoute(builder: (context) {
               if (!mock) {
-                return AdminChoiceBoards(draggableCategories: devCategories);
+                return AdminChoiceBoards();
               } else {
                 return AdminChoiceBoards(
-                  draggableCategories: devCategories,
+                  mock: true,
+                  testCategories: testCategories,
                   auth: MockFirebaseAuthentication(),
                   firestore: FakeFirebaseFirestore(),
                   storage: MockFirebaseStorage(),
@@ -147,14 +148,16 @@ class AdminSideMenu extends StatelessWidget {
               Icons.account_box_outlined,
             ),
             title: const Text('Edit Account Details'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditAccountPage(),
-                ),
-              );
-            },
+            onTap: () => Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
+              if (!mock) {
+                return EditAccountPage();
+              } else {
+                return EditAccountPage(
+                  auth: MockFirebaseAuthentication(),
+                );
+              }
+            })),
           ),
           ListTile(
             key: const Key("logout"),

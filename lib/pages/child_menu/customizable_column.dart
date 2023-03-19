@@ -1,23 +1,22 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/models/draggable_list.dart';
+
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../models/categories.dart';
 import 'package:flutter/services.dart';
-import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,10 +110,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => AdminChoiceBoards(
-                    draggableCategories: devCategories,
-                  ),
-              maintainState: false),
+              builder: (context) => AdminChoiceBoards(), maintainState: false),
         );
       } else {
         Navigator.of(context).pop();
@@ -138,7 +134,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           context,
           MaterialPageRoute(
               builder: (context) => AdminChoiceBoards(
-                    draggableCategories: devCategories,
                     firestore: fakeFirebaseFirestore,
                     auth: mockFirebaseAuth,
                     storage: mockFirebaseStorage,
@@ -147,10 +142,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) => AdminChoiceBoards(
-                    draggableCategories: devCategories,
-                  )),
+          MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
         );
       }
     }

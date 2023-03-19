@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 /// A datatype model which mimics a 'CategoryItems' entry in Firestore
 class CategoryItem {
   final bool availability;
@@ -7,15 +5,32 @@ class CategoryItem {
   final String imageUrl;
   final String id;
   final int rank;
-  final Key? key;
 
   CategoryItem(
       {required this.availability,
       required this.name,
       required this.rank,
       required this.imageUrl,
-      required this.id,
-      this.key});
+      required this.id});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CategoryItem &&
+          runtimeType == other.runtimeType &&
+          availability == other.availability &&
+          name == other.name &&
+          imageUrl == other.imageUrl &&
+          id == other.id &&
+          rank == other.rank;
+
+  @override
+  int get hashCode =>
+      availability.hashCode ^
+      name.hashCode ^
+      imageUrl.hashCode ^
+      id.hashCode ^
+      rank.hashCode;
 
   /// Convert a CategoryItem back from json data
   factory CategoryItem.fromJson(Map<String, dynamic> json) {

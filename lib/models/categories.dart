@@ -1,14 +1,23 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' as helper;
 import 'package:seg_coursework_app/models/category.dart';
 
 /// A datatype model which holds a list of 'Category'.
 /// Essentially, all of the user's choice boards data
 class Categories {
   List<Category> categories;
-  Key? key;
 
-  Categories({required this.categories, this.key});
+  Categories({required this.categories});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Categories &&
+          runtimeType == other.runtimeType &&
+          helper.listEquals(categories, other.categories);
+
+  @override
+  int get hashCode => categories.hashCode;
 
   /// Add a given Category to the back of the list
   void add(Category category) {

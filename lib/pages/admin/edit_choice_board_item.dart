@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -16,6 +16,7 @@ class EditChoiceBoardItem extends StatefulWidget {
   final String itemId;
   final String itemName;
   final String itemImageUrl;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -25,6 +26,7 @@ class EditChoiceBoardItem extends StatefulWidget {
       required this.itemId,
       required this.itemName,
       required this.itemImageUrl,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -176,11 +178,18 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
     // No changes made
     if (newName!.isEmpty && newImage == null) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => AdminChoiceBoards(
-            draggableCategories: devCategories,
-            auth: widget.auth,
-            firestore: widget.firestore,
-            storage: widget.storage),
+        builder: (context) {
+          if (widget.mock) {
+            return AdminChoiceBoards(
+                mock: true,
+                testCategories: testCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage);
+          } else {
+            return AdminChoiceBoards();
+          }
+        },
       ));
       try {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -191,7 +200,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       }
     } else {
       try {
-        if (widget.firestore is! FakeFirebaseFirestore) {
+        if (!widget.mock) {
           LoadingIndicatorDialog().show(context);
         }
 
@@ -204,7 +213,7 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           await firestoreFunctions.deleteImageFromCloud(
               imageUrl: widget.itemImageUrl);
           String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
-              image: newImage, itemName: newName);
+              image: newImage, name: newName);
           await firestoreFunctions.updateItemImage(
               itemId: widget.itemId, newImageUrl: newImageUrl!);
           await firestoreFunctions.updateCategoryItemsImage(
@@ -219,23 +228,33 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
         }
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
+          await firestoreFunctions.itemExists(itemId: widget.itemId);
           await firestoreFunctions.deleteImageFromCloud(
               imageUrl: widget.itemImageUrl);
           String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
-              image: newImage, itemName: widget.itemName);
+              image: newImage, name: widget.itemName);
           await firestoreFunctions.updateItemImage(
               itemId: widget.itemId, newImageUrl: newImageUrl!);
           await firestoreFunctions.updateCategoryItemsImage(
               itemId: widget.itemId, newImageUrl: newImageUrl);
         }
 
-        LoadingIndicatorDialog().dismiss();
+        if (!widget.mock) {
+          LoadingIndicatorDialog().dismiss();
+        }
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => AdminChoiceBoards(
-              draggableCategories: devCategories,
-              auth: widget.auth,
-              firestore: widget.firestore,
-              storage: widget.storage),
+          builder: (context) {
+            if (widget.mock) {
+              return AdminChoiceBoards(
+                  mock: true,
+                  testCategories: testCategories,
+                  auth: widget.auth,
+                  firestore: widget.firestore,
+                  storage: widget.storage);
+            } else {
+              return AdminChoiceBoards();
+            }
+          },
         ));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Edits saved successfully!")),
@@ -243,13 +262,8 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
         print(e);
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                  content: Text(
-                      'An error occurred while communicating with the database'));
-            });
+        ErrorDialogHelper(context: context).show_alert_dialog(
+            'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.');
       }
     }
   }

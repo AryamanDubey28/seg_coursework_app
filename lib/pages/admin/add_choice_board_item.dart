@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -13,6 +14,7 @@ import 'package:seg_coursework_app/widgets/pick_image_button.dart';
 
 class AddChoiceBoardItem extends StatefulWidget {
   final String categoryId;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -21,6 +23,7 @@ class AddChoiceBoardItem extends StatefulWidget {
   AddChoiceBoardItem(
       {super.key,
       required this.categoryId,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage,
@@ -174,18 +177,12 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   void saveItemToFirestore(
       {required File? image, required String? itemName}) async {
     if (itemName!.isEmpty || image == null) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              key: Key("FieldsMissingAlert"),
-              content: Text("A field or more are missing!"),
-            );
-          });
+      ErrorDialogHelper(context: context)
+          .show_alert_dialog("A field or more are missing!");
     } else {
       LoadingIndicatorDialog().show(context);
       String? imageUrl = await firestoreFunctions.uploadImageToCloud(
-          image: image, itemName: itemName);
+          image: image, name: itemName);
       if (imageUrl != null) {
         try {
           String itemId = await firestoreFunctions.createItem(
@@ -199,11 +196,18 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
           LoadingIndicatorDialog().dismiss();
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => AdminChoiceBoards(
-                draggableCategories: devCategories,
-                auth: widget.auth,
-                firestore: widget.firestore,
-                storage: widget.storage),
+            builder: (context) {
+              if (widget.mock) {
+                return AdminChoiceBoards(
+                    mock: true,
+                    testCategories: testCategories,
+                    auth: widget.auth,
+                    firestore: widget.firestore,
+                    storage: widget.storage);
+              } else {
+                return AdminChoiceBoards();
+              }
+            },
           ));
           // update message
           ScaffoldMessenger.of(context).showSnackBar(
@@ -212,13 +216,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
         } catch (e) {
           print(e);
           LoadingIndicatorDialog().dismiss();
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                    content: Text(
-                        'An error occurred while communicating with the database'));
-              });
+          ErrorDialogHelper(context: context).show_alert_dialog(
+              "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }
       }
     }

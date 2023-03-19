@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/services/admin.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 // This class concentrates all method relative to communicating with the Firebase Authentication service.
 class Auth {

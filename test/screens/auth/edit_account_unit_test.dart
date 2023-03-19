@@ -9,6 +9,7 @@ import 'package:mockito/mockito.dart';
 import 'package:seg_coursework_app/services/admin.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 
+// Unit tests for the methods of the Auth class linked to editing an account.
 class MyMockUser extends MockUser {
   MyMockUser({super.email, super.uid, super.displayName});
 
