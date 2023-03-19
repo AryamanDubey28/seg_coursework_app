@@ -58,8 +58,8 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
       {
         try 
         {
-          savedTimetables = await widget.firestoreFunctions.getListOfTimetables();
-          await CacheManager.storeTimetablesInCache(listOfTimetables: savedTimetables);
+          savedTimetables = await widget.firestoreFunctions.getSavedTimetables();
+          await CacheManager.storeSavedTimetablesInCache(listOfTimetables: savedTimetables);
         } 
         catch(e) 
         {
@@ -68,13 +68,13 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
       }
       else
       {
-        savedTimetables = await CacheManager.getTimetablesFromCache();
+        savedTimetables = await CacheManager.getSavedTimetablesFromCache();
         SnackBarManager.showSnackBarMessage(context, "No connection. Loading local data.");
       }
     }
     else
     {
-      savedTimetables = await widget.firestoreFunctions.getListOfTimetables();
+      savedTimetables = await widget.firestoreFunctions.getSavedTimetables();
     }
   }
 

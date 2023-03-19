@@ -59,7 +59,7 @@ class _TimetableListDialogState extends State<TimetableListDialog> {
                         width: constraints.maxWidth/(widget.timetable.length()+1),
                         height: constraints.maxHeight,
                         key: Key('timetableDialogImage$index'),
-                        image: widget.timetable.get(index),
+                        image: widget.timetable[index],
                       ),
                       if (crossedOutIndices.contains(index))
                         //The cross out design

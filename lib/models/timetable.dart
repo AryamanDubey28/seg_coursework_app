@@ -1,5 +1,6 @@
 import 'image_details.dart';
 
+///This model handles timetables to be easily saved and deleted. It's also used in the list of timetables to easily store saved timetables.
 class Timetable {
   String title;
   List<ImageDetails> listOfImages;
@@ -12,30 +13,16 @@ class Timetable {
     return listOfImages.length;
   }
 
-  ImageDetails get(int index)
+  ImageDetails operator[](int index)
   {
     return listOfImages[index];
-  }
-
-  void add(ImageDetails img)
-  {
-    listOfImages.add(img);
-  }
-
-  void insert(int index, ImageDetails img)
-  {
-    listOfImages.insert(index, img);
-  }
-
-  ImageDetails removeAt(int index)
-  {
-    return listOfImages.removeAt(index);
   }
 
   void setID({required String id}) {
     workflowId = id;
   }
 
+  ///Converts a json map (from the cache) to an object.
   factory Timetable.fromJson(Map<String, dynamic> json) {
     final list = json['listOfImages'] as List<dynamic>;
     final listOfImages = list
@@ -47,6 +34,7 @@ class Timetable {
         workflowId: json['workflowId'] as String);
   }
 
+  ///Converts an object to a json map (to be stored in the cache.)
   Map<String, dynamic> toJson() {
     final jsonListOfImages =
         listOfImages.map((item) => item.toJson()).toList();

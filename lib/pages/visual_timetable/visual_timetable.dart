@@ -93,8 +93,8 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       {
         try
         {
-          filledImagesList = await firestoreFunctions.getLibraryOfImages();
-          await CacheManager.storeLibraryInCache(userItems: filledImagesList);
+          filledImagesList = await firestoreFunctions.getUserItems();
+          await CacheManager.storeUserItemsInCache(userItems: filledImagesList);
         }
         catch(e)
         {
@@ -103,13 +103,13 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       }
       else
       {
-        filledImagesList = await CacheManager.getLibraryFromCache();
+        filledImagesList = await CacheManager.getUserItemsFromCache();
         SnackBarManager.showSnackBarMessage(context, "No connection. Loading local data.");
       }
     }
     else
     {
-      filledImagesList = await firestoreFunctions.getLibraryOfImages();
+      filledImagesList = await firestoreFunctions.getUserItems();
     }
     
   }

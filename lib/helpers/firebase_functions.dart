@@ -88,7 +88,7 @@ class FirebaseFunctions {
     {
     
       await createWorkflowItem(
-        workflowItem: timetable.get(i),
+        workflowItem: timetable[i],
         workflowId: workflowId,
       )
       .onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
@@ -598,7 +598,7 @@ class FirebaseFunctions {
   }
 
   ///Fetches all items created by the user.
-  Future<List<ImageDetails>> getLibraryOfImages() async
+  Future<List<ImageDetails>> getUserItems() async
   {
     List<ImageDetails> library = [];
     try{
@@ -624,7 +624,7 @@ class FirebaseFunctions {
   }
 
   ///Fetches all timetables saved by the user.
-  Future<ListOfTimetables> getListOfTimetables() async
+  Future<ListOfTimetables> getSavedTimetables() async
   {
     List<Timetable> listOfTimetablesTemp = [];
 

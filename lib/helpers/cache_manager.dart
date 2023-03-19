@@ -8,7 +8,7 @@ class CacheManager
 {
   /// Store the given items in the cache under the name
   /// "<userId>-items"
-  static Future storeLibraryInCache({required List<ImageDetails> userItems}) async {
+  static Future storeUserItemsInCache({required List<ImageDetails> userItems}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -28,7 +28,7 @@ class CacheManager
 
   /// Fetch the items from the cache under the name
   /// "<userId>-items"
-  static Future<List<ImageDetails>> getLibraryFromCache() async {
+  static Future<List<ImageDetails>> getUserItemsFromCache() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -48,14 +48,14 @@ class CacheManager
     return itemList;
   }
 
-  static Future<void> storeTimetablesInCache({required ListOfTimetables listOfTimetables}) async {
+  static Future<void> storeSavedTimetablesInCache({required ListOfTimetables listOfTimetables}) async {
     final prefs = await SharedPreferences.getInstance();
     final String listJson = json.encode(listOfTimetables.toJson());
     final FirebaseAuth auth = FirebaseAuth.instance;
     await prefs.setString('${auth.currentUser!.uid}-timetables', listJson);
   }
 
-  static Future<ListOfTimetables> getTimetablesFromCache() async {
+  static Future<ListOfTimetables> getSavedTimetablesFromCache() async {
     final prefs = await SharedPreferences.getInstance();
     final FirebaseAuth auth = FirebaseAuth.instance;
     final listJson = prefs.getString('${auth.currentUser!.uid}-timetables');

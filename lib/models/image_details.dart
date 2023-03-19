@@ -6,11 +6,6 @@ class ImageDetails {
 
   ImageDetails({required this.name, required this.imageUrl, this.itemId=""});
 
-  bool equals(ImageDetails other)
-  {
-    return imageUrl == other.imageUrl;
-  }
-  
   /// Convert an ImageDetails back from json data
   factory ImageDetails.fromJson(Map<String, dynamic> json) {
     return ImageDetails(

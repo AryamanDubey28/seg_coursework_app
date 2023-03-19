@@ -63,10 +63,10 @@ class TimetableRow extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(5,0,0,0),
                         child: Tooltip(
-                          message: listOfImages.get(subIndex).name,
+                          message: listOfImages[subIndex].name,
                           child: ImageSquare(
                             key: Key('timetableImage$subIndex'),
-                            image: listOfImages.get(subIndex), 
+                            image: listOfImages[subIndex], 
                             //The width here is set to make sure the row isn't bigger than the screen and to make sure
                             //there is room for the delete button.
                             width: MediaQuery.of(context).size.width/6,

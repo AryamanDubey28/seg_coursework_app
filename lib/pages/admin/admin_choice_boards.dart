@@ -167,7 +167,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
             children: [
               ImageSquare(
                 image: ImageDetails(
-                    name: category.title, imageUrl: category.imageUrl, itemId: "hahalool"), //Delet. later
+                    name: category.title, imageUrl: category.imageUrl),
                 key: Key("categoryImage-${category.id}"),
                 height: 120,
                 width: 120,
