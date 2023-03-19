@@ -12,9 +12,13 @@ class CustomizableRow extends StatefulWidget {
   final String categoryTitle; // e.g. Breakfast
   final List<ClickableImage>
       imagePreviews; // e.g. images of toast, cereal, etc.
+  final List<ClickableImage> unfilteredImages;
 
   CustomizableRow(
-      {Key? key, required this.categoryTitle, required this.imagePreviews})
+      {Key? key,
+      required this.categoryTitle,
+      required this.imagePreviews,
+      required this.unfilteredImages})
       : super(key: key);
 
   @override
@@ -52,9 +56,14 @@ class _CustomizableRowState extends State<CustomizableRow> {
           ),
         ),
         onTap: () {
-          List<ClickableImage> newList = widget.imagePreviews
-              .where((x) => widget.imagePreviews.indexOf(x) != 0)
-              .toList(); //category image is not an option
+          List<ClickableImage> newList = widget.unfilteredImages
+              .where((x) => widget.unfilteredImages.indexOf(x) != 0)
+              .toList();
+
+          // List<ClickableImage> newList = widget.imagePreviews
+          //     .where((x) => widget.imagePreviews.indexOf(x) != 0)
+          //     .toList(); //category image is not an option
+
           Navigator.push(
               context,
               MaterialPageRoute(

@@ -59,6 +59,20 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         .cancel(); //cancels timer so it does not keep refreshing in the background
   }
 
+  List<List<ClickableImage>> filterImages(List<List<ClickableImage>> list) {
+    List<List<ClickableImage>> filteredImages = [];
+    for (List sub_list in list) {
+      List<ClickableImage> data = [];
+      for (ClickableImage item in sub_list) {
+        if (item.is_available) {
+          data.add(item);
+        }
+      }
+      filteredImages.add(data);
+    }
+    return filteredImages;
+  }
+
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -156,12 +170,14 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             if (snapshot.hasData) {
               List<List<ClickableImage>> categories =
                   snapshot.data as List<List<ClickableImage>>;
+              List<List<ClickableImage>> filtered = filterImages(categories);
               return ListView.separated(
                 itemBuilder: (context, index) {
                   return CustomizableRow(
                     key: Key("row$index"),
-                    categoryTitle: categories[index][0].name,
-                    imagePreviews: categories[index],
+                    categoryTitle: filtered[index][0].name,
+                    imagePreviews: filtered[index],
+                    unfilteredImages: categories[index],
                   );
                 },
                 itemCount: categories.length,
@@ -188,6 +204,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
                 key: Key("row$index"),
                 categoryTitle: mockingList[index][0].name,
                 imagePreviews: mockingList[index],
+                unfilteredImages: mockingList[index],
               );
             }
           },
