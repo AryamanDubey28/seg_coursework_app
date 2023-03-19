@@ -2,7 +2,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/models/draggable_list.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
 import '../../themes/themes.dart';
 import '../../widgets/category_image.dart';
@@ -61,8 +60,8 @@ class _CustomizableRowState extends State<CustomizableRow> {
               .where((x) => widget.unfilteredImages.indexOf(x) != 0)
               .toList();
           // PLACEHOLDER.
-          final player = AudioPlayer();
-          player.play(AssetSource('category_click.mp3'));
+          // final player = AudioPlayer();
+          // player.play(AssetSource('category_click.mp3'));
 
           Navigator.push(
               context,
