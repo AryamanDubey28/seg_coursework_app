@@ -214,21 +214,6 @@ class FirebaseFunctions {
     });
   }
 
-  ///Return the name of a categoryItem given the categoryId and itemId
-  ///
-  Future getCategoryItemName(
-      {required String categoryId, required String itemId}) async {
-    return firestore
-        .collection('categoryItems/$categoryId/items')
-        .doc(itemId)
-        .get()
-        .then((categoryItem) {
-      return categoryItem.get("name");
-    }).onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
   /// Should be called after deleting a categoryItem. Decrement the ranks
   /// of all documents which have a rank higher than the deleted categoryItem
   Future updateCategoryItemsRanks(

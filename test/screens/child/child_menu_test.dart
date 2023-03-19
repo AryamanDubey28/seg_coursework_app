@@ -17,6 +17,7 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
@@ -201,5 +202,28 @@ void main() {
     bool greater = latestValue > initialValue;
     print("greater? $greater");
     expect(greater, true); //value has increased
+  });
+
+  testWidgets("Child logging out and entering PIN routes to Admin page",
+      (tester) async {
+    await tester.pumpWidget(ThemeProvider(
+        themeNotifier: CustomTheme(),
+        child: MaterialApp(
+            home: CustomizableColumn(
+          mock: true,
+        ))));
+
+    final Finder logoutButton = find.byKey(Key("logoutButton"));
+    final Finder passwordTextField = find.byKey(Key("logoutTextField"));
+    final Finder submitButton = find.byKey(Key("submitButton"));
+    await tester.tap(logoutButton);
+    await tester.pumpAndSettle();
+    //dialog shows up
+    await tester.tap(passwordTextField);
+    await tester.enterText(passwordTextField, "0000");
+    await tester.pumpAndSettle();
+    await tester.tap(submitButton);
+    await tester.pumpAndSettle();
+    expect(find.byType(AdminChoiceBoards), findsOneWidget);
   });
 }

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:seg_coursework_app/services/admin.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 
 class MyMockUser extends MockUser {
@@ -143,6 +146,14 @@ void main() async {
   test("Get current user's id returns an id", () async {
     await auth.signIn(_email, _password);
     String? uid = await auth.getCurrentUserId(); //mocking returns sampleUid
+    expect(uid, "sampleUid");
+  });
+
+  test("Admin page getCurrentUserId test", () async {
+    await auth.signIn(_email, _password);
+    Admin admin = Admin(user: _mockUser);
+    String? uid =
+        await admin.getCurrentUserId(); //_mockUser's id returns sampleUid
     expect(uid, "sampleUid");
   });
 
