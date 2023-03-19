@@ -137,6 +137,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
                     storage: mockFirebaseStorage,
                   )),
         );
+        print("done");
       } else {
         Navigator.pushReplacement(
           context,

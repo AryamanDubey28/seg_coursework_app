@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +48,23 @@ class MyMockFirebaseAuth extends MockFirebaseAuth {
   MyMockFirebaseAuth({super.mockUser}) {}
 }
 
+class MyMockFirebaseFirestore extends FakeFirebaseFirestore {
+  String userId;
+  MyMockFirebaseFirestore({required this.userId}) {}
+
+  @override
+  CollectionReference<Map<String, dynamic>> collection(String path) {
+    var map = {"userId": userId, "pin": "0000"};
+    CollectionReference collectionReference = super.collection(path);
+    collectionReference.add(map);
+    return collectionReference as CollectionReference<Map<String, dynamic>>;
+  }
+}
+
 void main() {
   late FirebaseAuth mockAuth;
   late MockUser mockUser;
+  late FirebaseFirestore _mockFirestore;
   late Auth auth;
   const _email = 'ilyas@yopmail.com';
   const _uid = 'sampleUid';
@@ -65,7 +81,8 @@ void main() {
     mockUser = MyMockUser(email: _email, uid: _uid, displayName: _displayName);
     when(mockAuth.currentUser).thenReturn(mockUser);
     final _mockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
-    auth = Auth(auth: _mockAuth);
+    _mockFirestore = MyMockFirebaseFirestore(userId: "sampleUid");
+    auth = Auth(auth: _mockAuth, firestore: _mockFirestore);
   });
 
   testWidgets("Edit email correctly fails when given an unvalid email address.",
@@ -76,6 +93,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
@@ -107,6 +125,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
@@ -138,6 +157,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
@@ -167,6 +187,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
@@ -208,6 +229,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
@@ -249,6 +271,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
@@ -290,6 +313,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
@@ -331,6 +355,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
@@ -371,6 +396,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await tester.binding.setSurfaceSize(const Size(1000, 1000));
@@ -404,11 +430,13 @@ void main() {
   testWidgets("Edit PIN works successfully when PIN is correct",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
+      final _mockFirestore = MyMockFirebaseFirestore(userId: "sampleUid");
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
@@ -450,6 +478,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
@@ -490,6 +519,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);
@@ -530,6 +560,7 @@ void main() {
           child: MaterialApp(
               home: EditAccountPage(
             auth: mockAuth,
+            firestore: _mockFirestore,
             isTestMode: true,
           ))));
       await auth.signIn(_email, _password);

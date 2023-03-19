@@ -11,14 +11,21 @@ import '../admin/admin_side_menu.dart';
 class EditAccountPage extends StatefulWidget {
   late FirebaseAuth auth;
   late bool isTestMode;
+  late FirebaseFirestore firebaseFirestore;
 
-  EditAccountPage({super.key, FirebaseAuth? auth, bool? isTestMode}) {
+  EditAccountPage(
+      {super.key,
+      FirebaseAuth? auth,
+      bool? isTestMode,
+      FirebaseFirestore? firestore}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.isTestMode = isTestMode ?? false;
+    this.firebaseFirestore = firestore ?? FirebaseFirestore.instance;
   }
 
   @override
-  State<EditAccountPage> createState() => EditAccountPageState(auth);
+  State<EditAccountPage> createState() =>
+      EditAccountPageState(auth, firebaseFirestore);
 }
 
 class EditAccountPageState extends State<EditAccountPage> {
@@ -28,14 +35,14 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
   late FirebaseAuth auth;
+  late FirebaseFirestore firebaseFirestore;
 
-  EditAccountPageState(this.auth);
+  EditAccountPageState(this.auth, this.firebaseFirestore);
 
   @override
   void initState() {
     super.initState();
-    authentitcationHelper = Auth(
-        auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
+    authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
   }
 
   // Displays an alert dialog with the text passed as parameter.
