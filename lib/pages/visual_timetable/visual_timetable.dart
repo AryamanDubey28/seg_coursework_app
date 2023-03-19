@@ -51,7 +51,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
   
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     firestoreFunctions = FirebaseFunctions(
         auth: widget.auth,
