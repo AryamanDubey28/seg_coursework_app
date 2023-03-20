@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
 import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
@@ -17,9 +19,6 @@ class EditPINSection extends StatelessWidget {
       {required this.authentitcationHelper, required this.isTestMode});
 
   // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(String text) {
-    ShowAlertDialog.show_dialog(context, text);
-  }
 
   bool validatePin(String pin) {
     return pin.length == 4 && num.tryParse(pin) != null;
@@ -42,7 +41,8 @@ class EditPINSection extends StatelessWidget {
       response =
           'You did not input a valid PIN so the change could not be made. Please try again. \nValid PINs are made up of 4 digits';
     }
-    show_alert_dialog(response);
+    ErrorDialogHelper helper = ErrorDialogHelper(context: context);
+    helper.show_alert_dialog(response);
   }
 
   Future makePin(BuildContext context) => showDialog(
@@ -72,7 +72,9 @@ class EditPINSection extends StatelessWidget {
   Future<void> submit(BuildContext context) async {
     String result =
         await authentitcationHelper.createPin(_pinEditController.text.trim());
-    show_alert_dialog(result);
+    ErrorDialogHelper errorDialogHelper = ErrorDialogHelper(context: context);
+    errorDialogHelper.show_alert_dialog(result);
+
     _pinEditController.clear();
   }
 

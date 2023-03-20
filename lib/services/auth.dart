@@ -74,7 +74,9 @@ class Auth {
             'pin': pin,
             'userId': await getCurrentUserId(),
           };
+
           await docUser.set(entry); //adds PIN to database
+
           return "Successfully made your pin: $pin";
         } else {
           return "Please ensure that your PIN is 4 digits";
@@ -175,6 +177,21 @@ class Auth {
       return user.uid;
     } else {
       return null;
+    }
+  }
+
+  Future<String?> signUp(String email, String password) async {
+    try {
+      if (!validEmail(email)) {
+        return "Unsuccessful";
+      }
+      await auth.createUserWithEmailAndPassword(
+          email: email.trim(), password: password.trim());
+      return "Success";
+    } on FirebaseAuthException {
+      return "Unsuccessful";
+    } catch (e) {
+      rethrow;
     }
   }
 
