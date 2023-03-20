@@ -43,6 +43,34 @@ Future<void> main() async {
     return mockFirestore.collection('categories').doc(id).get();
   }
 
+  test("create category is successful", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId, isA<String>());
+    DocumentSnapshot category =
+        await mockFirestore.collection('categories').doc(newCategoryId).get();
+    expect(category.get('title'), name);
+    expect(category.get('illustration'), imageUrl);
+    expect(category.get('userId'), "user1");
+    expect(category.get('rank'), 0);
+  });
+
+  test("create catgories gives unique ids", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    String newCategoryId1 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    String newCategoryId2 =
+        await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(newCategoryId1, isNot(newCategoryId2));
+  });
+
   test("create item is successful", () async {
     const String name = "Water";
     const String imageUrl = "Nova-water.jpeg";
