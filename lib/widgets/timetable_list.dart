@@ -22,12 +22,6 @@ class _TimetableListState extends State<TimetableList> {
   //The indices of the crossed out images
   Set<int> crossedOutIndices = {};
 
-  // This function returns the list of images already saved in the timetable.
-  List<ImageDetails> getImagesList()
-  {
-    return widget.imagesList;
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);

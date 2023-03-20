@@ -247,20 +247,38 @@ void main() {
       await tester.tap(find.byKey(const ValueKey("gridImage0")));
       await tester.pump();
 
+      await tester.tap(find.byKey(const ValueKey("gridImage0")));
+      await tester.pump();
+
+      expect(
+          find.byKey(const ValueKey("cross1")), findsNothing);
       expect(
           find.byKey(const ValueKey("cross0")), findsNothing);
 
-      await tester.longPress(find.byKey(const ValueKey("timetableImage0")));
+      await tester.longPress(find.byKey(const ValueKey("timetableImage1")));
       await tester.pumpAndSettle();
 
       expect(
-          find.byKey(const ValueKey("cross0")), findsOneWidget);
+          find.byKey(const ValueKey("cross1")), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey("cross0")), findsNothing);
 
       await tester.tap(find.byKey(const ValueKey("timetableImage0")), warnIfMissed: false);
       await tester.pump();
 
       expect(
+          find.byKey(const ValueKey("cross1")), findsNothing);
+      expect(
+          find.byKey(const ValueKey("cross0")), findsOneWidget);
+
+      await tester.longPress(find.byKey(const ValueKey("timetableImage0")), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(
+          find.byKey(const ValueKey("cross1")), findsNothing);
+      expect(
           find.byKey(const ValueKey("cross0")), findsNothing);
+
     });
   });
 

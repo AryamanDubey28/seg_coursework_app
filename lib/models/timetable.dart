@@ -22,6 +22,23 @@ class Timetable {
     workflowId = id;
   }
 
+  bool equals(Timetable other)
+  {
+    if (title != other.title || workflowId != other.workflowId || listOfImages.length != other.listOfImages.length) {
+      return false;
+    }
+    //Check if all the ImageDetails object are equal.
+    for(int i = 0 ; i < listOfImages.length ; i++)
+    {
+      if(!listOfImages[i].equals(other.listOfImages[i]))
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   ///Converts a json map (from the cache) to an object.
   factory Timetable.fromJson(Map<String, dynamic> json) {
     final list = json['listOfImages'] as List<dynamic>;

@@ -75,6 +75,11 @@ void main() {
 
     expect(find.byKey(const ValueKey("timetableRow0")), findsNothing);
 
+    await tester.tap(find.byKey(const ValueKey("backButton")));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(VisualTimeTable), findsOneWidget);
+
   });
   });
   
@@ -97,6 +102,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey("gridImage0")));
     await tester.pumpAndSettle();
     
+    await tester.tap(find.byKey(const ValueKey("addToListOfListsButton")));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey("hideShowButton")), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byKey(const ValueKey("addToListOfListsButton")));
     await tester.pumpAndSettle();
 

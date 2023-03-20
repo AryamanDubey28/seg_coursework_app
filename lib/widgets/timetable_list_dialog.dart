@@ -18,12 +18,6 @@ class TimetableListDialog extends StatefulWidget {
 class _TimetableListDialogState extends State<TimetableListDialog> {
   Set<int> crossedOutIndices = {};
 
-  // This function returns the list of images already saved in the timetable.
-  Timetable getImagesList()
-  {
-    return widget.timetable;
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
@@ -77,7 +71,7 @@ class _TimetableListDialogState extends State<TimetableListDialog> {
                                 icon: Icon(
                                   Icons.clear,
                                   color: Colors.red,
-                                  size: (constraints.maxWidth + constraints.maxHeight) / 3 / widget.timetable.length(),
+                                  size: (constraints.maxWidth) / 2 / widget.timetable.length(),
                                 )
                               ),
                             ),

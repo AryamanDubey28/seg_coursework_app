@@ -22,6 +22,17 @@ class ListOfTimetables {
     listOfLists.removeAt(index);
   }
 
+  bool equals(ListOfTimetables other)
+  {
+    if(listOfLists.length != other.listOfLists.length) return false;
+
+    for(int i = 0 ; i < listOfLists.length; i++)
+    {
+      if(!listOfLists[i].equals(other[i])) return false;
+    }
+    return true;
+  }
+
   ///Converts a json map (from the cache) to an object.
   factory ListOfTimetables.fromJson(Map<String, dynamic> json) {
     final list = json['listOfLists'] as List<dynamic>;
