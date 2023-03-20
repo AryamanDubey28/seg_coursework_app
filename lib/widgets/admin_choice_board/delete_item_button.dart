@@ -6,8 +6,7 @@ import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-
-import '../loading_indicators/loading_indicator.dart';
+import 'package:seg_coursework_app/widgets/loading_indicators/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
 /// and its functions
@@ -69,8 +68,8 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       builder: (BuildContext context) {
         return AlertDialog(
           key: Key("deleteItemAlert-${widget.itemId}"),
-          title: Text('Confirmation'),
-          content: Text('Are you sure you want to delete ${widget.itemName}?\n\n(Delete Everywhere removes it from other categories too)'),
+          title: const Text('Confirmation'),
+          content: Text('Are you sure you want to delete ${widget.itemName}?'),
           actions: <Widget>[
             TextButton(
               key: const Key("cancelItemDelete"),
@@ -124,10 +123,11 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             // Deletes all categoryItems from all possible categories for a particular item
             TextButton(
-              key: Key("confirmItemDeleteEverywhere"),
-              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.red)),
-              onPressed: deleteItemEverywhere,
-              child: Text('Delete'),
+              key: const Key("confirmItemDelete"),
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              onPressed: deleteCategoryItemFromFirestore,
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -146,7 +146,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       await firestoreFunctions.deleteCategoryItem(categoryId: widget.categoryId, itemId: widget.itemId);
       await firestoreFunctions.updateCategoryItemsRanks(categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
-      LoadingIndicatorDialog().dismiss();
+      //LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => AdminChoiceBoards(auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
