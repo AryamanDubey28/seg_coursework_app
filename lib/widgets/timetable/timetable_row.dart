@@ -45,7 +45,7 @@ class TimetableRow extends StatelessWidget {
         ),
 
         SizedBox(
-          height: 100,
+          height: 150,
           width: MediaQuery.of(context).size.width,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
