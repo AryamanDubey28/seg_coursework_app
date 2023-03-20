@@ -36,7 +36,7 @@ void main() {
 
     items.doc(toastItem.id).set({'name': toastItem.name, 'illustration': toastItem.imageUrl, 'is_available': true, 'userId': mockUser.uid});
 
-    await firebaseFunctions.createCategoryItem(name: toastItem.name, imageUrl: toastItem.imageUrl, categoryId: breakfastCategory.id, itemId: toastItem.id);
+    await firebaseFunctions.createCategoryItem(name: toastItem.name, imageUrl: toastItem.imageUrl, categoryId: breakfastCategory.id, itemId: toastItem.id, isAvailable: true);
   }
 
   setUpAll(() {
@@ -177,7 +177,7 @@ void main() {
 
       var imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "testItem");
       var testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: imageUrl!);
-      await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: imageUrl, categoryId: breakfastCategory.id, itemId: testId);
+      await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: imageUrl, categoryId: breakfastCategory.id, itemId: testId, isAvailable: true);
 
       // These mimic tapping the delete icon then tapping 'Delete Everywhere"
       // Due to how the choice board testing data is set up (hardcoded)

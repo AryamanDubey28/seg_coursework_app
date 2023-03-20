@@ -51,7 +51,8 @@ void main() {
         name: toastItem.name,
         imageUrl: toastItem.imageUrl,
         categoryId: breakfastCategory.id,
-        itemId: toastItem.id);
+        itemId: toastItem.id,
+        isAvailable: true);
   }
 
   setUpAll(() {

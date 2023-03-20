@@ -100,7 +100,7 @@ void main() {
           )));
 
       var testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
-      await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: "image.jpg", categoryId: breakfastCategoryId, itemId: testId);
+      await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: "image.jpg", categoryId: breakfastCategoryId, itemId: testId, isAvailable: true);
       await tester.pumpAndSettle(const Duration(seconds: 1));
       await tester.tap(find.byKey(ValueKey("gridImage0")));
       await tester.pumpAndSettle(const Duration(seconds: 1));

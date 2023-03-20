@@ -91,7 +91,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId).get();
 
@@ -113,8 +113,8 @@ Future<void> main() async {
     String newItemId1 = await firebaseFunctions.createItem(name: name1, imageUrl: imageUrl1);
     String newItemId2 = await firebaseFunctions.createItem(name: name2, imageUrl: imageUrl2);
 
-    await firebaseFunctions.createCategoryItem(name: name1, imageUrl: imageUrl1, categoryId: categoryId, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name2, imageUrl: imageUrl2, categoryId: categoryId, itemId: newItemId2);
+    await firebaseFunctions.createCategoryItem(name: name1, imageUrl: imageUrl1, categoryId: categoryId, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name2, imageUrl: imageUrl2, categoryId: categoryId, itemId: newItemId2, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId1).get();
     DocumentSnapshot newCategoryItem2 = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId2).get();
@@ -138,8 +138,8 @@ Future<void> main() async {
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId1).get();
     DocumentSnapshot newCategoryItem2 = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId2).get();
@@ -174,7 +174,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId).get();
 
@@ -195,8 +195,8 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
     DocumentSnapshot newCategoryItem2 = await mockFirestore.collection('categoryItems/$categoryId2/items').doc(newItemId).get();
@@ -228,7 +228,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId, isAvailable: true);
 
     expect(firebaseFunctions.updateCategoryItemsName(itemId: newItemId, newName: "Nova Water"), throwsA(isInstanceOf<FirebaseException>()));
   });
@@ -275,7 +275,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId).get();
 
@@ -296,8 +296,8 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
     DocumentSnapshot newCategoryItem2 = await mockFirestore.collection('categoryItems/$categoryId2/items').doc(newItemId).get();
@@ -329,7 +329,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId, isAvailable: true);
 
     expect(firebaseFunctions.updateCategoryItemsImage(itemId: newItemId, newImageUrl: "Hana-water.jpeg"), throwsA(isInstanceOf<FirebaseException>()));
   });
@@ -341,7 +341,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem = await mockFirestore.collection('categoryItems/$categoryId/items').doc(newItemId).get();
     expect(newCategoryItem.exists, true);
@@ -360,8 +360,8 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
     DocumentSnapshot newCategoryItem2 = await mockFirestore.collection('categoryItems/$categoryId2/items').doc(newItemId).get();
@@ -390,8 +390,8 @@ Future<void> main() async {
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2, isAvailable: true);
 
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId1), 0);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 1);
@@ -410,9 +410,9 @@ Future<void> main() async {
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId3 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId3);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId3, isAvailable: true);
 
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 1);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId3), 2);
@@ -433,9 +433,9 @@ Future<void> main() async {
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId3 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId3);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId2, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId, itemId: newItemId3, isAvailable: true);
 
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId1), 0);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: categoryId, itemId: newItemId2), 1);
@@ -606,7 +606,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
 
@@ -628,8 +628,8 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
     DocumentSnapshot newCategoryItem2 = await mockFirestore.collection('categoryItems/$categoryId2/items').doc(newItemId).get();
@@ -653,7 +653,7 @@ Future<void> main() async {
 
     String newItemId = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
 
     DocumentSnapshot newCategoryItem1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
 
@@ -821,9 +821,9 @@ Future<void> main() async {
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId2);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId2, isAvailable: true);
 
     var item = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
     var item1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId1).get();
@@ -855,9 +855,9 @@ Future<void> main() async {
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId2);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId2, isAvailable: true);
 
     var item = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId).get();
     var item1 = await mockFirestore.collection('categoryItems/$categoryId1/items').doc(newItemId1).get();
@@ -882,7 +882,7 @@ Future<void> main() async {
     String? imageUrl = await firebaseFunctions.uploadImageToCloud(image: File("assets/test_image.png"), name: "testItem");
     String testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: imageUrl!);
     String catId = await firebaseFunctions.createCategory(name: "newCat", imageUrl: imageUrl);
-    await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: imageUrl, categoryId: catId, itemId: testId);
+    await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: imageUrl, categoryId: catId, itemId: testId, isAvailable: true);
 
     await firebaseFunctions.deleteAllCategoryItemsForItem(itemId: testId);
     expect(await firebaseFunctions.categoryItemExists(categoryId: catId, itemId: testId), false);
@@ -894,8 +894,8 @@ Future<void> main() async {
     String testId2 = await firebaseFunctions.createItem(name: "testItem2", imageUrl: imageUrl);
     String catId = await firebaseFunctions.createCategory(name: "newCat", imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: "testItem1", imageUrl: imageUrl, categoryId: catId, itemId: testId1);
-    await firebaseFunctions.createCategoryItem(name: "testItem2", imageUrl: imageUrl, categoryId: catId, itemId: testId2);
+    await firebaseFunctions.createCategoryItem(name: "testItem1", imageUrl: imageUrl, categoryId: catId, itemId: testId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: "testItem2", imageUrl: imageUrl, categoryId: catId, itemId: testId2, isAvailable: true);
 
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: catId, itemId: testId1), 0);
     expect(await firebaseFunctions.getCategoryItemRank(categoryId: catId, itemId: testId2), 1);
@@ -933,9 +933,9 @@ Future<void> main() async {
     String newItemId1 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
     String newItemId2 = await firebaseFunctions.createItem(name: name, imageUrl: imageUrl);
 
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId1);
-    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId2);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId1, itemId: newItemId, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId1, isAvailable: true);
+    await firebaseFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: categoryId2, itemId: newItemId2, isAvailable: true);
 
     Categories userCategories = await firebaseFunctions.downloadUserCategories();
 
