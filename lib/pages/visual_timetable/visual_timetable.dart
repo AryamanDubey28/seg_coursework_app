@@ -15,38 +15,50 @@ class VisualTimeTable extends StatefulWidget {
 
 /// The page for the admin to show the choice boards and make a timetable from that
 class _VisualTimeTableState extends State<VisualTimeTable> {
-
   bool isGridVisible = true;
   //The images that will be fed into the timetable. (No pictures are chosen by default.)
   List<ImageDetails> imagesList = [];
   //The images that will be fed into the PictureGrid (the choice board.)
   //To be deleted and fetched from the database.
   List<ImageDetails> filledImagesList = [
-    ImageDetails(name: "Toast", imageUrl: "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
-    ImageDetails(name: "Orange", imageUrl: "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
-    ImageDetails(name: "Footy", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
-    ImageDetails(name: "Boxing", imageUrl: "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
-    ImageDetails(name: "Swimming", imageUrl: "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
-    ImageDetails(name: "Fish and chips", imageUrl: "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
+    ImageDetails(
+        name: "Toast",
+        imageUrl:
+            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
+    ImageDetails(
+        name: "Orange",
+        imageUrl:
+            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
+    ImageDetails(
+        name: "Footy",
+        imageUrl:
+            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
+    ImageDetails(
+        name: "Boxing",
+        imageUrl:
+            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
+    ImageDetails(
+        name: "Swimming",
+        imageUrl:
+            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
+    ImageDetails(
+        name: "Fish and chips",
+        imageUrl:
+            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
   ];
 
   //The list that holds the saved timetables
-  ListOfListsOfImageDetails savedTimetables = ListOfListsOfImageDetails(listOfLists: []);
+  ListOfListsOfImageDetails savedTimetables =
+      ListOfListsOfImageDetails(listOfLists: []);
 
-
-  ///This makes a deep copy of a list to be saved in the savedTimetables 
+  ///This makes a deep copy of a list to be saved in the savedTimetables
   List<ImageDetails> deepCopy(List<ImageDetails> list) {
-  List<ImageDetails> copy = [];
-  for (ImageDetails image in list) {
-    copy.add(
-      ImageDetails(
-      name: image.name,
-      imageUrl: image.imageUrl
-      )
-    );
+    List<ImageDetails> copy = [];
+    for (ImageDetails image in list) {
+      copy.add(ImageDetails(name: image.name, imageUrl: image.imageUrl));
+    }
+    return copy;
   }
-  return copy;
-}
 
   ///This function is supplied to the PictureGrid and it adds the chosen image to the Timetable builder
   ///and hides the PictureGrid when 5 images are chosen for the Timetable
@@ -55,8 +67,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       if (imagesList.length < 5) {
         imagesList.add(image);
       }
-      if (imagesList.length >= 5)
-      {
+      if (imagesList.length >= 5) {
         isGridVisible = false;
       }
     });
@@ -94,8 +105,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   }
 
   ///This function returns a button that saves the timetable to a list of timetables.
-  FloatingActionButton buildAddButton(TimetableList timetableList)
-  {
+  FloatingActionButton buildAddButton(TimetableList timetableList) {
     return FloatingActionButton(
       heroTag: "addToListOfListsButton",
       key: const Key("addToListOfListsButton"),
@@ -104,7 +114,6 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         Icons.add,
       ),
       onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
-      
     );
   }
 
@@ -118,20 +127,13 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
 
   ///This function shows a message at the bottom of the screen when the admin attempts to save a timetable.
   void showSnackBarMessage(bool isAdded) {
-  if(isAdded)
-    {
+    if (isAdded) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Timetable saved successfully.")
-        ),
+        const SnackBar(content: Text("Timetable saved successfully.")),
       );
-    }
-    else
-    {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Timetable is already saved.")
-        ),
+        const SnackBar(content: Text("Timetable is already saved.")),
       );
     }
   }
@@ -139,60 +141,65 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   @override
   Widget build(BuildContext context) {
     TimetableList timetableList = TimetableList(
-      key: const Key("timetableList"),
-      imagesList: imagesList,
-      popImagesList: popImagesList
-    );
+        key: const Key("timetableList"),
+        imagesList: imagesList,
+        popImagesList: popImagesList);
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
         title: const Text("Visual Timetable"),
-        actions: <Widget> [
+        actions: <Widget>[
           IconButton(
-            key: const Key("allTimetablesButton"),
-            tooltip: "View all saved timetables",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AllSavedTimetables(savedTimetables: savedTimetables),
-                ),
-              );
-            }, 
-          icon: const Icon(Icons.list)
-          ),
+              key: const Key("allTimetablesButton"),
+              tooltip: "View all saved timetables",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AllSavedTimetables(savedTimetables: savedTimetables),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.list)),
         ],
       ),
-      drawer: const AdminSideMenu(),
+      drawer: AdminSideMenu(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            flex: 5,
-            child: Center(
-              child: Container(
-                //width here is set depending on the screen size. 6/6 represents the whole screen
-                // 5/6 allows it to be centered and have a bit of padding on the left and right side.
-                // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
-                //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
-                width: (MediaQuery.of(context).size.width * (5/6) + (MediaQuery.of(context).size.width/35*4)),
-                height: 200,
-                alignment: Alignment.center,
-                child: Align(alignment: Alignment.center ,child: timetableList),
-              ),
-            )
-          ),
-          isGridVisible ? Divider(height: isGridVisible ? 50 : 0, thickness: 0, color: Colors.white,) : const SizedBox(),
+              flex: 5,
+              child: Center(
+                child: Container(
+                  //width here is set depending on the screen size. 6/6 represents the whole screen
+                  // 5/6 allows it to be centered and have a bit of padding on the left and right side.
+                  // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
+                  //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
+                  width: (MediaQuery.of(context).size.width * (5 / 6) +
+                      (MediaQuery.of(context).size.width / 35 * 4)),
+                  height: 200,
+                  alignment: Alignment.center,
+                  child:
+                      Align(alignment: Alignment.center, child: timetableList),
+                ),
+              )),
+          isGridVisible
+              ? Divider(
+                  height: isGridVisible ? 50 : 0,
+                  thickness: 0,
+                  color: Colors.white,
+                )
+              : const SizedBox(),
           Expanded(
             //This will make the timetable bigger if the PictureGrid is not visible
             flex: isGridVisible ? 5 : 0,
             child: Visibility(
               visible: isGridVisible,
               child: PictureGrid(
-                imagesList: filledImagesList, 
-                updateImagesList: updateImagesList
-              ),
+                  imagesList: filledImagesList,
+                  updateImagesList: updateImagesList),
             ),
           ),
         ],
@@ -204,10 +211,11 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         child: Stack(
           children: <Widget>[
             //This makes sure that a timetable can't be saved if it has one or no elements.
-            if (timetableList.imagesList.length >= 2) Align(
-              alignment: Alignment.bottomLeft,
-              child: buildAddButton(timetableList),
-            ),
+            if (timetableList.imagesList.length >= 2)
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: buildAddButton(timetableList),
+              ),
             Align(
               alignment: Alignment.bottomRight,
               child: buildHideButton(),

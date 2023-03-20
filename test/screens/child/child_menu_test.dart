@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +30,8 @@ import 'package:seg_coursework_app/widgets/category_title.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
+import '../auth/edit_account_widget_test.dart';
+
 // Test ensures that column of rows (categories) is displayed on screen
 
 late FirebaseAuth mockAuth;
@@ -39,16 +42,24 @@ late CategoryItem toastItem;
 late Category breakfastCategory;
 
 void main() {
-  late Auth auth;
+  late Auth authenticationHelper;
   const _email = 'ilyas@yopmail.com';
   const _uid = 'sampleUid';
   const _displayName = 'ilyas';
   const _password = 'Test@123';
-  final _mockUser = MockUser(
+  final _mockUser = MyMockUser(
     uid: _uid,
     email: _email,
     displayName: _displayName,
   );
+
+  setUpAll(() {
+    mockAuth = MockFirebaseAuthentication();
+    mockFirestore = FakeFirebaseFirestore();
+    mockStorage = MockFirebaseStorage();
+    mockUser = MyMockUser(email: _email, uid: _uid, displayName: _displayName);
+    when(mockAuth.currentUser).thenReturn(mockUser);
+  });
 
   Future<void> _createData() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(
@@ -102,7 +113,8 @@ void main() {
         auth: _mockAuth,
         firestore: fakeFirebaseFirestore,
         storage: _mockStorage);
-    auth = Auth(auth: _mockAuth, firestore: fakeFirebaseFirestore);
+    authenticationHelper =
+        Auth(auth: _mockAuth, firestore: fakeFirebaseFirestore);
     toastItem = myTestCategories.getList().first.items.first;
     breakfastCategory = myTestCategories.getList().first;
     mockUser = MockUser(uid: "user1");
@@ -119,9 +131,11 @@ void main() {
           child: MaterialApp(
             home: CustomizableColumn(
               mock: true,
+              auth: MockFirebaseAuth(),
+              firebaseFirestore: FakeFirebaseFirestore(),
             ),
           )));
-
+      await tester.pumpAndSettle();
       expect(find.byType(CustomizableColumn), findsWidgets);
       expect(find.byType(CustomizableRow), findsWidgets);
       expect(find.byType(CategoryImage), findsWidgets);
@@ -165,7 +179,9 @@ void main() {
           child: MaterialApp(
               home: CustomizableColumn(
             mock: true,
-            testList: categories_list,
+            list: categories_list,
+            auth: mockAuth,
+            firebaseFirestore: mockFirestore,
           ))));
       expect(find.byType(CustomizableRow), findsWidgets);
     });
@@ -179,7 +195,9 @@ void main() {
         child: MaterialApp(
             home: CustomizableColumn(
           mock: true,
-          testList:
+          auth: mockAuth,
+          firebaseFirestore: mockFirestore,
+          list:
               test_list_clickable_images_zero, //special list containing 0 category items
         ))));
 
@@ -193,6 +211,8 @@ void main() {
         child: MaterialApp(
             home: CustomizableColumn(
           mock: true,
+          auth: mockAuth,
+          firebaseFirestore: mockFirestore,
         ))));
     int initialValue = CustomizableColumn.customizableColumnRequestCounter;
     print("initalVal = $initialValue");
@@ -206,12 +226,24 @@ void main() {
 
   testWidgets("Child logging out and entering PIN routes to Admin page",
       (tester) async {
+    final myMockFirestore = MyMockFirebaseFirestore(userId: _uid);
+    final myMockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
+    myMockFirestore.saveDocument('userPins');
+    final authHelper =
+        Auth(auth: myMockAuth, firestore: myMockFirestore, mock: true);
+    print("tester.pumpWidget CC");
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
         child: MaterialApp(
             home: CustomizableColumn(
           mock: true,
+          auth: myMockAuth,
+          firebaseFirestore: myMockFirestore,
         ))));
+    await authHelper.signIn(_email, _password);
+    String currentPin = await authHelper.getCurrentUserPIN();
+    print("current pin = $currentPin");
+    await tester.pumpAndSettle();
 
     final Finder logoutButton = find.byKey(Key("logoutButton"));
     final Finder passwordTextField = find.byKey(Key("logoutTextField"));
@@ -219,15 +251,21 @@ void main() {
 
     await tester.tap(logoutButton);
     await tester.pumpAndSettle();
-
+    print("tapped logout");
     //dialog shows up
-    await tester.tap(passwordTextField);
 
-    await tester.enterText(passwordTextField, "0000");
+    await tester.tap(passwordTextField);
+    await tester.pumpAndSettle();
+    await tester.enterText(passwordTextField, currentPin);
+    print("entered pin");
     await tester.pumpAndSettle();
 
     await tester.tap(submitButton);
-    await tester.pump();
+    // await tester.pumpAndSettle();
+    for (int i = 0; i < 5; i++) {
+      // because pumpAndSettle doesn't work for some reason
+      await tester.pump(Duration(seconds: 1));
+    }
     expect(find.byType(AdminChoiceBoards), findsOneWidget);
   });
 }

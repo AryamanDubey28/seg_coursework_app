@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/services/auth.dart';
@@ -9,36 +10,43 @@ import 'package:seg_coursework_app/widgets/my_text_field.dart';
 class LogIn extends StatefulWidget {
   final VoidCallback showRegisterPage;
   final FirebaseAuth auth;
+  late FirebaseFirestore firebaseFirestore;
 
-  const LogIn({
+  LogIn({
     Key? key,
     required this.showRegisterPage,
     required this.auth,
-  }) : super(key: key);
+    FirebaseFirestore? firebaseFirestore,
+  }) {
+    this.firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+  }
 
   @override
-  State<LogIn> createState() => _LogInState();
+  State<LogIn> createState() => _LogInState(auth, firebaseFirestore);
 }
 
 class _LogInState extends State<LogIn> {
   //email and password controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late final Auth auth;
+  late final Auth authentitcationHelper;
+  late FirebaseFirestore firebaseFirestore;
+  late FirebaseAuth auth;
   late ErrorDialogHelper errorDialogHelper;
+
+  _LogInState(this.auth, this.firebaseFirestore);
 
   @override
   void initState() {
     super.initState();
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    auth = Auth(auth: firebaseAuth, firestore: firebaseFirestore);
+
+    authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
     errorDialogHelper = ErrorDialogHelper(context: context);
   }
 
   //sign users in using Firebase method
   Future signIn() async {
-    final result = await auth.signIn(
+    final result = await authentitcationHelper.signIn(
         _emailController.text.trim(), _passwordController.text.trim());
     if (result != "Success") {
       errorDialogHelper.show_alert_dialog(

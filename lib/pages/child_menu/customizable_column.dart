@@ -25,28 +25,54 @@ import 'customizable_row.dart';
 
 class CustomizableColumn extends StatefulWidget {
   final bool mock;
-  static int customizableColumnRequestCounter = 0; //used for testing
-  List<List<ClickableImage>> testList; //used for testing
-  CustomizableColumn({this.mock = false, testList})
-      : testList = testList ??
-            test_list_clickable_images; //testList = passed in testList from constructor but if none is passed it, testList = test_list_clickable_images
+  static int customizableColumnRequestCounter = 0; //used for testing only
+  late List<List<ClickableImage>> testList; //used for testing only
+  late FirebaseAuth auth;
+  late FirebaseFirestore firebaseFirestore;
+  late Completer _completer;
+
+  CustomizableColumn({
+    this.mock = false,
+    FirebaseAuth? auth,
+    FirebaseFirestore? firebaseFirestore,
+    Completer? completer,
+    List<List<ClickableImage>>? list,
+  }) {
+    // testList = testList ?? test_list_clickable_images;
+    testList = list ?? test_list_clickable_images;
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+    this._completer = completer ?? Completer();
+  }
+  //testList = passed in testList from constructor but if none is passed it, testList = test_list_clickable_images
 
   @override
-  State<CustomizableColumn> createState() => _CustomizableColumnState();
+  State<CustomizableColumn> createState() =>
+      _CustomizableColumnState(auth, firebaseFirestore, _completer);
 }
 
 class _CustomizableColumnState extends State<CustomizableColumn> {
   TextEditingController pin_controller = TextEditingController();
   late Key key;
   late Timer timer;
+  late FirebaseAuth auth;
+  late FirebaseFirestore firebaseFirestore;
+  late final Auth authentitcationHelper;
+  late Completer completer;
+
+  _CustomizableColumnState(this.auth, this.firebaseFirestore, this.completer);
 
   @override
   void initState() {
     super.initState();
     key = Key("CustomizableColumn");
-    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    List<List<ClickableImage>> testList = widget.testList;
+    completer = Completer();
+    buildCompleter();
+    authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
+    timer = Timer.periodic(Duration(seconds: 4), (timer) {
       setState(
-          () {}); //page updates every 5 seconds therefore gets new data from db every 5 seconds
+          () {}); //page updates every 4 seconds therefore gets new data from db every 5 seconds
     });
   }
 
@@ -58,6 +84,14 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         .cancel(); //cancels timer so it does not keep refreshing in the background
   }
 
+  void buildCompleter() {
+    if (widget.mock) {
+      completer.complete(widget.testList);
+    } else {
+      completer.complete(getListFromChoiceBoards());
+    }
+  }
+
   List<List<ClickableImage>> filterImages(List<List<ClickableImage>> list) {
     List<List<ClickableImage>> filteredImages = [];
     for (List sub_list in list) {
@@ -67,7 +101,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           data.add(item);
         }
       }
-      filteredImages.add(data);
+      if (data.length > 1) {
+        filteredImages.add(data);
+      }
     }
     return filteredImages;
   }
@@ -89,61 +125,46 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             actions: [
               TextButton(
                   key: Key("submitButton"),
-                  onPressed: () => submit(context),
+                  onPressed: () => submitPin(context),
                   child: Text("SUBMIT"))
             ],
           ));
 
-  Future<void> submit(BuildContext context) async {
+  Future<void> submitPin(BuildContext context) async {
     //verifys password is correct, if so then navigates back. otherwise says incorrect
-    if (!widget.mock) {
-      final auth = Auth(
-          auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
-      String currentPin = await auth.getCurrentUserPIN();
-      if (pin_controller.text.trim() == currentPin) {
-        final pref = await SharedPreferences.getInstance();
-        pref.setBool("isInChildMode",
-            false); //isInChildMode boolean set to false as we are leaving
-        Navigator.pop(context);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AdminChoiceBoards(), maintainState: false),
-        );
-      } else {
-        Navigator.of(context).pop();
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Text(
-                  "Incorrect PIN Provided",
-                  textAlign: TextAlign.center,
+    String currentPin = await authentitcationHelper.getCurrentUserPIN();
+
+    if (pin_controller.text.trim() == currentPin) {
+      // final pref = await SharedPreferences.getInstance();
+      // pref.setBool("isInChildMode",
+      //     false); //isInChildMode boolean set to false as we are leaving
+      Navigator.pop(context);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AdminChoiceBoards(
+                  mock: widget.mock,
+                  auth: widget.auth,
+                  firestore: widget.firebaseFirestore,
+                  storage: widget.mock ? MockFirebaseStorage() : null,
                 ),
-              );
-            });
-      }
+            maintainState: false),
+      );
+      final pref = await SharedPreferences.getInstance();
+      pref.setBool("isInChildMode", false);
     } else {
-      if (pin_controller.text.trim() == "0000") {
-        MockFirebaseAuth mockFirebaseAuth = MockFirebaseAuth();
-        FakeFirebaseFirestore fakeFirebaseFirestore = FakeFirebaseFirestore();
-        MockFirebaseStorage mockFirebaseStorage = MockFirebaseStorage();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AdminChoiceBoards(
-                    firestore: fakeFirebaseFirestore,
-                    auth: mockFirebaseAuth,
-                    storage: mockFirebaseStorage,
-                  )),
-        );
-        print("done");
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AdminChoiceBoards()),
-        );
-      }
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                "Incorrect PIN Provided",
+                textAlign: TextAlign.center,
+              ),
+            );
+          });
     }
     pin_controller.clear();
   }
@@ -151,94 +172,65 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   // Construct a column of rows using category title and images
   @override
   Widget build(BuildContext context) {
-    if (!widget.mock) {
-      FirebaseFunctions firebaseFunctions = FirebaseFunctions(
-          auth: FirebaseAuth.instance,
-          firestore: FirebaseFirestore.instance,
-          storage: FirebaseStorage.instance);
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Child Mode"),
-          automaticallyImplyLeading: false,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                  key: Key("logoutButton"),
-                  //only triggers when its pressed for some time and swiped up
-                  onLongPressUp: () async {
-                    openLogoutDialog(context);
-                  },
-                  child: Icon(Icons.exit_to_app)),
-            )
-          ],
-        ),
-        body: FutureBuilder(
-          future:
-              getListFromChoiceBoards(), //retrieves a list from the database of categories and items associated with the category
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<List<ClickableImage>> categories =
-                  snapshot.data as List<List<ClickableImage>>;
-              List<List<ClickableImage>> filtered = filterImages(categories);
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  return CustomizableRow(
-                    key: Key("row$index"),
-                    categoryTitle: filtered[index][0].name,
-                    imagePreviews: filtered[index],
-                    unfilteredImages: categories[index],
-                  );
+    print("in build");
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Child Mode"),
+        automaticallyImplyLeading: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+                key: Key("logoutButton"),
+                //only triggers when its pressed for some time
+                onLongPress: () async {
+                  openLogoutDialog(context);
                 },
-                itemCount: categories.length,
-                separatorBuilder: (context, index) {
-                  return Divider(height: 2);
+                onTap: () async {
+                  if (widget.mock) {
+                    openLogoutDialog(context); //widget tester can only tap
+                  }
                 },
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      );
-    } else {
-      //mocking therefore show base layout
-      List<List<ClickableImage>> mockingList = widget.testList;
-      CustomizableColumn.customizableColumnRequestCounter++;
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Child Mode"),
-          automaticallyImplyLeading: false,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                  key: Key("logoutButton"),
-                  //widget tester cannot hold
-                  onTap: () async {
-                    openLogoutDialog(context);
-                  },
-                  child: Icon(Icons.exit_to_app)),
-            )
-          ],
-        ),
-        body: ListView.separated(
-          itemBuilder: (context, index) {
-            if (mockingList[index].length > 1) {
-              return CustomizableRow(
-                key: Key("row$index"),
-                categoryTitle: mockingList[index][0].name,
-                imagePreviews: mockingList[index],
-                unfilteredImages: mockingList[index],
-              );
-            }
-          },
-          itemCount: mockingList.length,
-          separatorBuilder: (context, index) {
-            return Divider(height: 2);
-          },
-        ),
-      );
-    }
+                child: Icon(Icons.exit_to_app)),
+          )
+        ],
+      ),
+      body: FutureBuilder(
+        // future:
+        //     getListFromChoiceBoards(), //retrieves a list from the database of categories and items associated with the category
+        future: completer.future,
+        builder: (context, snapshot) {
+          CustomizableColumn
+              .customizableColumnRequestCounter++; //used for testing
+          if (snapshot.hasData) {
+            print("snapshot data so completer stuff = ${snapshot.data}");
+            List<List<ClickableImage>> categories =
+                snapshot.data as List<List<ClickableImage>>;
+            print("-----------> in CC build's body, list = $categories");
+            List<List<ClickableImage>> filtered = filterImages(categories);
+            return ListView.separated(
+              itemBuilder: (context, index) {
+                return CustomizableRow(
+                  key: Key("row$index"),
+                  categoryTitle: filtered[index][0].name,
+                  imagePreviews: filtered[index],
+                  unfilteredImages: categories[index],
+                );
+              },
+              itemCount: filtered.length,
+              separatorBuilder: (context, index) {
+                return Divider(height: 2);
+              },
+            );
+          } else {
+            print("-----> snapshot has no data");
+            print(
+                "----------------> completer = $completer . completes = ${completer.future}");
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 }

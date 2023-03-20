@@ -7,6 +7,9 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
+import '../admin/delete_choice_board_category_test.dart';
+import '../auth/forgot_password_test.dart';
+
 void main() {
   testWidgets("Category has all components", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
@@ -56,12 +59,14 @@ void main() {
           child: MaterialApp(
             home: CustomizableColumn(
               mock: true,
+              auth: MockFirebaseAuth(),
+              firebaseFirestore: MockFirebaseFirestore(),
             ),
           )));
 
       // Verify that the CustomizableColumn page is displayed
       expect(find.byType(CustomizableColumn), findsOneWidget);
-
+      await tester.pumpAndSettle();
       // Tap category image to go to go to ChildBoards
       await tester.tap(find.byKey(const ValueKey("row0")));
       await tester.pumpAndSettle();

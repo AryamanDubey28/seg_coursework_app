@@ -45,20 +45,6 @@ class EditAccountPageState extends State<EditAccountPage> {
     authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
   }
 
-  // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(
-              text,
-              style: TextStyle(fontSize: 24),
-            ),
-          );
-        });
-  }
-
   @override
   void dispose() {
     _emailEditController.dispose();
@@ -76,7 +62,7 @@ class EditAccountPageState extends State<EditAccountPage> {
         key: Key('app_bar'),
         title: const Text('Edit Account'),
       ),
-      drawer: const AdminSideMenu(),
+      drawer: AdminSideMenu(),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

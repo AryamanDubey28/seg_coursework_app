@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:seg_coursework_app/services/admin.dart';
+
 import 'package:seg_coursework_app/services/auth.dart';
 
 class MyMockUser extends MockUser {
@@ -147,34 +147,26 @@ void main() async {
     expect(uid, "sampleUid");
   });
 
-  test("Admin page getCurrentUserId test", () async {
-    await auth.signIn(_email, _password);
-    Admin admin = Admin(user: _mockUser);
-    String? uid =
-        await admin.getCurrentUserId(); //_mockUser's id returns sampleUid
-    expect(uid, "sampleUid");
-  });
-
   test("Cannot set a PIN longer than 4 digits", () async {
     await auth.signIn(_email, _password);
-    expect(await auth.createPIN("12345"),
+    expect(await auth.createPin("12345"),
         "Please ensure that your PIN is 4 digits");
   });
 
   test("Cannot create a PIN with characters and letters", () async {
     await auth.signIn(_email, _password);
-    expect(await auth.createPIN("abcd"),
+    expect(await auth.createPin("abcd"),
         "Please ensure that your PIN is 4 digits");
   });
 
   test("Entering valid PIN works", () async {
     await auth.signIn(_email, _password);
-    expect(await auth.createPIN("1234"), "Successfully made your pin: 1234");
+    expect(await auth.createPin("1234"), "Successfully made your pin: 1234");
   });
 
   test("PIN exists for users", () async {
     await auth.signIn(_email, _password);
-    bool result = await auth.checkPINExists();
+    bool result = await auth.checkPinExists();
     expect(result, true);
   });
 

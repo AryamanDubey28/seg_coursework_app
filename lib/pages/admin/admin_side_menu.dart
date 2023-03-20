@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
@@ -96,32 +99,45 @@ class AdminSideMenu extends StatelessWidget {
               ),
               title: const Text('Activate Child Mode'),
               onTap: () async {
+                Auth authenticationHelper;
+
                 if (!mock) {
-                  final auth = Auth(
+                  authenticationHelper = Auth(
                       auth: FirebaseAuth.instance,
                       firestore: FirebaseFirestore.instance);
-                  bool check = await auth.checkPINExists();
-                  if (check) {
-                    //PIN exists
-                    final pref = await SharedPreferences.getInstance();
-                    pref.setBool("isInChildMode",
-                        true); //isInChildMode boolean set to true as we are entering
-                    final String pin = await auth.getCurrentUserPIN();
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => CustomizableColumn(
-                        mock: mock,
-                      ),
-                    ));
-                  } else {
-                    show_alert_dialog(context,
-                        "Please first create a PIN in the 'Edit Account Details' section");
-                  }
                 } else {
+                  //if mocking, authenticationHelper assigned to a mock auth
+                  authenticationHelper = Auth(
+                      auth: MockFirebaseAuth(),
+                      firestore: FakeFirebaseFirestore());
+                }
+                bool check = await authenticationHelper.checkPinExists();
+                if (mock) {
+                  check = true;
+                }
+
+                if (check) {
+                  //PIN exists
+
+                  // final pref = await SharedPreferences.getInstance();
+                  // pref.setBool("isInChildMode",
+                  //     true); //isInChildMode boolean set to true as we are entering
+                  final String pin =
+                      await authenticationHelper.getCurrentUserPIN();
+
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => CustomizableColumn(
                       mock: mock,
+                      auth: authenticationHelper.auth,
+                      firebaseFirestore: authenticationHelper.firestore,
                     ),
                   ));
+                  final pref = await SharedPreferences.getInstance();
+                  pref.setBool("isInChildMode",
+                      true); //isInChildMode boolean set to true as we are entering
+                } else {
+                  show_alert_dialog(context,
+                      "Please first create a PIN in the 'Edit Account Details' section");
                 }
               }),
           ListTile(
@@ -168,10 +184,17 @@ class AdminSideMenu extends StatelessWidget {
             onTap: () async {
               FirebaseAuth.instance.signOut();
               final pref = await SharedPreferences.getInstance();
-              final auth = Auth(
-                  auth: FirebaseAuth.instance,
-                  firestore: FirebaseFirestore.instance);
-              final String pin = await auth.getCurrentUserPIN();
+              Auth authenticationHelper;
+              if (!mock) {
+                authenticationHelper = Auth(
+                    auth: FirebaseAuth.instance,
+                    firestore: FirebaseFirestore.instance);
+              } else {
+                authenticationHelper = Auth(
+                    auth: MockFirebaseAuth(),
+                    firestore: FakeFirebaseFirestore());
+              }
+              final String pin = await authenticationHelper.getCurrentUserPIN();
               final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(
                   context,

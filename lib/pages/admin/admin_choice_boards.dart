@@ -77,7 +77,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
           key: Key('app_bar'),
           title: const Text('Loading Choice Boards'),
         ),
-        drawer: const AdminSideMenu(),
+        drawer: AdminSideMenu(),
         body: CustomLoadingIndicator(),
       );
     } else if (hasError) {
@@ -100,7 +100,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
           key: Key('app_bar'),
           title: const Text('Edit Choice Boards'),
         ),
-        drawer: const AdminSideMenu(),
+        drawer: AdminSideMenu(),
         floatingActionButton: AddCategoryButton(
           mock: widget.mock,
         ),

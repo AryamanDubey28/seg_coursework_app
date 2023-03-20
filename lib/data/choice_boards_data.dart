@@ -145,17 +145,16 @@ Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
   Categories futureUserCategories = await firebaseFunctions.getUserCategories();
   List<List<ClickableImage>> categories = [];
   for (var category in futureUserCategories.getList()) {
-    List<ClickableImage> data = [];
-    data.add(buildClickableImageFromCategory(category));
-    for (var item in category.items) {
-      // if (item.availability) {
-      //only add item if its available
-      data.add(buildClickableImageFromCategoryItem(item));
-      // }
-    }
-    if (data.length > 1) {
-      //only add category if it contains items
-      categories.add(data);
+    if (category.availability) {
+      List<ClickableImage> data = [];
+      data.add(buildClickableImageFromCategory(category));
+      for (var item in category.items) {
+        data.add(buildClickableImageFromCategoryItem(item));
+      }
+      if (data.length > 1) {
+        //only add category if it contains items
+        categories.add(data);
+      }
     }
   }
   return categories;
@@ -217,6 +216,8 @@ final List<Category> my_categories = [
 
 final ClickableImage test_pic1 =
     ClickableImage(name: "pic1", imageUrl: "Toast.jpg", is_available: true);
+final ClickableImage test_pic2 =
+    ClickableImage(name: "name", imageUrl: "imageUrl", is_available: true);
 
 final List<Map<String, dynamic>> rowConfigs = [
   {
@@ -247,8 +248,8 @@ final List<Map<String, dynamic>> rowConfigs = [
 final List<List<ClickableImage>> test_list_clickable_images = [
   [test_pic1, test_pic1, test_pic1, test_pic1],
   [
-    test_pic1,
-    test_pic1,
+    test_pic2,
+    test_pic2,
   ],
   [
     test_pic1,

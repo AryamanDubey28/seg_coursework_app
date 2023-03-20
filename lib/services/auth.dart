@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:seg_coursework_app/services/admin.dart';
+
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 // This class concentrates all method relative to communicating with the Firebase Authentication service.
@@ -51,11 +51,9 @@ class Auth {
     }
   }
 
-  Future<bool> checkPINExists() async {
+  Future<bool> checkPinExists() async {
     if (await getCurrentUser() != null) {
-      Admin admin = Admin(user: auth.currentUser);
-      String pin =
-          (!mock) ? await getCurrentUserPIN() : await admin.getCurrentUserPIN();
+      String pin = await getCurrentUserPIN();
       return pin.length == 4 &&
           num.tryParse(pin) != null; // unless PIN is 4 digits, return false
     } else {
@@ -63,24 +61,19 @@ class Auth {
     }
   }
 
-  Future<String> createPIN(String pin) async {
+  Future<String> createPin(String pin) async {
     if (await getCurrentUser() != null) {
       try {
         if (pin.length == 4 && num.tryParse(pin) != null) {
-          if (!mock) {
-            final docUser =
-                FirebaseFirestore.instance.collection('userPins').doc();
-
-            final entry = {
-              //pin is saved with user's ID
-              'pin': pin,
-              'userId': await getCurrentUserId(),
-            };
-            await docUser.set(entry); //adds PIN to database
-          } else {
-            Admin admin = Admin(user: auth.currentUser);
-            admin.createUserPIN(pin);
-          }
+          // final docUser =
+          //     FirebaseFirestore.instance.collection('userPins').doc();
+          final docUser = firestore.collection('userPins').doc();
+          final entry = {
+            //pin is saved with user's ID
+            'pin': pin,
+            'userId': await getCurrentUserId(),
+          };
+          await docUser.set(entry); //adds PIN to database
           return "Successfully made your pin: $pin";
         } else {
           return "Please ensure that your PIN is 4 digits";
@@ -143,26 +136,21 @@ class Auth {
       try {
         String docId = "";
         //get the document id of the current user
-        if (!mock) {
-          final docUser = await FirebaseFirestore.instance
-              .collection('userPins')
-              .where('userId', isEqualTo: await getCurrentUserId())
-              .get()
-              .then((value) {
-            value.docs.forEach((element) {
-              docId = element.id;
-            });
+        final docUser = await firestore
+            .collection('userPins')
+            .where('userId', isEqualTo: await getCurrentUserId())
+            .get()
+            .then((value) {
+          value.docs.forEach((element) {
+            docId = element.id;
           });
-          //update the PIN to the newPIN
-          final updater =
-              FirebaseFirestore.instance.collection('userPins').doc(docId);
-          updater.update({
-            'pin': newPIN,
-          });
-        } else {
-          Admin admin = Admin(user: auth.currentUser);
-          admin.editCurrentUserPIN(newPIN);
-        }
+        });
+        //update the PIN to the newPIN
+        final updater = firestore.collection('userPins').doc(docId);
+        updater.update({
+          'pin': newPIN,
+        });
+
         return "Your PIN was successfully changed to $newPIN";
       } catch (e) {
         return "There was an error: $e";
