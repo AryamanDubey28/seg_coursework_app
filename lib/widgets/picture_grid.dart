@@ -72,9 +72,24 @@ class _PictureGridState extends State<PictureGrid> {
                         },
                         child: Tooltip(
                           message: _getFilteredItems()[index].name,
-                          child: ImageSquare(
-                            key: Key('gridImage$index'),
-                            image: _getFilteredItems()[index],
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: ImageSquare(
+                                  key: Key('gridImage$index'),
+                                  image: _getFilteredItems()[index],
+                                  //minus the padding minus text size.
+                                  height: constraints.maxHeight - 10 - 24,
+                                  width: constraints.maxWidth,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 10), 
+                                child: Text(
+                                  _getFilteredItems()[index].name, 
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       );
