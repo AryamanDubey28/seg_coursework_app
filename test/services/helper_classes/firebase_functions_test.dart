@@ -952,4 +952,20 @@ Future<void> main() async {
     Categories userCategories = await firebaseFunctions.downloadUserCategories();
     expect(userCategories.getList().length, 0);
   });
+
+  test("updateAllCategoryRanks correctly updates the ranks of categories owned by a user", () async {
+    const String name = "Water";
+    const String imageUrl = "Nova-water.jpeg";
+
+    var cat1 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+    var cat2 = await firebaseFunctions.createCategory(name: name, imageUrl: imageUrl);
+
+    expect(await firebaseFunctions.getCategoryRank(categoryId: cat1), 0);
+    expect(await firebaseFunctions.getCategoryRank(categoryId: cat2), 1);
+
+    await firebaseFunctions.deleteCategory(categoryId: cat1);
+    await firebaseFunctions.updateAllCategoryRanks(removedRank: 0);
+
+    expect(await firebaseFunctions.getCategoryRank(categoryId: cat2), 0);
+  });
 }
