@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,7 +87,7 @@ void main() {
     auth = Auth(auth: _mockAuth, firestore: _mockFirestore);
   });
 
-  testWidgets("Edit email correctly fails when given an unvalid email address.",
+  testWidgets("Edit email correctly fails when given an invalid email address.",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
@@ -590,6 +592,90 @@ void main() {
 
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text("Please ensure your PIN is 4 digits"), findsOneWidget);
+    });
+  });
+
+  testWidgets("Edit PIN works as intended", (tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+            firestore: _mockFirestore,
+            isTestMode: true,
+          ))));
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder edit_pin_textfield = find.byKey(Key("pin_text_field"));
+      final Finder edit_pin_button =
+          find.byKey(Key("edit_pin_submit"), skipOffstage: false);
+      await tester.pumpAndSettle();
+
+      Random random = Random();
+      String randomPIN = (random.nextInt(8888) + 1111).toString();
+      await tester.enterText(edit_pin_textfield, randomPIN);
+      await tester.pumpAndSettle();
+
+      await tester.tap(edit_pin_button);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text("Your PIN was successfully changed to $randomPIN"),
+          findsOneWidget);
+    });
+  });
+
+  testWidgets("Make PIN gives error when user doesn't exist", (tester) async {
+    mockNetworkImagesFor(() async {
+      const _new_email = 'ary@yopmail.com';
+      const _new_uid = 'idk1234';
+      const _new_displayName = 'ary';
+      const _new_password = 'Test@123';
+      final _new_mockUser = MyMockUser(
+        uid: _uid,
+        email: _email,
+        displayName: _displayName,
+      );
+
+      final new_mockAuth = MockFirebaseAuthentication();
+      final new_mockUser = MyMockUser(
+          email: _new_email, uid: _new_uid, displayName: _new_displayName);
+      final _new_mockAuth = MyMockFirebaseAuth(mockUser: _new_mockUser);
+      final new_mockFirestore = MyMockFirebaseFirestore(userId: _new_uid);
+      final new_auth = Auth(auth: _new_mockAuth, firestore: new_mockFirestore);
+
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: new_mockAuth,
+            firestore: new_mockFirestore,
+            isTestMode: true,
+          ))));
+      await new_auth.signIn(_new_email, _new_password);
+
+      await tester.pumpAndSettle();
+
+      final Finder create_pin_button = find.byKey(Key("make_pin_submit"));
+      await tester.tap(create_pin_button);
+      await tester.pumpAndSettle();
+
+      final Finder enter_pin_textfield = find.byKey(Key("enterPINTextField"));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(enter_pin_textfield, "0000");
+      await tester.pumpAndSettle();
+
+      final Finder submitButton = find.byKey(Key("submitButton"));
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+
+      expect(
+          find.text(
+              "We could not verify your identity. Please log out and back in."),
+          findsOneWidget);
     });
   });
 }
