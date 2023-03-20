@@ -18,6 +18,7 @@ class ExistingItemsGrid extends StatefulWidget {
   late final String categoryId;
   late final bool mock;
   late final FirebaseFunctions firestoreFunctions;
+  final List<ImageDetails> imagesList;
     
   ExistingItemsGrid({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, required this.categoryId, this.mock = false, required this.imagesList}) {
     this.auth = auth ?? FirebaseAuth.instance;
@@ -25,8 +26,6 @@ class ExistingItemsGrid extends StatefulWidget {
     this.storage = storage ?? FirebaseStorage.instance;
     firestoreFunctions = FirebaseFunctions(auth: this.auth, firestore: this.firestore, storage: this.storage);
   }
-
-  final List<ImageDetails> imagesList;
 
   @override
   State<ExistingItemsGrid> createState() => _ExistingItemsGridState();
@@ -51,7 +50,7 @@ class _ExistingItemsGridState extends State<ExistingItemsGrid> {
   @override
   Widget build(BuildContext context) {
     if (widget.imagesList.isEmpty) {
-      return Text("No items to show. Add some in the 'Choice Board' page");
+      return Center(child: Text("No items to show. Add some in the 'Choice Board' page", style: TextStyle(fontSize: 25),),);
     } else {
       return LayoutBuilder(builder: (context, constraints) {
         return Container(

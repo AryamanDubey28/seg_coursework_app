@@ -66,7 +66,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   mainAxisSize: MainAxisSize.min,
                   // page (Hero) contents
                   children: [
-                    Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 8), child: Text("Already have an item in mind?"),),
+                    Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 8), child: Text("Already have an item in mind?", style: TextStyle(fontSize: 25, color: Colors.black)),),
                     Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TextButton.icon(
                       key: const Key("useExistingItemButton"),
                       onPressed: () => {

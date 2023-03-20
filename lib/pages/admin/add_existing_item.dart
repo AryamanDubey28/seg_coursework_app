@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/existing_items_grid.dart';
 import '../../helpers/firebase_functions.dart';
 import 'admin_side_menu.dart';
@@ -55,7 +56,7 @@ class _AddExistingItem extends State<AddExistingItem> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return CircularProgressIndicator();
+          return CustomLoadingIndicator();
         }
       },
     ),
