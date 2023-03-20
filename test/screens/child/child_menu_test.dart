@@ -241,18 +241,17 @@ void main() {
     await tester.pumpAndSettle();
 
     final Finder logoutButton = find.byKey(Key("logoutButton"));
-    final Finder passwordTextField = find.byKey(Key("logoutTextField"));
-    final Finder submitButton = find.byKey(Key("submitButton"));
-
     await tester.tap(logoutButton);
     await tester.pumpAndSettle();
     //dialog shows up
+    final Finder passwordTextField = find.byKey(Key("logoutButtonTextField"));
 
     await tester.tap(passwordTextField);
     await tester.pumpAndSettle();
     await tester.enterText(passwordTextField, currentPin);
     await tester.pumpAndSettle();
 
+    final Finder submitButton = find.byKey(Key("submitButton"));
     await tester.tap(submitButton);
     // await tester.pumpAndSettle();
     for (int i = 0; i < 5; i++) {

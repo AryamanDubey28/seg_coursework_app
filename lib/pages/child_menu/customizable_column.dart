@@ -12,6 +12,7 @@ import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
+import 'package:seg_coursework_app/widgets/logout_icon_button.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../models/categories.dart';
 import 'package:flutter/services.dart';
@@ -89,67 +90,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         : completer.complete(getListFromChoiceBoards());
   }
 
-  Future openLogoutDialog(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text("Enter your PIN to go back to the Admin Home"),
-            content: TextField(
-              key: Key("logoutTextField"),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              autofocus: true,
-              controller: pin_controller,
-            ),
-            actions: [
-              TextButton(
-                  key: Key("submitButton"),
-                  onPressed: () => submitPin(context),
-                  child: Text("SUBMIT"))
-            ],
-          ));
-
-  Future<void> submitPin(BuildContext context) async {
-    //verifys password is correct, if so then navigates back. otherwise says incorrect
-    String currentPin = await authentitcationHelper.getCurrentUserPIN();
-
-    if (pin_controller.text.trim() == currentPin) {
-      // final pref = await SharedPreferences.getInstance();
-      // pref.setBool("isInChildMode",
-      //     false); //isInChildMode boolean set to false as we are leaving
-      Navigator.pop(context);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AdminChoiceBoards(
-                  mock: widget.mock,
-                  auth: widget.auth,
-                  firestore: widget.firebaseFirestore,
-                  storage: widget.mock ? MockFirebaseStorage() : null,
-                ),
-            maintainState: false),
-      );
-      final pref = await SharedPreferences.getInstance();
-      pref.setBool("isInChildMode", false);
-    } else {
-      Navigator.of(context).pop();
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(
-                "Incorrect PIN Provided",
-                textAlign: TextAlign.center,
-              ),
-            );
-          });
-    }
-    pin_controller.clear();
-  }
-
   // Construct a column of rows using category title and images
   @override
   Widget build(BuildContext context) {
@@ -161,18 +101,11 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-                key: Key("logoutButton"),
-                //only triggers when its pressed for some time
-                onLongPress: () async {
-                  openLogoutDialog(context);
-                },
-                onTap: () async {
-                  if (widget.mock) {
-                    openLogoutDialog(context); //widget tester can only tap
-                  }
-                },
-                child: Icon(Icons.exit_to_app)),
+            child: LogoutIconButton(
+                key: Key("logoutIcon"),
+                mock: widget.mock,
+                pin_controller: pin_controller,
+                authenticationHelper: authentitcationHelper),
           )
         ],
       ),
