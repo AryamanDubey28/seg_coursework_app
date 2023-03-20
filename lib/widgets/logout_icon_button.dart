@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +20,7 @@ class LogoutIconButton extends StatelessWidget {
     this.authenticationHelper = authenticationHelper;
   }
 
+  ///Opens a dialog with a text field to enter a PIN that pops up when the user holds the logout button
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -43,16 +43,11 @@ class LogoutIconButton extends StatelessWidget {
             ],
           ));
 
+  ///verifys password is correct, if so then navigates back. otherwise says incorrect
   Future<void> submitPin(BuildContext context) async {
-    //verifys password is correct, if so then navigates back. otherwise says incorrect
     String currentPin = await authenticationHelper.getCurrentUserPIN();
-
     if (pin_controller.text.trim() == currentPin) {
-      // final pref = await SharedPreferences.getInstance();
-      // pref.setBool("isInChildMode",
-      //     false); //isInChildMode boolean set to false as we are leaving
       Navigator.pop(context);
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
