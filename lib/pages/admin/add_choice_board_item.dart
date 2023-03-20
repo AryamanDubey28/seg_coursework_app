@@ -70,7 +70,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TextButton.icon(
                       key: const Key("useExistingItemButton"),
                       onPressed: () => {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId, mock: widget.mock),
                         ))
                       },
