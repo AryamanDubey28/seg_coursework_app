@@ -4,7 +4,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/widgets/child_category_focus/spoken_images.dart';
+import 'package:seg_coursework_app/services/spoken_images.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../themes/themes.dart';
