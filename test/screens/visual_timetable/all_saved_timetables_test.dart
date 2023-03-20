@@ -17,8 +17,7 @@ import 'package:seg_coursework_app/pages/visual_timetable/all_saved_timetables.d
 import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
-import 'package:seg_coursework_app/widgets/timetable_list_dialog.dart';
+import 'package:seg_coursework_app/widgets/timetable/timetable_list_dialog.dart';
 
 void main() {
   

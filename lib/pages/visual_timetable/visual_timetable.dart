@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/cache_manager.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
-import 'package:seg_coursework_app/widgets/save_timetable_dialog.dart';
+import 'package:seg_coursework_app/widgets/timetable/save_timetable_dialog.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../helpers/snackbar_manager.dart';
 import '../../models/image_details.dart';
-import '../../widgets/custom_loading_indicator.dart';
+import '../../widgets/loading_indicators/custom_loading_indicator.dart';
+import '../../widgets/timetable/timetable_list.dart';
 import '../admin/admin_side_menu.dart';
-import '../../widgets/picture_grid.dart';
-import '../../widgets/timetable_list.dart';
+import '../../widgets/timetable/picture_grid.dart';
 import 'all_saved_timetables.dart';
 
 class VisualTimeTable extends StatefulWidget {

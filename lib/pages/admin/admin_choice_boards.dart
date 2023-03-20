@@ -5,19 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
-import 'package:seg_coursework_app/widgets/delete_category_button.dart';
-import 'package:seg_coursework_app/widgets/delete_item_button.dart';
-import 'package:seg_coursework_app/widgets/edit_category_button.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/add_item_button.dart';
-import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
-import 'package:seg_coursework_app/widgets/admin_switch_buttons.dart';
-import 'package:seg_coursework_app/widgets/edit_item_button.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
-import 'admin_side_menu.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import '../../widgets/admin_choice_board/add_category_button.dart';
+import '../../widgets/admin_choice_board/add_item_button.dart';
+import '../../widgets/admin_choice_board/admin_switch_buttons.dart';
+import '../../widgets/admin_choice_board/delete_category_button.dart';
+import '../../widgets/admin_choice_board/delete_item_button.dart';
+import '../../widgets/admin_choice_board/edit_category_button.dart';
+import '../../widgets/admin_choice_board/edit_item_button.dart';
+import '../../widgets/admin_choice_board/choice_boards_scaffold.dart';
+import '../../widgets/loading_indicators/custom_loading_indicator.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
-import 'package:seg_coursework_app/widgets/add_category_button.dart';
 
 /* 
 * The implementation of the draggable lists is made with the help
@@ -55,6 +56,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
       _futureUserCategories; // holds the user categories (if not mocking)
 
   @override
+  void dispose() {
+    if (!widget.mock) {
+      CheckConnection.stopMonitoring();
+    }
+    super.dispose();
+  }
+
+  @override
   Future<void> load() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(
         auth: widget.auth,
@@ -64,7 +73,20 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
     if (widget.testCategories != null) {
       categories = widget.testCategories!.getList().map(buildCategory).toList();
     } else {
-      _futureUserCategories = await firebaseFunctions.getUserCategories();
+      if (CheckConnection.isDeviceConnected) {
+        // The device has internet connection.
+        // get the data from Firebase and store in the cache
+        _futureUserCategories =
+            await firebaseFunctions.downloadUserCategories();
+
+        await firebaseFunctions.storeCategoriesInCache(
+            userCategories: _futureUserCategories);
+      } else {
+        // The device has no internet connection.
+        // get the data the cache
+        _futureUserCategories =
+            await firebaseFunctions.getUserCategoriesFromCache();
+      }
       categories = _futureUserCategories.getList().map(buildCategory).toList();
     }
   }
@@ -72,59 +94,53 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return Scaffold(
-        appBar: AppBar(
-          key: Key('app_bar'),
-          title: const Text('Loading Choice Boards'),
-        ),
-        drawer: const AdminSideMenu(),
-        body: CustomLoadingIndicator(),
-      );
+      // Loading user's choice boards data
+      return const ChoiceBoardsScaffold(
+          title: "Loading Choice Boards", bodyWidget: CustomLoadingIndicator());
     } else if (hasError) {
-      return AlertDialog(
-        content: Text(
-            'An error occurred while communicating with the database. \nPlease retry.'),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Retry'),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => AdminChoiceBoards()));
-            },
-          ),
-        ],
-      );
+      // Error occured while loading user's choice boards data
+      return ChoiceBoardsScaffold(
+          title: "Error loading Choice Boards",
+          bodyWidget: AlertDialog(
+            content: const Text(
+                'An error occurred while communicating with the database. \nPlease press retry, or try to log-out and log-in again.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Retry'),
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => AdminChoiceBoards()));
+                },
+              ),
+            ],
+          ));
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          key: Key('app_bar'),
-          title: const Text('Edit Choice Boards'),
-        ),
-        drawer: const AdminSideMenu(),
-        floatingActionButton: AddCategoryButton(
-          mock: widget.mock,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        body: DragAndDropLists(
-          listPadding: const EdgeInsets.all(30),
-          listInnerDecoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(20)),
-          children: categories,
-          contentsWhenEmpty: Text(
-              "Welcome! Click on \"Add a category\" to start",
-              style: TextStyle(fontSize: 30)),
-          itemDivider: const Divider(
-            thickness: 4,
-            height: 4,
-            color: Colors.black12,
+      // User's choice boards data loaded successfully
+      return ChoiceBoardsScaffold(
+          title: 'Edit Choice Boards',
+          floatingButton: AddCategoryButton(
+            mock: widget.mock,
           ),
-          listDragHandle: buildDragHandle(isCategory: true),
-          itemDragHandle: buildDragHandle(),
-          onItemReorder: onReorderCategoryItem,
-          onListReorder: onReorderCategory,
-        ),
-      );
+          floatingButtonLocation: FloatingActionButtonLocation.endTop,
+          bodyWidget: DragAndDropLists(
+            listPadding: const EdgeInsets.all(30),
+            listInnerDecoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(20)),
+            children: categories,
+            contentsWhenEmpty: const Text(
+                "Welcome! Click on \"Add a category\" to start",
+                style: TextStyle(fontSize: 30)),
+            itemDivider: const Divider(
+              thickness: 4,
+              height: 4,
+              color: Colors.black12,
+            ),
+            listDragHandle: buildDragHandle(isCategory: true),
+            itemDragHandle: buildDragHandle(),
+            onItemReorder: onReorderCategoryItem,
+            onListReorder: onReorderCategory,
+          ));
     }
   }
 
@@ -244,7 +260,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                     title: Text(
                       item.name,
                       key: Key("itemTitle-${item.id}"),
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -317,7 +333,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
               .insert(newItemIndex, selectedItemDrag);
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 3),
           content: Text(
             'Reordering could not be done. Please ensure you are connected to internet.',
@@ -346,7 +362,7 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
         userCategories.getList().insert(newCategoryIndex, dragList);
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         duration: Duration(seconds: 3),
         content: Text(
           'Reordering could not be done. Please ensure you are connected to internet.',

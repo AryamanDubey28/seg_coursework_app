@@ -87,7 +87,7 @@ class _LogInState extends State<LogIn> {
 
                   // email textfield
                   MyTextField(
-                      key: Key('email_text_field'),
+                      key: const Key('email_text_field'),
                       hint: "Email",
                       controller: _emailController),
 
@@ -97,14 +97,14 @@ class _LogInState extends State<LogIn> {
 
                   //password textfield
                   MyTextField(
-                    key: Key('password_text_field'),
+                    key: const Key('password_text_field'),
                     hint: "Password",
                     controller: _passwordController,
                     isPassword: true,
                   ),
 
                   //forgot password
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
 
@@ -119,10 +119,10 @@ class _LogInState extends State<LogIn> {
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return ForgotPasswordPage();
+                              return const ForgotPasswordPage();
                             }));
                           },
-                          child: Text(
+                          child: const Text(
                             "Forgot Password?",
                             style: TextStyle(
                                 color: Colors.blue,
@@ -134,7 +134,7 @@ class _LogInState extends State<LogIn> {
                     ],
                   ),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
 
@@ -142,9 +142,9 @@ class _LogInState extends State<LogIn> {
                     height: 88,
                     width: 566,
                     child: ElevatedButton(
-                      key: Key('sign_in_button'),
+                      key: const Key('sign_in_button'),
                       style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
@@ -155,15 +155,15 @@ class _LogInState extends State<LogIn> {
                         ),
                       ),
                       onPressed: signIn,
-                      child: Text("Sign in"),
+                      child: const Text("Sign in"),
                     ),
                   ),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
 
-                  //not a memeber button
+                  //not a member button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -174,11 +174,11 @@ class _LogInState extends State<LogIn> {
                             color: Colors.grey[600],
                             fontWeight: FontWeight.normal),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 7,
                       ),
                       TextButton(
-                        key: Key('create_account'),
+                        key: const Key('create_account'),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.blue,
                           backgroundColor: Colors.grey[200],
@@ -190,7 +190,7 @@ class _LogInState extends State<LogIn> {
                         onPressed: () {
                           widget.showRegisterPage();
                         },
-                        child: Text("Register Now!"),
+                        child: const Text("Register Now!"),
                       ),
                     ],
                   ),

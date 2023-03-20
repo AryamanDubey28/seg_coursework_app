@@ -50,13 +50,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Please enter your email to receive a password reset link",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 30, color: Colors.black),
                 ),
           
-                SizedBox(
+                const SizedBox(
                   height: 65,
                 ),
 
@@ -66,7 +66,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   hint: 'Email',
                 ),
           
-                SizedBox(
+                const SizedBox(
                           height: 35,
                 ),
           
@@ -75,9 +75,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           height: 88,
                           width: 566,
                           child: ElevatedButton(
-                            key: Key('reset_password_button'),
+                            key: const Key('reset_password_button'),
                             style: ElevatedButton.styleFrom(
-                              textStyle: TextStyle(
+                              textStyle: const TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -88,7 +88,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               ),
                             ),
                             onPressed: passwordReset,
-                            child: Text("Reset Password"),
+                            child: const Text("Reset Password"),
                           ),
                         ),
               ],

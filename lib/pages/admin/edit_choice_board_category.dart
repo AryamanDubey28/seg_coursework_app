@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,15 +9,17 @@ import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
-import 'package:seg_coursework_app/widgets/pick_image_button.dart';
+import 'package:seg_coursework_app/widgets/admin_choice_board/pick_image_button.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+
+import '../../widgets/loading_indicators/loading_indicator.dart';
 
 class EditChoiceBoardCategory extends StatefulWidget {
   final String categoryId;
   final String categoryName;
   final String categoryImageUrl;
   final bool mock;
+  late final File? newPreSelectedImage;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -27,6 +30,7 @@ class EditChoiceBoardCategory extends StatefulWidget {
       required this.categoryName,
       required this.categoryImageUrl,
       this.mock = false,
+      this.newPreSelectedImage,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -44,7 +48,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
   File? selectedImage; // hold the newly selected image by the user
   // controller to retrieve the user input for category name
   final categoryNameController = TextEditingController();
-  final imagePickerFunctions = ImagePickerFunctions();
+  final imagePickerFunctions = const ImagePickerFunctions();
   late FirebaseFunctions firestoreFunctions;
 
   @override
@@ -54,6 +58,9 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
+    if (widget.newPreSelectedImage != null) {
+      selectedImage = widget.newPreSelectedImage;
+    }
   }
 
   @override
@@ -78,7 +85,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                   children: [
                     // shows the currently selected image
                     Card(
-                        key: Key("categoryImageCard"),
+                        key: const Key("categoryImageCard"),
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
@@ -93,14 +100,22 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                                 height: 160,
                                 fit: BoxFit.cover,
                               )
-                            : Image.network(
-                                widget.categoryImageUrl,
+                            : CachedNetworkImage(
+                                key: UniqueKey(),
+                                imageUrl: widget.categoryImageUrl,
+                                fit: BoxFit.cover,
                                 width: 160,
                                 height: 160,
-                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const Center(
+                                      child: Icon(
+                                    Icons.network_check_rounded,
+                                    color: Colors.red,
+                                  ));
+                                },
                               )),
                     // instructions text
-                    Text(
+                    const Text(
                       "Pick an image",
                       key: Key("instructionsText"),
                       style: TextStyle(
@@ -111,9 +126,9 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                     const SizedBox(height: 20),
                     // buttons to take/upload images
                     PickImageButton(
-                        key: Key("pickImageFromGallery"),
-                        label: Text("Choose from Gallery"),
-                        icon: Icon(Icons.image),
+                        key: const Key("pickImageFromGallery"),
+                        label: const Text("Choose from Gallery"),
+                        icon: const Icon(Icons.image),
                         onPressed: () async {
                           File? newImage = await imagePickerFunctions.pickImage(
                               source: ImageSource.gallery, context: context);
@@ -122,9 +137,9 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                           }
                         }),
                     PickImageButton(
-                        key: Key("takeImageWithCamera"),
-                        label: Text("Take a Picture"),
-                        icon: Icon(Icons.camera_alt),
+                        key: const Key("takeImageWithCamera"),
+                        label: const Text("Take a Picture"),
+                        icon: const Icon(Icons.camera_alt),
                         onPressed: () async {
                           File? newImage = await imagePickerFunctions.pickImage(
                               source: ImageSource.camera, context: context);
@@ -135,14 +150,15 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                     const SizedBox(height: 25),
                     // field to enter the category name
                     TextField(
-                      key: Key("categoryNameField"),
+                      key: const Key("categoryNameField"),
                       controller: categoryNameController,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 25.0),
+                      style: const TextStyle(fontSize: 25.0),
                       decoration: InputDecoration(
                           hintText: widget.categoryName,
                           border: InputBorder.none,
-                          hintStyle: TextStyle(fontWeight: FontWeight.bold)),
+                          hintStyle:
+                              const TextStyle(fontWeight: FontWeight.bold)),
                       cursorColor: Colors.white,
                     ),
                     const Divider(
@@ -156,7 +172,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
                       onPressed: () => editCategoryInFirestore(
                           newImage: selectedImage,
                           newName: categoryNameController.text),
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       label: const Text("Edit category"),
                     )
                   ],
@@ -193,7 +209,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
       ));
       try {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("No edits made!")));
+            .showSnackBar(const SnackBar(content: Text("No edits made!")));
       } catch (e) {
         print("No Scaffold to present to!\n${e.toString()}");
       }
@@ -250,7 +266,6 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
             .showSnackBar(SnackBar(content: Text("Edits saved successfully!")));
       } catch (e) {
         LoadingIndicatorDialog().dismiss();
-        print(e);
         ErrorDialogHelper(context: context).show_alert_dialog(
             "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
       }

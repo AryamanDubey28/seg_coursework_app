@@ -14,7 +14,7 @@ import 'customizable_row.dart';
 class CustomizableColumn extends StatefulWidget {
   final bool mock;
 
-  const CustomizableColumn({this.mock = false});
+  const CustomizableColumn({super.key, this.mock = false});
   @override
   State<CustomizableColumn> createState() => _CustomizableColumnState();
 }
@@ -39,27 +39,27 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     {
       'categoryTitle': 'Category 1',
       'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
       ],
     },
     {
       'categoryTitle': 'Category 2',
       'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
       ],
     },
     {
       'categoryTitle': 'Category 3',
       'images': [
-        Image.asset("test/assets/test_image.png"),
-        Image.asset("test/assets/test_image.png"),
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+        "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
       ],
     },
   ];
@@ -67,9 +67,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text("Enter your PIN to go back to the Admin Home"),
+            title: const Text("Enter your PIN to go back to the Admin Home"),
             content: TextField(
-              key: Key("logoutTextField"),
+              key: const Key("logoutTextField"),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -80,9 +80,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             ),
             actions: [
               TextButton(
-                  key: Key("submitButton"),
+                  key: const Key("submitButton"),
                   onPressed: () => submit(context),
-                  child: Text("SUBMIT"))
+                  child: const Text("SUBMIT"))
             ],
           ));
 
@@ -104,7 +104,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(
+              return const AlertDialog(
                 content: Text(
                   "Incorrect PIN Provided",
                   textAlign: TextAlign.center,
@@ -126,18 +126,18 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Child Mode"),
+        title: const Text("Child Mode"),
         automaticallyImplyLeading: false,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-                key: Key("logoutButton"),
+                key: const Key("logoutButton"),
                 //only triggers when its pressed for some time and swiped up
                 onLongPressUp: () async {
                   openLogoutDialog(context);
                 },
-                child: Icon(Icons.exit_to_app)),
+                child: const Icon(Icons.exit_to_app)),
           )
         ],
       ),
@@ -151,7 +151,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         },
         itemCount: rowConfigs.length,
         separatorBuilder: (context, index) {
-          return Divider(height: 2);
+          return const Divider(height: 2);
         },
       ),
     );

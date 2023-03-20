@@ -5,8 +5,8 @@ import '../../widgets/my_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
-  late bool isTestMode;
-  late FirebaseAuth auth;
+  late final bool isTestMode;
+  late final FirebaseAuth auth;
 
   RegisterPage(
       {super.key,
@@ -83,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.grey[200],
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             size: 20,
             color: Colors.black,
@@ -101,24 +101,24 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     key: Key("account_circle_icon"),
                     Icons.account_circle_sharp,
                     size: 90,
                     color: Colors.black,
                   ),
-                  Text(
+                  const Text(
                     "Register Here!",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 72,
                         color: Colors.black),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   MyTextField(
-                    key: Key('email_text_field'),
+                    key: const Key('email_text_field'),
                     hint: "Email",
                     controller: _emailController,
                   ),
@@ -126,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 15,
                   ),
                   MyTextField(
-                    key: Key('pass_text_field'),
+                    key: const Key('pass_text_field'),
                     hint: "Password",
                     controller: _passwordController,
                     isPassword: true,
@@ -135,21 +135,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 15,
                   ),
                   MyTextField(
-                    key: Key('pass_conf_text_field'),
+                    key: const Key('pass_conf_text_field'),
                     hint: "Password Confirmation",
                     controller: _passwordConfirmationController,
                     isPassword: true,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 25,
                   ),
                   SizedBox(
                     height: 88,
                     width: 566,
                     child: ElevatedButton(
-                      key: Key('sign_up_button'),
+                      key: const Key('sign_up_button'),
                       style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
@@ -160,10 +160,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       onPressed: signUp,
-                      child: Text("Sign up"),
+                      child: const Text("Sign up"),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Row(
@@ -189,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 24,
                           ),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Go Back",
                           key: Key("go_back_button"),
                           style: TextStyle(

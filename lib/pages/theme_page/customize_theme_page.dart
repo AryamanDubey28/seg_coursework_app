@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
-import '../../themes/themes.dart';
-import '../../widgets/mock_app_theme_preview.dart';
-import '../../widgets/theme_controls.dart';
+import '../../widgets/theme/mock_app_theme_preview.dart';
+import '../../widgets/theme/theme_controls.dart';
 
 class CustomizeThemePage extends StatefulWidget {
-  CustomizeThemePage({super.key, required this.themeList, required this.updateThemeList});
+  const CustomizeThemePage({super.key, required this.themeList, required this.updateThemeList});
 
   final List<CustomThemeDetails> themeList;
   final Function updateThemeList;
@@ -59,10 +57,9 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<CustomTheme>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Customize Theme"),
+        title: const Text("Customize Theme"),
         leading: IconButton(
           key: const Key("backButton"),
           tooltip: "Back",

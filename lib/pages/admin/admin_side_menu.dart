@@ -3,7 +3,6 @@ import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
@@ -11,7 +10,6 @@ import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import '../../helpers/error_dialog_helper.dart';
-import '../../themes/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
@@ -45,15 +43,13 @@ class AdminSideMenu extends StatelessWidget {
   // The items of the side-menu
 
   Widget buildMenuItems(BuildContext context) {
-    final themeNotifier = Provider.of<CustomTheme>(context);
-
     return Container(
       padding: const EdgeInsets.all(10),
       child: Wrap(
         children: [
           ListTile(
             key: const Key("choiceBoards"),
-            leading: Icon(
+            leading: const Icon(
               Icons.photo_size_select_actual_outlined,
             ),
             title: const Text('Choice boards'),
@@ -74,7 +70,7 @@ class AdminSideMenu extends StatelessWidget {
           ),
           ListTile(
             key: const Key("visualTimetable"),
-            leading: Icon(
+            leading: const Icon(
               Icons.event,
             ),
             title: const Text('Visual Timetable'),
@@ -99,7 +95,7 @@ class AdminSideMenu extends StatelessWidget {
           ),
           ListTile(
               key: const Key("childMode"),
-              leading: Icon(
+              leading: const Icon(
                 Icons.child_care,
               ),
               title: const Text('Activate Child Mode'),
@@ -113,14 +109,13 @@ class AdminSideMenu extends StatelessWidget {
                         true); //isInChildMode boolean set to true as we are entering
                     final String pin = await auth.getCurrentUserPIN();
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => CustomizableColumn(),
+                      builder: (context) => const CustomizableColumn(),
                     ));
                   } else {
                     ErrorDialogHelper(context: context).show_alert_dialog(
                         "Please first create a PIN in the 'Edit Account Details' section");
                   }
                 } else {
-                  print("mocking");
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => CustomizableColumn(),
                   ));
@@ -128,7 +123,7 @@ class AdminSideMenu extends StatelessWidget {
               }),
           ListTile(
             key: const Key("appColours"),
-            leading: Icon(
+            leading: const Icon(
               Icons.color_lens_outlined,
             ),
             title: const Text('Edit App Colours'),
@@ -146,7 +141,7 @@ class AdminSideMenu extends StatelessWidget {
           ),
           ListTile(
             key: const Key("accountDetails"),
-            leading: Icon(
+            leading: const Icon(
               Icons.account_box_outlined,
             ),
             title: const Text('Edit Account Details'),
@@ -163,7 +158,7 @@ class AdminSideMenu extends StatelessWidget {
           ),
           ListTile(
             key: const Key("logout"),
-            leading: Icon(
+            leading: const Icon(
               Icons.logout_outlined,
             ),
             title: const Text('Log out'),

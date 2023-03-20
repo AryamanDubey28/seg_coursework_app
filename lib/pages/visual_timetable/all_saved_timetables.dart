@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import '../../helpers/cache_manager.dart';
 import '../../helpers/firebase_functions.dart';
 import '../../helpers/snackbar_manager.dart';
 import '../../models/timetable.dart';
-import '../../widgets/custom_loading_indicator.dart';
-import '../../widgets/timetable_list_dialog.dart';
-import '../../widgets/timetable_row.dart';
+import '../../widgets/loading_indicators/custom_loading_indicator.dart';
+import '../../widgets/loading_indicators/loading_indicator.dart';
+import '../../widgets/timetable/timetable_list_dialog.dart';
+import '../../widgets/timetable/timetable_row.dart';
 
 class AllSavedTimetables extends StatefulWidget {
   final FirebaseFunctions firestoreFunctions;
