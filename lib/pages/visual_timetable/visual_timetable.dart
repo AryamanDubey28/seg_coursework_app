@@ -215,17 +215,24 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
       ); 
     } 
     else if (hasError) {
-      return AlertDialog(
-        content: const Text ('An error occurred while communicating with the database'), 
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Retry'),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-              MaterialPageRoute (builder: (context) =>  VisualTimeTable()));
-            }
-          ),
-        ]
+      return Scaffold(
+        appBar: AppBar(
+          key: const Key ('app_bar'),
+          title: const Text ('Loading items'),
+        ),
+        drawer: const AdminSideMenu(), 
+        body: AlertDialog(
+          content: const Text ('An error occurred while communicating with the database'), 
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Retry'),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                MaterialPageRoute (builder: (context) =>  VisualTimeTable()));
+              }
+            ),
+          ]
+        )
       ); 
     } 
     else {

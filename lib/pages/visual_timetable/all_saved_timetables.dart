@@ -142,18 +142,25 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
       ); 
     }
     else if (hasError) {
-      return AlertDialog(
-        content: const Text ('An error occurred while communicating with the database'), 
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Retry'),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-              MaterialPageRoute (builder: (context) =>  AllSavedTimetables(firestoreFunctions: widget.firestoreFunctions,)));
-            }
-          ),
-        ]
-      ); 
+      return Scaffold(
+        appBar: AppBar(
+          key: const Key ('app_bar'),
+          title: const Text ('Loading timetables'),
+          leading: buildBackButton(context),
+        ),
+        body: AlertDialog(
+          content: const Text ('An error occurred while communicating with the database'), 
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Retry'),
+              onPressed: () {
+                Navigator.of(context).push(
+                MaterialPageRoute (builder: (context) =>  AllSavedTimetables(firestoreFunctions: widget.firestoreFunctions,)));
+              }
+            ),
+          ]
+        )
+      );
     } 
     else
     {
