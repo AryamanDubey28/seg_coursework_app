@@ -136,6 +136,22 @@ final Categories myTestCategories = Categories(categories: categories);
 //       ]),
 // ];
 
+List<List<ClickableImage>> filterImages(List<List<ClickableImage>> list) {
+  List<List<ClickableImage>> filteredImages = [];
+  for (List sub_list in list) {
+    List<ClickableImage> data = [];
+    for (ClickableImage item in sub_list) {
+      if (item.is_available) {
+        data.add(item);
+      }
+    }
+    if (data.length > 1) {
+      filteredImages.add(data);
+    }
+  }
+  return filteredImages;
+}
+
 Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
   FirebaseFunctions firebaseFunctions = FirebaseFunctions(
       auth: FirebaseAuth.instance,

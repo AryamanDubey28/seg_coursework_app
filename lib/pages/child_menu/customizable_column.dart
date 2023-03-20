@@ -92,21 +92,21 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     }
   }
 
-  List<List<ClickableImage>> filterImages(List<List<ClickableImage>> list) {
-    List<List<ClickableImage>> filteredImages = [];
-    for (List sub_list in list) {
-      List<ClickableImage> data = [];
-      for (ClickableImage item in sub_list) {
-        if (item.is_available) {
-          data.add(item);
-        }
-      }
-      if (data.length > 1) {
-        filteredImages.add(data);
-      }
-    }
-    return filteredImages;
-  }
+  // List<List<ClickableImage>> filterImages(List<List<ClickableImage>> list) {
+  //   List<List<ClickableImage>> filteredImages = [];
+  //   for (List sub_list in list) {
+  //     List<ClickableImage> data = [];
+  //     for (ClickableImage item in sub_list) {
+  //       if (item.is_available) {
+  //         data.add(item);
+  //       }
+  //     }
+  //     if (data.length > 1) {
+  //       filteredImages.add(data);
+  //     }
+  //   }
+  //   return filteredImages;
+  // }
 
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
@@ -204,10 +204,8 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           CustomizableColumn
               .customizableColumnRequestCounter++; //used for testing
           if (snapshot.hasData) {
-            print("snapshot data so completer stuff = ${snapshot.data}");
             List<List<ClickableImage>> categories =
                 snapshot.data as List<List<ClickableImage>>;
-            print("-----------> in CC build's body, list = $categories");
             List<List<ClickableImage>> filtered = filterImages(categories);
             return ListView.separated(
               itemBuilder: (context, index) {
@@ -224,9 +222,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
               },
             );
           } else {
-            print("-----> snapshot has no data");
-            print(
-                "----------------> completer = $completer . completes = ${completer.future}");
             return Center(child: CircularProgressIndicator());
           }
         },

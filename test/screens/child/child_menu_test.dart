@@ -268,4 +268,19 @@ void main() {
     }
     expect(find.byType(AdminChoiceBoards), findsOneWidget);
   });
+
+  testWidgets("Test that filterImages filters list based on availability",
+      (tester) async {
+    ClickableImage image =
+        ClickableImage(name: "name", imageUrl: "imageUrl", is_available: false);
+    List<List<ClickableImage>> testImages = [
+      [image, image, image],
+      [image, image, image], //list of unavailable images
+      [image, image, image]
+    ];
+
+    List<List<ClickableImage>> filteredList = filterImages(testImages);
+    bool isFilteredListLengthLess = filteredList.length < testImages.length;
+    expect(isFilteredListLengthLess, true);
+  });
 }
