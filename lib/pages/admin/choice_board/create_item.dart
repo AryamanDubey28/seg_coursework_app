@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';

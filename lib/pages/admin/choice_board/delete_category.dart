@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
-import '../../../helpers/firebase_functions.dart';
+import '../../../services/firebase_functions.dart';
 
 /// Enables admin user to delete a category given its ID
 class DeleteCategory extends StatelessWidget {

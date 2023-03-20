@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
 import '../../../lib/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/category.dart';

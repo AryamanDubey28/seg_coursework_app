@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
