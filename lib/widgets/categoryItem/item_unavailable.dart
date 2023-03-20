@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:icon_decoration/icon_decoration.dart';
 
 // Widget created when an item is unavailable
 
@@ -15,10 +16,15 @@ Stack makeUnavailable() {
           child: Container(
             alignment: Alignment.center,
             color: Colors.grey.withOpacity(0.1),
-            child: const Icon(
-              Icons.highlight_remove,
-              size: 100,
-              color: Colors.red,
+            child: const DecoratedIcon(
+              icon: Icon(
+                Icons.clear,
+                color: Colors.red,
+                size: 100,
+              ),
+              decoration: IconDecoration(
+                border: IconBorder(width: 5) 
+              ),
             ),
           ),
         ),
