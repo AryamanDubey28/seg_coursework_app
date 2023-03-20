@@ -6,7 +6,7 @@ import 'toggleAuth.dart';
 
 class Wrapper extends StatelessWidget {
   final bool isInChildMode;
-  late FirebaseAuth auth;
+  late final FirebaseAuth auth;
 
   Wrapper({Key? key, FirebaseAuth? auth, required this.isInChildMode})
       : super(key: key) {
@@ -23,7 +23,7 @@ class Wrapper extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             //if we are trying to sign in and snapshot contains user data, we are logged in
-            return isInChildMode ? CustomizableColumn() : AdminChoiceBoards();
+            return isInChildMode ? const CustomizableColumn() : AdminChoiceBoards();
           } else {
             //snapshot does not contain user data therefore, not logged in
             return ToggleAuth(auth: auth);

@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 
 ///This widget is used to create toggleSwitches able to switch the is_available value
@@ -57,6 +58,19 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
         storage: widget.storage);
   }
 
+  void refresh() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => AdminChoiceBoards(
+          mock: widget.mock,
+          auth: widget.auth,
+          firestore: widget.firestore,
+          storage: widget.storage,
+        ),
+      ),
+    );
+  }
+
   Future<bool> switchAvailabilityValue(
       String documentId, bool isCategory) async {
     bool val;
@@ -101,6 +115,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
             setState(() {
               isAvailable = value;
             });
+            refresh();
           }
         }
       },

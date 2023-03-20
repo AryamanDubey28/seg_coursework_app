@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/my_text_field.dart';
-import '../services/auth.dart';
+import '../../services/auth.dart';
+import '../loading_indicators/loading_indicator.dart';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their password.
 class EditPasswordSection extends StatelessWidget {
@@ -11,7 +11,7 @@ class EditPasswordSection extends StatelessWidget {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
-  late bool isTestMode;
+  late final bool isTestMode;
 
   EditPasswordSection(
       {super.key,
@@ -50,7 +50,7 @@ class EditPasswordSection extends StatelessWidget {
   Widget build(BuildContext _context) {
     context = _context;
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Align(
+      const Align(
         alignment: Alignment.centerLeft,
         child: Padding(
             padding: EdgeInsets.all(16.0),
@@ -66,7 +66,7 @@ class EditPasswordSection extends StatelessWidget {
         height: 15,
       ),
       MyTextField(
-        key: Key('current_password_input'),
+        key: const Key('current_password_input'),
         hint: "Current password",
         controller: _currentPasswordController,
         isPassword: true,
@@ -75,7 +75,7 @@ class EditPasswordSection extends StatelessWidget {
         height: 15,
       ),
       MyTextField(
-        key: Key('new_password_input'),
+        key: const Key('new_password_input'),
         hint: "New password",
         controller: _newPasswordController,
         isPassword: true,
@@ -84,25 +84,25 @@ class EditPasswordSection extends StatelessWidget {
         height: 15,
       ),
       MyTextField(
-        key: Key('confirm_new_password_input'),
+        key: const Key('confirm_new_password_input'),
         hint: "Password confirmation",
         controller: _confirmPasswordController,
         isPassword: true,
       ),
-      SizedBox(
+      const SizedBox(
         height: 15,
       ),
       Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: SizedBox(
               height: 60,
               width: 250,
               child: ElevatedButton(
-                key: Key('edit_password_submit'),
+                key: const Key('edit_password_submit'),
                 style: ElevatedButton.styleFrom(
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),

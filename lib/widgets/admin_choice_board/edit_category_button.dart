@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_category.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/widgets/hero_dialog_route.dart';
+
+import '../dialogs/hero_dialog_route.dart';
 
 /// Uses new category information to edit existing category
 class EditCategoryButton extends StatefulWidget {
@@ -36,7 +37,7 @@ class _EditCategoryButtonState extends State<EditCategoryButton> {
     return IconButton(
       key: Key("editCategoryButton-${widget.categoryId}"),
       onPressed: editCategory,
-      icon: Icon(Icons.edit, color: Color.fromARGB(255, 0, 76, 153)),
+      icon: const Icon(Icons.edit, color: Color.fromARGB(255, 0, 76, 153)),
     );
   }
 

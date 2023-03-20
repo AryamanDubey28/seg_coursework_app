@@ -35,7 +35,7 @@ class MockAppThemePreview extends StatelessWidget {
               style: TextStyle(color: iconsAndTextsColor)
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Column(
             children: [
               FloatingActionButton(
@@ -47,14 +47,14 @@ class MockAppThemePreview extends StatelessWidget {
                   color: iconsAndTextsColor,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Example Text',
                 style: TextStyle(color: iconsAndTextsColor),
               ),
             ],
           ),
-          SizedBox()
+          const SizedBox()
         ],
       ),
     );

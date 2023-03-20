@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
-import 'package:seg_coursework_app/widgets/theme_grid.dart';
 import '../../themes/themes.dart';
+import '../../widgets/theme/theme_grid.dart';
 import 'customize_theme_page.dart';
 
 class ThemePage extends StatefulWidget {

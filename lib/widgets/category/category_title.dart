@@ -15,7 +15,7 @@ class CategoryTitle extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
           child: Text(
             title,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(

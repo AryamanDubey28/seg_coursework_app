@@ -624,11 +624,7 @@ PODS:
   - Firebase/Storage (10.3.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 10.3.0)
-<<<<<<< HEAD
   - firebase_auth (4.2.8):
-=======
-  - firebase_auth (4.2.6):
->>>>>>> 76e09a114d16394ebbc1d510938734ad1767acaf
     - Firebase/Auth (~> 10.3.0)
     - Firebase/CoreOnly (~> 10.3.0)
     - firebase_core
@@ -845,17 +841,10 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: 90a2fea19dd028dbeddc546a72df5686e33f6944
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-<<<<<<< HEAD
   firebase_auth: d6a6ead448c11da379b02ccf4fb68908bbc052b8
   firebase_core: 8bcdc56ca0b558785aa19ac6b56a4753b9169813
   firebase_database: dc564b42de6a1eef7b91f2f883be0b9dbe90ce62
   firebase_storage: 662f5e1162c2bab1a36b8f43eb9e17ea695d6c46
-=======
-  firebase_auth: d97f1f971f0c8e368fdd330506c2ffa8d38950df
-  firebase_core: 2569fb36c8e95ab963e04d8d9fdc9f0f1d297765
-  firebase_database: 8c251219aa9ccb519746a77376e31104ba53ff44
-  firebase_storage: 857178ca75f5f0934b1ed7594f906197c7822419
->>>>>>> 76e09a114d16394ebbc1d510938734ad1767acaf
   FirebaseAppCheckInterop: 13e5394346a811e7158cc136c01f10e3302a3514
   FirebaseAuth: 0e415d29d846c1dce2fb641e46f35e9888d9bec6
   FirebaseAuthInterop: e407335bca1938d65c58db8f4ad14b3c1f862a82

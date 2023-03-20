@@ -15,7 +15,7 @@ class ThemeGridSquare extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           width: 150,
           height: 150,
           decoration: BoxDecoration(
@@ -24,7 +24,7 @@ class ThemeGridSquare extends StatelessWidget {
           color: themeDetails.getCustomThemeData().scaffoldBackgroundColor,
           ),
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         Text(themeDetails.name)
       ],
     );

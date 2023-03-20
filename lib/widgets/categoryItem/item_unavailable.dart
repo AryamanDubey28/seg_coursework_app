@@ -15,7 +15,7 @@ Stack makeUnavailable() {
           child: Container(
             alignment: Alignment.center,
             color: Colors.grey.withOpacity(0.1),
-            child: Icon(
+            child: const Icon(
               Icons.highlight_remove,
               size: 100,
               color: Colors.red,

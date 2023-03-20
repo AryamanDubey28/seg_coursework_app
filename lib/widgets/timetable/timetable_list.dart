@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
-import '../themes/themes.dart';
+import '../../themes/themes.dart';
 
 ///This widget builds a timetable with the arrows to be shown in the visual timetable page.
 ///Not to be confused with TimetableRow which is shown in the all saved timetables page.
