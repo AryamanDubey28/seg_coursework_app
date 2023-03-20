@@ -38,7 +38,6 @@ class CustomizableColumn extends StatefulWidget {
     Completer? completer,
     List<List<ClickableImage>>? list,
   }) {
-    // testList = testList ?? test_list_clickable_images;
     testList = list ?? test_list_clickable_images;
     this.auth = auth ?? FirebaseAuth.instance;
     this.firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
@@ -85,28 +84,10 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   }
 
   void buildCompleter() {
-    if (widget.mock) {
-      completer.complete(widget.testList);
-    } else {
-      completer.complete(getListFromChoiceBoards());
-    }
+    widget.mock
+        ? completer.complete(widget.testList)
+        : completer.complete(getListFromChoiceBoards());
   }
-
-  // List<List<ClickableImage>> filterImages(List<List<ClickableImage>> list) {
-  //   List<List<ClickableImage>> filteredImages = [];
-  //   for (List sub_list in list) {
-  //     List<ClickableImage> data = [];
-  //     for (ClickableImage item in sub_list) {
-  //       if (item.is_available) {
-  //         data.add(item);
-  //       }
-  //     }
-  //     if (data.length > 1) {
-  //       filteredImages.add(data);
-  //     }
-  //   }
-  //   return filteredImages;
-  // }
 
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
@@ -172,8 +153,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   // Construct a column of rows using category title and images
   @override
   Widget build(BuildContext context) {
-    print("in build");
-
+    //buildCompleter();
     return Scaffold(
       appBar: AppBar(
         title: Text("Child Mode"),
@@ -197,9 +177,16 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
         ],
       ),
       body: FutureBuilder(
-        // future:
-        //     getListFromChoiceBoards(), //retrieves a list from the database of categories and items associated with the category
-        future: completer.future,
+        future: !widget
+                .mock //getListFromChoiceBoards updates from Firestore but when testing it will cause tester.pumpAndSettle() to time out, completer.future will allow tests to work perfectly but won't allow to have updates from the db. To achieve the best of both worlds, both are here in a ternary operator
+            ? getListFromChoiceBoards()
+            : completer
+                .future, //retrieves a list from the database of categories and items associated with the category
+
+        //future: completer.future,
+
+        //future: getListFromChoiceBoards(),
+
         builder: (context, snapshot) {
           CustomizableColumn
               .customizableColumnRequestCounter++; //used for testing

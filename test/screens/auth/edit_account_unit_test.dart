@@ -30,8 +30,6 @@ class MyMockUser extends MockUser {
   }
 
   Future<String> getCurrentUserPIN() async {
-    print(
-        "--------------------------> In current user pin method in mock_user");
     return "0000";
   }
 
@@ -57,7 +55,6 @@ class MyMockFirebaseFirestore extends FakeFirebaseFirestore {
   CollectionReference<Map<String, dynamic>> collection(String path) {
     var map = {"userId": userId, "pin": "0000"};
     CollectionReference collectionReference = super.collection(path);
-    print("in inherited method! uid = $userId");
     collectionReference.add(map);
     return collectionReference as CollectionReference<Map<String, dynamic>>;
   }

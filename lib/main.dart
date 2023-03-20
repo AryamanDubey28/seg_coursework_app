@@ -21,8 +21,7 @@ Future main() async {
       .startMonitoring(); // listener for user's internet connection status
 
   final pref = await SharedPreferences.getInstance();
-  final auth =
-      Auth(auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
+  final auth = Auth();
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
   runApp(ThemeProvider(

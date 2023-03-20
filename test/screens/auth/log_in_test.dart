@@ -25,13 +25,11 @@ void main() async {
 
   test('signIn function test', () async {
     final message = await auth.signIn(_email, _password);
-    print("message = $message");
     expect(message, "Success");
   });
 
   test("incorrect log in test", () async {
     final message = await auth.signIn("email", "password");
-    print("message = $message");
     expect(message, "Unsuccessful");
   });
 }

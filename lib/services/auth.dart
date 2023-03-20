@@ -7,10 +7,13 @@ import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 // This class concentrates all method relative to communicating with the Firebase Authentication service.
 class Auth {
-  late final FirebaseAuth auth;
-  late final FirebaseFirestore firestore;
+  late FirebaseAuth auth;
+  late FirebaseFirestore firestore;
   final bool mock;
-  Auth({required this.auth, this.mock = false, required this.firestore});
+  Auth({this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+  }
 
   Stream<User?> get user => auth.authStateChanges();
 

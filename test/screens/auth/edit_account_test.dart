@@ -28,8 +28,6 @@ class MyMockUser extends MockUser {
   }
 
   Future<String> getCurrentUserPIN() async {
-    print(
-        "--------------------------> In current user pin method in mock_user");
     return "0000";
   }
 

@@ -215,12 +215,9 @@ void main() {
           firebaseFirestore: mockFirestore,
         ))));
     int initialValue = CustomizableColumn.customizableColumnRequestCounter;
-    print("initalVal = $initialValue");
     await tester.pump(Duration(seconds: 5));
     int latestValue = CustomizableColumn.customizableColumnRequestCounter;
-    print("new val = $latestValue");
     bool greater = latestValue > initialValue;
-    print("greater? $greater");
     expect(greater, true); //value has increased
   });
 
@@ -231,7 +228,6 @@ void main() {
     myMockFirestore.saveDocument('userPins');
     final authHelper =
         Auth(auth: myMockAuth, firestore: myMockFirestore, mock: true);
-    print("tester.pumpWidget CC");
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
         child: MaterialApp(
@@ -242,7 +238,6 @@ void main() {
         ))));
     await authHelper.signIn(_email, _password);
     String currentPin = await authHelper.getCurrentUserPIN();
-    print("current pin = $currentPin");
     await tester.pumpAndSettle();
 
     final Finder logoutButton = find.byKey(Key("logoutButton"));
@@ -251,13 +246,11 @@ void main() {
 
     await tester.tap(logoutButton);
     await tester.pumpAndSettle();
-    print("tapped logout");
     //dialog shows up
 
     await tester.tap(passwordTextField);
     await tester.pumpAndSettle();
     await tester.enterText(passwordTextField, currentPin);
-    print("entered pin");
     await tester.pumpAndSettle();
 
     await tester.tap(submitButton);
