@@ -134,19 +134,19 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
     {
       return Scaffold(
         appBar: AppBar(
-          key: Key ('app_bar'),
+          key: const Key ('app_bar'),
           title: const Text ('Loading timetables'),
           leading: buildBackButton(context),
         ),
-        body: CustomLoadingIndicator(),
+        body: const CustomLoadingIndicator(),
       ); 
     }
     else if (hasError) {
       return AlertDialog(
-        content: Text ('An error occurred while communicating with the database'), 
+        content: const Text ('An error occurred while communicating with the database'), 
         actions: <Widget>[
           TextButton(
-            child: Text('Retry'),
+            child: const Text('Retry'),
             onPressed: () {
               Navigator.of(context).pushReplacement(
               MaterialPageRoute (builder: (context) =>  AllSavedTimetables(firestoreFunctions: widget.firestoreFunctions,)));
@@ -164,7 +164,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
         ),
         body: savedTimetables.isEmpty() 
         ? 
-        Center(child: Text("No saved timetables. Save one in the 'Visual Timetable' page."))
+        const Center(child: Text("No saved timetables. Save one in the 'Visual Timetable' page."))
         :
         ListView.builder(
           itemCount: savedTimetables.length(),
@@ -181,7 +181,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> with LoadingMix
                     expandTimetable: expandTimetable
                   ),
                 ),
-                Divider()
+                const Divider()
               ],
             );
           },

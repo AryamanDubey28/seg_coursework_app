@@ -1,7 +1,3 @@
-
-import 'package:seg_coursework_app/models/list_of_timetables.dart';
-import 'package:seg_coursework_app/models/timetable.dart';
-
 import '../models/image_details.dart';
 
 final List<ImageDetails> testItems = [
@@ -31,7 +27,3 @@ final List<ImageDetails> testItems = [
     itemId: "5"
   ),
 ];
-
-final testTimetable = Timetable(title: "Test Timetable", listOfImages: testItems, workflowId: "1");
-
-final testListOfTimetables = ListOfTimetables(listOfLists: [testTimetable]);

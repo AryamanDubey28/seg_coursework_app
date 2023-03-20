@@ -207,19 +207,19 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
     if(loading) {
       return Scaffold(
         appBar: AppBar(
-          key: Key ('app_bar'),
+          key: const Key ('app_bar'),
           title: const Text ('Loading items'),
         ),
         drawer: const AdminSideMenu(), 
-        body: CustomLoadingIndicator(),
+        body: const CustomLoadingIndicator(),
       ); 
     } 
     else if (hasError) {
       return AlertDialog(
-        content: Text ('An error occurred while communicating with the database'), 
+        content: const Text ('An error occurred while communicating with the database'), 
         actions: <Widget>[
           TextButton(
-            child: Text('Retry'),
+            child: const Text('Retry'),
             onPressed: () {
               Navigator.of(context).pushReplacement(
               MaterialPageRoute (builder: (context) =>  VisualTimeTable()));
@@ -277,7 +277,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> with LoadingMixin<Vis
                 Expanded(
                   flex: 4,
                   child: Center(
-                    child: Container(
+                    child: SizedBox(
                       //width here is set depending on the screen size. 6/6 represents the whole screen
                       // 5/6 allows it to be centered and have a bit of padding on the left and right side.
                       // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.

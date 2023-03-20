@@ -43,14 +43,14 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
         return true;
       },
       child: AlertDialog(
-        title: Text('Enter a title for the Timetable to save it'),
+        title: const Text('Enter a title for the Timetable to save it'),
         content: Form(
           key: _formKey,
           child: TextFormField(
-            key: Key("titleField"),
+            key: const Key("titleField"),
             maxLength: 30,
             controller: _textEditingController,
-            decoration: InputDecoration(hintText: 'Timetable title'),
+            decoration: const InputDecoration(hintText: 'Timetable title'),
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Please enter a title';
@@ -68,15 +68,16 @@ class _SaveTimetableDialogState extends State<SaveTimetableDialog> {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Cancel'),
+            key: const Key("cancelButton"),
+            child: const Text('Cancel'),
             onPressed: () {
               _textEditingController.clear();
               Navigator.pop(context);
             },
           ),
           TextButton(
-            key: Key("submitButton"),
-            child: Text('Submit'),
+            key: const Key("saveButton"),
+            child: const Text('Save'),
             onPressed: () async {
               if(!_formKey.currentState!.validate()) {
                 SnackBarManager.showSnackBarMessage(context, "Title is not valid!");

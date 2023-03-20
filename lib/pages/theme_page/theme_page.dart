@@ -40,9 +40,9 @@ class _ThemePageState extends State<ThemePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key("addThemeButton"),
+        key: const Key("addThemeButton"),
         tooltip: "Add a new theme",
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,

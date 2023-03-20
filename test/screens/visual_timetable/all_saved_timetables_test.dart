@@ -110,6 +110,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey("addToListOfListsButton")));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const ValueKey("cancelButton")));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey("addToListOfListsButton")));
+    await tester.pumpAndSettle();
+
     final textFieldFinder = find.byKey(const ValueKey("titleField"));
 
     await tester.tap(textFieldFinder);
@@ -117,7 +123,7 @@ void main() {
     await tester.enterText(textFieldFinder, "My Timetable");
     await tester.pump();
 
-    await tester.tap(find.byKey(const ValueKey("submitButton")));
+    await tester.tap(find.byKey(const ValueKey("saveButton")));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const ValueKey("allTimetablesButton")));

@@ -44,7 +44,7 @@ class TimetableRow extends StatelessWidget {
           child: Text(listOfImages.title),
         ),
 
-        Container(
+        SizedBox(
           height: 100,
           width: MediaQuery.of(context).size.width,
           child: Row(

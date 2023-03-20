@@ -86,7 +86,7 @@ class _TimetableListState extends State<TimetableList> {
                         clipBehavior: Clip.hardEdge,
                           child: Center(
                             child: DecoratedIcon(
-                              decoration: IconDecoration(border: IconBorder(width: 5)),
+                              decoration: const IconDecoration(border: IconBorder(width: 5)),
                               icon: Icon(
                                 Icons.clear,
                                 color: Colors.red,

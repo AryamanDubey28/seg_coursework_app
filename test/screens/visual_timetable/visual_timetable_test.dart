@@ -249,6 +249,9 @@ void main() {
       await tester.tap(find.byKey(const ValueKey("gridImage0")));
       await tester.pump();
 
+      await tester.tap(find.byKey(const ValueKey("gridImage0")));
+      await tester.pump();
+
       expect(
           find.byKey(const ValueKey("cross1")), findsNothing);
       expect(

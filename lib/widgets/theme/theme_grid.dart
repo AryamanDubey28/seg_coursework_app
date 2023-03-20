@@ -15,7 +15,7 @@ class ThemeGrid extends StatelessWidget {
     final themeNotifier = Provider.of<CustomTheme>(context);
 
     return GridView.builder(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       itemCount: themeList.length,
       padding: const EdgeInsets.all(20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
