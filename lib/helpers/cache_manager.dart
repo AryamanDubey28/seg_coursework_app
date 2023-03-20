@@ -1,9 +1,10 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/image_details.dart';
 import '../models/list_of_timetables.dart';
+
+///This class handles all cache operations including storing and fetching.
 class CacheManager
 {
   /// Store the given items in the cache under the name
@@ -48,6 +49,8 @@ class CacheManager
     return itemList;
   }
 
+  /// Store the given timetables in the cache under the name
+  /// "<userId>-timetables"
   static Future<void> storeSavedTimetablesInCache({required ListOfTimetables listOfTimetables}) async {
     final prefs = await SharedPreferences.getInstance();
     final String listJson = json.encode(listOfTimetables.toJson());
@@ -55,6 +58,8 @@ class CacheManager
     await prefs.setString('${auth.currentUser!.uid}-timetables', listJson);
   }
 
+  /// Fetch the timetables from the cache under the name
+  /// "<userId>-timetables"
   static Future<ListOfTimetables> getSavedTimetablesFromCache() async {
     final prefs = await SharedPreferences.getInstance();
     final FirebaseAuth auth = FirebaseAuth.instance;
