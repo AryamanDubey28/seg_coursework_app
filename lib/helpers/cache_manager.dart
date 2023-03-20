@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/custom_theme_details.dart';
 import '../models/image_details.dart';
 import '../models/list_of_timetables.dart';
 
@@ -100,5 +102,37 @@ class CacheManager {
     } else {
       throw Exception("No data in the cache!");
     }
+  }
+
+  ///This reads the saved theme from cache
+  static Future<CustomThemeDetails?> readCachedThemeDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? themeString = prefs.getString('cached_theme');
+    if (themeString != null) {
+      Map<String, dynamic> jsonMap = json.decode(themeString);
+      CustomThemeDetails temp = CustomThemeDetails(
+        name: jsonMap['name'],
+        menuColor: Color(jsonMap['menuColor']),
+        backgroundColor: Color(jsonMap['backgroundColor']),
+        buttonsColor: Color(jsonMap['buttonsColor']),
+        iconsAndTextsColor: Color(jsonMap['iconsAndTextsColor']),
+      );
+      return temp;
+    }
+    return null;
+  }
+
+  ///This saves the passed theme to cache
+  static Future<void> saveThemeDetailsToCache(
+      CustomThemeDetails customThemeDetails) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonMap = {
+      'name': customThemeDetails.name,
+      'menuColor': customThemeDetails.menuColor!.value,
+      'backgroundColor': customThemeDetails.backgroundColor!.value,
+      'buttonsColor': customThemeDetails.buttonsColor!.value,
+      'iconsAndTextsColor': customThemeDetails.iconsAndTextsColor!.value,
+    };
+    prefs.setString('cached_theme', json.encode(jsonMap));
   }
 }
