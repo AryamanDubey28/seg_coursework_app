@@ -57,7 +57,7 @@ void main() {
       await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
       await tester.pumpAndSettle(const Duration(seconds: 3));
       expect(find.byType(ExistingItemsGrid), findsOneWidget);
-      expect(find.byType(AppBar), findsOneWidget);
+      expect(find.byKey(ValueKey("backButton")), findsOneWidget);
     });
   });
 

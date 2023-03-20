@@ -45,8 +45,14 @@ class _AddExistingItem extends State<AddExistingItem> {
         appBar: AppBar(
           key: Key('app_bar'),
           title: const Text('Add an Existing Item'),
+          leading: IconButton(
+            key: const Key("backButton"),
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-        drawer: const AdminSideMenu(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         body: FutureBuilder<List<ImageDetails>>(
       future: widget.firestoreFunctions.getLibraryOfImages(),
