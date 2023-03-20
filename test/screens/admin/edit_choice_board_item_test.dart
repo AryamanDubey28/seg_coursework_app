@@ -9,12 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
-import '../../../lib/helpers/mock_firebase_authentication.dart';
+import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/edit_item.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_create_functions.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -27,7 +27,7 @@ void main() {
   late MockUser mockUser;
 
   Future<void> _createData() async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+    FirebaseCreateFunctions firebaseCreateFunctions = FirebaseCreateFunctions(
         auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
 
     await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
@@ -47,7 +47,7 @@ void main() {
       'userId': mockUser.uid
     });
 
-    await firebaseFunctions.createCategoryItem(
+    await firebaseCreateFunctions.createCategoryItem(
         name: toastItem.name,
         imageUrl: toastItem.imageUrl,
         categoryId: breakfastCategory.id,

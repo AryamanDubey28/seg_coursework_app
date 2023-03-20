@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_read_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/loadingMixin.dart';
@@ -58,7 +59,7 @@ class _AdminChoiceBoard extends State<AdminChoiceBoard>
 
   @override
   Future<void> load() async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+    FirebaseReadFunctions firebaseReadFunctions = FirebaseReadFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
@@ -66,7 +67,7 @@ class _AdminChoiceBoard extends State<AdminChoiceBoard>
     if (widget.testCategories != null) {
       categories = widget.testCategories!.getList().map(buildCategory).toList();
     } else {
-      _futureUserCategories = await firebaseFunctions.getUserCategories();
+      _futureUserCategories = await firebaseReadFunctions.getUserCategories();
       categories = _futureUserCategories.getList().map(buildCategory).toList();
     }
   }
@@ -290,14 +291,14 @@ class _AdminChoiceBoard extends State<AdminChoiceBoard>
   void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
       int newItemIndex, int newCategoryIndex) async {
     if (newCategoryIndex == oldCategoryIndex) {
-      FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+      FirebaseUpdateFunctions firebaseUpdateFunctions = FirebaseUpdateFunctions(
           auth: widget.auth,
           firestore: widget.firestore,
           storage: widget.storage);
       Categories userCategories =
           widget.testCategories ?? _futureUserCategories;
 
-      final trigger = await firebaseFunctions.saveCategoryItemOrder(
+      final trigger = await firebaseUpdateFunctions.saveCategoryItemOrder(
           categoryId: userCategories.getList().elementAt(oldCategoryIndex).id,
           oldItemIndex: oldItemIndex,
           newItemIndex: newItemIndex);
@@ -331,13 +332,13 @@ class _AdminChoiceBoard extends State<AdminChoiceBoard>
 
   /// The logic behind reordering a category
   void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+    FirebaseUpdateFunctions firebaseUpdateFunctions = FirebaseUpdateFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
     Categories userCategories = widget.testCategories ?? _futureUserCategories;
 
-    final trigger = await firebaseFunctions.saveCategoryOrder(
+    final trigger = await firebaseUpdateFunctions.saveCategoryOrder(
         oldRank: oldCategoryIndex, newRank: newCategoryIndex);
     if (trigger) {
       setState(() {

@@ -4,8 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_read_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
-import '../../../services/firebase_functions.dart';
+import '../../../services/firebase_functions/firebase_delete_functions.dart';
 
 /// Enables admin user to delete a category given its ID
 class DeleteCategory extends StatelessWidget {
@@ -15,7 +17,9 @@ class DeleteCategory extends StatelessWidget {
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
-  late final FirebaseFunctions firestoreFunctions;
+  late final FirebaseReadFunctions firestoreReadFunctions;
+  late final FirebaseDeleteFunctions firestoreDeleteFunctions;
+  late final FirebaseUpdateFunctions firestoreUpdateFunctions;
 
   DeleteCategory(
       {super.key,
@@ -28,7 +32,11 @@ class DeleteCategory extends StatelessWidget {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
-    firestoreFunctions = FirebaseFunctions(
+    firestoreDeleteFunctions = FirebaseDeleteFunctions(
+        auth: this.auth, firestore: this.firestore, storage: this.storage);
+    firestoreUpdateFunctions = FirebaseUpdateFunctions(
+        auth: this.auth, firestore: this.firestore, storage: this.storage);
+    firestoreReadFunctions = FirebaseReadFunctions(
         auth: this.auth, firestore: this.firestore, storage: this.storage);
   }
 
@@ -52,11 +60,11 @@ class DeleteCategory extends StatelessWidget {
           LoadingIndicatorDialog().show(context);
 
           int deletedCategoryRank =
-              await firestoreFunctions.getCategoryRank(categoryId: categoryId);
-          await firestoreFunctions.deleteCategory(categoryId: categoryId);
-          await firestoreFunctions.updateAllCategoryRanks(
+              await firestoreReadFunctions.getCategoryRank(categoryId: categoryId);
+          await firestoreDeleteFunctions.deleteCategory(categoryId: categoryId);
+          await firestoreUpdateFunctions.updateAllCategoryRanks(
               removedRank: deletedCategoryRank);
-          await firestoreFunctions.deleteImageFromCloud(
+          await firestoreDeleteFunctions.deleteImageFromCloud(
               imageUrl: categoryImage);
 
           LoadingIndicatorDialog().dismiss();

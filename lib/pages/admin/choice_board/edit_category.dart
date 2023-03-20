@@ -5,12 +5,15 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_delete_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/general/select_image_widget.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+
+import '../../../services/firebase_functions/firebase_read_functions.dart';
 
 // Enables the admin user to edit a category given its id and current field values.
 class EditCategory extends StatefulWidget {
@@ -46,12 +49,23 @@ class _EditCategory extends State<EditCategory> {
   // controller to retrieve the user input for category name
   final categoryNameController = TextEditingController();
   final imagePickerFunctions = ImagePickerFunctions();
-  late FirebaseFunctions firestoreFunctions;
+  late FirebaseUpdateFunctions firestoreUpdateFunctions;
+  late FirebaseReadFunctions firestoreReadFunctions;
+  late FirebaseDeleteFunctions firestoreDeleteFunctions;
+
 
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(
+    firestoreUpdateFunctions = FirebaseUpdateFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    firestoreReadFunctions = FirebaseReadFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    firestoreDeleteFunctions = FirebaseDeleteFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
@@ -206,29 +220,29 @@ class _EditCategory extends State<EditCategory> {
 
         // Both image and name changed
         if (newName.isNotEmpty && newImage != null) {
-          await firestoreFunctions.updateCategoryName(
+          await firestoreUpdateFunctions.updateCategoryName(
               categoryId: widget.categoryId, newName: newName);
-          await firestoreFunctions.deleteImageFromCloud(
+          await firestoreDeleteFunctions.deleteImageFromCloud(
               imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
+          String? newImageUrl = await firestoreUpdateFunctions.uploadImageToCloud(
               image: newImage, name: newName);
-          await firestoreFunctions.updateCategoryImage(
+          await firestoreUpdateFunctions.updateCategoryImage(
               categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
         // Only name changed
         else if (newName.isNotEmpty && newImage == null) {
-          await firestoreFunctions.updateCategoryName(
+          await firestoreUpdateFunctions.updateCategoryName(
               categoryId: widget.categoryId, newName: newName);
         }
         // Only image changed
         else if (newName.isEmpty && newImage != null) {
-          await firestoreFunctions.categoryExists(
+          await firestoreReadFunctions.categoryExists(
               categoryId: widget.categoryId);
-          await firestoreFunctions.deleteImageFromCloud(
+          await firestoreDeleteFunctions.deleteImageFromCloud(
               imageUrl: widget.categoryImageUrl);
-          String? newImageUrl = await firestoreFunctions.uploadImageToCloud(
+          String? newImageUrl = await firestoreUpdateFunctions.uploadImageToCloud(
               image: newImage, name: widget.categoryName);
-          await firestoreFunctions.updateCategoryImage(
+          await firestoreUpdateFunctions.updateCategoryImage(
               categoryId: widget.categoryId, newImageUrl: newImageUrl!);
         }
 

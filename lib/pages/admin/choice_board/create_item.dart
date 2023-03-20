@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_create_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_delete_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/general/select_image_widget.dart';
 
@@ -43,12 +45,18 @@ class _CreateItem extends State<CreateItem> {
   final itemNameController = TextEditingController();
   final imagePickerFunctions = ImagePickerFunctions();
   File? selectedImage; // hold the currently selected image by the user
-  late FirebaseFunctions firestoreFunctions;
+  late FirebaseCreateFunctions firestoreCreateFunctions;
+  late FirebaseUpdateFunctions firestoreUpdateFunctions;
+
 
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(
+    firestoreUpdateFunctions = FirebaseUpdateFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    firestoreCreateFunctions = FirebaseCreateFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
@@ -181,13 +189,13 @@ class _CreateItem extends State<CreateItem> {
           .show_alert_dialog("A field or more are missing!");
     } else {
       LoadingIndicatorDialog().show(context);
-      String? imageUrl = await firestoreFunctions.uploadImageToCloud(
+      String? imageUrl = await firestoreUpdateFunctions.uploadImageToCloud(
           image: image, name: itemName);
       if (imageUrl != null) {
         try {
-          String itemId = await firestoreFunctions.createItem(
+          String itemId = await firestoreCreateFunctions.createItem(
               name: itemName, imageUrl: imageUrl);
-          await firestoreFunctions.createCategoryItem(
+          await firestoreCreateFunctions.createCategoryItem(
               name: itemName,
               imageUrl: imageUrl,
               categoryId: widget.categoryId,

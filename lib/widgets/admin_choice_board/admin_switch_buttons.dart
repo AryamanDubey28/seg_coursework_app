@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 
 ///This widget is used to create toggleSwitches able to switch the is_available value
 ///of a database document (categories or items).
@@ -36,7 +36,7 @@ class AvailabilitySwitchToggle extends StatefulWidget {
 }
 
 class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
-  late FirebaseFunctions firebaseFunctions;
+  late FirebaseUpdateFunctions firebaseUpdateFunctions;
   late bool isAvailable;
 
   @override
@@ -51,7 +51,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
   void initState() {
     super.initState();
     isAvailable = widget.documentAvailability;
-    firebaseFunctions = FirebaseFunctions(
+    firebaseUpdateFunctions = FirebaseUpdateFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
@@ -61,10 +61,10 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       String documentId, bool isCategory) async {
     bool val;
     if (isCategory) {
-      val = await firebaseFunctions.updateCategoryAvailability(
+      val = await firebaseUpdateFunctions.updateCategoryAvailability(
           categoryId: documentId);
     } else {
-      val = await firebaseFunctions.updateItemAvailability(itemId: documentId);
+      val = await firebaseUpdateFunctions.updateItemAvailability(itemId: documentId);
     }
 
     if (val) {

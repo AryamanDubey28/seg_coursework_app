@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_create_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_delete_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/general/select_image_widget.dart';
 
@@ -42,12 +44,18 @@ class _CreateCategory extends State<CreateCategory> {
   final categoryNameController = TextEditingController();
   final imagePickerFunctions = ImagePickerFunctions();
   File? selectedImage; // hold the currently selected image by the user
-  late FirebaseFunctions firestoreFunctions;
+  late FirebaseUpdateFunctions firestoreUpdateFunctions;
+  late FirebaseCreateFunctions firestoreCreateFunctions;
+
 
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(
+    firestoreCreateFunctions = FirebaseCreateFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    firestoreUpdateFunctions = FirebaseUpdateFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
@@ -185,11 +193,11 @@ class _CreateCategory extends State<CreateCategory> {
           });
     } else {
       LoadingIndicatorDialog().show(context);
-      String? imageUrl = await firestoreFunctions.uploadImageToCloud(
+      String? imageUrl = await firestoreUpdateFunctions.uploadImageToCloud(
           image: image, name: categoryName);
       if (imageUrl != null) {
         try {
-          await firestoreFunctions.createCategory(
+          await firestoreCreateFunctions.createCategory(
               name: categoryName, imageUrl: imageUrl);
 
           LoadingIndicatorDialog().dismiss();

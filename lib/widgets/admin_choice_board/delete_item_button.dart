@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_delete_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_read_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions/firebase_update_functions.dart';
 import 'package:seg_coursework_app/widgets/general/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
@@ -38,12 +40,22 @@ class DeleteItemButton extends StatefulWidget {
 }
 
 class _DeleteItemButtonState extends State<DeleteItemButton> {
-  late FirebaseFunctions firestoreFunctions;
+  late FirebaseUpdateFunctions firestoreUpdateFunctions;
+  late FirebaseReadFunctions firestoreReadFunctions;
+  late FirebaseDeleteFunctions firestoreDeleteFunctions;
 
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(
+    firestoreUpdateFunctions = FirebaseUpdateFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    firestoreReadFunctions = FirebaseReadFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+    firestoreDeleteFunctions = FirebaseDeleteFunctions(
         auth: widget.auth,
         firestore: widget.firestore,
         storage: widget.storage);
@@ -110,11 +122,11 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       LoadingIndicatorDialog().show(context);
 
       int deletedCategoryItemRank =
-          await firestoreFunctions.getCategoryItemRank(
+          await firestoreReadFunctions.getCategoryItemRank(
               categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.deleteCategoryItem(
+      await firestoreDeleteFunctions.deleteCategoryItem(
           categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.updateCategoryItemsRanks(
+      await firestoreUpdateFunctions.updateCategoryItemsRanks(
           categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
       LoadingIndicatorDialog().dismiss();
