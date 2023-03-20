@@ -47,7 +47,6 @@ class _AddExistingItem extends State<AddExistingItem> {
           title: const Text('Add an Existing Item'),
           leading: IconButton(
             key: const Key("createItemButton"),
-            // iconSize: 40,
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).pop();
