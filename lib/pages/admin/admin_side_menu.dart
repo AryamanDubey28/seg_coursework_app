@@ -10,7 +10,7 @@ import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
+import '../../helpers/error_dialog_helper.dart';
 import '../../themes/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
@@ -41,11 +41,6 @@ class AdminSideMenu extends StatelessWidget {
           top: MediaQuery.of(context).padding.top,
         ),
       );
-
-  // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(BuildContext context, String text) {
-    ShowAlertDialog.show_dialog(context, text);
-  }
 
   // The items of the side-menu
 
@@ -121,7 +116,7 @@ class AdminSideMenu extends StatelessWidget {
                       builder: (context) => CustomizableColumn(),
                     ));
                   } else {
-                    show_alert_dialog(context,
+                    ErrorDialogHelper(context: context).show_alert_dialog(
                         "Please first create a PIN in the 'Edit Account Details' section");
                   }
                 } else {
