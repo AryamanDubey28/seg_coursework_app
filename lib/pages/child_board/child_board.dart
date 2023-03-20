@@ -1,12 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/widgets/clickable_images_grid.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-
 import '../../themes/themes.dart';
 
 class ChildBoards extends StatefulWidget {

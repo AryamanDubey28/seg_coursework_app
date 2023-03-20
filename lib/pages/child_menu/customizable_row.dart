@@ -59,7 +59,6 @@ class _CustomizableRowState extends State<CustomizableRow> {
           List<ClickableImage> newList = widget.unfilteredImages
               .where((x) => widget.unfilteredImages.indexOf(x) != 0)
               .toList();
-          // PLACEHOLDER.
           final player = AudioPlayer();
           player.play(AssetSource('category_click.mp3'));
 

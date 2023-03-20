@@ -9,13 +9,4 @@ class ClickableImage {
 
   ClickableImage(
       {required this.name, required this.imageUrl, required this.is_available});
-
-  factory ClickableImage.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-    final data = documentSnapshot.data()!;
-    return ClickableImage(
-        name: data["title"],
-        imageUrl: data["illustration"],
-        is_available: data["is_available"]);
-  }
 }

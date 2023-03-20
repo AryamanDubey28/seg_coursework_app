@@ -1,10 +1,10 @@
-import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -13,7 +13,6 @@ import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import 'package:seg_coursework_app/widgets/show_alert_dialog.dart';
 import '../../themes/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
@@ -46,9 +45,9 @@ class AdminSideMenu extends StatelessWidget {
       );
 
   // Displays an alert dialog with the text passed as parameter.
-  void show_alert_dialog(BuildContext context, String text) {
-    ShowAlertDialog.show_dialog(context, text);
-  }
+  // void show_alert_dialog(BuildContext context, String text) {
+  //   ShowAlertDialog.show_dialog(context, text);
+  // }
 
   // The items of the side-menu
 
@@ -117,10 +116,6 @@ class AdminSideMenu extends StatelessWidget {
 
                 if (check) {
                   //PIN exists
-
-                  // final pref = await SharedPreferences.getInstance();
-                  // pref.setBool("isInChildMode",
-                  //     true); //isInChildMode boolean set to true as we are entering
                   final String pin =
                       await authenticationHelper.getCurrentUserPIN();
 
@@ -135,7 +130,8 @@ class AdminSideMenu extends StatelessWidget {
                   pref.setBool("isInChildMode",
                       true); //isInChildMode boolean set to true as we are entering
                 } else {
-                  show_alert_dialog(context,
+                  var dialog = ErrorDialogHelper(context: context);
+                  dialog.show_alert_dialog(
                       "Please first create a PIN in the 'Edit Account Details' section");
                 }
               }),

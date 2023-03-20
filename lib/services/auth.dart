@@ -68,8 +68,6 @@ class Auth {
     if (await getCurrentUser() != null) {
       try {
         if (pin.length == 4 && num.tryParse(pin) != null) {
-          // final docUser =
-          //     FirebaseFirestore.instance.collection('userPins').doc();
           final docUser = firestore.collection('userPins').doc();
           final entry = {
             //pin is saved with user's ID

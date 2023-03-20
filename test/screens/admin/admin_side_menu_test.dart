@@ -1,12 +1,8 @@
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
-import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';

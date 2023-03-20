@@ -1,24 +1,11 @@
 import 'dart:async';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/widgets/logout_icon_button.dart';
-import '../../helpers/firebase_functions.dart';
-import '../../models/categories.dart';
-import 'package:flutter/services.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/services/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'customizable_row.dart';
 
 // The child menu is formed essentially by creating a column of rows,
@@ -70,9 +57,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     completer = Completer();
     buildCompleter();
     authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
-    timer = Timer.periodic(Duration(seconds: 4), (timer) {
+    timer = Timer.periodic(Duration(seconds: 30), (timer) {
       setState(
-          () {}); //page updates every 4 seconds therefore gets new data from db every 5 seconds
+          () {}); //page updates every 30 seconds therefore gets new data from db every 5 seconds
     });
   }
 
@@ -93,7 +80,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   // Construct a column of rows using category title and images
   @override
   Widget build(BuildContext context) {
-    //buildCompleter();
     return Scaffold(
       appBar: AppBar(
         title: Text("Child Mode"),
@@ -115,10 +101,6 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
             ? getListFromChoiceBoards()
             : completer
                 .future, //retrieves a list from the database of categories and items associated with the category
-
-        //future: completer.future,
-
-        //future: getListFromChoiceBoards(),
 
         builder: (context, snapshot) {
           CustomizableColumn
