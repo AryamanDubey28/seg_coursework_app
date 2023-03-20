@@ -11,9 +11,9 @@ import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/widgets/general/show_alert_dialog.dart';
-import '../../../themes/themes.dart';
+import '../../themes/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../visual_timetable/visual_timetable.dart';
+import 'visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/pages/child/child_menu.dart';
 
 /// The side-menu of the admin's UI, enabling navigation between all the pages the admin has access to
@@ -137,7 +137,7 @@ class AdminSideMenu extends StatelessWidget {
             color: Colors.black54,
           ),
           ListTile(
-            key: const Key("accountDetails"),
+            key: const Key("editAccount"),
             leading: Icon(
               Icons.account_box_outlined,
             ),

@@ -16,7 +16,7 @@ import 'package:seg_coursework_app/widgets/general/loading_indicator_variation.d
 import 'package:seg_coursework_app/widgets/admin_choice_board/admin_switch_buttons.dart';
 import 'package:seg_coursework_app/widgets/admin_choice_board/edit_item_button.dart';
 import 'package:seg_coursework_app/widgets/admin_timetable/image_square.dart';
-import 'admin_side_menu.dart';
+import '../admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:seg_coursework_app/widgets/admin_choice_board/add_category_button.dart';
 

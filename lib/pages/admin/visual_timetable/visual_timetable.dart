@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
 import '../../../models/image_details.dart';
-import '../choice_board/admin_side_menu.dart';
+import '../admin_side_menu.dart';
 import '../../../widgets/admin_timetable/picture_grid.dart';
 import '../../../widgets/admin_timetable/timetable_list.dart';
 import 'all_saved_timetables.dart';

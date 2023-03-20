@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/admin/choice_board/admin_side_menu.dart';
+import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 import 'package:seg_coursework_app/pages/child/child_menu.dart';
 import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/pages/admin/visual_timetable/visual_timetable.dart';
+import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
@@ -21,7 +22,7 @@ void main() {
     expect(find.byKey(const ValueKey("visualTimetable")), findsOneWidget);
     expect(find.byKey(const ValueKey("childMode")), findsOneWidget);
     expect(find.byKey(const ValueKey("appColours")), findsOneWidget);
-    expect(find.byKey(const ValueKey("accountDetails")), findsOneWidget);
+    expect(find.byKey(const ValueKey("editAccount")), findsOneWidget);
     expect(find.byKey(const ValueKey("logout")), findsOneWidget);
   });
 
@@ -89,5 +90,20 @@ void main() {
     });
   });
 
-  // !!!! Add tests for each button when implementing their pages !!!!!
+  testWidgets("Edit account button does correct page navigation",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AdminSideMenu(
+              mock: true,
+            ),
+          )));
+      await tester.tap(find.byKey(const ValueKey("editAccount")));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditAccountPage), findsOneWidget);
+    });
+  });
 }

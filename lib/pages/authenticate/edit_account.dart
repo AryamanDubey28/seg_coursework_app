@@ -4,7 +4,7 @@ import 'package:seg_coursework_app/widgets/admin_edit_accounr/edit_email_section
 import 'package:seg_coursework_app/widgets/admin_edit_accounr/edit_password_section.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/widgets/admin_edit_accounr/edit_pin_section.dart';
-import '../admin/choice_board/admin_side_menu.dart';
+import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email, password, and pin
 // informations.
