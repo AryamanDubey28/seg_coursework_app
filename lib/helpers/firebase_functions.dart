@@ -73,50 +73,42 @@ class FirebaseFunctions {
   }
 
   ///Saves a timetable to database.
-  Future saveWorkflowToFirestore(
-        {required Timetable timetable}) async {
-
+  Future saveWorkflowToFirestore({required Timetable timetable}) async {
     String workflowId = await createWorkflow(
       title: timetable.title,
-    )
-    .onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
+    ).onError((error, stackTrace) =>
+        throw FirebaseException(plugin: stackTrace.toString()));
     timetable.setID(id: workflowId);
 
-    for(int i = 0 ; i < timetable.length() ; i++)
-    {
-    
+    for (int i = 0; i < timetable.length(); i++) {
       await createWorkflowItem(
         workflowItem: timetable[i],
         workflowId: workflowId,
-      )
-      .onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
+      ).onError((error, stackTrace) =>
+          throw FirebaseException(plugin: stackTrace.toString()));
     }
-        
   }
 
   ///Create a new workflow and add it to the database.
-  Future<String> createWorkflow({required String title})
-  async {
+  Future<String> createWorkflow({required String title}) async {
     CollectionReference workflows = firestore.collection('workflows');
 
     return workflows
-      .add({
-        'title': title,
-        'userId': auth.currentUser!.uid,
-      })
-      .then((workflow) => workflow.id)
-      .catchError((error, stackTrace) {
-        return throw FirebaseException(plugin: stackTrace.toString());
-      });
-
+        .add({
+          'title': title,
+          'userId': auth.currentUser!.uid,
+        })
+        .then((workflow) => workflow.id)
+        .catchError((error, stackTrace) {
+          return throw FirebaseException(plugin: stackTrace.toString());
+        });
   }
 
   ///Creates workflow items and add them to the database. Called alongside createWorkflow.
-  Future createWorkflowItem(
-      {
-      required ImageDetails workflowItem,
-      required String workflowId,
-      }) async {
+  Future createWorkflowItem({
+    required ImageDetails workflowItem,
+    required String workflowId,
+  }) async {
     CollectionReference workflowItems =
         firestore.collection('workflowItems/$workflowId/items');
 
@@ -126,9 +118,8 @@ class FirebaseFunctions {
       'rank': await getNewWorkflowItemRank(workflowId: workflowId),
       'userId': auth.currentUser!.uid
       // ignore: void_checks
-    }).onError((error, stackTrace) => throw FirebaseException(plugin: stackTrace.toString()));
-    
-    
+    }).onError((error, stackTrace) =>
+        throw FirebaseException(plugin: stackTrace.toString()));
   }
 
   /// Return an appropriate rank for a new workflowItem in the
@@ -138,7 +129,6 @@ class FirebaseFunctions {
         await firestore.collection('workflowItems/$workflowId/items').get();
     return querySnapshot.size;
   }
-
 
   // #### Edting items functions ####
 
@@ -285,38 +275,38 @@ class FirebaseFunctions {
   }
 
   ///Delete a workflow from the database.
-  Future deleteWorkflow(
-    {required Timetable timetable}) async {
-      String workflowId = timetable.workflowId;
-      try {
-        CollectionReference workflows = firestore.collection('workflows');
-        
-        DocumentSnapshot workflow = await workflows.doc(workflowId).get();
-        if (!workflow.exists) {
-          return throw FirebaseException(plugin: "workflow does not exist!");
-        }
-        
-        await deleteWorkflowItems(workflowId: workflowId);//.then((value) => null);
-        
-        return workflows.doc(workflowId).delete().onError((error, stackTrace) {
-          return throw FirebaseException(plugin: stackTrace.toString());
-        });
-      }catch (e) {
-        return throw FirebaseException(plugin: e.toString());
+  Future deleteWorkflow({required Timetable timetable}) async {
+    String workflowId = timetable.workflowId;
+    try {
+      CollectionReference workflows = firestore.collection('workflows');
+
+      DocumentSnapshot workflow = await workflows.doc(workflowId).get();
+      if (!workflow.exists) {
+        return throw FirebaseException(plugin: "workflow does not exist!");
       }
+
+      await deleteWorkflowItems(
+          workflowId: workflowId); //.then((value) => null);
+
+      return workflows.doc(workflowId).delete().onError((error, stackTrace) {
+        return throw FirebaseException(plugin: stackTrace.toString());
+      });
+    } catch (e) {
+      return throw FirebaseException(plugin: e.toString());
     }
+  }
 
   ///Delete a workflow's associated items from the database.
-  Future deleteWorkflowItems(
-      {required String workflowId}) async {
+  Future deleteWorkflowItems({required String workflowId}) async {
+    final QuerySnapshot workflowItemFolder =
+        await firestore.collection('workflowItems/$workflowId/items').get();
 
-    final QuerySnapshot workflowItemFolder = await firestore.collection('workflowItems/$workflowId/items').get();
-
-    for(final DocumentSnapshot workflowItem in workflowItemFolder.docs)
-    {
-      final DocumentReference workflowItemReference = firestore.collection('workflowItems/$workflowId/items').doc(workflowItem.id);
+    for (final DocumentSnapshot workflowItem in workflowItemFolder.docs) {
+      final DocumentReference workflowItemReference = firestore
+          .collection('workflowItems/$workflowId/items')
+          .doc(workflowItem.id);
       await workflowItemReference.delete().onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
+        return throw FirebaseException(plugin: stackTrace.toString());
       });
     }
   }
@@ -607,82 +597,71 @@ class FirebaseFunctions {
   }
 
   ///Fetches all items created by the user.
-  Future<List<ImageDetails>> getUserItems() async
-  {
+  Future<List<ImageDetails>> getUserItems() async {
     List<ImageDetails> library = [];
-    try{
-      final QuerySnapshot itemsSnapshot = await firestore.collection("items")
-      .where("userId", isEqualTo: auth.currentUser!.uid)
-      .get();
+    try {
+      final QuerySnapshot itemsSnapshot = await firestore
+          .collection("items")
+          .where("userId", isEqualTo: auth.currentUser!.uid)
+          .get();
 
       if (itemsSnapshot.size == 0) {
-      return library;
+        return library;
       }
 
       for (final DocumentSnapshot item in itemsSnapshot.docs) {
-        library.add(ImageDetails(name: item.get('name'), imageUrl: item.get('illustration'), itemId: item.id));
+        library.add(ImageDetails(
+            name: item.get('name'),
+            imageUrl: item.get('illustration'),
+            itemId: item.id));
       }
-    }
-    catch(e)
-    {
+    } catch (e) {
       print(e);
     }
-    
 
     return library;
   }
 
   ///Fetches all timetables saved by the user.
-  Future<ListOfTimetables> getSavedTimetables() async
-  {
+  Future<ListOfTimetables> getSavedTimetables() async {
     List<Timetable> listOfTimetablesTemp = [];
 
-    try
-    {
+    try {
       final QuerySnapshot workflowsSnapshot = await firestore
-      .collection("workflows")
-      .where("userId", isEqualTo: auth.currentUser!.uid)
-      .get();
-      
+          .collection("workflows")
+          .where("userId", isEqualTo: auth.currentUser!.uid)
+          .get();
+
       if (workflowsSnapshot.size == 0) {
         return ListOfTimetables(listOfLists: listOfTimetablesTemp);
       }
-      
+
       for (final DocumentSnapshot workflow in workflowsSnapshot.docs) {
         final QuerySnapshot workflowItems = await firestore
-        .collection('workflowItems/${workflow.id}/items')
-        .orderBy('rank')
-        .get();
-      
+            .collection('workflowItems/${workflow.id}/items')
+            .orderBy('rank')
+            .get();
+
         List<ImageDetails> itemsList = [];
-        for(final DocumentSnapshot workflowItem in workflowItems.docs)
-        {
-          itemsList.add(
-            ImageDetails(
-              name: workflowItem.get('name'), 
-              imageUrl: workflowItem.get("illustration"), 
-              itemId: workflowItem.id
-            )
-          );
+        for (final DocumentSnapshot workflowItem in workflowItems.docs) {
+          itemsList.add(ImageDetails(
+              name: workflowItem.get('name'),
+              imageUrl: workflowItem.get("illustration"),
+              itemId: workflowItem.id));
         }
-      
-        listOfTimetablesTemp.add(
-          Timetable(
-            title: workflow.get("title"), 
-            listOfImages: itemsList, 
-            workflowId: workflow.id
-          )
-        );
+
+        listOfTimetablesTemp.add(Timetable(
+            title: workflow.get("title"),
+            listOfImages: itemsList,
+            workflowId: workflow.id));
       }
-    }
-    catch(e)
-    {
+    } catch (e) {
       print(e);
     }
 
     return ListOfTimetables(listOfLists: listOfTimetablesTemp);
-
   }
+
   /// When categoryItems reordering occurs, updates the new rank of each categoryItem in firebase.
   /// The function creates an ordered list of categoryItems before the reordering,
   /// applies reordering changes to the list and then upload to firebase the new position
@@ -766,31 +745,5 @@ class FirebaseFunctions {
     }
 
     return userCategories;
-  }
-
-  /// Store the given Categories in the cache under the name
-  /// "<userId>-categories"
-  Future storeCategoriesInCache({required Categories userCategories}) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String categoriesJson = userCategories.toJsonString(userCategories);
-      await prefs.setString(
-          '${auth.currentUser!.uid}-categories', categoriesJson);
-    } on Exception catch (e) {
-      rethrow;
-    }
-  }
-
-  /// Return the user's choice boards data that's in the cache.
-  /// Throw an exception if the cache is empty
-  Future<Categories> getUserCategoriesFromCache() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? categoriesJson =
-        prefs.getString('${auth.currentUser!.uid}-categories');
-    if (categoriesJson != null) {
-      return Categories(categories: []).fromJsonString(categoriesJson);
-    } else {
-      throw Exception("No data in the cache!");
-    }
   }
 }
