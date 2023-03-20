@@ -33,24 +33,15 @@ class FirebaseFunctions {
         });
   }
 
-  /// Return the is_available field of an item given its itemId
-  Future<bool> getItemAvailability({required String itemId}) async {
-    return await firestore.collection('items').doc(itemId).get().then((item) {
-      return item.get("is_available");
-    }).onError((error, stackTrace) {
-      return throw FirebaseException(plugin: stackTrace.toString());
-    });
-  }
-
   /// Add a new entry to the 'categoryItems' collection in Firestore with
   /// the given item and category information.
   /// Note: the categoryItem will have the same id as the item
-  Future createCategoryItem({required String name, required String imageUrl, required String categoryId, required String itemId, required bool isAvailable}) async {
+  Future createCategoryItem({required String name, required String imageUrl, required String categoryId, required String itemId}) async {
     CollectionReference categoryItems = firestore.collection('categoryItems/$categoryId/items');
 
     categoryItems.doc(itemId).set({
       'illustration': imageUrl,
-      'is_available': isAvailable,
+      'is_available': true,
       'name': name,
       'rank': await getNewCategoryItemRank(categoryId: categoryId),
       'userId': auth.currentUser!.uid

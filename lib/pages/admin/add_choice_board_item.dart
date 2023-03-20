@@ -182,7 +182,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       if (imageUrl != null) {
         try {
           String itemId = await firestoreFunctions.createItem(name: itemName, imageUrl: imageUrl);
-          await firestoreFunctions.createCategoryItem(name: itemName, imageUrl: imageUrl, categoryId: widget.categoryId, itemId: itemId, isAvailable: true);
+          await firestoreFunctions.createCategoryItem(name: itemName, imageUrl: imageUrl, categoryId: widget.categoryId, itemId: itemId);
 
           LoadingIndicatorDialog().dismiss();
           // go back to choice boards page

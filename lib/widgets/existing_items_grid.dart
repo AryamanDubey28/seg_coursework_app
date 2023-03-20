@@ -105,11 +105,10 @@ class _ExistingItemsGridState extends State<ExistingItemsGrid> {
   }
 
   void addItemAsCategoryItem({required String itemId, required String imageUrl, required String name, required BuildContext context}) async {
-    bool categoryItemExists = await widget.firestoreFunctions.categoryItemExists(categoryId: widget.categoryId, itemId: itemId);
-  
+    DocumentSnapshot categoryItem = await widget.firestore.collection('categoryItems/${widget.categoryId}/items').doc(itemId).get();
     // Only create new categoryItem for item if it doens't already exist
-    if (!categoryItemExists) {
-      await widget.firestoreFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: widget.categoryId, itemId: itemId, isAvailable: await widget.firestoreFunctions.getItemAvailability(itemId: itemId));
+    if (!categoryItem.exists) {
+      await widget.firestoreFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: widget.categoryId, itemId: itemId);
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) {
           if (widget.mock) {
