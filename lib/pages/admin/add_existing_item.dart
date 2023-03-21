@@ -61,7 +61,7 @@ class _AddExistingItem extends State<AddExistingItem> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: FutureBuilder<List<ImageDetails>>(
-        future: widget.firestoreFunctions.getLibraryOfImages(),
+        future: widget.firestoreFunctions.getUserItems(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ExistingItemsGrid(

@@ -22,13 +22,12 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-
-      key: Key("searchBar"),
+      key: const Key("searchBar"),
       controller: _controller,
       onChanged: widget.onTextChanged,
       decoration: InputDecoration(
         hintText: 'Search...',
-        prefixIcon: Icon(Icons.search),
+        prefixIcon: const Icon(Icons.search),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),

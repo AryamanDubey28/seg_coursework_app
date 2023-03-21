@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/image_details.dart';
+import '../../models/timetable.dart';
 import '../categoryItem/image_square.dart';
 
 ///This widget builds a timetable but without the arrows to be shown in the all saved timetables page.
@@ -9,12 +9,14 @@ class TimetableRow extends StatelessWidget {
   Key? key,
   required this.listOfImages,
   required this.unsaveList,
-  required this.index,
+  required this.index, 
+  required this.expandTimetable,
 }) : super(key: key);
 
-  final List<ImageDetails> listOfImages;
+  final Timetable listOfImages;
   final Function unsaveList;
   final int index;
+  final Function expandTimetable;
 
   ///This returns a delete button to unsave a list from the list of saved timetables.
   IconButton buildDeleteButton()
@@ -34,39 +36,52 @@ class TimetableRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: listOfImages.length,
-              itemBuilder: (context, subIndex) {
-                return Row(
-                  children: <Widget>[
-                    const SizedBox(width: 5,),
-                    Tooltip(
-                      message: listOfImages[subIndex].name,
-                      child: ImageSquare(
-                        key: Key('timetableImage$subIndex'),
-                        image: listOfImages[subIndex], 
-                        //The width here is set to make sure the row isn't bigger than the screen and to make sure
-                        //there is room for the delete button.
-                        width: MediaQuery.of(context).size.width/6,
-                      ),
-                    ),
-                  ],
-                );
-              },  
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0,0,0,15),
+          child: Text(listOfImages.title),
+        ),
+
+        SizedBox(
+          height: 150,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    expandTimetable(listOfImages);
+                  },
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: listOfImages.length(),
+                    itemBuilder: (context, subIndex) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(5,0,0,0),
+                        child: Tooltip(
+                          message: listOfImages[subIndex].name,
+                          child: ImageSquare(
+                            key: Key('timetableImage$subIndex'),
+                            image: listOfImages[subIndex], 
+                            //The width here is set to make sure the row isn't bigger than the screen and to make sure
+                            //there is room for the delete button.
+                            width: MediaQuery.of(context).size.width/6,
+                          ),
+                        ),
+                      );
+                    },  
+                  ),
+                ),
+              ),
+              buildDeleteButton(),
+              const SizedBox(width: 15,)
+            ],
           ),
-          buildDeleteButton(),
-          const SizedBox(width: 15,)
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

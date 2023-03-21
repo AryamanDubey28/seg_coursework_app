@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/helpers/cache_manager.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
@@ -68,13 +69,12 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
         _futureUserCategories =
             await firebaseFunctions.downloadUserCategories();
 
-        await firebaseFunctions.storeCategoriesInCache(
+        await CacheManager.storeCategoriesInCache(
             userCategories: _futureUserCategories);
       } else {
         // The device has no internet connection.
         // get the data the cache
-        _futureUserCategories =
-            await firebaseFunctions.getUserCategoriesFromCache();
+        _futureUserCategories = await CacheManager.getUserCategoriesFromCache();
       }
       categories = _futureUserCategories.getList().map(buildCategory).toList();
     }

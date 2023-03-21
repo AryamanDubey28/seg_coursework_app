@@ -36,11 +36,12 @@ class _PictureGridState extends State<PictureGrid> {
   @override
   Widget build(BuildContext context) {
     if (widget.imagesList.isEmpty) {
-      return Text("No items to show. Add some in the 'Choice Board' page");
+      return const Text(
+          "No items to show. Add some in the 'Choice Board' page");
     } else {
       return LayoutBuilder(builder: (context, constraints) {
         return Container(
-          margin: EdgeInsets.fromLTRB(7, 0, 7, 7),
+          margin: const EdgeInsets.fromLTRB(7, 0, 7, 7),
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -51,7 +52,7 @@ class _PictureGridState extends State<PictureGrid> {
                   });
                 }),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               SizedBox(
@@ -73,9 +74,24 @@ class _PictureGridState extends State<PictureGrid> {
                         },
                         child: Tooltip(
                           message: _getFilteredItems()[index].name,
-                          child: ImageSquare(
-                            key: Key('gridImage$index'),
-                            image: _getFilteredItems()[index],
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: ImageSquare(
+                                  key: Key('gridImage$index'),
+                                  image: _getFilteredItems()[index],
+                                  //minus the padding minus text size.
+                                  height: constraints.maxHeight - 10 - 24,
+                                  width: constraints.maxWidth,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(
+                                  _getFilteredItems()[index].name,
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       );

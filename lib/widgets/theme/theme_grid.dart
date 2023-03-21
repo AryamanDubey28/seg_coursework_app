@@ -15,12 +15,13 @@ class ThemeGrid extends StatelessWidget {
     final themeNotifier = Provider.of<CustomTheme>(context);
 
     return GridView.builder(
-        itemCount: themeList.length,
-        padding: const EdgeInsets.all(20),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
+      physics: const BouncingScrollPhysics(),
+      itemCount: themeList.length,
+      padding: const EdgeInsets.all(20),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
         ),
         itemBuilder: (context, index) {
           return GestureDetector(
