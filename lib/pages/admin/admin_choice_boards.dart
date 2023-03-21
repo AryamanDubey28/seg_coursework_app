@@ -33,7 +33,13 @@ class AdminChoiceBoards extends StatefulWidget {
   late final FirebaseStorage storage;
   late final bool mock;
 
-  AdminChoiceBoards({super.key, this.testCategories, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  AdminChoiceBoards(
+      {super.key,
+      this.testCategories,
+      this.mock = false,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -44,9 +50,11 @@ class AdminChoiceBoards extends StatefulWidget {
 }
 
 /// The page for admins to edit choice boards
-class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<AdminChoiceBoards> {
+class _AdminChoiceBoards extends State<AdminChoiceBoards>
+    with LoadingMixin<AdminChoiceBoards> {
   late List<DragAndDropList> categories = [];
-  late Categories _futureUserCategories; // holds the user categories (if not mocking)
+  late Categories
+      _futureUserCategories; // holds the user categories (if not mocking)
 
   @override
   void dispose() {
@@ -58,7 +66,10 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
 
   @override
   Future<void> load() async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
 
     if (widget.testCategories != null) {
       categories = widget.testCategories!.getList().map(buildCategory).toList();
@@ -171,7 +182,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
           child: Row(
             children: [
               ImageSquare(
-                image: ImageDetails(name: category.title, imageUrl: category.imageUrl),
+                image: ImageDetails(
+                    name: category.title, imageUrl: category.imageUrl),
                 key: Key("categoryImage-${category.id}"),
                 height: 120,
                 width: 120,
@@ -180,10 +192,27 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
               Text(
                 category.title,
                 key: Key("categoryTitle-${category.id}"),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              DeleteCategoryButton(mock: widget.mock, categoryId: category.id, categoryName: category.title, categoryImage: category.imageUrl),
-              EditCategoryButton(mock: widget.mock, categoryId: category.id, categoryName: category.title, categoryImageUrl: category.imageUrl),
+              DeleteCategoryButton(
+                  mock: widget.mock,
+                  key: Key("deleteCategoryButton-${category.id}"),
+                  auth: widget.auth,
+                  firestore: widget.firestore,
+                  storage: widget.storage,
+                  categoryId: category.id,
+                  categoryName: category.title,
+                  categoryImage: category.imageUrl),
+              EditCategoryButton(
+                  mock: widget.mock,
+                  key: Key("editCategoryButton-${category.id}"),
+                  auth: widget.auth,
+                  firestore: widget.firestore,
+                  storage: widget.storage,
+                  categoryId: category.id,
+                  categoryName: category.title,
+                  categoryImageUrl: category.imageUrl),
               AvailabilitySwitchToggle(
                 mock: widget.mock,
                 documentId: category.id,
@@ -230,7 +259,8 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
                       child: ListTile(
                     key: Key("categoryItem-${item.id}"),
                     leading: ImageSquare(
-                      image: ImageDetails(name: item.name, imageUrl: item.imageUrl),
+                      image: ImageDetails(
+                          name: item.name, imageUrl: item.imageUrl),
                       key: Key("itemImage-${item.id}"),
                       height: 90,
                       width: 90,
@@ -280,19 +310,36 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
               .toList());
 
   /// The logic behind reordering an item
-  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex, int newItemIndex, int newCategoryIndex) async {
+  void onReorderCategoryItem(int oldItemIndex, int oldCategoryIndex,
+      int newItemIndex, int newCategoryIndex) async {
     if (newCategoryIndex == oldCategoryIndex) {
-      FirebaseFunctions firebaseFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
-      Categories userCategories = widget.testCategories ?? _futureUserCategories;
+      FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+          auth: widget.auth,
+          firestore: widget.firestore,
+          storage: widget.storage);
+      Categories userCategories =
+          widget.testCategories ?? _futureUserCategories;
 
-      final trigger = await firebaseFunctions.saveCategoryItemOrder(categoryId: userCategories.getList().elementAt(oldCategoryIndex).id, oldItemIndex: oldItemIndex, newItemIndex: newItemIndex);
+      final trigger = await firebaseFunctions.saveCategoryItemOrder(
+          categoryId: userCategories.getList().elementAt(oldCategoryIndex).id,
+          oldItemIndex: oldItemIndex,
+          newItemIndex: newItemIndex);
       if (trigger) {
         setState(() {
-          final selectedItem = categories[oldCategoryIndex].children.removeAt(oldItemIndex);
-          categories[oldCategoryIndex].children.insert(newItemIndex, selectedItem);
+          final selectedItem =
+              categories[oldCategoryIndex].children.removeAt(oldItemIndex);
+          categories[oldCategoryIndex]
+              .children
+              .insert(newItemIndex, selectedItem);
 
-          final selectedItemDrag = userCategories.getList()[oldCategoryIndex].children.removeAt(oldItemIndex);
-          userCategories.getList()[oldCategoryIndex].children.insert(newItemIndex, selectedItemDrag);
+          final selectedItemDrag = userCategories
+              .getList()[oldCategoryIndex]
+              .children
+              .removeAt(oldItemIndex);
+          userCategories
+              .getList()[oldCategoryIndex]
+              .children
+              .insert(newItemIndex, selectedItemDrag);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -307,10 +354,14 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards> with LoadingMixin<Admi
 
   /// The logic behind reordering a category
   void onReorderCategory(int oldCategoryIndex, int newCategoryIndex) async {
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
     Categories userCategories = widget.testCategories ?? _futureUserCategories;
 
-    final trigger = await firebaseFunctions.saveCategoryOrder(oldRank: oldCategoryIndex, newRank: newCategoryIndex);
+    final trigger = await firebaseFunctions.saveCategoryOrder(
+        oldRank: oldCategoryIndex, newRank: newCategoryIndex);
     if (trigger) {
       setState(() {
         final selectedCategory = categories.removeAt(oldCategoryIndex);
