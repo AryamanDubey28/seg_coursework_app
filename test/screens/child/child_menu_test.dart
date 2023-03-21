@@ -153,9 +153,9 @@ void main() {
           child: MaterialApp(
             home: CustomizableRow(
               categoryTitle: "Title",
-              imagePreviews: imageRow,
+              itemsPreviewImages: imageRow,
               unfilteredImages: imageRow,
-              imageLarge: test_pic1,
+              categoryCoverImage: test_pic1,
             ),
           )));
 

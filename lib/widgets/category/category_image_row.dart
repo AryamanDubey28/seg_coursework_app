@@ -4,10 +4,10 @@ import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
-class CategoryImageRow extends StatelessWidget {
+class CategoryItemsPreview extends StatelessWidget {
   final List<ClickableImage> imagePreviews;
 
-  const CategoryImageRow({
+  const CategoryItemsPreview({
     super.key,
     required this.imagePreviews,
   });
@@ -24,13 +24,13 @@ class CategoryImageRow extends StatelessWidget {
         runAlignment: WrapAlignment.start,
         verticalDirection: VerticalDirection.down,
         children: imagePreviews
-            .map((image) => Padding(
+            .where((item) => item.is_available)
+            .map((item) => Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(30, 30, 30, 30),
                 child: ImageSquare(
                     height: 110,
                     width: 110,
-                    image: ImageDetails(
-                        name: "Placeholder", imageUrl: image.imageUrl))))
+                    image: ImageDetails(imageUrl: item.imageUrl))))
             .toList(),
       ),
     );

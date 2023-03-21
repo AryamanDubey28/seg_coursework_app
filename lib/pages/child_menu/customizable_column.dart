@@ -109,32 +109,29 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           CustomizableColumn
               .customizableColumnRequestCounter++; //used for testing
           if (snapshot.hasData) {
-            List<Map<ClickableImage, List<ClickableImage>>> categoryData =
+            List<Map<ClickableImage, List<ClickableImage>>> categoriesData =
                 snapshot.data
                     as List<Map<ClickableImage, List<ClickableImage>>>;
 
-            List<Map<ClickableImage, List<ClickableImage>>> filtered =
-                filterImages(categoryData);
-
             return ListView.separated(
               itemBuilder: (context, index) {
-                ClickableImage dataCategoryKey = filtered[index].keys.first;
+                ClickableImage dataCategoryKey =
+                    categoriesData[index].keys.first;
 
-                return CustomizableRow(
+                return ChildMenuCategoryRow(
                   key: Key("row$index"),
                   categoryTitle: dataCategoryKey.name,
-                  itemsPreviewImages: filtered[index][dataCategoryKey]!,
-                  unfilteredImages: categoryData[index][dataCategoryKey]!,
+                  itemsPreviewImages: categoriesData[index][dataCategoryKey]!,
                   categoryCoverImage: dataCategoryKey,
                 );
               },
-              itemCount: filtered.length,
+              itemCount: categoriesData.length,
               separatorBuilder: (context, index) {
-                return Divider(height: 2);
+                return const Divider(height: 2);
               },
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),

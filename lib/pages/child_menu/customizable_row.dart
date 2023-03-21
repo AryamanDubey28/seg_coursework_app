@@ -9,26 +9,24 @@ import '../../themes/themes.dart';
 import '../../widgets/category/category_image_row.dart';
 import '../../widgets/category/category_title.dart';
 
-class CustomizableRow extends StatefulWidget {
+class ChildMenuCategoryRow extends StatefulWidget {
   final String categoryTitle; // e.g. Breakfast
   final List<ClickableImage>
       itemsPreviewImages; // e.g. images of toast, cereal, etc.
-  final List<ClickableImage> unfilteredImages;
   final ClickableImage categoryCoverImage;
 
-  CustomizableRow(
+  ChildMenuCategoryRow(
       {Key? key,
       required this.categoryTitle,
       required this.itemsPreviewImages,
-      required this.unfilteredImages,
       required this.categoryCoverImage})
       : super(key: key);
 
   @override
-  State<CustomizableRow> createState() => _CustomizableRowState();
+  State<ChildMenuCategoryRow> createState() => _ChildMenuCategoryRowState();
 }
 
-class _CustomizableRowState extends State<CustomizableRow> {
+class _ChildMenuCategoryRowState extends State<ChildMenuCategoryRow> {
   // Everything is wrapped in Material() and InkWell() so the onTap gesture shows
 
   @override
@@ -61,7 +59,7 @@ class _CustomizableRowState extends State<CustomizableRow> {
                 ],
               ),
               // Row of images within category that wraps should list become too long
-              CategoryImageRow(imagePreviews: widget.itemsPreviewImages),
+              CategoryItemsPreview(imagePreviews: widget.itemsPreviewImages),
             ],
           ),
         ),

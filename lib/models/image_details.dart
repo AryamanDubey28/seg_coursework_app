@@ -4,7 +4,7 @@ class ImageDetails {
   final String imageUrl;
   final String itemId;
 
-  ImageDetails({required this.name, required this.imageUrl, this.itemId = ""});
+  ImageDetails({this.name = "", required this.imageUrl, this.itemId = ""});
 
   bool equals(ImageDetails other) {
     return imageUrl == other.imageUrl &&
