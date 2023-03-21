@@ -237,6 +237,7 @@ final List<Category> my_categories = [
       ])
 ];
 
+final Category sampleCategory = categories.first;
 final ClickableImage test_pic1 =
     ClickableImage(name: "pic1", imageUrl: "Toast.jpg", is_available: true);
 final ClickableImage test_pic2 =
