@@ -100,25 +100,6 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
-  // Returns the image for the category on display
-  Container getCategoryImage() {
-    return Container(
-      key: const Key("categoryImage"),
-      margin: const EdgeInsets.all(8.0),
-      height: 90,
-      width: 90,
-      decoration: BoxDecoration(
-          border: Border.all(width: 3),
-          borderRadius: BorderRadius.circular(8),
-          image: DecorationImage(
-            image: NetworkImage(
-              widget.categoryImage.imageUrl,
-            ),
-            fit: BoxFit.cover,
-          )),
-    );
-  }
-
   // Returns round back button that shows on menu
   Container getBackButton(CustomTheme themeNotifier) {
     return Container(
