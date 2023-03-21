@@ -100,7 +100,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
     );
   }
 
-  // Returns category image that shows on menu
+  // Returns the image for the category on display
   Container getCategoryImage() {
     return Container(
       key: const Key("categoryImage"),

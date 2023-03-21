@@ -14,6 +14,9 @@ import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
+import '../admin/delete_choice_board_category_test.dart';
+import '../child/child_menu_test.dart';
+
 // Widget tests for all edit account functionality and error handling.
 class MyMockUser extends MockUser {
   MyMockUser({super.email, super.uid, super.displayName});
@@ -676,6 +679,40 @@ void main() {
           find.text(
               "We could not verify your identity. Please log out and back in."),
           findsOneWidget);
+    });
+  });
+
+  testWidgets("Make PIN works successfully", (tester) async {
+    mockNetworkImagesFor(() async {
+      final newMockFirestore = MyMockFirebaseFirestore(userId: 'random123');
+      newMockFirestore.saveDocument("userPins");
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditAccountPage(
+            auth: mockAuth,
+            firestore: newMockFirestore,
+            isTestMode: true,
+          ))));
+
+      await auth.signIn(_email, _password);
+      await tester.pumpAndSettle();
+
+      final Finder create_pin_button = find.byKey(Key("make_pin_submit"));
+      await tester.tap(create_pin_button);
+      await tester.pumpAndSettle();
+
+      final Finder enter_pin_textfield = find.byKey(Key("enterPINTextField"));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(enter_pin_textfield, "0000");
+      await tester.pumpAndSettle();
+
+      final Finder submitButton = find.byKey(Key("submitButton"));
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text("Successfully made your pin: 0000"), findsOneWidget);
     });
   });
 }

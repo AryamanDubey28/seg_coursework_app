@@ -43,11 +43,6 @@ class AdminSideMenu extends StatelessWidget {
         ),
       );
 
-  // Displays an alert dialog with the text passed as parameter.
-  // void show_alert_dialog(BuildContext context, String text) {
-  //   ShowAlertDialog.show_dialog(context, text);
-  // }
-
   // The items of the side-menu
 
   Widget buildMenuItems(BuildContext context) {

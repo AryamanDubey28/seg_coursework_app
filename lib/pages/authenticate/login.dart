@@ -40,7 +40,7 @@ class _LogInState extends State<LogIn> {
   void initState() {
     super.initState();
 
-    authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
+    authentitcationHelper = Auth(auth: auth);
     errorDialogHelper = ErrorDialogHelper(context: context);
   }
 

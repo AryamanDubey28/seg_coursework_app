@@ -71,7 +71,6 @@ class EditPINSection extends StatelessWidget {
     String result =
         await authentitcationHelper.createPin(_pinEditController.text.trim());
     ErrorDialogHelper(context: context).show_alert_dialog(result);
-
     _pinEditController.clear();
   }
 

@@ -11,10 +11,13 @@ import 'customizable_row.dart';
 // The child menu is formed essentially by creating a column of rows,
 // with rowConfigs outlining the category's title and images
 
+//1st image is category image, ones after are smaller previews
+
 class CustomizableColumn extends StatefulWidget {
   final bool mock;
   static int customizableColumnRequestCounter = 0; //used for testing only
-  late List<List<ClickableImage>> testList; //used for testing only
+  late List<Map<ClickableImage, List<ClickableImage>>>
+      testList; //used for testing only
   late FirebaseAuth auth;
   late FirebaseFirestore firebaseFirestore;
   late Completer _completer;
@@ -24,7 +27,7 @@ class CustomizableColumn extends StatefulWidget {
     FirebaseAuth? auth,
     FirebaseFirestore? firebaseFirestore,
     Completer? completer,
-    List<List<ClickableImage>>? list,
+    List<Map<ClickableImage, List<ClickableImage>>>? list,
   }) {
     testList = list ?? test_list_clickable_images;
     this.auth = auth ?? FirebaseAuth.instance;
@@ -53,7 +56,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   void initState() {
     super.initState();
     key = Key("CustomizableColumn");
-    List<List<ClickableImage>> testList = widget.testList;
+    List<Map<ClickableImage, List<ClickableImage>>> testList = widget.testList;
     completer = Completer();
     buildCompleter();
     authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
@@ -95,9 +98,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           )
         ],
       ),
+      //getListFromChoiceBoards updates from Firestore but when testing it will cause tester.pumpAndSettle() to time out, completer.future will allow tests to work perfectly but won't allow to have updates from the db. To achieve the best of both worlds, both are here in a ternary operator
       body: FutureBuilder(
-        future: !widget
-                .mock //getListFromChoiceBoards updates from Firestore but when testing it will cause tester.pumpAndSettle() to time out, completer.future will allow tests to work perfectly but won't allow to have updates from the db. To achieve the best of both worlds, both are here in a ternary operator
+        future: !widget.mock
             ? getListFromChoiceBoards()
             : completer
                 .future, //retrieves a list from the database of categories and items associated with the category
@@ -106,16 +109,23 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
           CustomizableColumn
               .customizableColumnRequestCounter++; //used for testing
           if (snapshot.hasData) {
-            List<List<ClickableImage>> categories =
-                snapshot.data as List<List<ClickableImage>>;
-            List<List<ClickableImage>> filtered = filterImages(categories);
+            List<Map<ClickableImage, List<ClickableImage>>> categoryData =
+                snapshot.data
+                    as List<Map<ClickableImage, List<ClickableImage>>>;
+
+            List<Map<ClickableImage, List<ClickableImage>>> filtered =
+                filterImages(categoryData);
+
             return ListView.separated(
               itemBuilder: (context, index) {
+                ClickableImage dataCategoryKey = filtered[index].keys.first;
+
                 return CustomizableRow(
                   key: Key("row$index"),
-                  categoryTitle: filtered[index][0].name,
-                  imagePreviews: filtered[index],
-                  unfilteredImages: categories[index],
+                  categoryTitle: dataCategoryKey.name,
+                  imagePreviews: filtered[index][dataCategoryKey]!,
+                  unfilteredImages: categoryData[index][dataCategoryKey]!,
+                  imageLarge: dataCategoryKey,
                 );
               },
               itemCount: filtered.length,

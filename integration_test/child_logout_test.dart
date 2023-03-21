@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/main.dart' as app;
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
@@ -47,6 +49,7 @@ void main() {
       final Finder submitButton = find.byKey(Key("submitButton"));
       final Auth auth = Auth(
           auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance);
+
       final String currentPin = await auth.getCurrentUserPIN();
       await tester.tap(logoutButton);
       await tester.pumpAndSettle();

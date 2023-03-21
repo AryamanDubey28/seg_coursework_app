@@ -36,7 +36,7 @@ late FirebaseStorage mockStorage;
 late MockUser mockUser;
 late CategoryItem toastItem;
 late Category breakfastCategory;
-late List<List<ClickableImage>> images_list_from_category;
+late List<Map<ClickableImage, List<ClickableImage>>> images_list_from_category;
 
 void main() {
   late Auth authenticationHelper;
@@ -50,19 +50,23 @@ void main() {
     displayName: _displayName,
   );
 
-  List<List<ClickableImage>> getList(Categories futureUserCategories) {
-    List<List<ClickableImage>> categories = [];
+  List<Map<ClickableImage, List<ClickableImage>>> getList(
+      Categories futureUserCategories) {
+    List<Map<ClickableImage, List<ClickableImage>>> categories = [];
     for (var category in futureUserCategories.getList()) {
-      List<ClickableImage> data = [];
-      data.add(buildClickableImageFromCategory(category));
-      for (var item in category.items) {
-        data.add(buildClickableImageFromCategoryItem(item));
-      }
-      if (data.length > 1) {
-        //only add category if it contains items
-        categories.add(data);
+      if (category.availability) {
+        Map<ClickableImage, List<ClickableImage>> data = {};
+        List<ClickableImage> valueList = [];
+        for (var item in category.items) {
+          valueList.add(buildClickableImageFromCategoryItem(item));
+        }
+        data[buildClickableImageFromCategory(category)] = valueList;
+        if (valueList.length > 0) {
+          categories.add(data);
+        }
       }
     }
+    print("returning $categories");
     return categories;
   }
 
@@ -151,6 +155,7 @@ void main() {
               categoryTitle: "Title",
               imagePreviews: imageRow,
               unfilteredImages: imageRow,
+              imageLarge: test_pic1,
             ),
           )));
 
@@ -255,17 +260,70 @@ void main() {
     expect(find.byType(AdminChoiceBoards), findsOneWidget);
   });
 
+  testWidgets("Child logging out doesn't work if PIN is incorrect",
+      (tester) async {
+    final myMockFirestore = MyMockFirebaseFirestore(userId: _uid);
+    final myMockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
+    myMockFirestore.saveDocument('userPins');
+    final authHelper =
+        Auth(auth: myMockAuth, firestore: myMockFirestore, mock: true);
+    await tester.pumpWidget(ThemeProvider(
+        themeNotifier: CustomTheme(),
+        child: MaterialApp(
+            home: CustomizableColumn(
+          mock: true,
+          auth: myMockAuth,
+          firebaseFirestore: myMockFirestore,
+        ))));
+    await authHelper.signIn(_email, _password);
+    String currentPin = await authHelper.getCurrentUserPIN();
+    await tester.pumpAndSettle();
+
+    final Finder logoutButton = find.byKey(Key("logoutButton"));
+    await tester.tap(logoutButton);
+    await tester.pumpAndSettle();
+    //dialog shows up
+    final Finder passwordTextField = find.byKey(Key("logoutButtonTextField"));
+
+    await tester.tap(passwordTextField);
+    await tester.pumpAndSettle();
+    await tester.enterText(passwordTextField, "9999");
+    await tester.pumpAndSettle();
+
+    final Finder submitButton = find.byKey(Key("submitButton"));
+    await tester.tap(submitButton);
+    // await tester.pumpAndSettle();
+    for (int i = 0; i < 5; i++) {
+      // because pumpAndSettle doesn't work for some reason
+      await tester.pump(Duration(seconds: 1));
+    }
+    expect(find.byType(AdminChoiceBoards), findsNothing);
+  });
+
   testWidgets("Test that filterImages filters list based on availability",
       (tester) async {
     ClickableImage image =
         ClickableImage(name: "name", imageUrl: "imageUrl", is_available: false);
-    List<List<ClickableImage>> testImages = [
-      [image, image, image],
-      [image, image, image], //list of unavailable images
-      [image, image, image]
-    ];
+    // List<List<ClickableImage>> testImages = [
+    //   [image, image, image],
+    //   [image, image, image], //list of unavailable images
+    //   [image, image, image]
+    // ];
 
-    List<List<ClickableImage>> filteredList = filterImages(testImages);
+    // List<List<ClickableImage>> filteredList = filterImages(testImages);
+    List<Map<ClickableImage, List<ClickableImage>>> testImages = [
+      {
+        image: [image, image, image]
+      },
+      {
+        image: [image, image, image]
+      },
+      {
+        image: [image, image, image]
+      }
+    ];
+    List<Map<ClickableImage, List<ClickableImage>>> filteredList =
+        filterImages(testImages);
     bool isFilteredListLengthLess = filteredList.length < testImages.length;
     expect(isFilteredListLengthLess, true);
   });

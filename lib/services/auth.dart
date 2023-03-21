@@ -76,7 +76,6 @@ class Auth {
           };
 
           await docUser.set(entry); //adds PIN to database
-
           return "Successfully made your pin: $pin";
         } else {
           return "Please ensure that your PIN is 4 digits";

@@ -24,7 +24,6 @@ class CategoryImageRow extends StatelessWidget {
         runAlignment: WrapAlignment.start,
         verticalDirection: VerticalDirection.down,
         children: imagePreviews
-            .sublist(1)
             .map((image) => Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(30, 30, 30, 30),
                 child: ImageSquare(

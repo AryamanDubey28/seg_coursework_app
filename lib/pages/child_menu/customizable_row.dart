@@ -14,12 +14,14 @@ class CustomizableRow extends StatefulWidget {
   final List<ClickableImage>
       imagePreviews; // e.g. images of toast, cereal, etc.
   final List<ClickableImage> unfilteredImages;
+  final ClickableImage imageLarge;
 
   CustomizableRow(
       {Key? key,
       required this.categoryTitle,
       required this.imagePreviews,
-      required this.unfilteredImages})
+      required this.unfilteredImages,
+      required this.imageLarge})
       : super(key: key);
 
   @override
@@ -53,7 +55,7 @@ class _CustomizableRowState extends State<CustomizableRow> {
                         height: 250,
                         image: ImageDetails(
                             name: widget.categoryTitle,
-                            imageUrl: widget.imagePreviews[0].imageUrl)),
+                            imageUrl: widget.imageLarge.imageUrl)),
                   ),
                   CategoryTitle(title: widget.categoryTitle),
                 ],
@@ -64,20 +66,17 @@ class _CustomizableRowState extends State<CustomizableRow> {
           ),
         ),
         onTap: () {
-          List<ClickableImage> newList = widget.unfilteredImages
-              .where((x) => widget.unfilteredImages.indexOf(x) != 0)
-              .toList();
           final player = AudioPlayer();
           player.play(AssetSource('category_click.mp3'));
-
+          print("image previews in row class = ${widget.imagePreviews}");
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ChildBoards(
                         categoryTitle: widget.categoryTitle,
-                        categoryImage: widget.imagePreviews[
-                            0], //first image forms image of category
-                        images: newList,
+                        categoryImage: widget
+                            .imageLarge, //forms the large image on the LHS
+                        images: widget.imagePreviews,
                       )));
         },
       ),
