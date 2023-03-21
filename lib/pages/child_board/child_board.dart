@@ -45,7 +45,9 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           const SizedBox(
             height: 30,
           ),
-          getTopMenu(themeNotifier),
+          Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: getTopMenu(themeNotifier)),
           //this method is imported from clickable_image_grid in widgets
           getMainImages(widget.images),
         ]),
@@ -54,10 +56,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
   }
 
   // Method used to get top menu which has back button, category name and image
-  Padding getTopMenu(CustomTheme themeNotifier) {
-    return Padding(
-      padding: const EdgeInsets.all(18.0),
-      child: Container(
+  Container getTopMenu(CustomTheme themeNotifier) {
+    return Container(
         key: const Key("boardMenu"),
         alignment: Alignment.center,
         margin: const EdgeInsets.all(8.0),
@@ -85,9 +85,7 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             ),
             getCategoryTitle(),
           ],
-        ),
-      ),
-    );
+        ));
   }
 
   // Returns category title that shows on menu
