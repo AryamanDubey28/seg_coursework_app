@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../helpers/cache_manager.dart';
 
 //Declarations of default themes.
 final defaultTheme = CustomThemeDetails(
@@ -66,7 +65,7 @@ class CustomTheme with ChangeNotifier {
 
   ///Sets the cached theme as the app theme.
   Future<void> loadCachedTheme() async {
-    _cachedTheme = await readCachedThemeDetails();
+    _cachedTheme = await CacheManager.readCachedThemeDetails();
     if (_cachedTheme != null) {
       setTheme(_cachedTheme!);
       if (!themesListContainsTheme(_cachedTheme!)) {
@@ -108,38 +107,7 @@ class CustomTheme with ChangeNotifier {
     _themeData = customThemeDetails.getCustomThemeData();
     _themeDetails = customThemeDetails;
     notifyListeners();
-    saveThemeDetailsToCache(customThemeDetails);
+    CacheManager.saveThemeDetailsToCache(customThemeDetails);
   }
 
-  ///This reads the saved theme from cache
-  static Future<CustomThemeDetails?> readCachedThemeDetails() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? themeString = prefs.getString('cached_theme');
-    if (themeString != null) {
-      Map<String, dynamic> jsonMap = json.decode(themeString);
-      CustomThemeDetails temp = CustomThemeDetails(
-        name: jsonMap['name'],
-        menuColor: Color(jsonMap['menuColor']),
-        backgroundColor: Color(jsonMap['backgroundColor']),
-        buttonsColor: Color(jsonMap['buttonsColor']),
-        iconsAndTextsColor: Color(jsonMap['iconsAndTextsColor']),
-      );
-      return temp;
-    }
-    return null;
-  }
-
-  ///This saves the passed theme to cache
-  Future<void> saveThemeDetailsToCache(
-      CustomThemeDetails customThemeDetails) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> jsonMap = {
-      'name': customThemeDetails.name,
-      'menuColor': customThemeDetails.menuColor!.value,
-      'backgroundColor': customThemeDetails.backgroundColor!.value,
-      'buttonsColor': customThemeDetails.buttonsColor!.value,
-      'iconsAndTextsColor': customThemeDetails.iconsAndTextsColor!.value,
-    };
-    prefs.setString('cached_theme', json.encode(jsonMap));
-  }
 }

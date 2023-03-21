@@ -87,6 +87,18 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('blackButton')));
       await tester.pumpAndSettle();
 
+      await tester
+          .tap(find.byKey(const ValueKey('iconsAndTextsColorListTile')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('whiteButton')));
+      await tester.pumpAndSettle();
+
+      await tester
+          .tap(find.byKey(const ValueKey('iconsAndTextsColorListTile')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('saveButton')), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
       // Tap saveButton
       await tester.tap(find.byKey(const ValueKey('saveButton')));
       await tester.pump();
