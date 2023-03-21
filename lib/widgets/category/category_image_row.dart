@@ -1,10 +1,11 @@
 // List of image previews that belong to a category
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
 class CategoryImageRow extends StatelessWidget {
-  final List<String> imagePreviews;
+  final List<ClickableImage> imagePreviews;
 
   const CategoryImageRow({
     super.key,
@@ -29,7 +30,8 @@ class CategoryImageRow extends StatelessWidget {
                 child: ImageSquare(
                     height: 110,
                     width: 110,
-                    image: ImageDetails(name: "Placeholder", imageUrl: image))))
+                    image: ImageDetails(
+                        name: "Placeholder", imageUrl: image.imageUrl))))
             .toList(),
       ),
     );

@@ -20,8 +20,12 @@ void main() {
           is_available: true);
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: const MaterialApp(
-            home: ChildBoards(),
+          child: MaterialApp(
+            home: ChildBoards(
+              categoryTitle: "",
+              categoryImage: test_image,
+              images: [],
+            ),
           )));
 
       expect(find.byKey(const ValueKey("boardMenu")), findsWidgets);

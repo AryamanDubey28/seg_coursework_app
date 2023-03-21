@@ -45,10 +45,6 @@ class _CustomizableRowState extends State<CustomizableRow> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CategoryImage(
-                      imageLarge:
-                          Image.network(widget.imagePreviews[0].imageUrl)),
-                  CategoryTitle(title: widget.categoryTitle),
                   Padding(
                     padding:
                         const EdgeInsetsDirectional.fromSTEB(30, 30, 30, 15),

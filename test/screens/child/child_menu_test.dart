@@ -20,6 +20,8 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/category/category_image_row.dart';
+import 'package:seg_coursework_app/widgets/category/category_title.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -141,10 +143,12 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: const MaterialApp(
-            home: CustomizableRow(categoryTitle: "Title", imagePreviews: [
-              "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
-            ]),
+          child: MaterialApp(
+            home: CustomizableRow(
+              categoryTitle: "Title",
+              imagePreviews: imageRow,
+              unfilteredImages: imageRow,
+            ),
           )));
 
       await tester.tap(find.byType(CustomizableRow));
