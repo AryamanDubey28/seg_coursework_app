@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/custom_loading_indicator.dart';
 import 'package:seg_coursework_app/widgets/existing_items_grid.dart';
 import '../../helpers/firebase_functions.dart';
+import '../../widgets/loading_indicators/custom_loading_indicator.dart';
 import 'admin_side_menu.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 

@@ -1,16 +1,13 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
 import 'package:seg_coursework_app/widgets/search_bar.dart';
-
 import '../data/choice_boards_data.dart';
 import '../helpers/firebase_functions.dart';
 import '../pages/admin/admin_choice_boards.dart';
+import 'categoryItem/image_square.dart';
 
 /// Shows a grid of all existing item images and names
 class ExistingItemsGrid extends StatefulWidget {

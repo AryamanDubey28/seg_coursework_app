@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
 import '../../models/image_details.dart';
+import '../../widgets/timetable/timetable_list.dart';
 import '../admin/admin_side_menu.dart';
-import '../../widgets/picture_grid.dart';
-import '../../widgets/timetable_list.dart';
+import '../../widgets/timetable/picture_grid.dart';
 import 'all_saved_timetables.dart';
 
 class VisualTimeTable extends StatefulWidget {

@@ -11,7 +11,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: ChildBoards(),
           )));
 
@@ -38,7 +38,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: CustomizableColumn(
               mock: true,
             ), //mock PIN

@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
@@ -115,10 +116,18 @@ class FirebaseFunctions {
 
   /// Take an image and upload it to Firestore Cloud Storage with
   /// a unique name. Return the URL of the image from the cloud
-  Future<String?> uploadImageToCloud({required File image, required String name}) async {
+  Future<String?> uploadImageToCloud(
+      {required File image,
+      required String name,
+      bool overrideUniqueName = false}) async {
     String uniqueName = name + DateTime.now().millisecondsSinceEpoch.toString();
     // A reference to the image from the cloud's root directory
-    Reference imageRef = storage.ref().child('images').child(uniqueName);
+    Reference imageRef;
+    if (!overrideUniqueName) {
+      imageRef = storage.ref().child('images').child(uniqueName);
+    } else {
+      imageRef = storage.ref().child('images').child(name);
+    }
     try {
       await imageRef.putFile(image);
       return await imageRef.getDownloadURL();
@@ -351,8 +360,14 @@ class FirebaseFunctions {
 
   /// Updates the availability of every categoryItems of item [itemKey]
   /// in all categoryItems collections holding it.
-  Future availabilityMultiPathUpdate({required String itemKey, required bool newAvailabilityValue}) async {
-    final QuerySnapshot categoriesSnapshot = await firestore.collection('categories').where("userId", isEqualTo: auth.currentUser!.uid).get();
+  Future availabilityMultiPathUpdate({
+    required String itemKey,
+    required bool newAvailabilityValue,
+  }) async {
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .get();
 
     if (categoriesSnapshot.size == 0) {
       return throw FirebaseException(plugin: "User has no categories");
@@ -379,8 +394,14 @@ class FirebaseFunctions {
       final Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
       final bool? currentValue = data["is_available"];
       // Items collection update
-      await firestore.collection("items").doc(itemId).update({"is_available": !currentValue!}).then(
-        (_) => availabilityMultiPathUpdate(itemKey: itemId, newAvailabilityValue: !currentValue),
+      await firestore
+          .collection("items")
+          .doc(itemId)
+          .update({"is_available": !currentValue!}).then(
+        (_) => availabilityMultiPathUpdate(
+          itemKey: itemId,
+          newAvailabilityValue: !currentValue,
+        ),
       );
     } catch (e) {
       print(e);
@@ -530,22 +551,9 @@ class FirebaseFunctions {
     }
   }
 
-  /// Retrieve the user's choice boards data depending on their connection:
-  /// - if connected to the internet:
-  ///   - download the data from Firebase
-  ///   - store it in the cache and return it
-  /// - if not connected to the internet:
-  ///   - return the data that's in the cache
-  ///   - Throw an exception if the cache is empty
-  Future<Categories> getUserCategories() async {
-    if (CheckConnection.isDeviceConnected) {
-      // The device has internet connection.
-      Categories userCategories = await downloadUserCategories();
-      await storeCategoriesInCache(userCategories: userCategories);
-      return userCategories;
-    }
-
-    // The device has no internet connection.
+  /// Return the user's choice boards data that's in the cache.
+  /// Throw an exception if the cache is empty
+  Future<Categories> getUserCategoriesFromCache() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? categoriesJson = prefs.getString('${auth.currentUser!.uid}-categories');
     if (categoriesJson != null) {

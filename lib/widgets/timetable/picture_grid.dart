@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
-import 'package:seg_coursework_app/widgets/search_bar.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+
+import '../search_bar.dart';
 
 /// This widget is the bottom half of the visual timetable interface
 /// and it shows a choice board of all the images that are fed into it.

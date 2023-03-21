@@ -1,5 +1,4 @@
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -8,11 +7,9 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/category_image.dart';
-import 'package:seg_coursework_app/widgets/category_row.dart';
-import 'package:seg_coursework_app/widgets/category_title.dart';
-import 'package:mockito/mockito.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:seg_coursework_app/widgets/category/category_image_row.dart';
+import 'package:seg_coursework_app/widgets/category/category_title.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
 // Test ensures that column of rows (categories) is displayed on screen
 void main() {
@@ -31,18 +28,19 @@ void main() {
     final MockFirebaseAuth _mockAuth = MockFirebaseAuth();
     auth = Auth(auth: _mockAuth);
   });
+
   testWidgets('Test column (with rows) is present', (tester) async {
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
-        child: MaterialApp(
+        child: const MaterialApp(
           home: CustomizableColumn(
             mock: true,
-          ), //mock PIN
+          ),
         )));
 
     expect(find.byType(CustomizableColumn), findsWidgets);
     expect(find.byType(CustomizableRow), findsWidgets);
-    expect(find.byType(CategoryImage), findsWidgets);
+    expect(find.byType(ImageSquare), findsWidgets);
     expect(find.byType(CategoryTitle), findsWidgets);
     expect(find.byType(CategoryImageRow), findsWidgets);
   });
@@ -51,9 +49,9 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: CustomizableRow(categoryTitle: "Title", imagePreviews: [
-              Image.asset("test/assets/test_image.png"),
+              "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
             ]),
           )));
 

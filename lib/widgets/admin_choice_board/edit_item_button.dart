@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/edit_choice_board_item.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/widgets/hero_dialog_route.dart';
+
+import '../dialogs/hero_dialog_route.dart';
 
 /// The pen (edit) button for items in the Admin Choice Boards page
 class EditItemButton extends StatefulWidget {
@@ -48,7 +49,7 @@ class _EditItemButtonState extends State<EditItemButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: editItem,
-      icon: Icon(Icons.edit, color: Color.fromARGB(255, 0, 76, 153)),
+      icon: const Icon(Icons.edit, color: Color.fromARGB(255, 0, 76, 153)),
       padding: const EdgeInsets.only(right: 45),
     );
   }

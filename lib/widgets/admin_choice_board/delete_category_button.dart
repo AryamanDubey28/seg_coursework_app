@@ -50,7 +50,7 @@ class _DeleteCategoryButtonState extends State<DeleteCategoryButton> {
               });
         }
       },
-      icon: Icon(Icons.delete, color: Colors.red),
+      icon: const Icon(Icons.delete, color: Colors.red),
     );
   }
 }

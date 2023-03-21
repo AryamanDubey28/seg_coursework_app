@@ -6,7 +6,8 @@ import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/widgets/loading_indicator.dart';
+
+import '../loading_indicators/loading_indicator.dart';
 
 /// The trash (delete) button for items in the Admin Choice Boards page
 /// and its functions
@@ -51,7 +52,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _showAlertDialog(context),
-      icon: Icon(Icons.delete, color: Colors.red),
+      icon: const Icon(Icons.delete, color: Colors.red),
     );
   }
 
@@ -72,8 +73,8 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
           content: Text('Are you sure you want to delete ${widget.itemName}?\n\n(Delete Everywhere removes it from other categories too)'),
           actions: <Widget>[
             TextButton(
-              key: Key("cancelItemDelete"),
-              child: Text('Cancel'),
+              key: const Key("cancelItemDelete"),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

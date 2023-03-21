@@ -41,7 +41,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
     return Transform.scale(
       scale: 1,
       child: Center(
-        child: Container(
+        child: SizedBox(
           width: pageWidth,
           child: _builder(context),
         ),

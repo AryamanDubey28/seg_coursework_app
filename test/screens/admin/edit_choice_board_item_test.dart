@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,13 +34,18 @@ void main() {
 
     await mockFirestore.collection('categories').doc(breakfastCategory.id).set({
       'name': "Breakfast",
-      'illustration': "food.jpeg",
+      'illustration': "https://food.jpeg",
       'userId': mockUser.uid,
       'is_available': true,
       'rank': 0
     });
 
     CollectionReference items = mockFirestore.collection('items');
+
+    await firebaseFunctions.uploadImageToCloud(
+        image: File("assets/test_image.png"),
+        name: toastItem.name,
+        overrideUniqueName: true);
 
     items.doc(toastItem.id).set({
       'name': toastItem.name,
@@ -135,6 +142,59 @@ void main() {
       final nameField = find.byKey(ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("changing both name and image is successful",
+      (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardItem(
+            itemId: toastItem.id,
+            itemImageUrl: toastItem.imageUrl,
+            itemName: toastItem.imageUrl,
+            mock: true,
+            newPreSelectedImage: File("assets/test_image.png"),
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+
+      await _createData();
+
+      final nameField = find.byKey(ValueKey("itemNameField"));
+      await tester.enterText(nameField, "Eggs");
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("changing only image is successful", (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+              home: EditChoiceBoardItem(
+            itemId: toastItem.id,
+            itemImageUrl: toastItem.imageUrl,
+            itemName: toastItem.imageUrl,
+            mock: true,
+            newPreSelectedImage: File("assets/test_image.png"),
+            auth: mockAuth,
+            firestore: mockFirestore,
+            storage: mockStorage,
+          ))));
+
+      await _createData();
 
       await tester.tap(find.byKey(ValueKey("editItemButton")));
       await tester.pumpAndSettle();

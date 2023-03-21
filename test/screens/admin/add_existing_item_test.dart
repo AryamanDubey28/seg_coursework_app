@@ -18,8 +18,8 @@ import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 import 'package:seg_coursework_app/widgets/existing_items_grid.dart';
-import 'package:seg_coursework_app/widgets/image_square.dart';
 
 void main() {
   late String breakfastCategoryId;
