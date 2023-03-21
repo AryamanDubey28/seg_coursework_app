@@ -1,7 +1,13 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
+import 'package:seg_coursework_app/models/categories.dart';
+import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
@@ -12,15 +18,23 @@ import '../../themes/themes.dart';
 
 class ChildBoards extends StatefulWidget {
   String categoryTitle;
-  ClickableImage categoryImage;
-  List<ClickableImage> images = [];
+  String categoryImage;
+  List<CategoryItem> images = [];
+  late FirebaseAuth? auth;
+  late FirebaseFirestore? firebaseFirestore;
+  late final FirebaseStorage? storage;
+  late final Categories? testCategories;
 
-  ChildBoards(
-      {Key? key,
-      required this.categoryTitle,
-      required this.categoryImage,
-      required this.images})
-      : super(key: key);
+  ChildBoards({
+    Key? key,
+    required this.categoryTitle,
+    required this.categoryImage,
+    required this.images,
+    this.auth,
+    this.firebaseFirestore,
+    this.storage,
+    this.testCategories,
+  }) : super(key: key);
 
   @override
   State<ChildBoards> createState() => _ChildBoards();
@@ -78,8 +92,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
                 width: 90,
                 height: 90,
                 image: ImageDetails(
-                    name: widget.categoryImage.name,
-                    imageUrl: widget.categoryImage.imageUrl)),
+                    name: widget.categoryTitle,
+                    imageUrl: widget.categoryImage)),
             //box for spacing
             const SizedBox(
               width: 30,
@@ -125,7 +139,11 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CustomizableColumn(),
+                builder: (context) => CustomizableColumn(
+                    firebaseFirestore: widget.firebaseFirestore,
+                    auth: widget.auth,
+                    storage: widget.storage,
+                    testCategories: widget.testCategories),
               ),
             );
           },

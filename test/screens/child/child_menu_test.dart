@@ -36,7 +36,7 @@ late FirebaseStorage mockStorage;
 late MockUser mockUser;
 late CategoryItem toastItem;
 late Category breakfastCategory;
-late List<Map<ClickableImage, List<ClickableImage>>> images_list_from_category;
+late Categories images_list_from_category;
 
 void main() {
   late Auth authenticationHelper;
@@ -298,33 +298,5 @@ void main() {
       await tester.pump(Duration(seconds: 1));
     }
     expect(find.byType(AdminChoiceBoards), findsNothing);
-  });
-
-  testWidgets("Test that filterImages filters list based on availability",
-      (tester) async {
-    ClickableImage image =
-        ClickableImage(name: "name", imageUrl: "imageUrl", is_available: false);
-    // List<List<ClickableImage>> testImages = [
-    //   [image, image, image],
-    //   [image, image, image], //list of unavailable images
-    //   [image, image, image]
-    // ];
-
-    // List<List<ClickableImage>> filteredList = filterImages(testImages);
-    List<Map<ClickableImage, List<ClickableImage>>> testImages = [
-      {
-        image: [image, image, image]
-      },
-      {
-        image: [image, image, image]
-      },
-      {
-        image: [image, image, image]
-      }
-    ];
-    List<Map<ClickableImage, List<ClickableImage>>> filteredList =
-        filterImages(testImages);
-    bool isFilteredListLengthLess = filteredList.length < testImages.length;
-    expect(isFilteredListLengthLess, true);
   });
 }
