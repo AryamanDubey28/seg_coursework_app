@@ -104,7 +104,6 @@ class EditPINSection extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
-                print("----------------> routing to make PIN");
                 makePin(context);
               },
               child: Text("Create PIN"),

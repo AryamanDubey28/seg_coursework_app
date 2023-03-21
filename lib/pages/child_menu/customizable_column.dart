@@ -57,9 +57,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
     completer = Completer();
     buildCompleter();
     authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
-    timer = Timer.periodic(Duration(seconds: 30), (timer) {
+    timer = Timer.periodic(Duration(minutes: 2), (timer) {
       setState(
-          () {}); //page updates every 30 seconds therefore gets new data from db every 5 seconds
+          () {}); //page updates every 2 mins therefore gets new data from db every 2 mins
     });
   }
 

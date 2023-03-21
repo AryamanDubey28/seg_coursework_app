@@ -41,34 +41,37 @@ class EditPINSection extends StatelessWidget {
     ErrorDialogHelper(context: context).show_alert_dialog(response);
   }
 
-  Future makePin(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: const Text(
-                "Enter a PIN that you would like to lock the child account with"),
-            content: TextField(
-              key: const Key("enterPINTextField"),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(
-                    RegExp(r'[0-9]')), //only numbers can be entered
-                FilteringTextInputFormatter.digitsOnly
+  Future makePin(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text(
+                  "Enter a PIN that you would like to lock the child account with"),
+              content: TextField(
+                key: const Key("enterPINTextField"),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'[0-9]')), //only numbers can be entered
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                autofocus: true,
+                controller: _pinEditController,
+              ),
+              actions: [
+                TextButton(
+                    key: const Key("submitButton"),
+                    onPressed: () => submit(context),
+                    child: const Text("SUBMIT"))
               ],
-              autofocus: true,
-              controller: _pinEditController,
-            ),
-            actions: [
-              TextButton(
-                  key: const Key("submitButton"),
-                  onPressed: () => submit(context),
-                  child: const Text("SUBMIT"))
-            ],
-          ));
+            ));
+  }
 
   Future<void> submit(BuildContext context) async {
     String result =
         await authentitcationHelper.createPin(_pinEditController.text.trim());
     ErrorDialogHelper(context: context).show_alert_dialog(result);
+
     _pinEditController.clear();
   }
 

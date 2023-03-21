@@ -658,8 +658,6 @@ void main() {
       await new_auth.signIn(_new_email, _new_password);
       await tester.pumpAndSettle();
 
-      await tester.pumpAndSettle();
-
       final Finder create_pin_button = find.byKey(Key("make_pin_submit"));
       await tester.tap(create_pin_button);
       await tester.pumpAndSettle();
