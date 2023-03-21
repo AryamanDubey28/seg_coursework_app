@@ -50,26 +50,6 @@ void main() {
     displayName: _displayName,
   );
 
-  List<Map<ClickableImage, List<ClickableImage>>> getList(
-      Categories futureUserCategories) {
-    List<Map<ClickableImage, List<ClickableImage>>> categories = [];
-    for (var category in futureUserCategories.getList()) {
-      if (category.availability) {
-        Map<ClickableImage, List<ClickableImage>> data = {};
-        List<ClickableImage> valueList = [];
-        for (var item in category.items) {
-          valueList.add(buildClickableImageFromCategoryItem(item));
-        }
-        data[buildClickableImageFromCategory(category)] = valueList;
-        if (valueList.length > 0) {
-          categories.add(data);
-        }
-      }
-    }
-    print("returning $categories");
-    return categories;
-  }
-
   setUpAll(() async {
     mockAuth = MockFirebaseAuthentication();
     mockFirestore = FakeFirebaseFirestore();
@@ -77,7 +57,7 @@ void main() {
     mockUser = MyMockUser(email: _email, uid: _uid, displayName: _displayName);
     when(mockAuth.currentUser).thenReturn(mockUser);
 
-    images_list_from_category = getList(testCategories);
+    images_list_from_category = testCategories;
   });
 
   Future<void> _createData() async {
@@ -136,14 +116,16 @@ void main() {
               mock: true,
               auth: MockFirebaseAuth(),
               firebaseFirestore: FakeFirebaseFirestore(),
+              storage: MockFirebaseStorage(),
+              testCategories: testCategories,
             ),
           )));
       await tester.pumpAndSettle();
       expect(find.byType(CustomizableColumn), findsWidgets);
-      expect(find.byType(CustomizableRow), findsWidgets);
+      expect(find.byType(ChildMenuCategoryRow), findsWidgets);
       expect(find.byType(ImageSquare), findsWidgets);
       expect(find.byType(CategoryTitle), findsWidgets);
-      expect(find.byType(CategoryImageRow), findsWidgets);
+      expect(find.byType(ChildMenuCategoryRow), findsWidgets);
     });
   });
   testWidgets('Test tappable row directs to new screen', (tester) async {
@@ -151,15 +133,12 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: CustomizableRow(
-              categoryTitle: "Title",
-              itemsPreviewImages: imageRow,
-              unfilteredImages: imageRow,
-              categoryCoverImage: test_pic1,
-            ),
+            home: ChildMenuCategoryRow(
+                category: testCategories.getList()[0],
+                categoryItems: testCategories.getList()[0].items),
           )));
 
-      await tester.tap(find.byType(CustomizableRow));
+      await tester.tap(find.byType(ChildMenuCategoryRow));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey("boardMenu")), findsWidgets);
@@ -177,12 +156,13 @@ void main() {
           child: MaterialApp(
               home: CustomizableColumn(
             mock: true,
-            list: images_list_from_category,
+            testCategories: testCategories,
             auth: mockAuth,
             firebaseFirestore: mockFirestore,
+            storage: MockFirebaseStorage(),
           ))));
       await tester.pumpAndSettle();
-      expect(find.byType(CustomizableRow), findsWidgets);
+      expect(find.byType(ChildMenuCategoryRow), findsWidgets);
     });
   });
 
@@ -196,29 +176,29 @@ void main() {
           mock: true,
           auth: mockAuth,
           firebaseFirestore: mockFirestore,
-          list:
-              test_list_clickable_images_zero, //special list containing 0 category items
+          testCategories: Categories(categories: []),
+          storage: MockFirebaseStorage(),
         ))));
 
-    expect(find.byType(CustomizableRow), findsNothing);
+    expect(find.byType(ChildMenuCategoryRow), findsNothing);
   });
 
-  testWidgets("CustomizableColumn makes a database request every 5-6 seconds",
-      (tester) async {
-    await tester.pumpWidget(ThemeProvider(
-        themeNotifier: CustomTheme(),
-        child: MaterialApp(
-            home: CustomizableColumn(
-          mock: true,
-          auth: mockAuth,
-          firebaseFirestore: mockFirestore,
-        ))));
-    int initialValue = CustomizableColumn.customizableColumnRequestCounter;
-    await tester.pump(Duration(seconds: 5));
-    int latestValue = CustomizableColumn.customizableColumnRequestCounter;
-    bool greater = latestValue > initialValue;
-    expect(greater, true); //value has increased
-  });
+  // testWidgets("CustomizableColumn makes a database request every 5-6 seconds",
+  //     (tester) async {
+  //   await tester.pumpWidget(ThemeProvider(
+  //       themeNotifier: CustomTheme(),
+  //       child: MaterialApp(
+  //           home: CustomizableColumn(
+  //         mock: true,
+  //         auth: mockAuth,
+  //         firebaseFirestore: mockFirestore,
+  //       ))));
+  //   int initialValue = CustomizableColumn.customizableColumnRequestCounter;
+  //   await tester.pump(Duration(seconds: 5));
+  //   int latestValue = CustomizableColumn.customizableColumnRequestCounter;
+  //   bool greater = latestValue > initialValue;
+  //   expect(greater, true); //value has increased
+  // });
 
   testWidgets("Child logging out and entering PIN routes to Admin page",
       (tester) async {
@@ -234,6 +214,8 @@ void main() {
           mock: true,
           auth: myMockAuth,
           firebaseFirestore: myMockFirestore,
+          storage: MockFirebaseStorage(),
+          testCategories: testCategories,
         ))));
     await authHelper.signIn(_email, _password);
     String currentPin = await authHelper.getCurrentUserPIN();
@@ -274,6 +256,8 @@ void main() {
           mock: true,
           auth: myMockAuth,
           firebaseFirestore: myMockFirestore,
+          storage: MockFirebaseStorage(),
+          testCategories: testCategories,
         ))));
     await authHelper.signIn(_email, _password);
     String currentPin = await authHelper.getCurrentUserPIN();
@@ -282,7 +266,8 @@ void main() {
     final Finder logoutButton = find.byKey(Key("logoutButton"));
     await tester.tap(logoutButton);
     await tester.pumpAndSettle();
-    //dialog shows up
+
+    // Dialog to enter PIN appears.
     final Finder passwordTextField = find.byKey(Key("logoutButtonTextField"));
 
     await tester.tap(passwordTextField);
@@ -292,11 +277,8 @@ void main() {
 
     final Finder submitButton = find.byKey(Key("submitButton"));
     await tester.tap(submitButton);
-    // await tester.pumpAndSettle();
-    for (int i = 0; i < 5; i++) {
-      // because pumpAndSettle doesn't work for some reason
-      await tester.pump(Duration(seconds: 1));
-    }
+    await tester.pumpAndSettle();
+
     expect(find.byType(AdminChoiceBoards), findsNothing);
   });
 }

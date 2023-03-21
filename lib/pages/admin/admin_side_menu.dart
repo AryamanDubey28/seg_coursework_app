@@ -120,13 +120,21 @@ class AdminSideMenu extends StatelessWidget {
                   final String pin =
                       await authenticationHelper.getCurrentUserPIN();
 
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => CustomizableColumn(
-                      mock: mock,
-                      auth: authenticationHelper.auth,
-                      firebaseFirestore: authenticationHelper.firestore,
-                    ),
-                  ));
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                    if (!mock) {
+                      return CustomizableColumn();
+                    } else {
+                      return CustomizableColumn(
+                        mock: true,
+                        testCategories: testCategories,
+                        auth: MockFirebaseAuthentication(),
+                        firebaseFirestore: FakeFirebaseFirestore(),
+                        storage: MockFirebaseStorage(),
+                      );
+                    }
+                  }));
+
                   final pref = await SharedPreferences.getInstance();
                   pref.setBool("isInChildMode",
                       true); //isInChildMode boolean set to true as we are entering
