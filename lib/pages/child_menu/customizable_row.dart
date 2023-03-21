@@ -12,16 +12,16 @@ import '../../widgets/category/category_title.dart';
 class CustomizableRow extends StatefulWidget {
   final String categoryTitle; // e.g. Breakfast
   final List<ClickableImage>
-      imagePreviews; // e.g. images of toast, cereal, etc.
+      itemsPreviewImages; // e.g. images of toast, cereal, etc.
   final List<ClickableImage> unfilteredImages;
-  final ClickableImage imageLarge;
+  final ClickableImage categoryCoverImage;
 
   CustomizableRow(
       {Key? key,
       required this.categoryTitle,
-      required this.imagePreviews,
+      required this.itemsPreviewImages,
       required this.unfilteredImages,
-      required this.imageLarge})
+      required this.categoryCoverImage})
       : super(key: key);
 
   @override
@@ -55,28 +55,27 @@ class _CustomizableRowState extends State<CustomizableRow> {
                         height: 250,
                         image: ImageDetails(
                             name: widget.categoryTitle,
-                            imageUrl: widget.imageLarge.imageUrl)),
+                            imageUrl: widget.categoryCoverImage.imageUrl)),
                   ),
                   CategoryTitle(title: widget.categoryTitle),
                 ],
               ),
               // Row of images within category that wraps should list become too long
-              CategoryImageRow(imagePreviews: widget.imagePreviews),
+              CategoryImageRow(imagePreviews: widget.itemsPreviewImages),
             ],
           ),
         ),
         onTap: () {
           final player = AudioPlayer();
           player.play(AssetSource('category_click.mp3'));
-          print("image previews in row class = ${widget.imagePreviews}");
+          print("image previews in row class = ${widget.itemsPreviewImages}");
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ChildBoards(
                         categoryTitle: widget.categoryTitle,
-                        categoryImage: widget
-                            .imageLarge, //forms the large image on the LHS
-                        images: widget.imagePreviews,
+                        categoryImage: widget.categoryCoverImage,
+                        images: widget.itemsPreviewImages,
                       )));
         },
       ),

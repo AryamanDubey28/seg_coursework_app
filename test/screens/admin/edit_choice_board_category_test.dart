@@ -96,7 +96,7 @@ void main() {
 
       await createData();
 
-      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -119,11 +119,11 @@ void main() {
 
       await createData();
 
-      final nameField = find.byKey(ValueKey("categoryNameField"));
+      final nameField = find.byKey(const ValueKey("categoryNameField"));
       await tester.enterText(nameField, "Lunch");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -147,7 +147,7 @@ void main() {
 
       await createData();
 
-      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -172,11 +172,11 @@ void main() {
 
       await createData();
 
-      final nameField = find.byKey(ValueKey("categoryNameField"));
+      final nameField = find.byKey(const ValueKey("categoryNameField"));
       await tester.enterText(nameField, "Lunch");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -198,11 +198,11 @@ void main() {
             storage: mockStorage,
           ))));
 
-      final nameField = find.byKey(ValueKey("categoryNameField"));
+      final nameField = find.byKey(const ValueKey("categoryNameField"));
       await tester.enterText(nameField, "Dinner");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("editCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });

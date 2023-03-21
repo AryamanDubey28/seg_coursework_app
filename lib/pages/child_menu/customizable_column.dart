@@ -20,7 +20,7 @@ class CustomizableColumn extends StatefulWidget {
       testList; //used for testing only
   late FirebaseAuth auth;
   late FirebaseFirestore firebaseFirestore;
-  late Completer _completer;
+  late Completer completer;
 
   CustomizableColumn({
     this.mock = false,
@@ -32,13 +32,13 @@ class CustomizableColumn extends StatefulWidget {
     testList = list ?? test_list_clickable_images;
     this.auth = auth ?? FirebaseAuth.instance;
     this.firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
-    this._completer = completer ?? Completer();
+    this.completer = completer ?? Completer();
   }
   //testList = passed in testList from constructor but if none is passed it, testList = test_list_clickable_images
 
   @override
   State<CustomizableColumn> createState() =>
-      _CustomizableColumnState(auth, firebaseFirestore, _completer);
+      _CustomizableColumnState(auth, firebaseFirestore, completer);
 }
 
 class _CustomizableColumnState extends State<CustomizableColumn> {
@@ -123,9 +123,9 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
                 return CustomizableRow(
                   key: Key("row$index"),
                   categoryTitle: dataCategoryKey.name,
-                  imagePreviews: filtered[index][dataCategoryKey]!,
+                  itemsPreviewImages: filtered[index][dataCategoryKey]!,
                   unfilteredImages: categoryData[index][dataCategoryKey]!,
-                  imageLarge: dataCategoryKey,
+                  categoryCoverImage: dataCategoryKey,
                 );
               },
               itemCount: filtered.length,

@@ -4,6 +4,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
+import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/clickable_images_grid.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
@@ -121,7 +122,12 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
           onPressed: () {
             final player = AudioPlayer();
             player.play(AssetSource('back_button.mp3'));
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CustomizableColumn(),
+              ),
+            );
           },
           icon: const Icon(Icons.arrow_back_rounded)),
     );

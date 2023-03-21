@@ -47,6 +47,15 @@ class FirebaseFunctions {
         });
   }
 
+  /// Return the is_available field of an item given its itemId
+  Future<bool> getItemAvailability({required String itemId}) async {
+    return await firestore.collection('items').doc(itemId).get().then((item) {
+      return item.get("is_available");
+    }).onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
   /// Add a new entry to the 'categoryItems' collection in Firestore with
   /// the given item and category information.
   /// Note: the categoryItem will have the same id as the item
@@ -54,13 +63,14 @@ class FirebaseFunctions {
       {required String name,
       required String imageUrl,
       required String categoryId,
-      required String itemId}) async {
+      required String itemId,
+      bool is_available = true}) async {
     CollectionReference categoryItems =
         firestore.collection('categoryItems/$categoryId/items');
 
     return categoryItems.doc(itemId).set({
       'illustration': imageUrl,
-      'is_available': true,
+      'is_available': is_available,
       'name': name,
       'rank': await getNewCategoryItemRank(categoryId: categoryId),
       'userId': auth.currentUser!.uid
@@ -68,6 +78,17 @@ class FirebaseFunctions {
     }).onError((error, stackTrace) {
       return throw FirebaseException(plugin: stackTrace.toString());
     });
+  }
+
+  /// Behaves as an assertion to check that a categoryItem exists.
+  /// Return True if it does exist, otherwise throw an error
+  Future<bool> categoryItemExists(
+      {required String categoryId, required String itemId}) async {
+    DocumentSnapshot categoryItem = await firestore
+        .collection('categoryItems/$categoryId/items')
+        .doc(itemId)
+        .get();
+    return categoryItem.exists;
   }
 
   /// Return an appropriate rank for a new categoryItem in the
@@ -280,7 +301,52 @@ class FirebaseFunctions {
     });
   }
 
-  ///Delete a workflow from the database.
+  /// Deletes item document from items collection
+  Future deleteItem({required String itemId}) async {
+    CollectionReference items = firestore.collection('items');
+
+    DocumentSnapshot item = await items.doc(itemId).get();
+    if (!item.exists) {
+      return throw FirebaseException(plugin: "item does not exist!");
+    }
+
+    return items.doc(itemId).delete().onError((error, stackTrace) {
+      return throw FirebaseException(plugin: stackTrace.toString());
+    });
+  }
+
+  /// Delete any categoryItems that exist for a given item in any collection
+  Future deleteAllCategoryItemsForItem({required String itemId}) async {
+    final QuerySnapshot categoriesSnapshot = await firestore
+        .collection('categories')
+        .where("userId", isEqualTo: auth.currentUser!.uid)
+        .get();
+
+    if (categoriesSnapshot.size == 0) {
+      return throw FirebaseException(plugin: "User has no categories");
+    }
+
+    for (final DocumentSnapshot category in categoriesSnapshot.docs) {
+      final QuerySnapshot categoryItemsSnapshot = await firestore
+          .collection('categoryItems/${category.id}/items')
+          .where(FieldPath.documentId, isEqualTo: itemId)
+          .get();
+
+      for (final DocumentSnapshot categoryItem in categoryItemsSnapshot.docs) {
+        final DocumentReference categoryItemReference = firestore
+            .collection('categoryItems/${category.id}/items')
+            .doc(categoryItem.id);
+
+        await updateCategoryItemsRanks(
+            categoryId: category.id,
+            removedRank: await getCategoryItemRank(
+                categoryId: category.id, itemId: itemId));
+        await categoryItemReference.delete();
+      }
+    }
+  }
+
+  /// Delete a workflow from the database.
   Future deleteWorkflow({required Timetable timetable}) async {
     String workflowId = timetable.workflowId;
     try {
@@ -302,7 +368,7 @@ class FirebaseFunctions {
     }
   }
 
-  ///Delete a workflow's associated items from the database.
+  /// Delete a workflow's associated items from the database.
   Future deleteWorkflowItems({required String workflowId}) async {
     final QuerySnapshot workflowItemFolder =
         await firestore.collection('workflowItems/$workflowId/items').get();

@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/admin/delete_choice_board_category.dart';
@@ -8,14 +11,24 @@ class DeleteCategoryButton extends StatefulWidget {
   final String categoryId;
   final String categoryName;
   final String categoryImage;
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
   final bool mock;
 
-  const DeleteCategoryButton(
+  DeleteCategoryButton(
       {super.key,
       this.mock = false,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
       required this.categoryId,
       required this.categoryName,
-      required this.categoryImage});
+      required this.categoryImage}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
 
   @override
   State<DeleteCategoryButton> createState() => _DeleteCategoryButtonState();
@@ -33,7 +46,6 @@ class _DeleteCategoryButtonState extends State<DeleteCategoryButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: Key("deleteCategoryButton-${widget.categoryId}"),
       onPressed: () {
         if (!widget.mock && !CheckConnection.isDeviceConnected) {
           // User has no internet connection
@@ -44,6 +56,10 @@ class _DeleteCategoryButtonState extends State<DeleteCategoryButton> {
               context: context,
               builder: (BuildContext context) {
                 return DeleteChoiceBoardCategory(
+                    mock: widget.mock,
+                    storage: widget.storage,
+                    firestore: widget.firestore,
+                    auth: widget.auth,
                     categoryId: widget.categoryId,
                     categoryName: widget.categoryName,
                     categoryImage: widget.categoryImage);

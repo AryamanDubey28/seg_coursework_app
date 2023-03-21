@@ -12,6 +12,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
   final String categoryId;
   final String categoryName;
   final String categoryImage;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -22,6 +23,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       required this.categoryId,
       required this.categoryName,
       required this.categoryImage,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -36,6 +38,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     // Return to admin screen if user cancels choice
     Widget cancelButton = TextButton(
+      key: const Key("cancelCategoryDelete"),
       child: const Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
@@ -44,12 +47,15 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
 
     // Once user confirms choice, call delete function
     Widget deleteButton = TextButton(
+      key: const Key("confirmCategoryDelete"),
       style: const ButtonStyle(
           backgroundColor: MaterialStatePropertyAll(Colors.red)),
       child: const Text("Delete"),
       onPressed: () async {
         try {
-          LoadingIndicatorDialog().show(context);
+          if (!mock) {
+            LoadingIndicatorDialog().show(context);
+          }
 
           int deletedCategoryRank =
               await firestoreFunctions.getCategoryRank(categoryId: categoryId);
@@ -59,16 +65,20 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
           await firestoreFunctions.deleteImageFromCloud(
               imageUrl: categoryImage);
 
-          LoadingIndicatorDialog().dismiss();
+          if (!mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => AdminChoiceBoards(
-                auth: auth, firestore: firestore, storage: storage),
+                mock: mock, auth: auth, firestore: firestore, storage: storage),
           ));
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("$categoryName successfully deleted!")),
           );
         } on Exception catch (e) {
-          LoadingIndicatorDialog().dismiss();
+          if (!mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           print(e);
           ErrorDialogHelper(context: context).show_alert_dialog(
               "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
@@ -78,7 +88,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      key: const Key("confirmationAlert"),
+      key: Key("deleteCategoryAlert-$categoryId"),
       title: const Text("Warning!"),
       content: Text("Are you sure you want to delete '$categoryName'?"),
       actions: [

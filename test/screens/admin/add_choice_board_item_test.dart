@@ -12,6 +12,7 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/pages/admin/add_choice_board_item.dart';
+import 'package:seg_coursework_app/pages/admin/add_existing_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
@@ -49,16 +50,15 @@ void main() {
 
       expect(find.byKey(const ValueKey("itemImageCard")), findsOneWidget);
       expect(find.byKey(const ValueKey("instructionsText")), findsOneWidget);
-      expect(
-          find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
+      expect(find.byKey(const ValueKey("pickImageFromGallery")), findsOneWidget);
       expect(find.byKey(const ValueKey("takeImageWithCamera")), findsOneWidget);
       expect(find.byKey(const ValueKey("itemNameField")), findsOneWidget);
+      expect(find.byKey(const ValueKey("useExistingItemButton")), findsOneWidget);
       expect(find.byKey(const ValueKey("createItemButton")), findsOneWidget);
     });
   });
 
-  testWidgets("name and image missing shows alert",
-      (WidgetTester tester) async {
+  testWidgets("name and image missing shows alert", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -72,6 +72,7 @@ void main() {
             ),
           )));
 
+      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
       await tester.tap(find.byKey(ValueKey("createItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
@@ -96,6 +97,7 @@ void main() {
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
       await tester.tap(find.byKey(ValueKey("createItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
@@ -117,14 +119,14 @@ void main() {
             ),
           )));
 
+      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
       await tester.tap(find.byKey(ValueKey("createItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
   });
 
-  testWidgets("successful item creation takes user to choice boards page",
-      (WidgetTester tester) async {
+  testWidgets("successful item creation takes user to choice boards page", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -141,11 +143,31 @@ void main() {
 
       final nameField = find.byKey(ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
-      await tester.pumpAndSettle();
-
+      await tester.pumpAndSettle(const Duration(seconds: 5));
+      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
       await tester.tap(find.byKey(ValueKey("createItemButton")));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(seconds: 5));
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
+    });
+  });
+
+  testWidgets("useExistingItemButton tap redirects to correct screen", (WidgetTester tester) async {
+    mockNetworkImagesFor(() async {
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
+            home: AddChoiceBoardItem(
+              categoryId: breakfastCategoryId,
+              auth: mockAuth,
+              firestore: mockFirestore,
+              storage: mockStorage,
+              preSelectedImage: File("assets/test_image.png"),
+            ),
+          )));
+
+      await tester.tap(find.byKey(ValueKey("useExistingItemButton")));
+      await tester.pumpAndSettle();
+      expect(find.byType(AddExistingItem), findsOneWidget);
     });
   });
 }

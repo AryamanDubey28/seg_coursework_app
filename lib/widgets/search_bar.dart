@@ -22,7 +22,6 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-
       key: const Key("searchBar"),
       controller: _controller,
       onChanged: widget.onTextChanged,

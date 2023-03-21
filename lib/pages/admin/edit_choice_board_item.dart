@@ -276,7 +276,9 @@ class _EditChoiceBoardItem extends State<EditChoiceBoardItem> {
           const SnackBar(content: Text("Edits saved successfully!")),
         );
       } catch (e) {
-        LoadingIndicatorDialog().dismiss();
+        if (!widget.mock) {
+          LoadingIndicatorDialog().dismiss();
+        }
         ErrorDialogHelper(context: context).show_alert_dialog(
             'An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.');
       }
