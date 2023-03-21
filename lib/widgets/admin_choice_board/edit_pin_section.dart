@@ -67,7 +67,7 @@ class EditPINSection extends StatelessWidget {
 
   Future<void> submit(BuildContext context) async {
     String result =
-        await authentitcationHelper.createPIN(_pinEditController.text.trim());
+        await authentitcationHelper.createPin(_pinEditController.text.trim());
     ErrorDialogHelper(context: context).show_alert_dialog(result);
     _pinEditController.clear();
   }
