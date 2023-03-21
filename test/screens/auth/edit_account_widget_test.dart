@@ -654,7 +654,9 @@ void main() {
             firestore: new_mockFirestore,
             isTestMode: true,
           ))));
+
       await new_auth.signIn(_new_email, _new_password);
+      await tester.pumpAndSettle();
 
       await tester.pumpAndSettle();
 
