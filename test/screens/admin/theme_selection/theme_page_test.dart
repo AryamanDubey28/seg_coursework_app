@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/theme/theme_grid.dart';

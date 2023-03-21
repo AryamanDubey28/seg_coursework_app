@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
-import '../../themes/themes.dart';
-import '../../widgets/theme/theme_grid.dart';
+import '../../../themes/themes.dart';
+import '../../../widgets/theme/theme_grid.dart';
 import 'customize_theme_page.dart';
 
 class ThemePage extends StatefulWidget {
@@ -14,11 +14,10 @@ class ThemePage extends StatefulWidget {
 
 ///The page for the user to select a theme to be displayed.
 class _ThemePageState extends State<ThemePage> {
-
   ///This function is called whenever the save button in the customize theme page is pressed and allows
   ///the theme grid to show the recently added theme.
-  void updateThemeList(List<CustomThemeDetails> themeList, CustomTheme themeNotifier)
-  {
+  void updateThemeList(
+      List<CustomThemeDetails> themeList, CustomTheme themeNotifier) {
     setState(() {
       themeList = themeNotifier.getThemes();
     });
@@ -47,14 +46,13 @@ class _ThemePageState extends State<ThemePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CustomizeThemePage(themeList: themeList, updateThemeList: updateThemeList),
+              builder: (context) => CustomizeThemePage(
+                  themeList: themeList, updateThemeList: updateThemeList),
             ),
           );
-        }, 
+        },
       ),
-      body: Center(
-        child: ThemeGrid(themeList: themeList)
-      ),
+      body: Center(child: ThemeGrid(themeList: themeList)),
     );
   }
 }

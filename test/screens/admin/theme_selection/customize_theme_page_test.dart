@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/pages/theme_page/customize_theme_page.dart';
-import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/customize_theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/theme/theme_grid_square.dart';
@@ -96,7 +96,8 @@ void main() {
       await tester
           .tap(find.byKey(const ValueKey('iconsAndTextsColorListTile')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('saveButton')), warnIfMissed: false);
+      await tester.tap(find.byKey(const ValueKey('saveButton')),
+          warnIfMissed: false);
       await tester.pumpAndSettle();
 
       // Tap saveButton

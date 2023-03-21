@@ -8,7 +8,7 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/clickable_images_grid.dart';
+import 'package:seg_coursework_app/helpers/child_category_detailed_view_helper.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 
 import '../../themes/themes.dart';

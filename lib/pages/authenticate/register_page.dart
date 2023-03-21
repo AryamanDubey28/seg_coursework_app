@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import '../../widgets/my_text_field.dart';
+import '../../widgets/general/my_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;

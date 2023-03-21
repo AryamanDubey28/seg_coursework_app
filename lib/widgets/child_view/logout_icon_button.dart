@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../pages/admin/choice_board/admin_choice_boards.dart';
-import '../services/auth.dart';
+import '../../pages/admin/choice_board/admin_choice_boards.dart';
+import '../../services/auth.dart';
 
 class LogoutIconButton extends StatelessWidget {
   TextEditingController pin_controller;

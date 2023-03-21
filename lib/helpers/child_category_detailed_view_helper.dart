@@ -5,7 +5,7 @@ import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/item_unavailable.dart';
+import 'package:seg_coursework_app/widgets/child_view/item_unavailable.dart';
 
 // Returns the grid of images, clickable and unavailable
 Expanded getMainImages(List<CategoryItem> images) {

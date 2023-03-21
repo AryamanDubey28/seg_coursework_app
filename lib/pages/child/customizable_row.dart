@@ -11,8 +11,8 @@ import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/pages/child/category_details_display.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 import '../../themes/themes.dart';
-import '../../widgets/category/category_image_row.dart';
-import '../../widgets/category/category_title.dart';
+import '../../widgets/child_view/category_image_row.dart';
+import '../../widgets/child_view/category_title.dart';
 
 class ChildMenuCategoryRow extends StatefulWidget {
   final List<CategoryItem> categoryItems;

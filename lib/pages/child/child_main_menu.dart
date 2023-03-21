@@ -10,7 +10,7 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/widgets/logout_icon_button.dart';
+import 'package:seg_coursework_app/widgets/child_view/logout_icon_button.dart';
 import 'customizable_row.dart';
 
 // The child menu is formed essentially by creating a column of rows,

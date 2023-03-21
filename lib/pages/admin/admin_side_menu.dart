@@ -10,11 +10,11 @@ import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
-import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import '../../helpers/error_dialog_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../visual_timetable/visual_timetable.dart';
+import 'visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 
 /// The side-menu of the admin's UI

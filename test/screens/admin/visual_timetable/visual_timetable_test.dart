@@ -12,7 +12,7 @@ import 'package:seg_coursework_app/data/visual_timetable_data.dart';
 import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
+import 'package:seg_coursework_app/pages/admin/visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/timetable/picture_grid.dart';

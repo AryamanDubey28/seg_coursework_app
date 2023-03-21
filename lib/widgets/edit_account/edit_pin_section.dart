@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:seg_coursework_app/widgets/my_text_field.dart';
+import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
 import '../../helpers/error_dialog_helper.dart';
 import '../../services/auth.dart';
 import '../loading_indicators/loading_indicator.dart';

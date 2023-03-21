@@ -4,8 +4,8 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
-import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
-import 'package:seg_coursework_app/pages/visual_timetable/visual_timetable.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
