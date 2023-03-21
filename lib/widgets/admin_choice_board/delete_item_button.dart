@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
@@ -149,7 +150,13 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       //LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => AdminChoiceBoards(auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+        builder: (context) {
+          if (widget.mock) {
+            return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+          } else {
+            return AdminChoiceBoards();
+          }
+        },
       ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -176,7 +183,13 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       LoadingIndicatorDialog().dismiss();
       // go back to choice boards page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => AdminChoiceBoards(auth: widget.auth, firestore: widget.firestore, storage: widget.storage),
+        builder: (context) {
+          if (widget.mock) {
+            return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+          } else {
+            return AdminChoiceBoards();
+          }
+        },
       ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(

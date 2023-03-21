@@ -157,6 +157,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(home: AdminChoiceBoards(testCategories: testCategories, auth: mockAuth, firestore: mockFirestore, storage: mockStorage, mock: true))));
       await tester.pumpAndSettle();
+
       await _createData();
 
       await tester.tap(find.byKey(ValueKey("deleteItemButton-${toastItem.id}")));
