@@ -8,6 +8,7 @@ import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/image_picker_functions.dart';
+import 'package:seg_coursework_app/pages/admin/add_existing_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
 import 'package:seg_coursework_app/widgets/admin_choice_board/pick_image_button.dart';
 
@@ -78,6 +79,32 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   mainAxisSize: MainAxisSize.min,
                   // page (Hero) contents
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text("Already have an item in mind?",
+                          style: TextStyle(fontSize: 25, color: Colors.black)),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                        child: TextButton.icon(
+                          key: const Key("useExistingItemButton"),
+                          onPressed: () => {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AddExistingItem(
+                                  auth: widget.auth,
+                                  firestore: widget.firestore,
+                                  storage: widget.storage,
+                                  categoryId: widget.categoryId,
+                                  mock: widget.mock),
+                            ))
+                          },
+                          icon: Icon(Icons.add_to_photos_rounded),
+                          label: const Text("Use existing item"),
+                        )),
+                    const Divider(
+                      color: Colors.black38,
+                      thickness: 0.2,
+                    ),
                     // shows the currently selected image
                     Card(
                         key: const Key("itemImageCard"),
@@ -151,7 +178,6 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                       thickness: 0.2,
                     ),
                     const SizedBox(height: 20),
-                    // submit to database button
                     TextButton.icon(
                       key: const Key("createItemButton"),
                       onPressed: () => saveItemToFirestore(
@@ -159,7 +185,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                           itemName: itemNameController.text),
                       icon: const Icon(Icons.add),
                       label: const Text("Create new item"),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -181,7 +207,9 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       ErrorDialogHelper(context: context)
           .show_alert_dialog("A field or more are missing!");
     } else {
-      LoadingIndicatorDialog().show(context);
+      if (!widget.mock) {
+        LoadingIndicatorDialog().show(context);
+      }
       String? imageUrl = await firestoreFunctions.uploadImageToCloud(
           image: image, name: itemName);
       if (imageUrl != null) {
@@ -194,7 +222,9 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
               categoryId: widget.categoryId,
               itemId: itemId);
 
-          LoadingIndicatorDialog().dismiss();
+          if (!widget.mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) {
@@ -215,7 +245,9 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             SnackBar(content: Text("$itemName added successfully.")),
           );
         } catch (e) {
-          LoadingIndicatorDialog().dismiss();
+          if (!widget.mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           ErrorDialogHelper(context: context).show_alert_dialog(
               "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }

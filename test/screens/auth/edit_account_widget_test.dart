@@ -33,8 +33,7 @@ class MyMockUser extends MockUser {
   }
 
   @override
-  Future<UserCredential> reauthenticateWithCredential(
-      AuthCredential? credential) {
+  Future<UserCredential> reauthenticateWithCredential(AuthCredential? credential) {
     if (credential!.asMap()['secret'] == "IAmWrong123") {
       throw FirebaseAuthException(code: "Simulation");
     }
@@ -68,8 +67,7 @@ void main() {
     auth = Auth(auth: _mockAuth);
   });
 
-  testWidgets("Edit email correctly fails when given an unvalid email address.",
-      (WidgetTester tester) async {
+  testWidgets("Edit email correctly fails when given an unvalid email address.", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -82,8 +80,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final Finder emailField = await find.byKey(Key('email_text_field'));
-      final Finder emailChangeButton =
-          await find.byKey(Key('edit_email_submit'), skipOffstage: false);
+      final Finder emailChangeButton = await find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
       await tester.enterText(emailField, 'test.com');
       await tester.pumpAndSettle();
@@ -92,15 +89,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text(
-              "You did not input a valid email address so the change could not be made. Please try again."),
-          findsOneWidget);
+      expect(find.text("You did not input a valid email address so the change could not be made. Please try again."), findsOneWidget);
     });
   });
 
-  testWidgets("Edit email correctly fails when email field is empty.",
-      (WidgetTester tester) async {
+  testWidgets("Edit email correctly fails when email field is empty.", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -113,8 +106,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final Finder emailField = find.byKey(Key('email_text_field'));
-      final Finder emailChangeButton =
-          await find.byKey(Key('edit_email_submit'), skipOffstage: false);
+      final Finder emailChangeButton = await find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
       await tester.enterText(emailField, '');
       await tester.pumpAndSettle();
@@ -123,15 +115,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text(
-              "You did not input a valid email address so the change could not be made. Please try again."),
-          findsOneWidget);
+      expect(find.text("You did not input a valid email address so the change could not be made. Please try again."), findsOneWidget);
     });
   });
 
-  testWidgets("Edit email is successful when given a valid email address",
-      (WidgetTester tester) async {
+  testWidgets("Edit email is successful when given a valid email address", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -144,8 +132,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final Finder emailField = await find.byKey(Key('email_text_field'));
-      final Finder emailChangeButton =
-          await find.byKey(Key('edit_email_submit'), skipOffstage: false);
+      final Finder emailChangeButton = await find.byKey(Key('edit_email_submit'), skipOffstage: false);
 
       await tester.enterText(emailField, 'testing@frebase.com');
       await tester.pumpAndSettle();
@@ -158,9 +145,7 @@ void main() {
     });
   });
 
-  testWidgets(
-      "Edit password gives correct error message if new password left empty",
-      (WidgetTester tester) async {
+  testWidgets("Edit password gives correct error message if new password left empty", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -173,13 +158,10 @@ void main() {
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
 
-      final Finder currentPasswordField =
-          find.byKey(Key('current_password_input'));
+      final Finder currentPasswordField = find.byKey(Key('current_password_input'));
       final Finder newPasswordField = find.byKey(Key('new_password_input'));
-      final Finder confirmNewPasswordField =
-          find.byKey(Key('confirm_new_password_input'));
-      final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+      final Finder confirmNewPasswordField = find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton = find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, _password);
       await tester.pumpAndSettle();
@@ -192,16 +174,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text(
-              "Some fields required to operate your password change were not filled in. Please try again."),
-          findsOneWidget);
+      expect(find.text("Some fields required to operate your password change were not filled in. Please try again."), findsOneWidget);
     });
   });
 
-  testWidgets(
-      "Edit password gives correct error message if new password confirmation left empty",
-      (WidgetTester tester) async {
+  testWidgets("Edit password gives correct error message if new password confirmation left empty", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -214,13 +191,10 @@ void main() {
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
 
-      final Finder currentPasswordField =
-          find.byKey(Key('current_password_input'));
+      final Finder currentPasswordField = find.byKey(Key('current_password_input'));
       final Finder newPasswordField = find.byKey(Key('new_password_input'));
-      final Finder confirmNewPasswordField =
-          find.byKey(Key('confirm_new_password_input'));
-      final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+      final Finder confirmNewPasswordField = find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton = find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, _password);
       await tester.pumpAndSettle();
@@ -233,16 +207,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text(
-              "Some fields required to operate your password change were not filled in. Please try again."),
-          findsOneWidget);
+      expect(find.text("Some fields required to operate your password change were not filled in. Please try again."), findsOneWidget);
     });
   });
 
-  testWidgets(
-      "Edit password gives correct error message if current password left empty",
-      (WidgetTester tester) async {
+  testWidgets("Edit password gives correct error message if current password left empty", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -255,13 +224,10 @@ void main() {
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
 
-      final Finder currentPasswordField =
-          find.byKey(Key('current_password_input'));
+      final Finder currentPasswordField = find.byKey(Key('current_password_input'));
       final Finder newPasswordField = find.byKey(Key('new_password_input'));
-      final Finder confirmNewPasswordField =
-          find.byKey(Key('confirm_new_password_input'));
-      final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+      final Finder confirmNewPasswordField = find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton = find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, "");
       await tester.pumpAndSettle();
@@ -274,16 +240,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text(
-              "Some fields required to operate your password change were not filled in. Please try again."),
-          findsOneWidget);
+      expect(find.text("Some fields required to operate your password change were not filled in. Please try again."), findsOneWidget);
     });
   });
 
-  testWidgets(
-      "Edit password gives correct error message if new password does not match the confirmation",
-      (WidgetTester tester) async {
+  testWidgets("Edit password gives correct error message if new password does not match the confirmation", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -296,13 +257,10 @@ void main() {
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
 
-      final Finder currentPasswordField =
-          find.byKey(Key('current_password_input'));
+      final Finder currentPasswordField = find.byKey(Key('current_password_input'));
       final Finder newPasswordField = find.byKey(Key('new_password_input'));
-      final Finder confirmNewPasswordField =
-          find.byKey(Key('confirm_new_password_input'));
-      final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+      final Finder confirmNewPasswordField = find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton = find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, _password);
       await tester.pumpAndSettle();
@@ -315,16 +273,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text(
-              'The new password confirmation does not match the new password you demanded. Please try again.'),
-          findsOneWidget);
+      expect(find.text('The new password confirmation does not match the new password you demanded. Please try again.'), findsOneWidget);
     });
   });
 
-  testWidgets(
-      "Edit password gives correct error message if current password inputed is wrong",
-      (WidgetTester tester) async {
+  testWidgets("Edit password gives correct error message if current password inputed is wrong", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -337,13 +290,10 @@ void main() {
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
 
-      final Finder currentPasswordField =
-          find.byKey(Key('current_password_input'));
+      final Finder currentPasswordField = find.byKey(Key('current_password_input'));
       final Finder newPasswordField = find.byKey(Key('new_password_input'));
-      final Finder confirmNewPasswordField =
-          find.byKey(Key('confirm_new_password_input'));
-      final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+      final Finder confirmNewPasswordField = find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton = find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, "IAmWrong123");
       await tester.pumpAndSettle();
@@ -356,15 +306,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text("Your current password is not correct. Please try again."),
-          findsOneWidget);
+      expect(find.text("Your current password is not correct. Please try again."), findsOneWidget);
     });
   });
 
-  testWidgets(
-      "Edit password gives correct error message if current password inputed is wrong",
-      (WidgetTester tester) async {
+  testWidgets("Edit password gives correct error message if current password inputed is wrong", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -377,13 +323,10 @@ void main() {
       await auth.signIn(_email, _password);
       await tester.pumpAndSettle();
 
-      final Finder currentPasswordField =
-          find.byKey(Key('current_password_input'));
+      final Finder currentPasswordField = find.byKey(Key('current_password_input'));
       final Finder newPasswordField = find.byKey(Key('new_password_input'));
-      final Finder confirmNewPasswordField =
-          find.byKey(Key('confirm_new_password_input'));
-      final Finder passwordChangeButton =
-          find.byKey(Key('edit_password_submit'), skipOffstage: false);
+      final Finder confirmNewPasswordField = find.byKey(Key('confirm_new_password_input'));
+      final Finder passwordChangeButton = find.byKey(Key('edit_password_submit'), skipOffstage: false);
 
       await tester.enterText(currentPasswordField, _password);
       await tester.pumpAndSettle();
@@ -396,13 +339,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(
-          find.text("Your password was successfully changed."), findsOneWidget);
+      expect(find.text("Your password was successfully changed."), findsOneWidget);
     });
   });
 
-  testWidgets("Edit PIN works successfully when PIN is correct",
-      (WidgetTester tester) async {
+  testWidgets("Edit PIN works successfully when PIN is correct", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -437,13 +378,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.text("Your PIN was successfully changed to 0000"),
-          findsOneWidget);
+      expect(find.text("Your PIN was successfully changed to 0000"), findsOneWidget);
     });
   });
 
-  testWidgets("Edit PIN gives correct error if PIN is too short",
-      (WidgetTester tester) async {
+  testWidgets("Edit PIN gives correct error if PIN is too short", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -482,8 +421,7 @@ void main() {
     });
   });
 
-  testWidgets("Edit PIN gives correct error if PIN is too long",
-      (WidgetTester tester) async {
+  testWidgets("Edit PIN gives correct error if PIN is too long", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -522,8 +460,7 @@ void main() {
     });
   });
 
-  testWidgets("Edit PIN gives correct error if PIN is not only made of digits",
-      (WidgetTester tester) async {
+  testWidgets("Edit PIN gives correct error if PIN is not only made of digits", (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),

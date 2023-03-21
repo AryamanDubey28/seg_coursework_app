@@ -36,7 +36,8 @@ class _PictureGridState extends State<PictureGrid> {
   @override
   Widget build(BuildContext context) {
     if (widget.imagesList.isEmpty) {
-      return const Text("No items to show. Add some in the 'Choice Board' page");
+      return const Text(
+          "No items to show. Add some in the 'Choice Board' page");
     } else {
       return LayoutBuilder(builder: (context, constraints) {
         return Container(
@@ -85,9 +86,9 @@ class _PictureGridState extends State<PictureGrid> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 10), 
+                                padding: const EdgeInsets.only(top: 10),
                                 child: Text(
-                                  _getFilteredItems()[index].name, 
+                                  _getFilteredItems()[index].name,
                                 ),
                               )
                             ],
