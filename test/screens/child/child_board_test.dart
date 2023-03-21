@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/pages/child_board/child_board.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/child/category_details_display.dart';
+import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
-import '../admin/delete_choice_board_category_test.dart';
+import '../admin/choice_board/delete_choice_board_category_test.dart';
 import '../auth/forgot_password_test.dart';
 
 void main() {
@@ -49,7 +48,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: CustomizableColumn(
+            home: ChildMainMenu(
               mock: true,
               auth: MockFirebaseAuth(),
               firebaseFirestore: MockFirebaseFirestore(),
@@ -59,8 +58,8 @@ void main() {
           )));
 
       await tester.pumpAndSettle();
-      // Verify that the CustomizableColumn page is displayed
-      expect(find.byType(CustomizableColumn), findsOneWidget);
+      // Verify that the ChildMainMenu page is displayed
+      expect(find.byType(ChildMainMenu), findsOneWidget);
       await tester.pumpAndSettle();
       // Tap category image to go to go to ChildBoards
       await tester.tap(find.byKey(const ValueKey("categoryRow-0")));
@@ -69,12 +68,12 @@ void main() {
       // Verify that the ChildBoards page is displayed
       expect(find.byType(ChildBoards), findsOneWidget);
 
-      // Tap back button to go to go to CustomizableColumn
+      // Tap back button to go to go to ChildMainMenu
       await tester.tap(find.byKey(const ValueKey("backButton")));
       await tester.pumpAndSettle();
 
-      // Verify that the CustomizableColumn page is displayed
-      expect(find.byType(CustomizableColumn), findsOneWidget);
+      // Verify that the ChildMainMenu page is displayed
+      expect(find.byType(ChildMainMenu), findsOneWidget);
     });
   });
 }

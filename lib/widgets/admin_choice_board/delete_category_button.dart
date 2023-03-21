@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/pages/admin/delete_choice_board_category.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/delete_choice_board_category.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 
 /// Button that opens delete category popup when pressed

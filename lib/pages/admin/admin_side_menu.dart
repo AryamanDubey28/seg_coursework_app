@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
@@ -15,7 +15,7 @@ import 'package:seg_coursework_app/services/auth.dart';
 import '../../helpers/error_dialog_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../visual_timetable/visual_timetable.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
@@ -123,9 +123,9 @@ class AdminSideMenu extends StatelessWidget {
                   Navigator.of(context)
                       .pushReplacement(MaterialPageRoute(builder: (context) {
                     if (!mock) {
-                      return CustomizableColumn();
+                      return ChildMainMenu();
                     } else {
-                      return CustomizableColumn(
+                      return ChildMainMenu(
                         mock: true,
                         testCategories: testCategories,
                         auth: MockFirebaseAuthentication(),

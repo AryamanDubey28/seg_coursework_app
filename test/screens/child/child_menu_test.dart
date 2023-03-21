@@ -8,14 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
-import 'package:seg_coursework_app/models/clickable_image.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 import 'package:seg_coursework_app/pages/child_menu/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
@@ -112,7 +111,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-            home: CustomizableColumn(
+            home: ChildMainMenu(
               mock: true,
               auth: MockFirebaseAuth(),
               firebaseFirestore: FakeFirebaseFirestore(),
@@ -121,7 +120,7 @@ void main() {
             ),
           )));
       await tester.pumpAndSettle();
-      expect(find.byType(CustomizableColumn), findsWidgets);
+      expect(find.byType(ChildMainMenu), findsWidgets);
       expect(find.byType(ChildMenuCategoryRow), findsWidgets);
       expect(find.byType(ImageSquare), findsWidgets);
       expect(find.byType(CategoryTitle), findsWidgets);
@@ -154,7 +153,7 @@ void main() {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
           child: MaterialApp(
-              home: CustomizableColumn(
+              home: ChildMainMenu(
             mock: true,
             testCategories: testCategories,
             auth: mockAuth,
@@ -172,7 +171,7 @@ void main() {
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
         child: MaterialApp(
-            home: CustomizableColumn(
+            home: ChildMainMenu(
           mock: true,
           auth: mockAuth,
           firebaseFirestore: mockFirestore,
@@ -183,19 +182,19 @@ void main() {
     expect(find.byType(ChildMenuCategoryRow), findsNothing);
   });
 
-  // testWidgets("CustomizableColumn makes a database request every 5-6 seconds",
+  // testWidgets("ChildMainMenu makes a database request every 5-6 seconds",
   //     (tester) async {
   //   await tester.pumpWidget(ThemeProvider(
   //       themeNotifier: CustomTheme(),
   //       child: MaterialApp(
-  //           home: CustomizableColumn(
+  //           home: ChildMainMenu(
   //         mock: true,
   //         auth: mockAuth,
   //         firebaseFirestore: mockFirestore,
   //       ))));
-  //   int initialValue = CustomizableColumn.customizableColumnRequestCounter;
+  //   int initialValue = ChildMainMenu.customizableColumnRequestCounter;
   //   await tester.pump(Duration(seconds: 5));
-  //   int latestValue = CustomizableColumn.customizableColumnRequestCounter;
+  //   int latestValue = ChildMainMenu.customizableColumnRequestCounter;
   //   bool greater = latestValue > initialValue;
   //   expect(greater, true); //value has increased
   // });
@@ -210,7 +209,7 @@ void main() {
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
         child: MaterialApp(
-            home: CustomizableColumn(
+            home: ChildMainMenu(
           mock: true,
           auth: myMockAuth,
           firebaseFirestore: myMockFirestore,
@@ -252,7 +251,7 @@ void main() {
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
         child: MaterialApp(
-            home: CustomizableColumn(
+            home: ChildMainMenu(
           mock: true,
           auth: myMockAuth,
           firebaseFirestore: myMockFirestore,

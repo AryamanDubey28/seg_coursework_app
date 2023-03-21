@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 
 void main() {
@@ -102,7 +102,7 @@ void main() {
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 2));
 
-      expect(find.byType(CustomizableColumn), findsOneWidget);
+      expect(find.byType(ChildMainMenu), findsOneWidget);
     });
   });
 }

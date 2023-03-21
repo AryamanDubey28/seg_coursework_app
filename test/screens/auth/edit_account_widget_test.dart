@@ -14,7 +14,7 @@ import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 
-import '../admin/delete_choice_board_category_test.dart';
+import '../admin/choice_board/delete_choice_board_category_test.dart';
 import '../child/child_menu_test.dart';
 
 // Widget tests for all edit account functionality and error handling.

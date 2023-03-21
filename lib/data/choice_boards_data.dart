@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:seg_coursework_app/helpers/cache_manager.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
-import 'package:seg_coursework_app/models/clickable_image.dart';
 
 import '../models/categories.dart';
 

@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import '../../widgets/admin_choice_board/edit_email_section.dart';
-import '../../widgets/admin_choice_board/edit_password_section.dart';
-import '../../widgets/admin_choice_board/edit_pin_section.dart';
+import 'package:seg_coursework_app/widgets/edit_account/edit_email_section.dart';
+import 'package:seg_coursework_app/widgets/edit_account/edit_password_section.dart';
+import 'package:seg_coursework_app/widgets/edit_account/edit_pin_section.dart';
+
 import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.

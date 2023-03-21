@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:seg_coursework_app/main.dart' as app;
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 
 void main() {
   group("Test for child menu navigation", () {
@@ -63,7 +63,7 @@ void main() {
       await tester.pumpAndSettle();
       await Future.delayed(Duration(seconds: 5));
       await tester.tapAt(Offset(200, 200));
-      expect(find.byType(CustomizableColumn), findsNothing);
+      expect(find.byType(ChildMainMenu), findsNothing);
 
       await Future.delayed(Duration(seconds: 3));
       await tester.tapAt(Offset(200, 200));
