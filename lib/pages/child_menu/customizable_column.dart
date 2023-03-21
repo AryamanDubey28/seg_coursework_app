@@ -82,7 +82,7 @@ class _CustomizableColumnState extends State<CustomizableColumn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Child Mode"),
+        title: const Text("Child Mode"),
         automaticallyImplyLeading: false,
         actions: [
           Padding(

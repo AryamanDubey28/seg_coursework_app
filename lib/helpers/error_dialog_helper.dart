@@ -11,6 +11,7 @@ class ErrorDialogHelper {
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: Colors.white,
             content: Text(
               text,
               style: TextStyle(fontSize: 24),

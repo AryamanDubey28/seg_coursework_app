@@ -293,7 +293,7 @@ void main() {
     });
   });
 
-  testWidgets("Valid category item switch button works as expected",
+  testWidgets("Valid category switch button works as expected",
       (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(

@@ -2,11 +2,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/clickable_image.dart';
+import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/pages/child_board/child_board.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 import '../../themes/themes.dart';
-import '../../widgets/category_image.dart';
-import '../../widgets/category_row.dart';
-import '../../widgets/category_title.dart';
+import '../../widgets/category/category_image_row.dart';
+import '../../widgets/category/category_title.dart';
 
 class CustomizableRow extends StatefulWidget {
   final String categoryTitle; // e.g. Breakfast
@@ -35,7 +36,7 @@ class _CustomizableRowState extends State<CustomizableRow> {
       color: themeNotifier.getTheme().scaffoldBackgroundColor,
       child: InkWell(
         child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -47,6 +48,17 @@ class _CustomizableRowState extends State<CustomizableRow> {
                   CategoryImage(
                       imageLarge:
                           Image.network(widget.imagePreviews[0].imageUrl)),
+                  CategoryTitle(title: widget.categoryTitle),
+                  Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(30, 30, 30, 15),
+                    child: ImageSquare(
+                        width: 250,
+                        height: 250,
+                        image: ImageDetails(
+                            name: widget.categoryTitle,
+                            imageUrl: widget.imagePreviews[0].imageUrl)),
+                  ),
                   CategoryTitle(title: widget.categoryTitle),
                 ],
               ),

@@ -20,6 +20,7 @@ import 'package:seg_coursework_app/pages/child_menu/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
+import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 import 'package:seg_coursework_app/widgets/category_image.dart';
 import 'package:seg_coursework_app/widgets/category_row.dart';
 import 'package:seg_coursework_app/widgets/category_title.dart';
@@ -134,22 +135,19 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(CustomizableColumn), findsWidgets);
       expect(find.byType(CustomizableRow), findsWidgets);
-      expect(find.byType(CategoryImage), findsWidgets);
+      expect(find.byType(ImageSquare), findsWidgets);
       expect(find.byType(CategoryTitle), findsWidgets);
       expect(find.byType(CategoryImageRow), findsWidgets);
     });
   });
-
   testWidgets('Test tappable row directs to new screen', (tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
-            home: CustomizableRow(
-              categoryTitle: "Title",
-              imagePreviews: imageRow,
-              unfilteredImages: imageRow,
-            ),
+          child: const MaterialApp(
+            home: CustomizableRow(categoryTitle: "Title", imagePreviews: [
+              "https://www.rpnation.com/gallery/250-x-250-placeholder.30091/full",
+            ]),
           )));
 
       await tester.tap(find.byType(CustomizableRow));

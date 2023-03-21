@@ -6,7 +6,7 @@ import 'toggleAuth.dart';
 
 class Wrapper extends StatelessWidget {
   final bool isInChildMode;
-  late FirebaseAuth auth;
+  late final FirebaseAuth auth;
 
   Wrapper({Key? key, FirebaseAuth? auth, required this.isInChildMode})
       : super(key: key) {

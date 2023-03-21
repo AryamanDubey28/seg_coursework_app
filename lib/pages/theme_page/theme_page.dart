@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/custom_theme_details.dart';
-import 'package:seg_coursework_app/widgets/theme_grid.dart';
 import '../../themes/themes.dart';
+import '../../widgets/theme/theme_grid.dart';
 import 'customize_theme_page.dart';
 
 class ThemePage extends StatefulWidget {
@@ -40,9 +40,9 @@ class _ThemePageState extends State<ThemePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        key: Key("addThemeButton"),
+        key: const Key("addThemeButton"),
         tooltip: "Add a new theme",
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,
@@ -53,10 +53,7 @@ class _ThemePageState extends State<ThemePage> {
         }, 
       ),
       body: Center(
-        child: Container(
-          width: 500,
-          child: ThemeGrid(themeList: themeList)
-        )
+        child: ThemeGrid(themeList: themeList)
       ),
     );
   }

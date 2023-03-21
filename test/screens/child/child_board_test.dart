@@ -20,12 +20,8 @@ void main() {
           is_available: true);
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
-            home: ChildBoards(
-              categoryTitle: "",
-              categoryImage: test_image,
-              images: [],
-            ),
+          child: const MaterialApp(
+            home: ChildBoards(),
           )));
 
       expect(find.byKey(const ValueKey("boardMenu")), findsWidgets);
@@ -50,7 +46,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: CustomizableColumn(
               mock: true,
               auth: MockFirebaseAuth(),

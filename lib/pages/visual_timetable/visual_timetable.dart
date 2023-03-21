@@ -1,63 +1,104 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/models/list_of_lists_of_image_details.dart';
+import 'package:seg_coursework_app/helpers/cache_manager.dart';
+import 'package:seg_coursework_app/services/check_connection.dart';
+import 'package:seg_coursework_app/services/loadingMixin.dart';
+import 'package:seg_coursework_app/widgets/timetable/save_timetable_dialog.dart';
+import '../../helpers/firebase_functions.dart';
+import '../../helpers/snackbar_manager.dart';
 import '../../models/image_details.dart';
+import '../../widgets/loading_indicators/custom_loading_indicator.dart';
+import '../../widgets/timetable/timetable_list.dart';
 import '../admin/admin_side_menu.dart';
-import '../../widgets/picture_grid.dart';
-import '../../widgets/timetable_list.dart';
+import '../../widgets/timetable/picture_grid.dart';
 import 'all_saved_timetables.dart';
 
 class VisualTimeTable extends StatefulWidget {
-  const VisualTimeTable({super.key});
+  VisualTimeTable(
+      {super.key,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
+      this.isMock = false}) {
+    this.auth = auth ?? FirebaseAuth.instance;
+    this.firestore = firestore ?? FirebaseFirestore.instance;
+    this.storage = storage ?? FirebaseStorage.instance;
+  }
+
+  late final FirebaseAuth auth;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+  final bool isMock;
 
   @override
   State<VisualTimeTable> createState() => _VisualTimeTableState();
 }
 
 /// The page for the admin to show the choice boards and make a timetable from that
-class _VisualTimeTableState extends State<VisualTimeTable> {
+class _VisualTimeTableState extends State<VisualTimeTable>
+    with LoadingMixin<VisualTimeTable> {
+  late FirebaseFunctions firestoreFunctions;
+
   bool isGridVisible = true;
   //The images that will be fed into the timetable. (No pictures are chosen by default.)
   List<ImageDetails> imagesList = [];
+
   //The images that will be fed into the PictureGrid (the choice board.)
-  //To be deleted and fetched from the database.
-  List<ImageDetails> filledImagesList = [
-    ImageDetails(
-        name: "Toast",
-        imageUrl:
-            "https://www.simplyrecipes.com/thmb/20YogL0tqZKPaNft0xfsrldDj6k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2010__01__cinnamon-toast-horiz-a-1800-5cb4bf76bb254da796a137885af8cb09.jpg"),
-    ImageDetails(
-        name: "Orange",
-        imageUrl:
-            "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80"),
-    ImageDetails(
-        name: "Footy",
-        imageUrl:
-            "https://upload.wikimedia.org/wikipedia/commons/a/ad/Football_in_Bloomington%2C_Indiana%2C_1996.jpg"),
-    ImageDetails(
-        name: "Boxing",
-        imageUrl:
-            "https://e2.365dm.com/23/02/384x216/skysports-liam-wilson-emanuel-navarrete_6045983.jpg?20230204075325"),
-    ImageDetails(
-        name: "Swimming",
-        imageUrl:
-            "https://cdn.britannica.com/83/126383-050-38B8BE25/Michael-Phelps-American-Milorad-Cavic-final-Serbia-2008.jpg"),
-    ImageDetails(
-        name: "Fish and chips",
-        imageUrl:
-            "https://forkandtwist.com/wp-content/uploads/2021/04/IMG_0102-500x500.jpg"),
-  ];
+  List<ImageDetails> filledImagesList = [];
 
-  //The list that holds the saved timetables
-  ListOfListsOfImageDetails savedTimetables =
-      ListOfListsOfImageDetails(listOfLists: []);
+  @override
+  void initState() {
+    super.initState();
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
+  }
 
-  ///This makes a deep copy of a list to be saved in the savedTimetables
-  List<ImageDetails> deepCopy(List<ImageDetails> list) {
-    List<ImageDetails> copy = [];
-    for (ImageDetails image in list) {
-      copy.add(ImageDetails(name: image.name, imageUrl: image.imageUrl));
+  @override
+  void dispose() {
+    if (!widget.isMock) {
+      CheckConnection.stopMonitoring();
     }
-    return copy;
+    super.dispose();
+  }
+
+  @override
+  Future<void> load() async {
+    await _fetchData();
+  }
+
+  ///Fetches data.
+  Future<void> _fetchData() async {
+    await Future.wait([
+      _fetchLibrary(),
+    ]);
+
+    setState(() {});
+  }
+
+  ///Fetches items from database if theres connection, from cache otherwise.
+  Future<void> _fetchLibrary() async {
+    if (!widget.isMock) {
+      if (CheckConnection.isDeviceConnected) {
+        try {
+          filledImagesList = await firestoreFunctions.getUserItems();
+          await CacheManager.storeUserItemsInCache(userItems: filledImagesList);
+        } catch (e) {
+          SnackBarManager.showSnackBarMessage(
+              context, "Error loading saved items. Check connection.");
+        }
+      } else {
+        filledImagesList = await CacheManager.getUserItemsFromCache();
+        SnackBarManager.showSnackBarMessage(
+            context, "No connection. Loading local data.");
+      }
+    } else {
+      filledImagesList = await firestoreFunctions.getUserItems();
+    }
   }
 
   ///This function is supplied to the PictureGrid and it adds the chosen image to the Timetable builder
@@ -94,7 +135,7 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
   ///This function returns a hide/show button (for the PictureGrid.)
   FloatingActionButton buildHideButton() {
     return FloatingActionButton(
-      heroTag: "hideShowButton",
+      heroTag: "hideShowButton1",
       key: const Key("hideShowButton"),
       onPressed: _toggleGrid,
       tooltip: 'Show/Hide',
@@ -104,8 +145,8 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
     );
   }
 
-  ///This function returns a button that saves the timetable to a list of timetables.
-  FloatingActionButton buildAddButton(TimetableList timetableList) {
+  ///This function returns a button that shows the dialog to save the timetable to the database.
+  FloatingActionButton buildAddButton(List<ImageDetails> imagesList) {
     return FloatingActionButton(
       heroTag: "addToListOfListsButton",
       key: const Key("addToListOfListsButton"),
@@ -113,29 +154,31 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
       child: const Icon(
         Icons.add,
       ),
-      onPressed: () => addTimetableToListOfLists(timetableList.getImagesList()),
+      onPressed: () {
+        if (!widget.isMock) {
+          CheckConnection.isDeviceConnected
+              ? showDialog(
+                  context: context,
+                  builder: (_) => SaveTimetableDialog(
+                    imagesList: imagesList,
+                    saveTimetable: firestoreFunctions.saveWorkflowToFirestore,
+                    isMock: widget.isMock,
+                  ),
+                )
+              : SnackBarManager.showSnackBarMessage(
+                  context, "Cannot save timetable. No connection.");
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => SaveTimetableDialog(
+              imagesList: imagesList,
+              saveTimetable: firestoreFunctions.saveWorkflowToFirestore,
+              isMock: widget.isMock,
+            ),
+          );
+        }
+      },
     );
-  }
-
-  ///This function saves a timetable into the list of timetables.
-  void addTimetableToListOfLists(List<ImageDetails> imagesList) {
-    setState(() {
-      bool isAdded = savedTimetables.addList(deepCopy(imagesList));
-      showSnackBarMessage(isAdded);
-    });
-  }
-
-  ///This function shows a message at the bottom of the screen when the admin attempts to save a timetable.
-  void showSnackBarMessage(bool isAdded) {
-    if (isAdded) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Timetable saved successfully.")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Timetable is already saved.")),
-      );
-    }
   }
 
   @override
@@ -145,84 +188,119 @@ class _VisualTimeTableState extends State<VisualTimeTable> {
         imagesList: imagesList,
         popImagesList: popImagesList);
 
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: AppBar(
-        title: const Text("Visual Timetable"),
-        actions: <Widget>[
-          IconButton(
-              key: const Key("allTimetablesButton"),
-              tooltip: "View all saved timetables",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AllSavedTimetables(savedTimetables: savedTimetables),
+    if (loading) {
+      return Scaffold(
+        appBar: AppBar(
+          key: const Key('app_bar'),
+          title: const Text('Loading items'),
+        ),
+        drawer: const AdminSideMenu(),
+        body: const CustomLoadingIndicator(),
+      );
+    } else if (hasError) {
+      return Scaffold(
+          appBar: AppBar(
+            key: const Key('app_bar'),
+            title: const Text('Loading items'),
+          ),
+          drawer: const AdminSideMenu(),
+          body: AlertDialog(
+              content: const Text(
+                  'An error occurred while communicating with the database'),
+              actions: <Widget>[
+                TextButton(
+                    child: const Text('Retry'),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => VisualTimeTable()));
+                    }),
+              ]));
+    } else {
+      return LayoutBuilder(builder: (context, constraints) {
+        final isLandscapeMode = constraints.maxWidth > constraints.maxHeight;
+
+        return Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          appBar: AppBar(
+            title: const Text("Visual Timetable"),
+            actions: <Widget>[
+              IconButton(
+                  key: const Key("allTimetablesButton"),
+                  tooltip: "View all saved timetables",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllSavedTimetables(
+                          firestoreFunctions: firestoreFunctions,
+                          isMock: widget.isMock,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.list)),
+            ],
+          ),
+          drawer: const AdminSideMenu(),
+          //This is to add two floatingActionButtons and allign them to the corners of the screen.
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Stack(
+              children: <Widget>[
+                //This makes sure that a timetable can't be saved if it has one or no elements.
+                if (imagesList.length >= 2)
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: buildAddButton(imagesList),
                   ),
-                );
-              },
-              icon: const Icon(Icons.list)),
-        ],
-      ),
-      drawer: AdminSideMenu(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-              flex: 5,
-              child: Center(
-                child: Container(
-                  //width here is set depending on the screen size. 6/6 represents the whole screen
-                  // 5/6 allows it to be centered and have a bit of padding on the left and right side.
-                  // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
-                  //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
-                  width: (MediaQuery.of(context).size.width * (5 / 6) +
-                      (MediaQuery.of(context).size.width / 35 * 4)),
-                  height: 200,
-                  alignment: Alignment.center,
-                  child:
-                      Align(alignment: Alignment.center, child: timetableList),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: buildHideButton(),
                 ),
-              )),
-          isGridVisible
-              ? Divider(
-                  height: isGridVisible ? 50 : 0,
-                  thickness: 0,
-                  color: Colors.white,
-                )
-              : const SizedBox(),
-          Expanded(
-            //This will make the timetable bigger if the PictureGrid is not visible
-            flex: isGridVisible ? 5 : 0,
-            child: Visibility(
-              visible: isGridVisible,
-              child: PictureGrid(
-                  imagesList: filledImagesList,
-                  updateImagesList: updateImagesList),
+              ],
             ),
           ),
-        ],
-      ),
-
-      //This is to add two floatingActionButtons and allign them to the corners of the screen.
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Stack(
-          children: <Widget>[
-            //This makes sure that a timetable can't be saved if it has one or no elements.
-            if (timetableList.imagesList.length >= 2)
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: buildAddButton(timetableList),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  flex: 4,
+                  child: Center(
+                    child: SizedBox(
+                      //width here is set depending on the screen size. 6/6 represents the whole screen
+                      // 5/6 allows it to be centered and have a bit of padding on the left and right side.
+                      // 35 is an arbitrary number and represents the arrow size set in timetable_list. 4 is the number of arrows.
+                      //In short: this sets the width to (5 * the width of each image) + (4 * the width of each arrow)
+                      width: (constraints.maxWidth * (5 / 6) +
+                          (constraints.maxWidth / 35 * 4)),
+                      height: isLandscapeMode
+                          ? constraints.maxHeight / 4
+                          : constraints.maxHeight / 6.4,
+                      child: timetableList,
+                    ),
+                  )),
+              isGridVisible
+                  ? Divider(
+                      height: isGridVisible ? 50 : 0,
+                      thickness: 0,
+                      color: Colors.white,
+                    )
+                  : const SizedBox(),
+              Expanded(
+                //This will make the timetable bigger if the PictureGrid is not visible
+                flex: isGridVisible ? 8 : 0,
+                child: Visibility(
+                  visible: isGridVisible,
+                  child: PictureGrid(
+                      imagesList: filledImagesList,
+                      updateImagesList: updateImagesList),
+                ),
               ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: buildHideButton(),
-            ),
-          ],
-        ),
-      ),
-    );
+            ],
+          ),
+        );
+      });
+    }
   }
 }

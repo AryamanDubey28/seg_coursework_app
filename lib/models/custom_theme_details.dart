@@ -83,7 +83,8 @@ class CustomThemeDetails {
       drawerTheme: DrawerThemeData(
         backgroundColor: menuColor
       ),
-      listTileTheme: ListTileThemeData(textColor: iconsAndTextsColor, iconColor: iconsAndTextsColor)
+      listTileTheme: ListTileThemeData(textColor: iconsAndTextsColor, iconColor: iconsAndTextsColor),
+      dialogTheme: DialogTheme(backgroundColor: backgroundColor),
   
     );
   }
