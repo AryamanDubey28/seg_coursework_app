@@ -94,7 +94,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             // Opens an additional alert to ask confirmation before deleting everywhere
             TextButton(
-              key: const Key("confirmItemDeleteEverywhere"),
+              key: const Key("ItemDeleteEverywhere"),
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(
                       Color.fromARGB(255, 236, 99, 92))),
@@ -128,7 +128,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       barrierDismissible: false, // User must tap button to close dialog
       builder: (BuildContext context) {
         return AlertDialog(
-          key: Key("deleteItemAlert-${widget.itemId}"),
+          key: Key("deleteItemEverywhereAlert-${widget.itemId}"),
           title: const Text('Confirmation'),
           content: Text(
               'Are you sure you want to delete ${widget.itemName}? This removes it from all other categories too.'),
@@ -142,7 +142,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             // Deletes all categoryItems from all possible categories for a particular item
             TextButton(
-              key: const Key("confirmItemDelete"),
+              key: const Key("confirmItemDeleteEverywhere"),
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.red)),
               onPressed: deleteItemEverywhere,
