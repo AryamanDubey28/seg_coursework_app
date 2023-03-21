@@ -38,7 +38,7 @@ class _AllSavedTimetablesState extends State<AllSavedTimetables> {
         itemBuilder: (context, index) {
           return Column(
             children: [
-              const SizedBox(height: 5,),
+              const SizedBox(height: 5),
               TimetableRow(
                 key: Key("timetableRow$index"),
                 listOfImages: widget.savedTimetables[index],
