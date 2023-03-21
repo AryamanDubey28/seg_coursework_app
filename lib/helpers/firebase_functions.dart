@@ -7,8 +7,6 @@ import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
 import 'package:seg_coursework_app/models/category.dart';
-import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
 
 /// A class which holds methods to manipulate the Firebase database
