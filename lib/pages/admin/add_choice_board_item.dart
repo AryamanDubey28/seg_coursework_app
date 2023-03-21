@@ -22,7 +22,14 @@ class AddChoiceBoardItem extends StatefulWidget {
   late final FirebaseStorage storage;
   late final File? preSelectedImage;
 
-  AddChoiceBoardItem({super.key, required this.categoryId, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, this.preSelectedImage}) {
+  AddChoiceBoardItem(
+      {super.key,
+      required this.categoryId,
+      this.mock = false,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
+      this.preSelectedImage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -43,7 +50,10 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
     if (widget.preSelectedImage != null) {
       selectedImage = widget.preSelectedImage;
     }
@@ -53,13 +63,15 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Hero(
           tag: "addItemHero-${widget.categoryId}",
           child: Material(
             color: Theme.of(context).canvasColor,
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -67,17 +79,28 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                   mainAxisSize: MainAxisSize.min,
                   // page (Hero) contents
                   children: [
-                    Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 8), child: Text("Already have an item in mind?", style: TextStyle(fontSize: 25, color: Colors.black)),),
-                    Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TextButton.icon(
-                      key: const Key("useExistingItemButton"),
-                      onPressed: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AddExistingItem(auth: widget.auth, firestore: widget.firestore, storage: widget.storage, categoryId: widget.categoryId, mock: widget.mock),
-                        ))
-                      },
-                      icon: Icon(Icons.add_to_photos_rounded),
-                      label: const Text("Use existing item"),
-                    )),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text("Already have an item in mind?",
+                          style: TextStyle(fontSize: 25, color: Colors.black)),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                        child: TextButton.icon(
+                          key: const Key("useExistingItemButton"),
+                          onPressed: () => {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AddExistingItem(
+                                  auth: widget.auth,
+                                  firestore: widget.firestore,
+                                  storage: widget.storage,
+                                  categoryId: widget.categoryId,
+                                  mock: widget.mock),
+                            ))
+                          },
+                          icon: Icon(Icons.add_to_photos_rounded),
+                          label: const Text("Use existing item"),
+                        )),
                     const Divider(
                       color: Colors.black38,
                       thickness: 0.2,
@@ -108,7 +131,10 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                     const Text(
                       "Pick an image",
                       key: Key("instructionsText"),
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87),
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     // buttons to take/upload images
@@ -117,7 +143,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                         label: const Text("Choose from Gallery"),
                         icon: const Icon(Icons.image),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.gallery, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.gallery, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -127,7 +154,8 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
                         label: const Text("Take a Picture"),
                         icon: const Icon(Icons.camera_alt),
                         onPressed: () async {
-                          File? newImage = await imagePickerFunctions.pickImage(source: ImageSource.camera, context: context);
+                          File? newImage = await imagePickerFunctions.pickImage(
+                              source: ImageSource.camera, context: context);
                           if (newImage != null) {
                             setState(() => selectedImage = newImage);
                           }
@@ -173,23 +201,40 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
   /// - create a new item with the uploaded image's Url in Firestore
   /// - create a new categoryItem entry in the selected category
   /// - Take the user back to the Choice Boards page
-  void saveItemToFirestore({required File? image, required String? itemName}) async {
+  void saveItemToFirestore(
+      {required File? image, required String? itemName}) async {
     if (itemName!.isEmpty || image == null) {
-      ErrorDialogHelper(context: context).show_alert_dialog("A field or more are missing!");
+      ErrorDialogHelper(context: context)
+          .show_alert_dialog("A field or more are missing!");
     } else {
-      LoadingIndicatorDialog().show(context);
-      String? imageUrl = await firestoreFunctions.uploadImageToCloud(image: image, name: itemName);
+      if (!widget.mock) {
+        LoadingIndicatorDialog().show(context);
+      }
+      String? imageUrl = await firestoreFunctions.uploadImageToCloud(
+          image: image, name: itemName);
       if (imageUrl != null) {
         try {
-          String itemId = await firestoreFunctions.createItem(name: itemName, imageUrl: imageUrl);
-          await firestoreFunctions.createCategoryItem(name: itemName, imageUrl: imageUrl, categoryId: widget.categoryId, itemId: itemId);
+          String itemId = await firestoreFunctions.createItem(
+              name: itemName, imageUrl: imageUrl);
+          await firestoreFunctions.createCategoryItem(
+              name: itemName,
+              imageUrl: imageUrl,
+              categoryId: widget.categoryId,
+              itemId: itemId);
 
-          LoadingIndicatorDialog().dismiss();
+          if (!widget.mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) {
               if (widget.mock) {
-                return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+                return AdminChoiceBoards(
+                    mock: true,
+                    testCategories: testCategories,
+                    auth: widget.auth,
+                    firestore: widget.firestore,
+                    storage: widget.storage);
               } else {
                 return AdminChoiceBoards();
               }
@@ -200,8 +245,11 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
             SnackBar(content: Text("$itemName added successfully.")),
           );
         } catch (e) {
-          LoadingIndicatorDialog().dismiss();
-          ErrorDialogHelper(context: context).show_alert_dialog("An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
+          if (!widget.mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
+          ErrorDialogHelper(context: context).show_alert_dialog(
+              "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }
       }
     }

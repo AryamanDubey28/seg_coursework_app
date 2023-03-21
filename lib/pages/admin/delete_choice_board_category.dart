@@ -12,6 +12,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
   final String categoryId;
   final String categoryName;
   final String categoryImage;
+  final bool mock;
   late final FirebaseAuth auth;
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
@@ -22,6 +23,7 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       required this.categoryId,
       required this.categoryName,
       required this.categoryImage,
+      this.mock = false,
       FirebaseAuth? auth,
       FirebaseFirestore? firestore,
       FirebaseStorage? storage}) {
@@ -49,7 +51,9 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
       child: const Text("Delete"),
       onPressed: () async {
         try {
-          LoadingIndicatorDialog().show(context);
+          if (!mock) {
+            LoadingIndicatorDialog().show(context);
+          }
 
           int deletedCategoryRank =
               await firestoreFunctions.getCategoryRank(categoryId: categoryId);
@@ -59,7 +63,9 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
           await firestoreFunctions.deleteImageFromCloud(
               imageUrl: categoryImage);
 
-          LoadingIndicatorDialog().dismiss();
+          if (!mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => AdminChoiceBoards(
                 auth: auth, firestore: firestore, storage: storage),
@@ -68,7 +74,9 @@ class DeleteChoiceBoardCategory extends StatelessWidget {
             SnackBar(content: Text("$categoryName successfully deleted!")),
           );
         } on Exception catch (e) {
-          LoadingIndicatorDialog().dismiss();
+          if (!mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           print(e);
           ErrorDialogHelper(context: context).show_alert_dialog(
               "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");

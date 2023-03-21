@@ -21,7 +21,16 @@ class DeleteItemButton extends StatefulWidget {
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
 
-  DeleteItemButton({super.key, required this.categoryId, required this.itemId, required this.itemName, required this.imageUrl, this.mock = false, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage}) {
+  DeleteItemButton(
+      {super.key,
+      required this.categoryId,
+      required this.itemId,
+      required this.itemName,
+      required this.imageUrl,
+      this.mock = false,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
@@ -37,7 +46,10 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   @override
   void initState() {
     super.initState();
-    firestoreFunctions = FirebaseFunctions(auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+    firestoreFunctions = FirebaseFunctions(
+        auth: widget.auth,
+        firestore: widget.firestore,
+        storage: widget.storage);
   }
 
   @override
@@ -60,7 +72,8 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   Future<void> _showAlertDialog(BuildContext context) async {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog("Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }
     return showDialog<void>(
@@ -81,17 +94,20 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
             ),
             // Opens an additional alert to ask confirmation before deleting everywhere
             TextButton(
-              key: Key("confirmItemDeleteEverywhere"),
-              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255, 236, 99, 92))),
+              key: const Key("confirmItemDeleteEverywhere"),
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(255, 236, 99, 92))),
               onPressed: showDeleteEverywhereConfirmation,
-              child: Text('Delete Everywhere'),
+              child: const Text('Delete Everywhere'),
             ),
             // Deletes categoryItem from current category only
             TextButton(
-              key: Key("confirmItemDelete"),
-              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.amber)),
+              key: const Key("confirmItemDelete"),
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.amber)),
               onPressed: deleteCategoryItemFromFirestore,
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -103,7 +119,8 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   void showDeleteEverywhereConfirmation() async {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog("Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }
     return showDialog<void>(
@@ -112,12 +129,13 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       builder: (BuildContext context) {
         return AlertDialog(
           key: Key("deleteItemAlert-${widget.itemId}"),
-          title: Text('Confirmation'),
-          content: Text('Are you sure you want to delete ${widget.itemName}? This removes it from all other categories too.'),
+          title: const Text('Confirmation'),
+          content: Text(
+              'Are you sure you want to delete ${widget.itemName}? This removes it from all other categories too.'),
           actions: <Widget>[
             TextButton(
-              key: Key("cancelItemDeleteEverywhere"),
-              child: Text('Cancel'),
+              key: const Key("cancelItemDeleteEverywhere"),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -127,7 +145,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
               key: const Key("confirmItemDelete"),
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.red)),
-              onPressed: deleteCategoryItemFromFirestore,
+              onPressed: deleteItemEverywhere,
               child: const Text('Delete'),
             ),
           ],
@@ -141,18 +159,31 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   /// - Update the ranks of the categoryItems of that category
   void deleteCategoryItemFromFirestore() async {
     try {
-      LoadingIndicatorDialog().show(context);
+      if (!widget.mock) {
+        LoadingIndicatorDialog().show(context);
+      }
 
-      int deletedCategoryItemRank = await firestoreFunctions.getCategoryItemRank(categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.deleteCategoryItem(categoryId: widget.categoryId, itemId: widget.itemId);
-      await firestoreFunctions.updateCategoryItemsRanks(categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
+      int deletedCategoryItemRank =
+          await firestoreFunctions.getCategoryItemRank(
+              categoryId: widget.categoryId, itemId: widget.itemId);
+      await firestoreFunctions.deleteCategoryItem(
+          categoryId: widget.categoryId, itemId: widget.itemId);
+      await firestoreFunctions.updateCategoryItemsRanks(
+          categoryId: widget.categoryId, removedRank: deletedCategoryItemRank);
 
-      //LoadingIndicatorDialog().dismiss();
+      if (!widget.mock) {
+        LoadingIndicatorDialog().dismiss();
+      }
       // go back to choice boards page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) {
           if (widget.mock) {
-            return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+            return AdminChoiceBoards(
+                mock: true,
+                testCategories: testCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage);
           } else {
             return AdminChoiceBoards();
           }
@@ -163,8 +194,11 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
         SnackBar(content: Text("${widget.itemName} deleted successfully.")),
       );
     } on Exception catch (e) {
-      LoadingIndicatorDialog().dismiss();
-      ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
+      if (!widget.mock) {
+        LoadingIndicatorDialog().dismiss();
+      }
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          'An error occurred while communicating with the database');
     }
   }
 
@@ -174,18 +208,29 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   /// - Update the ranks of the other categoryItems
   void deleteItemEverywhere() async {
     try {
-      LoadingIndicatorDialog().show(context);
+      if (!widget.mock) {
+        LoadingIndicatorDialog().show(context);
+      }
 
       await firestoreFunctions.deleteImageFromCloud(imageUrl: widget.imageUrl);
-      await firestoreFunctions.deleteAllCategoryItemsForItem(itemId: widget.itemId); // This function also handles updating ranks of categoryItems
+      await firestoreFunctions.deleteAllCategoryItemsForItem(
+          itemId: widget
+              .itemId); // This function also handles updating ranks of categoryItems
       await firestoreFunctions.deleteItem(itemId: widget.itemId);
 
-      LoadingIndicatorDialog().dismiss();
+      if (!widget.mock) {
+        LoadingIndicatorDialog().dismiss();
+      }
       // go back to choice boards page
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) {
           if (widget.mock) {
-            return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+            return AdminChoiceBoards(
+                mock: true,
+                testCategories: testCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage);
           } else {
             return AdminChoiceBoards();
           }
@@ -193,13 +238,19 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       ));
       // update message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("${widget.itemName} successfully deleted from everywhere.")),
+        SnackBar(
+            content: Text(
+                "${widget.itemName} successfully deleted from everywhere.")),
       );
     } on Exception catch (e) {
-      LoadingIndicatorDialog().dismiss();
-      ErrorDialogHelper(context: context).show_alert_dialog('An error occurred while communicating with the database');
+      if (!widget.mock) {
+        LoadingIndicatorDialog().dismiss();
+      }
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          'An error occurred while communicating with the database');
       print(e);
-      ErrorDialogHelper(context: context).show_alert_dialog("An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
+      ErrorDialogHelper(context: context).show_alert_dialog(
+          "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
     }
   }
 }

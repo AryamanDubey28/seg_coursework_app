@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,10 +11,8 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/pages/admin/add_choice_board_item.dart';
 import 'package:seg_coursework_app/pages/admin/add_existing_item.dart';
 import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
-import 'package:seg_coursework_app/pages/admin/admin_side_menu.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
@@ -37,7 +34,8 @@ void main() {
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
     when(mockAuth.currentUser).thenReturn(mockUser);
-    firebaseFunctions = FirebaseFunctions(auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
+    firebaseFunctions = FirebaseFunctions(
+        auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
   });
 
   testWidgets("all elements are present", (WidgetTester tester) async {
@@ -53,15 +51,17 @@ void main() {
               storage: mockStorage,
             ),
           )));
-      
-      await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
+
+      await firebaseFunctions.createItem(
+          name: "testItem", imageUrl: "image.jpg");
       await tester.pumpAndSettle(const Duration(seconds: 3));
       expect(find.byType(ExistingItemsGrid), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
     });
   });
 
-  testWidgets("Tapping on an item saves it as categoryItem", (WidgetTester tester) async {
+  testWidgets("Tapping on an item saves it as categoryItem",
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -74,7 +74,8 @@ void main() {
             categoryId: breakfastCategoryId,
           ))));
 
-      await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
+      await firebaseFunctions.createItem(
+          name: "testItem", imageUrl: "image.jpg");
       await tester.pumpAndSettle(const Duration(seconds: 3));
       await tester.tap(find.byType(ImageSquare));
       await tester.pumpAndSettle(const Duration(seconds: 3));
@@ -85,7 +86,9 @@ void main() {
     });
   });
 
-  testWidgets("Tapping on an item that already exists as a categoryItem doesn't save as duplicate", (WidgetTester tester) async {
+  testWidgets(
+      "Tapping on an item that already exists as a categoryItem doesn't save as duplicate",
+      (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
@@ -99,23 +102,30 @@ void main() {
             ),
           )));
 
-      var testId = await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
-      await firebaseFunctions.createCategoryItem(name: "testItem", imageUrl: "image.jpg", categoryId: breakfastCategoryId, itemId: testId);
+      var testId = await firebaseFunctions.createItem(
+          name: "testItem", imageUrl: "image.jpg");
+      await firebaseFunctions.createCategoryItem(
+          name: "testItem",
+          imageUrl: "image.jpg",
+          categoryId: breakfastCategoryId,
+          itemId: testId);
       await tester.pumpAndSettle(const Duration(seconds: 1));
       await tester.tap(find.byKey(ValueKey("gridImage0")));
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AddExistingItem), findsOneWidget);
       expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.text("testItem already exists in this category!"), findsOneWidget);
+      expect(find.text("testItem already exists in this category!"),
+          findsOneWidget);
     });
   });
 
   testWidgets('Search bar filters picture grid.', (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-
       // Build our app and trigger a frame.
-      await tester.pumpWidget(ThemeProvider(themeNotifier: CustomTheme(), child: MaterialApp(
+      await tester.pumpWidget(ThemeProvider(
+          themeNotifier: CustomTheme(),
+          child: MaterialApp(
             home: AddExistingItem(
               mock: true,
               categoryId: breakfastCategoryId,
@@ -125,7 +135,8 @@ void main() {
             ),
           )));
 
-      await firebaseFunctions.createItem(name: "testItem", imageUrl: "image.jpg");
+      await firebaseFunctions.createItem(
+          name: "testItem", imageUrl: "image.jpg");
       await tester.pumpAndSettle(const Duration(seconds: 1));
       final searchBar = find.byKey(const ValueKey("searchBar"));
 

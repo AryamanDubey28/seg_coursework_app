@@ -184,7 +184,9 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
             );
           });
     } else {
-      LoadingIndicatorDialog().show(context);
+      if (!widget.mock) {
+        LoadingIndicatorDialog().show(context);
+      }
       String? imageUrl = await firestoreFunctions.uploadImageToCloud(
           image: image, name: categoryName);
       if (imageUrl != null) {
@@ -192,7 +194,9 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
           await firestoreFunctions.createCategory(
               name: categoryName, imageUrl: imageUrl);
 
-          LoadingIndicatorDialog().dismiss();
+          if (!widget.mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           // go back to choice boards page
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) {
@@ -213,7 +217,9 @@ class _AddChoiceBoardCategory extends State<AddChoiceBoardCategory> {
             SnackBar(content: Text("$categoryName added successfully.")),
           );
         } catch (e) {
-          LoadingIndicatorDialog().dismiss();
+          if (!widget.mock) {
+            LoadingIndicatorDialog().dismiss();
+          }
           ErrorDialogHelper(context: context).show_alert_dialog(
               "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }

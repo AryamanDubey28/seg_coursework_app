@@ -18,12 +18,20 @@ class ExistingItemsGrid extends StatefulWidget {
   late final bool mock;
   late final FirebaseFunctions firestoreFunctions;
   final List<ImageDetails> imagesList;
-    
-  ExistingItemsGrid({super.key, FirebaseAuth? auth, FirebaseFirestore? firestore, FirebaseStorage? storage, required this.categoryId, this.mock = false, required this.imagesList}) {
+
+  ExistingItemsGrid(
+      {super.key,
+      FirebaseAuth? auth,
+      FirebaseFirestore? firestore,
+      FirebaseStorage? storage,
+      required this.categoryId,
+      this.mock = false,
+      required this.imagesList}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.firestore = firestore ?? FirebaseFirestore.instance;
     this.storage = storage ?? FirebaseStorage.instance;
-    firestoreFunctions = FirebaseFunctions(auth: this.auth, firestore: this.firestore, storage: this.storage);
+    firestoreFunctions = FirebaseFunctions(
+        auth: this.auth, firestore: this.firestore, storage: this.storage);
   }
 
   @override
@@ -49,22 +57,29 @@ class _ExistingItemsGridState extends State<ExistingItemsGrid> {
   @override
   Widget build(BuildContext context) {
     if (widget.imagesList.isEmpty) {
-      return Center(child: Text("No items to show. Add some in the 'Choice Board' page", style: TextStyle(fontSize: 25),),);
+      return const Center(
+        child: Text(
+          "No items to show. Add some in the 'Choice Board' page",
+          style: TextStyle(fontSize: 25),
+        ),
+      );
     } else {
       return LayoutBuilder(builder: (context, constraints) {
         return Container(
-          margin: EdgeInsets.fromLTRB(7, 0, 7, 7),
+          margin: const EdgeInsets.fromLTRB(7, 0, 7, 7),
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: 60,
-                child: Padding(padding: EdgeInsets.only(top: 15), child: SearchBar(onTextChanged: (text) {
-                  setState(() {
-                    _searchText = text;
-                  });
-                }),)
-              ),
-              SizedBox(
+                  height: 60,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: SearchBar(onTextChanged: (text) {
+                      setState(() {
+                        _searchText = text;
+                      });
+                    }),
+                  )),
+              const SizedBox(
                 height: 15,
               ),
               SizedBox(
@@ -82,18 +97,30 @@ class _ExistingItemsGridState extends State<ExistingItemsGrid> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          addItemAsCategoryItem(context: context, itemId: widget.imagesList[index].itemId, imageUrl: widget.imagesList[index].imageUrl, name: widget.imagesList[index].name);
+                          addItemAsCategoryItem(
+                              context: context,
+                              itemId: widget.imagesList[index].itemId,
+                              imageUrl: widget.imagesList[index].imageUrl,
+                              name: widget.imagesList[index].name);
                         },
                         child: Tooltip(
-                          message: _getFilteredItems()[index].name,
-                          child: Column(children: [
-                            Expanded(child: ImageSquare(
-                              key: Key('gridImage$index'),
-                              image: _getFilteredItems()[index],
-                          )),
-                          Padding(padding: EdgeInsets.only(top: 10), child: Text(_getFilteredItems()[index].name, style: TextStyle(fontSize: 20),),)
-                          ],)
-                        ),
+                            message: _getFilteredItems()[index].name,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                    child: ImageSquare(
+                                  key: Key('gridImage$index'),
+                                  image: _getFilteredItems()[index],
+                                )),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    _getFilteredItems()[index].name,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                )
+                              ],
+                            )),
                       );
                     }),
               ),
@@ -104,15 +131,32 @@ class _ExistingItemsGridState extends State<ExistingItemsGrid> {
     }
   }
 
-  void addItemAsCategoryItem({required String itemId, required String imageUrl, required String name, required BuildContext context}) async {
-    DocumentSnapshot categoryItem = await widget.firestore.collection('categoryItems/${widget.categoryId}/items').doc(itemId).get();
+  /// Add a pre-existing item to a new category
+  void addItemAsCategoryItem(
+      {required String itemId,
+      required String imageUrl,
+      required String name,
+      required BuildContext context}) async {
+    bool categoryItemExists = await widget.firestoreFunctions
+        .categoryItemExists(categoryId: widget.categoryId, itemId: itemId);
     // Only create new categoryItem for item if it doens't already exist
-    if (!categoryItem.exists) {
-      await widget.firestoreFunctions.createCategoryItem(name: name, imageUrl: imageUrl, categoryId: widget.categoryId, itemId: itemId);
+    if (!categoryItemExists) {
+      await widget.firestoreFunctions.createCategoryItem(
+          name: name,
+          imageUrl: imageUrl,
+          categoryId: widget.categoryId,
+          itemId: itemId,
+          is_available: await widget.firestoreFunctions
+              .getItemAvailability(itemId: itemId));
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) {
           if (widget.mock) {
-            return AdminChoiceBoards(mock: true, testCategories: testCategories, auth: widget.auth, firestore: widget.firestore, storage: widget.storage);
+            return AdminChoiceBoards(
+                mock: true,
+                testCategories: testCategories,
+                auth: widget.auth,
+                firestore: widget.firestore,
+                storage: widget.storage);
           } else {
             return AdminChoiceBoards();
           }
