@@ -21,9 +21,6 @@ import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
-import 'package:seg_coursework_app/widgets/category_image.dart';
-import 'package:seg_coursework_app/widgets/category_row.dart';
-import 'package:seg_coursework_app/widgets/category_title.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
@@ -165,8 +162,8 @@ void main() {
     mockNetworkImagesFor(() async {
       FirebaseFunctions firebaseFunctions = FirebaseFunctions(
           auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
-      Categories categories =
-          await firebaseFunctions.getUserCategories(); //get categories from db
+      Categories categories = await firebaseFunctions
+          .downloadUserCategories(); //get categories from db
       List<List<ClickableImage>> categories_list = getList(categories);
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),

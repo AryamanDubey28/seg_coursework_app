@@ -46,7 +46,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: const MaterialApp(
+          child: MaterialApp(
             home: CustomizableColumn(
               mock: true,
               auth: MockFirebaseAuth(),

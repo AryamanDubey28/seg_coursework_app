@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:seg_coursework_app/helpers/cache_manager.dart';
 import 'package:seg_coursework_app/helpers/firebase_functions.dart';
 import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
@@ -158,7 +159,8 @@ Future<List<List<ClickableImage>>> getListFromChoiceBoards() async {
       firestore: FirebaseFirestore.instance,
       storage: FirebaseStorage.instance);
 
-  Categories futureUserCategories = await firebaseFunctions.getUserCategories();
+  Categories futureUserCategories =
+      await firebaseFunctions.downloadUserCategories();
   List<List<ClickableImage>> categories = [];
   for (var category in futureUserCategories.getList()) {
     if (category.availability) {

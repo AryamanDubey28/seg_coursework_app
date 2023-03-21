@@ -77,8 +77,8 @@ class _ChildBoards extends State<ChildBoards> with TickerProviderStateMixin {
                 width: 90,
                 height: 90,
                 image: ImageDetails(
-                    name: categoryImage.name,
-                    imageUrl: categoryImage.imageUrl)),
+                    name: widget.categoryImage.name,
+                    imageUrl: widget.categoryImage.imageUrl)),
             //box for spacing
             const SizedBox(
               width: 30,
