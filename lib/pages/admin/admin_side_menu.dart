@@ -1,18 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
+import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
-import 'package:seg_coursework_app/pages/theme_page/theme_page.dart';
+import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import '../../helpers/error_dialog_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../visual_timetable/visual_timetable.dart';
-import 'package:seg_coursework_app/pages/child_menu/customizable_column.dart';
+import 'visual_timetable/visual_timetable.dart';
+import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 
 /// The side-menu of the admin's UI
 class AdminSideMenu extends StatelessWidget {
@@ -74,24 +76,19 @@ class AdminSideMenu extends StatelessWidget {
               Icons.event,
             ),
             title: const Text('Visual Timetable'),
-            onTap: () =>
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) {
-                if(!mock)
-                {
-                  return VisualTimeTable();
-                }
-                else
-                {
-                  return VisualTimeTable(
-                    isMock: mock,
-                    auth: MockFirebaseAuthentication(),
-                    firestore: FakeFirebaseFirestore(),
-                    storage: MockFirebaseStorage(),
-                  );
-                }
+            onTap: () => Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
+              if (!mock) {
+                return VisualTimeTable();
+              } else {
+                return VisualTimeTable(
+                  isMock: mock,
+                  auth: MockFirebaseAuthentication(),
+                  firestore: FakeFirebaseFirestore(),
+                  storage: MockFirebaseStorage(),
+                );
               }
-            )),
+            })),
           ),
           ListTile(
               key: const Key("childMode"),
@@ -100,25 +97,50 @@ class AdminSideMenu extends StatelessWidget {
               ),
               title: const Text('Activate Child Mode'),
               onTap: () async {
+                Auth authenticationHelper;
+
                 if (!mock) {
-                  final auth = Auth(auth: FirebaseAuth.instance);
-                  bool check = await auth.checkPINExists();
-                  if (check) {
-                    final pref = await SharedPreferences.getInstance();
-                    pref.setBool("isInChildMode",
-                        true); //isInChildMode boolean set to true as we are entering
-                    final String pin = await auth.getCurrentUserPIN();
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const CustomizableColumn(),
-                    ));
-                  } else {
-                    ErrorDialogHelper(context: context).show_alert_dialog(
-                        "Please first create a PIN in the 'Edit Account Details' section");
-                  }
+                  authenticationHelper = Auth(
+                      auth: FirebaseAuth.instance,
+                      firestore: FirebaseFirestore.instance);
                 } else {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => CustomizableColumn(),
-                  ));
+                  //if mocking, authenticationHelper assigned to a mock auth
+                  authenticationHelper = Auth(
+                      auth: MockFirebaseAuth(),
+                      firestore: FakeFirebaseFirestore());
+                }
+                bool check = await authenticationHelper.checkPinExists();
+                if (mock) {
+                  check = true;
+                }
+
+                if (check) {
+                  //PIN exists
+                  final String pin =
+                      await authenticationHelper.getCurrentUserPIN();
+
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context) {
+                    if (!mock) {
+                      return ChildMainMenu();
+                    } else {
+                      return ChildMainMenu(
+                        mock: true,
+                        testCategories: testCategories,
+                        auth: MockFirebaseAuthentication(),
+                        firebaseFirestore: FakeFirebaseFirestore(),
+                        storage: MockFirebaseStorage(),
+                      );
+                    }
+                  }));
+
+                  final pref = await SharedPreferences.getInstance();
+                  pref.setBool("isInChildMode",
+                      true); //isInChildMode boolean set to true as we are entering
+                } else {
+                  var dialog = ErrorDialogHelper(context: context);
+                  dialog.showAlertDialog(
+                      "Please first create a PIN in the 'Edit Account Details' section");
                 }
               }),
           ListTile(
@@ -131,7 +153,7 @@ class AdminSideMenu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ThemePage(),
+                  builder: (context) => const ThemePage(),
                 ),
               );
             },
@@ -140,7 +162,7 @@ class AdminSideMenu extends StatelessWidget {
             color: Colors.black54,
           ),
           ListTile(
-            key: const Key("accountDetails"),
+            key: const Key("editAccount"),
             leading: const Icon(
               Icons.account_box_outlined,
             ),
@@ -152,6 +174,7 @@ class AdminSideMenu extends StatelessWidget {
               } else {
                 return EditAccountPage(
                   auth: MockFirebaseAuthentication(),
+                  firestore: FakeFirebaseFirestore(),
                 );
               }
             })),
@@ -165,8 +188,17 @@ class AdminSideMenu extends StatelessWidget {
             onTap: () async {
               FirebaseAuth.instance.signOut();
               final pref = await SharedPreferences.getInstance();
-              final auth = Auth(auth: FirebaseAuth.instance);
-              final String pin = await auth.getCurrentUserPIN();
+              Auth authenticationHelper;
+              if (!mock) {
+                authenticationHelper = Auth(
+                    auth: FirebaseAuth.instance,
+                    firestore: FirebaseFirestore.instance);
+              } else {
+                authenticationHelper = Auth(
+                    auth: MockFirebaseAuth(),
+                    firestore: FakeFirebaseFirestore());
+              }
+              await authenticationHelper.getCurrentUserPIN();
               final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(
                   context,

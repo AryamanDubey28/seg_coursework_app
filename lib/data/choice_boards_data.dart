@@ -1,6 +1,6 @@
-import 'package:seg_coursework_app/models/categories.dart';
-import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/category.dart';
+import 'package:seg_coursework_app/models/category_item.dart';
+import '../models/categories.dart';
 
 /// Used for Testing classes
 final Categories testCategories = Categories(categories: categories);

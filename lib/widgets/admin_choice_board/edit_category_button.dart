@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/pages/admin/edit_choice_board_category.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/edit_choice_board_category.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import '../dialogs/hero_dialog_route.dart';
 
@@ -56,7 +56,7 @@ class _EditCategoryButtonState extends State<EditCategoryButton> {
   void editCategory() {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }

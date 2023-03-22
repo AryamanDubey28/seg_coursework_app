@@ -7,7 +7,8 @@ class ThemeProvider extends StatelessWidget {
   final CustomTheme themeNotifier;
   final Widget child;
 
-  ThemeProvider({required this.themeNotifier, required this.child});
+  const ThemeProvider(
+      {super.key, required this.themeNotifier, required this.child});
 
   @override
   Widget build(BuildContext context) {

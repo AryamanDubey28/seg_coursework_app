@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
+import '../../widgets/general/my_text_field.dart';
 
-import '../../widgets/my_text_field.dart';
-
-
-// This is the screen where the user can request for their password to get changed via email after they forgot it 
+// This is the screen where the user can request for their password to get changed via email after they forgot it
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -33,9 +31,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } on FirebaseAuthException catch (e) {
       text = e.message.toString();
     }
-    ErrorDialogHelper(context: context).show_alert_dialog(text);
+    ErrorDialogHelper(context: context).showAlertDialog(text);
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +53,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 30, color: Colors.black),
                 ),
-          
+
                 const SizedBox(
                   height: 65,
                 ),
@@ -65,32 +63,32 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   controller: _emailController,
                   hint: 'Email',
                 ),
-          
+
                 const SizedBox(
-                          height: 35,
+                  height: 35,
                 ),
-          
+
                 // Button
                 SizedBox(
-                          height: 88,
-                          width: 566,
-                          child: ElevatedButton(
-                            key: const Key('reset_password_button'),
-                            style: ElevatedButton.styleFrom(
-                              textStyle: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepPurple[400],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            onPressed: passwordReset,
-                            child: const Text("Reset Password"),
-                          ),
-                        ),
+                  height: 88,
+                  width: 566,
+                  child: ElevatedButton(
+                    key: const Key('reset_password_button'),
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.deepPurple[400],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onPressed: passwordReset,
+                    child: const Text("Reset Password"),
+                  ),
+                ),
               ],
             ),
           ),

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/pages/authenticate/forgot_password_page.dart';
-import 'package:seg_coursework_app/widgets/my_text_field.dart';
+import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
 
 class LogIn extends StatefulWidget {
   final VoidCallback showRegisterPage;
   final FirebaseAuth auth;
 
-  const LogIn({
+  LogIn({
     Key? key,
     required this.showRegisterPage,
     required this.auth,
-  }) : super(key: key);
+  });
 
   @override
   State<LogIn> createState() => _LogInState();
@@ -23,22 +23,25 @@ class _LogInState extends State<LogIn> {
   //email and password controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late final Auth auth;
+  late final Auth authentitcationHelper;
   late ErrorDialogHelper errorDialogHelper;
+
+  _LogInState();
 
   @override
   void initState() {
     super.initState();
-    auth = Auth(auth: widget.auth);
+
+    authentitcationHelper = Auth(auth: widget.auth);
     errorDialogHelper = ErrorDialogHelper(context: context);
   }
 
   //sign users in using Firebase method
   Future signIn() async {
-    final result = await auth.signIn(
+    final result = await authentitcationHelper.signIn(
         _emailController.text.trim(), _passwordController.text.trim());
     if (result != "Success") {
-      errorDialogHelper.show_alert_dialog(
+      errorDialogHelper.showAlertDialog(
           'This user either does not exist or the password is incorrect. Try again or click Forgot Password or register again');
     }
   }

@@ -24,7 +24,7 @@ class ImagePickerFunctions {
 
       return File(image.path);
     } on PlatformException catch (e) {
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "Could not upload/take a picture, make sure you have given image permissions in your device's settings");
       return null;
     }

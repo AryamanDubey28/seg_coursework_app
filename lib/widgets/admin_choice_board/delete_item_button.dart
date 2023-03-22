@@ -4,8 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/data/choice_boards_data.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/widgets/loading_indicators/loading_indicator.dart';
 
@@ -72,7 +72,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   Future<void> _showAlertDialog(BuildContext context) async {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }
@@ -119,7 +119,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   void showDeleteEverywhereConfirmation() async {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }
@@ -197,7 +197,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       if (!widget.mock) {
         LoadingIndicatorDialog().dismiss();
       }
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           'An error occurred while communicating with the database');
     }
   }
@@ -246,10 +246,10 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       if (!widget.mock) {
         LoadingIndicatorDialog().dismiss();
       }
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           'An error occurred while communicating with the database');
       print(e);
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
     }
   }

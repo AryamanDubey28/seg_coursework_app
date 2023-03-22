@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 
 // Unit tests for the methods of the Auth class linked to editing an account.
@@ -17,15 +18,6 @@ class MyMockUser extends MockUser {
     return Future(() => null);
   }
 
-  Future<void> updatePIN(String pin) {
-    if (email == "throw_known_error@tester.org") {
-      throw FirebaseAuthException(code: "Simulation");
-    } else if (email == "throw_unknown_error@tester.org") {
-      throw Error();
-    }
-    return Future(() => null);
-  }
-
   Future<void> updatePassword(String newPassword) {
     if (newPassword == "throw_unknown_error") {
       throw Error();
@@ -33,8 +25,8 @@ class MyMockUser extends MockUser {
     return Future(() => null);
   }
 
-  Future<void> createPIN(String pin) {
-    return Future(() => null);
+  Future<String> getCurrentUserPIN() async {
+    return "0000";
   }
 
   @override
@@ -51,6 +43,19 @@ class MyMockFirebaseAuth extends MockFirebaseAuth {
   MyMockFirebaseAuth({super.mockUser}) {}
 }
 
+class MyMockFirebaseFirestore extends FakeFirebaseFirestore {
+  String userId;
+  MyMockFirebaseFirestore({required this.userId}) {}
+
+  @override
+  CollectionReference<Map<String, dynamic>> collection(String path) {
+    var map = {"userId": userId, "pin": "0000"};
+    CollectionReference collectionReference = super.collection(path);
+    collectionReference.add(map);
+    return collectionReference as CollectionReference<Map<String, dynamic>>;
+  }
+}
+
 void main() async {
   late Auth auth;
   const _email = 'ilyas@yopmail.com';
@@ -65,7 +70,9 @@ void main() async {
 
   setUp(() {
     final _mockAuth = MyMockFirebaseAuth(mockUser: _mockUser);
-    auth = Auth(auth: _mockAuth);
+    final _mockFirestore = MyMockFirebaseFirestore(userId: "sampleUid");
+    _mockFirestore.saveDocument("userPins");
+    auth = Auth(auth: _mockAuth, mock: true, firestore: _mockFirestore);
   });
 
   tearDown(() {});
@@ -103,7 +110,6 @@ void main() async {
       'update password works when provided with valid current password and password argument',
       () async {
     await auth.signIn(_email, _password);
-    print("going to edit password");
     expect(await auth.editCurrentUserPassword(_password, "newPassword123"),
         "Your password was successfully changed.");
   });
@@ -131,15 +137,50 @@ void main() async {
         'We could not verify your identity. Please log out and back in.');
   });
 
+  test("Get current user's id returns an id", () async {
+    await auth.signIn(_email, _password);
+    String? uid = await auth.getCurrentUserId(); //mocking returns sampleUid
+    expect(uid, "sampleUid");
+  });
+
   test("Cannot set a PIN longer than 4 digits", () async {
     await auth.signIn(_email, _password);
-    expect(await auth.createPIN("12345"),
+    expect(await auth.createPin("12345"),
         "Please ensure that your PIN is 4 digits");
   });
 
   test("Cannot create a PIN with characters and letters", () async {
     await auth.signIn(_email, _password);
-    expect(await auth.createPIN("abcd"),
+    expect(await auth.createPin("abcd"),
         "Please ensure that your PIN is 4 digits");
+  });
+
+  test("Entering valid PIN works", () async {
+    await auth.signIn(_email, _password);
+    expect(await auth.createPin("1234"), "Successfully made your pin: 1234");
+  });
+
+  test("PIN exists for users", () async {
+    await auth.signIn(_email, _password);
+    bool result = await auth.checkPinExists();
+    expect(result, true);
+  });
+
+  test("Cannot edit a PIN to be less than 4 digits", () async {
+    await auth.signIn(_email, _password);
+    expect(await auth.editCurrentUserPIN("123"),
+        "Please ensure your new PIN is 4 digits");
+  });
+
+  test("Entering valid PIN sucessfully updates it", () async {
+    await auth.signIn(_email, _password);
+    expect(await auth.editCurrentUserPIN("9999"),
+        "Your PIN was successfully changed to 9999");
+  });
+
+  test("Get Current User's PIN returns a PIN", () async {
+    await auth.signIn(_email, _password);
+    String pin = await auth.getCurrentUserPIN();
+    expect(pin, "0000");
   });
 }

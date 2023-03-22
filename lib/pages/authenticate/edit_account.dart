@@ -1,25 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import '../../widgets/admin_choice_board/edit_email_section.dart';
-import '../../widgets/admin_choice_board/edit_password_section.dart';
-import '../../widgets/admin_choice_board/edit_pin_section.dart';
+import 'package:seg_coursework_app/widgets/edit_account/edit_email_section.dart';
+import 'package:seg_coursework_app/widgets/edit_account/edit_password_section.dart';
+import 'package:seg_coursework_app/widgets/edit_account/edit_pin_section.dart';
 import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
 // ignore: must_be_immutable
 class EditAccountPage extends StatefulWidget {
-  late final FirebaseAuth auth;
-  late final bool isTestMode;
+  late FirebaseAuth auth;
+  late bool isTestMode;
+  late FirebaseFirestore firebaseFirestore;
 
-  EditAccountPage({super.key, FirebaseAuth? auth, bool? isTestMode}) {
+  EditAccountPage(
+      {super.key,
+      FirebaseAuth? auth,
+      bool? isTestMode,
+      FirebaseFirestore? firestore}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.isTestMode = isTestMode ?? false;
+    firebaseFirestore = firestore ?? FirebaseFirestore.instance;
   }
 
   @override
-  // ignore: no_logic_in_create_state
-  State<EditAccountPage> createState() => EditAccountPageState(auth);
+  State<EditAccountPage> createState() => EditAccountPageState();
 }
 
 class EditAccountPageState extends State<EditAccountPage> {
@@ -28,14 +34,14 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
-  late FirebaseAuth auth;
 
-  EditAccountPageState(this.auth);
+  EditAccountPageState();
 
   @override
   void initState() {
     super.initState();
-    authentitcationHelper = Auth(auth: auth);
+    authentitcationHelper =
+        Auth(auth: widget.auth, firestore: widget.firebaseFirestore);
   }
 
   @override
@@ -66,13 +72,18 @@ class EditAccountPageState extends State<EditAccountPage> {
                   children: [
                     EditEmailSection(
                         authentitcationHelper: authentitcationHelper,
-                        isTestMode: widget.isTestMode),
+                        isTestMode: widget.isTestMode,
+                        auth: widget.auth,
+                        firebaseFirestore: widget.firebaseFirestore),
                     EditPasswordSection(
                         authentitcationHelper: authentitcationHelper,
                         isTestMode: widget.isTestMode),
                     EditPINSection(
-                        authentitcationHelper: authentitcationHelper,
-                        isTestMode: widget.isTestMode)
+                      authentitcationHelper: authentitcationHelper,
+                      isTestMode: widget.isTestMode,
+                      auth: widget.auth,
+                      firebaseFirestore: widget.firebaseFirestore,
+                    )
                   ],
                 )),
           ),

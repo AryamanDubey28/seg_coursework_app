@@ -1,12 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:seg_coursework_app/helpers/mock_firebase_authentication.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/authenticate/register_page.dart';
-
 import '../../services/auth/auth_test.mocks.dart';
 
 class MyMockFirebaseAuth extends MockFirebaseAuth {
@@ -70,10 +67,10 @@ void main() {
               showLoginPage: () {}, auth: mockAuth, isTestMode: true)));
       await tester.pumpAndSettle();
 
-      final emailField = find.byKey(Key('email_text_field'));
-      final passwordField = find.byKey(Key('pass_text_field'));
-      final passConfField = find.byKey(Key('pass_conf_text_field'));
-      final signUpButton = find.byKey(Key('sign_up_button'));
+      final emailField = find.byKey(const Key('email_text_field'));
+      final passwordField = find.byKey(const Key('pass_text_field'));
+      final passConfField = find.byKey(const Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(const Key('sign_up_button'));
 
       await tester.enterText(emailField, "emailfortesting@gmail.com");
       await tester.pumpAndSettle();
@@ -85,7 +82,6 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(signUpButton);
-      // await tester.pumpAndSettle();
 
       expect(find.byType(ScaffoldMessenger), findsOneWidget);
     });
@@ -99,10 +95,10 @@ void main() {
               showLoginPage: () {}, auth: mockAuth, isTestMode: true)));
       await tester.pumpAndSettle();
 
-      final emailField = find.byKey(Key('email_text_field'));
-      final passwordField = find.byKey(Key('pass_text_field'));
-      final passConfField = find.byKey(Key('pass_conf_text_field'));
-      final signUpButton = find.byKey(Key('sign_up_button'));
+      final emailField = find.byKey(const Key('email_text_field'));
+      final passwordField = find.byKey(const Key('pass_text_field'));
+      final passConfField = find.byKey(const Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(const Key('sign_up_button'));
 
       await tester.enterText(emailField, "emailaddressfortesting");
       await tester.pumpAndSettle();
@@ -130,10 +126,10 @@ void main() {
               showLoginPage: () {}, auth: mockAuth, isTestMode: true)));
       await tester.pumpAndSettle();
 
-      final emailField = find.byKey(Key('email_text_field'));
-      final passwordField = find.byKey(Key('pass_text_field'));
-      final passConfField = find.byKey(Key('pass_conf_text_field'));
-      final signUpButton = find.byKey(Key('sign_up_button'));
+      final emailField = find.byKey(const Key('email_text_field'));
+      final passwordField = find.byKey(const Key('pass_text_field'));
+      final passConfField = find.byKey(const Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(const Key('sign_up_button'));
 
       await tester.enterText(emailField, "emailaddressfortesting@gmail.com");
       await tester.pumpAndSettle();
@@ -161,10 +157,10 @@ void main() {
               showLoginPage: () {}, auth: mockAuth, isTestMode: true)));
       await tester.pumpAndSettle();
 
-      final emailField = find.byKey(Key('email_text_field'));
-      final passwordField = find.byKey(Key('pass_text_field'));
-      final passConfField = find.byKey(Key('pass_conf_text_field'));
-      final signUpButton = find.byKey(Key('sign_up_button'));
+      final emailField = find.byKey(const Key('email_text_field'));
+      final passwordField = find.byKey(const Key('pass_text_field'));
+      final passConfField = find.byKey(const Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(const Key('sign_up_button'));
 
       await tester.enterText(emailField, "");
       await tester.pumpAndSettle();
@@ -191,10 +187,10 @@ void main() {
               showLoginPage: () {}, auth: mockAuth, isTestMode: true)));
       await tester.pumpAndSettle();
 
-      final emailField = find.byKey(Key('email_text_field'));
-      final passwordField = find.byKey(Key('pass_text_field'));
-      final passConfField = find.byKey(Key('pass_conf_text_field'));
-      final signUpButton = find.byKey(Key('sign_up_button'));
+      final emailField = find.byKey(const Key('email_text_field'));
+      final passwordField = find.byKey(const Key('pass_text_field'));
+      final passConfField = find.byKey(const Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(const Key('sign_up_button'));
 
       await tester.enterText(emailField, "testing@test.com");
       await tester.pumpAndSettle();
@@ -222,10 +218,10 @@ void main() {
               showLoginPage: () {}, auth: mockAuth, isTestMode: true)));
       await tester.pumpAndSettle();
 
-      final emailField = find.byKey(Key('email_text_field'));
-      final passwordField = find.byKey(Key('pass_text_field'));
-      final passConfField = find.byKey(Key('pass_conf_text_field'));
-      final signUpButton = find.byKey(Key('sign_up_button'));
+      final emailField = find.byKey(const Key('email_text_field'));
+      final passwordField = find.byKey(const Key('pass_text_field'));
+      final passConfField = find.byKey(const Key('pass_conf_text_field'));
+      final signUpButton = find.byKey(const Key('sign_up_button'));
 
       await tester.enterText(emailField, "testing@test.com");
       await tester.pumpAndSettle();

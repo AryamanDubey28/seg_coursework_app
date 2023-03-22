@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-import 'package:seg_coursework_app/helpers/firebase_functions.dart';
-import 'package:seg_coursework_app/pages/admin/admin_choice_boards.dart';
+import 'package:seg_coursework_app/services/firebase_functions.dart';
+import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 
 ///This widget is used to create toggleSwitches able to switch the is_available value
@@ -58,6 +58,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
         storage: widget.storage);
   }
 
+  /// Reloads the AdminChoiceBoards page
   void refresh() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -71,6 +72,8 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
     );
   }
 
+  /// Switches the is_available field depending if it's
+  /// a category or an item. Return true if no errors occured, otherwise false.
   Future<bool> switchAvailabilityValue(
       String documentId, bool isCategory) async {
     bool val;
@@ -85,11 +88,12 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       return true;
     } else {
       ErrorDialogHelper(context: context)
-          .show_alert_dialog(getFailedUpdateText(isCategory));
+          .showAlertDialog(getFailedUpdateText(isCategory));
       return false;
     }
   }
 
+  /// Get the error text depending on if it's a category or an item
   String getFailedUpdateText(bool isCategory) {
     if (isCategory) {
       return "Category availability could not be changed. Make sure you are connected to internet.";
@@ -106,7 +110,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       onChanged: (bool value) async {
         if (!widget.mock && !CheckConnection.isDeviceConnected) {
           // User has no internet connection
-          ErrorDialogHelper(context: context).show_alert_dialog(
+          ErrorDialogHelper(context: context).showAlertDialog(
               "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
         } else {
           final bool trigger = await switchAvailabilityValue(
