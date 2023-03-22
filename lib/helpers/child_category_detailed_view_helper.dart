@@ -10,16 +10,20 @@ import 'package:seg_coursework_app/widgets/child_view/item_unavailable.dart';
 // Returns the grid of images, clickable and unavailable
 Expanded getMainImages(List<CategoryItem> images) {
   return Expanded(
-    child: GridView.builder(
-        key: const Key("mainGridOfPictures"),
-        padding: const EdgeInsets.all(8.0),
-        //physics: const NeverScrollableScrollPhysics(),
-        itemCount: images.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 5, childAspectRatio: 4 / 3),
-        itemBuilder: (context, index) {
-          return getImage(index, images);
-        }),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final isLandscape = constraints.maxWidth > constraints.maxHeight;
+        return GridView.builder(
+            key: const Key("mainGridOfPictures"),
+            padding: const EdgeInsets.all(8.0),
+            itemCount: images.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isLandscape? 5 : 3, childAspectRatio: 4 / 3),
+            itemBuilder: (context, index) {
+              return getImage(index, images);
+            });
+      }
+    ),
   );
 }
 

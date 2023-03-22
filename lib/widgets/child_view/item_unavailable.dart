@@ -18,7 +18,7 @@ Stack makeUnavailable() {
               icon: Icon(
                 Icons.clear,
                 color: Colors.red,
-                size: 100,
+                size: 200,
               ),
               decoration: IconDecoration(border: IconBorder(width: 5)),
             ),
