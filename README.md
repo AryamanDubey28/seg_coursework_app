@@ -1,11 +1,11 @@
-# seg_coursework_app
+# TalkVanGogh
 
 
 ## C6: Communication app for developmentally delayed, non-verbal child with autism
 
 
 
-## Authors:
+## Authors (Team VanGogh):
 
 - *Anton Sirgue*
 - *Ali Alkhars*
@@ -54,3 +54,4 @@ The software is deployed as an apk file, but can be created into a .app file, a 
 ## General notes about the app:
 - The app is designed to be used in landscape mode (however it does work in portrait mode)
 - To switch from child mode to admin mode, you need to press and hold the button on the top right (not tap)
+- In the child mode, data will be loaded from the database automatically every 2 minutes, or if the user navigates back and forth between screens
