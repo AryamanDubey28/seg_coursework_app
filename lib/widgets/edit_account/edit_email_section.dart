@@ -104,17 +104,19 @@ class EditEmailSection extends StatelessWidget {
                           ),
                           onPressed: () async {
                             await commit_email_edit();
-                            Timer(Duration(seconds: 2), () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditAccountPage(
-                                      firestore: firebaseFirestore,
-                                      auth: auth,
-                                      isTestMode: isTestMode),
-                                ),
-                              );
-                            });
+                            if (!isTestMode) {
+                              Timer(Duration(seconds: 2), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditAccountPage(
+                                        firestore: firebaseFirestore,
+                                        auth: auth,
+                                        isTestMode: isTestMode),
+                                  ),
+                                );
+                              });
+                            }
                           },
                           child: const Text("Change Email"),
                         ),

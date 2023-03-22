@@ -71,17 +71,19 @@ class EditPINSection extends StatelessWidget {
                     key: const Key("submitButton"),
                     onPressed: () async {
                       await submit(context);
-                      Timer(Duration(seconds: 2), () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditAccountPage(
-                                firestore: firebaseFirestore,
-                                auth: auth,
-                                isTestMode: isTestMode),
-                          ),
-                        );
-                      });
+                      if (!isTestMode) {
+                        Timer(Duration(seconds: 2), () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditAccountPage(
+                                  firestore: firebaseFirestore,
+                                  auth: auth,
+                                  isTestMode: isTestMode),
+                            ),
+                          );
+                        });
+                      }
                     },
                     child: const Text("SUBMIT"))
               ],
@@ -171,17 +173,19 @@ class EditPINSection extends StatelessWidget {
                           ),
                           onPressed: () async {
                             await commit_pin_edit();
-                            Timer(Duration(seconds: 2), () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditAccountPage(
-                                      firestore: firebaseFirestore,
-                                      auth: auth,
-                                      isTestMode: isTestMode),
-                                ),
-                              );
-                            });
+                            if (!isTestMode) {
+                              Timer(Duration(seconds: 2), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditAccountPage(
+                                        firestore: firebaseFirestore,
+                                        auth: auth,
+                                        isTestMode: isTestMode),
+                                  ),
+                                );
+                              });
+                            }
                           },
                           child: const Text("Change PIN"),
                         ),

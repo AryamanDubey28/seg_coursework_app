@@ -163,7 +163,7 @@ class AdminSideMenu extends StatelessWidget {
             color: Colors.black54,
           ),
           ListTile(
-            key: const Key("accountDetails"),
+            key: const Key("editAccount"),
             leading: const Icon(
               Icons.account_box_outlined,
             ),
@@ -175,6 +175,7 @@ class AdminSideMenu extends StatelessWidget {
               } else {
                 return EditAccountPage(
                   auth: MockFirebaseAuthentication(),
+                  firestore: FakeFirebaseFirestore(),
                 );
               }
             })),
