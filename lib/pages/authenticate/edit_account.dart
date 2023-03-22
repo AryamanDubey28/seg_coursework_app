@@ -75,13 +75,18 @@ class EditAccountPageState extends State<EditAccountPage> {
                   children: [
                     EditEmailSection(
                         authentitcationHelper: authentitcationHelper,
-                        isTestMode: widget.isTestMode),
+                        isTestMode: widget.isTestMode,
+                        auth: widget.auth,
+                        firebaseFirestore: widget.firebaseFirestore),
                     EditPasswordSection(
                         authentitcationHelper: authentitcationHelper,
                         isTestMode: widget.isTestMode),
                     EditPINSection(
-                        authentitcationHelper: authentitcationHelper,
-                        isTestMode: widget.isTestMode)
+                      authentitcationHelper: authentitcationHelper,
+                      isTestMode: widget.isTestMode,
+                      auth: widget.auth,
+                      firebaseFirestore: widget.firebaseFirestore,
+                    )
                   ],
                 )),
           ),

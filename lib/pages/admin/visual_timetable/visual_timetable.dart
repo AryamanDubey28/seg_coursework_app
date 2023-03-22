@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/cache_manager.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/helpers/loadingMixin.dart';
+import 'package:seg_coursework_app/helpers/loading_mixin.dart';
 import 'package:seg_coursework_app/widgets/timetable/save_timetable_dialog.dart';
 import '../../../services/firebase_functions.dart';
 import '../../../helpers/snackbar_manager.dart';

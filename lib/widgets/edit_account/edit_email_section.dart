@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
+import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
+import 'dart:async';
 
 import '../../services/auth.dart';
 import '../loading_indicators/loading_indicator.dart';
@@ -10,12 +14,16 @@ class EditEmailSection extends StatelessWidget {
   late final BuildContext context;
   final _emailEditController = TextEditingController();
   late final Auth authentitcationHelper;
-  late final bool isTestMode;
+  late FirebaseAuth auth;
+  late bool isTestMode;
+  late FirebaseFirestore firebaseFirestore;
 
   EditEmailSection(
       {super.key,
       required this.authentitcationHelper,
-      required this.isTestMode});
+      required this.isTestMode,
+      required this.auth,
+      required this.firebaseFirestore});
 
   // Verify the validity of fields and execute the change of a user's email.
   Future commit_email_edit() async {
@@ -94,7 +102,20 @@ class EditEmailSection extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          onPressed: commit_email_edit,
+                          onPressed: () async {
+                            await commit_email_edit();
+                            Timer(Duration(seconds: 2), () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditAccountPage(
+                                      firestore: firebaseFirestore,
+                                      auth: auth,
+                                      isTestMode: isTestMode),
+                                ),
+                              );
+                            });
+                          },
                           child: const Text("Change Email"),
                         ),
                       ),

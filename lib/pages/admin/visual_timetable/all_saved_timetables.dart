@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:seg_coursework_app/helpers/loadingMixin.dart';
+import 'package:seg_coursework_app/helpers/loading_mixin.dart';
 import '../../../helpers/cache_manager.dart';
 import '../../../services/firebase_functions.dart';
 import '../../../helpers/snackbar_manager.dart';

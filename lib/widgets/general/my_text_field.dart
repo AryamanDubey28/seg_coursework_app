@@ -39,14 +39,23 @@ class _MyTextFieldState extends State<MyTextField> {
         child: Padding(
           padding: const EdgeInsets.only(left: 20.0),
           child: widget.isPassword == false
-              ? TextField(
-                  cursorColor: Colors.black,
-                  controller: widget.controller,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: widget.hint,
-                  ),
-                )
+              ? widget.isNumericKeyboard == true
+                  ? TextField(
+                      cursorColor: Colors.black,
+                      controller: widget.controller,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: widget.hint,
+                      ))
+                  : TextField(
+                      cursorColor: Colors.black,
+                      controller: widget.controller,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: widget.hint,
+                      ),
+                    )
               : TextField(
                   cursorColor: Colors.black,
                   obscureText: !passwordVisible,

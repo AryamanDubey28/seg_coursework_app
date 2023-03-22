@@ -1,21 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
 import '../../helpers/error_dialog_helper.dart';
+import '../../pages/authenticate/edit_account.dart';
 import '../../services/auth.dart';
 import '../loading_indicators/loading_indicator.dart';
+import 'dart:async';
 
 /// This widget returns all the components and functionalitlies necessary for the user to change their email.
 class EditPINSection extends StatelessWidget {
   late final BuildContext context;
   final _pinEditController = TextEditingController();
   late final Auth authentitcationHelper;
-  late final bool isTestMode;
+  late FirebaseAuth auth;
+  late bool isTestMode;
+  late FirebaseFirestore firebaseFirestore;
 
   EditPINSection(
       {super.key,
       required this.authentitcationHelper,
-      required this.isTestMode});
+      required this.isTestMode,
+      required this.auth,
+      required this.firebaseFirestore});
 
   bool validatePin(String pin) {
     return pin.length == 4 && num.tryParse(pin) != null;
@@ -61,7 +69,20 @@ class EditPINSection extends StatelessWidget {
               actions: [
                 TextButton(
                     key: const Key("submitButton"),
-                    onPressed: () => submit(context),
+                    onPressed: () async {
+                      await submit(context);
+                      Timer(Duration(seconds: 2), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditAccountPage(
+                                firestore: firebaseFirestore,
+                                auth: auth,
+                                isTestMode: isTestMode),
+                          ),
+                        );
+                      });
+                    },
                     child: const Text("SUBMIT"))
               ],
             ));
@@ -99,7 +120,7 @@ class EditPINSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              onPressed: () async {
+              onPressed: () {
                 makePin(context);
               },
               child: const Text("Create PIN"),
@@ -148,7 +169,20 @@ class EditPINSection extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          onPressed: commit_pin_edit,
+                          onPressed: () async {
+                            await commit_pin_edit();
+                            Timer(Duration(seconds: 2), () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditAccountPage(
+                                      firestore: firebaseFirestore,
+                                      auth: auth,
+                                      isTestMode: isTestMode),
+                                ),
+                              );
+                            });
+                          },
                           child: const Text("Change PIN"),
                         ),
                       ),
