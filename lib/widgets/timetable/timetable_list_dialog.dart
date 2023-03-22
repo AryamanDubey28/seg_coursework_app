@@ -3,7 +3,7 @@ import 'package:icon_decoration/icon_decoration.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
 import '../../themes/themes.dart';
-import '../categoryItem/image_square.dart';
+import '../general/image_square.dart';
 
 ///This widget builds a timetable with the arrows to be shown in the dialog in the all timetables page.
 class TimetableListDialog extends StatefulWidget {

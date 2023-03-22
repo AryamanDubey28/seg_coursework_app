@@ -9,9 +9,9 @@ import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/pages/child/category_details_display.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import 'package:seg_coursework_app/widgets/general/image_square.dart';
 import '../../themes/themes.dart';
-import '../../widgets/child_view/category_image_row.dart';
+import '../../widgets/child_view/category_items_preview.dart';
 import '../../widgets/child_view/category_title.dart';
 
 /// Display of one category in the child menu

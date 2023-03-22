@@ -7,7 +7,7 @@ import 'package:seg_coursework_app/widgets/general/search_bar.dart';
 import '../../data/choice_boards_data.dart';
 import '../../services/firebase_functions.dart';
 import '../../pages/admin/choice_board/admin_choice_boards.dart';
-import '../categoryItem/image_square.dart';
+import '../general/image_square.dart';
 
 /// Shows a grid of all existing item images and names
 class ExistingItemsGrid extends StatefulWidget {

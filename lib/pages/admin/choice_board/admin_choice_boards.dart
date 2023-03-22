@@ -9,7 +9,7 @@ import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/helpers/loading_mixin.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import 'package:seg_coursework_app/widgets/general/image_square.dart';
 import '../../../widgets/admin_choice_board/add_category_button.dart';
 import '../../../widgets/admin_choice_board/add_item_button.dart';
 import '../../../widgets/admin_choice_board/admin_switch_buttons.dart';
