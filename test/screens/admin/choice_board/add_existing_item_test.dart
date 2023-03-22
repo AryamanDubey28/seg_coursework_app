@@ -15,7 +15,7 @@ import 'package:seg_coursework_app/pages/admin/choice_board/add_existing_item.da
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import 'package:seg_coursework_app/widgets/general/image_square.dart';
 import 'package:seg_coursework_app/widgets/admin_choice_board/existing_items_grid.dart';
 
 void main() {

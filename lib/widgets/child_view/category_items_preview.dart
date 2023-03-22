@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import 'package:seg_coursework_app/widgets/general/image_square.dart';
 
 /// List of image previews that belong to a category
 class CategoryItemsPreview extends StatelessWidget {

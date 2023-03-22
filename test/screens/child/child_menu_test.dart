@@ -15,12 +15,12 @@ import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.dart';
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
-import 'package:seg_coursework_app/pages/child/customizable_row.dart';
+import 'package:seg_coursework_app/pages/child/child_menu_category_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
 import 'package:seg_coursework_app/widgets/child_view/category_title.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import 'package:seg_coursework_app/widgets/general/image_square.dart';
 import 'package:mockito/mockito.dart';
 import '../auth/edit_account_widget_test.dart';
 

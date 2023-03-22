@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 import 'package:provider/provider.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
-import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
+import 'package:seg_coursework_app/widgets/general/image_square.dart';
 import '../../themes/themes.dart';
 
 ///This widget builds a timetable with the arrows to be shown in the visual timetable page.
 ///Not to be confused with TimetableRow which is shown in the all saved timetables page.
 class TimetableList extends StatefulWidget {
-  TimetableList(
+  const TimetableList(
       {super.key, required this.imagesList, required this.popImagesList});
 
   final List<ImageDetails> imagesList;
