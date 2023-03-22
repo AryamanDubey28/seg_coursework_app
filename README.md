@@ -50,3 +50,7 @@ Our understanding and implementation of this approach on the database structure 
 
 ## Deployment:
 The software is deployed as an apk file, but can be created into a .app file, a macos app or a windows app on request.
+
+## General notes about the app:
+- The app is designed to be used in landscape mode (however it does work in portrait mode)
+- To switch from child mode to admin mode, you need to press and hold the button on the top right (not tap)
