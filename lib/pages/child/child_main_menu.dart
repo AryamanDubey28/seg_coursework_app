@@ -11,14 +11,10 @@ import 'package:seg_coursework_app/models/category.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:seg_coursework_app/widgets/child_view/logout_icon_button.dart';
+import 'package:seg_coursework_app/widgets/loading_indicators/custom_loading_indicator.dart';
 import 'customizable_row.dart';
 
-// The child menu is formed essentially by creating a column of rows,
-// with rowConfigs outlining the category's title and images
-
-//1st image is category image, ones after are smaller previews
-
-// ignore: must_be_immutable
+/// Shows the list of categories available for the child to select from
 class ChildMainMenu extends StatefulWidget {
   final bool mock;
   final Categories? testCategories;
@@ -40,29 +36,26 @@ class ChildMainMenu extends StatefulWidget {
     this.storage = storage ?? FirebaseStorage.instance;
     this.completer = completer ?? Completer();
   }
-  //testList = passed in testList from constructor but if none is passed it, testList = test_list_clickable_images
 
   @override
-  State<ChildMainMenu> createState() => _ChildMainMenuState(completer);
+  State<ChildMainMenu> createState() => _ChildMainMenuState();
 }
 
 class _ChildMainMenuState extends State<ChildMainMenu> {
-  TextEditingController pin_controller = TextEditingController();
+  TextEditingController pinController = TextEditingController();
   late Key key;
   late Timer timer;
-
   late final Auth authentitcationHelper;
-  late Completer completer;
   late Categories
       _futureUserCategories; // holds the user categories (if not mocking)
 
-  _ChildMainMenuState(this.completer) {}
+  _ChildMainMenuState();
 
   @override
   void initState() {
     super.initState();
-    key = Key("ChildMainMenu");
-    completer = Completer();
+    key = const Key("ChildMainMenu");
+    widget.completer = Completer();
     buildCompleter();
     authentitcationHelper =
         Auth(auth: widget.auth, firestore: widget.firebaseFirestore);
@@ -74,14 +67,14 @@ class _ChildMainMenuState extends State<ChildMainMenu> {
 
   @override
   void dispose() {
-    pin_controller.dispose();
+    pinController.dispose();
     super.dispose();
     timer
         .cancel(); //cancels timer so it does not keep refreshing in the background
   }
 
   void buildCompleter() {
-    completer.complete(loadData());
+    widget.completer.complete(loadData());
   }
 
   Future<List<ChildMenuCategoryRow>> loadData() async {
@@ -147,18 +140,17 @@ class _ChildMainMenuState extends State<ChildMainMenu> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: LogoutIconButton(
-                key: Key("logoutIcon"),
+                key: const Key("logoutIcon"),
                 mock: widget.mock,
-                pin_controller: pin_controller,
+                pinController: pinController,
                 authenticationHelper: authentitcationHelper),
           )
         ],
       ),
-      //getListFromChoiceBoards updates from Firestore but when testing it will cause tester.pumpAndSettle() to time out, completer.future will allow tests to work perfectly but won't allow to have updates from the db. To achieve the best of both worlds, both are here in a ternary operator
       body: FutureBuilder(
         future: !widget.mock
             ? loadData()
-            : completer
+            : widget.completer
                 .future, //retrieves a list from the database of categories and items associated with the category
 
         builder: (context, snapshot) {
@@ -170,7 +162,7 @@ class _ChildMainMenuState extends State<ChildMainMenu> {
               children: categoriesData,
             );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return const CustomLoadingIndicator();
           }
         },
       ),

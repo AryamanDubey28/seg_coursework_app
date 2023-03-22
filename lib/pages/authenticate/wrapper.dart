@@ -4,6 +4,7 @@ import 'package:seg_coursework_app/pages/admin/choice_board/admin_choice_boards.
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 import 'toggleAuth.dart';
 
+/// Works as a redirection guide depending on the logged-in status of the user
 class Wrapper extends StatelessWidget {
   final bool isInChildMode;
   late final FirebaseAuth auth;

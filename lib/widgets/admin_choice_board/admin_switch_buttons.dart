@@ -58,6 +58,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
         storage: widget.storage);
   }
 
+  /// Reloads the AdminChoiceBoards page
   void refresh() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -71,6 +72,8 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
     );
   }
 
+  /// Switches the is_available field depending if it's
+  /// a category or an item. Return true if no errors occured, otherwise false.
   Future<bool> switchAvailabilityValue(
       String documentId, bool isCategory) async {
     bool val;
@@ -85,11 +88,12 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       return true;
     } else {
       ErrorDialogHelper(context: context)
-          .show_alert_dialog(getFailedUpdateText(isCategory));
+          .showAlertDialog(getFailedUpdateText(isCategory));
       return false;
     }
   }
 
+  /// Get the error text depending on if it's a category or an item
   String getFailedUpdateText(bool isCategory) {
     if (isCategory) {
       return "Category availability could not be changed. Make sure you are connected to internet.";
@@ -106,7 +110,7 @@ class _SwitchButtonState extends State<AvailabilitySwitchToggle> {
       onChanged: (bool value) async {
         if (!widget.mock && !CheckConnection.isDeviceConnected) {
           // User has no internet connection
-          ErrorDialogHelper(context: context).show_alert_dialog(
+          ErrorDialogHelper(context: context).showAlertDialog(
               "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
         } else {
           final bool trigger = await switchAvailabilityValue(

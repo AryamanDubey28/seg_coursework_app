@@ -26,7 +26,6 @@ void main() {
   late FirebaseStorage mockStorage;
   late Category breakfastCategory;
   late MockUser mockUser;
-  late DeleteChoiceBoardCategory deleteChoiceBoardCategory;
 
   Future<void> _createData() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(

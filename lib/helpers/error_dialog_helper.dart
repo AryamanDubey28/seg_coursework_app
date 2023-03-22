@@ -6,7 +6,7 @@ class ErrorDialogHelper {
 
   ErrorDialogHelper({required this.context});
 
-  void show_alert_dialog(String text) {
+  void showAlertDialog(String text) {
     showDialog(
         context: context,
         builder: (context) {
@@ -14,7 +14,7 @@ class ErrorDialogHelper {
             backgroundColor: Colors.white,
             content: Text(
               text,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
           );
         });

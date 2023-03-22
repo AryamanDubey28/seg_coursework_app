@@ -11,7 +11,7 @@ void main() {
   testWidgets('should display email text field and reset password button',
       (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: ForgotPasswordPage(),
       ),
     );

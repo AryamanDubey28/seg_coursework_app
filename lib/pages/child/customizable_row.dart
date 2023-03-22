@@ -14,6 +14,7 @@ import '../../themes/themes.dart';
 import '../../widgets/child_view/category_image_row.dart';
 import '../../widgets/child_view/category_title.dart';
 
+/// Display of one category in the child menu
 class ChildMenuCategoryRow extends StatefulWidget {
   final List<CategoryItem> categoryItems;
   final Category category;
@@ -37,8 +38,6 @@ class ChildMenuCategoryRow extends StatefulWidget {
 }
 
 class _ChildMenuCategoryRowState extends State<ChildMenuCategoryRow> {
-  // Everything is wrapped in Material() and InkWell() so the onTap gesture shows
-
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<CustomTheme>(context);
@@ -76,7 +75,6 @@ class _ChildMenuCategoryRowState extends State<ChildMenuCategoryRow> {
         onTap: () {
           final player = AudioPlayer();
           player.play(AssetSource('category_click.mp3'));
-          print("image previews in row class = ${widget.categoryItems}");
           Navigator.push(
               context,
               MaterialPageRoute(

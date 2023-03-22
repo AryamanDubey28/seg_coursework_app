@@ -75,8 +75,9 @@ void main() {
             ),
           )));
 
-      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
-      await tester.tap(find.byKey(ValueKey("createItemButton")));
+      await tester
+          .ensureVisible(find.byKey(const ValueKey("createItemButton")));
+      await tester.tap(find.byKey(const ValueKey("createItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
@@ -96,12 +97,13 @@ void main() {
             ),
           )));
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
+      final nameField = find.byKey(const ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
-      await tester.tap(find.byKey(ValueKey("createItemButton")));
+      await tester
+          .ensureVisible(find.byKey(const ValueKey("createItemButton")));
+      await tester.tap(find.byKey(const ValueKey("createItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
@@ -122,8 +124,9 @@ void main() {
             ),
           )));
 
-      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
-      await tester.tap(find.byKey(ValueKey("createItemButton")));
+      await tester
+          .ensureVisible(find.byKey(const ValueKey("createItemButton")));
+      await tester.tap(find.byKey(const ValueKey("createItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
@@ -145,11 +148,12 @@ void main() {
             ),
           )));
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
+      final nameField = find.byKey(const ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle(const Duration(seconds: 5));
-      await tester.ensureVisible(find.byKey(ValueKey("createItemButton")));
-      await tester.tap(find.byKey(ValueKey("createItemButton")));
+      await tester
+          .ensureVisible(find.byKey(const ValueKey("createItemButton")));
+      await tester.tap(find.byKey(const ValueKey("createItemButton")));
       await tester.pumpAndSettle(const Duration(seconds: 5));
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -170,7 +174,7 @@ void main() {
             ),
           )));
 
-      await tester.tap(find.byKey(ValueKey("useExistingItemButton")));
+      await tester.tap(find.byKey(const ValueKey("useExistingItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AddExistingItem), findsOneWidget);
     });

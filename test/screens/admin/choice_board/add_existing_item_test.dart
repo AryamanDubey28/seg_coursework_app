@@ -110,7 +110,7 @@ void main() {
           categoryId: breakfastCategoryId,
           itemId: testId);
       await tester.pumpAndSettle(const Duration(seconds: 1));
-      await tester.tap(find.byKey(ValueKey("gridImage0")));
+      await tester.tap(find.byKey(const ValueKey("gridImage0")));
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
       expect(find.byType(AddExistingItem), findsOneWidget);

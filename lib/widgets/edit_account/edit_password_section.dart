@@ -19,7 +19,7 @@ class EditPasswordSection extends StatelessWidget {
       required this.isTestMode});
 
   // Verify the validity of fields and execute the change of a user's password.
-  Future commit_password_edit() async {
+  Future commitPasswordEdit() async {
     String response;
     if (_currentPasswordController.text.trim() != "" &&
         _newPasswordController.text.trim() != "" &&
@@ -43,7 +43,7 @@ class EditPasswordSection extends StatelessWidget {
       response =
           'Some fields required to operate your password change were not filled in. Please try again.';
     }
-    ErrorDialogHelper(context: context).show_alert_dialog(response);
+    ErrorDialogHelper(context: context).showAlertDialog(response);
   }
 
   @override
@@ -111,9 +111,9 @@ class EditPasswordSection extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  commit_password_edit();
+                  commitPasswordEdit();
                 },
-                child: Text("Change Password"),
+                child: const Text("Change Password"),
               ),
             ),
           ))

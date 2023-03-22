@@ -1,11 +1,8 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-
-// This class concentrates all method relative to communicating with the Firebase Authentication service.
+/// This class concentrates all method relative to
+/// communicating with the Firebase Authentication service.
 class Auth {
   late FirebaseAuth auth;
   late FirebaseFirestore firestore;
@@ -15,30 +12,21 @@ class Auth {
     this.firestore = firestore ?? FirebaseFirestore.instance;
   }
 
+  /// Getter for the currently logged-in user
   Stream<User?> get user => auth.authStateChanges();
 
-  Future<String?> createAccount(String email, String password) async {
-    try {
-      await auth.createUserWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
-      return "Success";
-    } on FirebaseAuthException catch (e) {
-      return e.message;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Return the current user's email or the empty string if there is no identifiable current user.
+  /// Return the current user's email or the empty string
+  /// if there is no identifiable current user.
   Future<String> getCurrentUserEmail() async {
-    var user_email = await auth.currentUser!.email;
-    if (user_email != null) {
-      return user_email;
+    var userEmail = auth.currentUser!.email;
+    if (userEmail != null) {
+      return userEmail;
     } else {
       return "";
     }
   }
 
+  /// Return the the PIN of the current user from Firestore
   Future<String> getCurrentUserPIN() async {
     try {
       final query = firestore
@@ -54,6 +42,7 @@ class Auth {
     }
   }
 
+  /// Return true if the user has a PIN created
   Future<bool> checkPinExists() async {
     if (await getCurrentUser() != null) {
       String pin = await getCurrentUserPIN();
@@ -64,6 +53,7 @@ class Auth {
     }
   }
 
+  /// Create a PIN for the current user in Firestore
   Future<String> createPin(String pin) async {
     if (await getCurrentUser() != null) {
       try {
@@ -90,7 +80,8 @@ class Auth {
     }
   }
 
-  // Edit the current user's password and return custom error messages depending on the precise error that occured.
+  /// Edit the current user's password and return
+  /// custom error messages depending on the precise error that occured.
   Future<String> editCurrentUserPassword(
       String currentPassword, String newPassword) async {
     if (await getCurrentUser() != null) {
@@ -113,7 +104,8 @@ class Auth {
     }
   }
 
-  // Edit the current user's email and return custom error messages depending on the precise error that occured.
+  /// Edit the current user's email and return custom
+  /// error messages depending on the precise error that occured.
   Future<String> editCurrentUserEmail(String newEmail) async {
     if (await getCurrentUser() != null) {
       try {
@@ -130,6 +122,7 @@ class Auth {
     }
   }
 
+  /// Edit the current user's PIN from Firestore
   Future<String> editCurrentUserPIN(String newPIN) async {
     if (await getCurrentUser() != null) {
       if (newPIN.length != 4 && num.tryParse(newPIN) != null) {
@@ -138,7 +131,7 @@ class Auth {
       try {
         String docId = "";
         //get the document id of the current user
-        final docUser = await firestore
+        await firestore
             .collection('userPins')
             .where('userId', isEqualTo: await getCurrentUserId())
             .get()
@@ -161,8 +154,9 @@ class Auth {
     return "This attempt at changing your PIN was unsuccessful";
   }
 
+  /// Return the User object of the current user
   Future<User?> getCurrentUser() async {
-    var user = await auth.currentUser;
+    var user = auth.currentUser;
     if (user != null) {
       return user;
     } else {
@@ -170,8 +164,9 @@ class Auth {
     }
   }
 
+  /// Return the User Id of the current user
   Future<String?> getCurrentUserId() async {
-    var user = await auth.currentUser;
+    var user = auth.currentUser;
     if (user != null) {
       return user.uid;
     } else {
@@ -179,6 +174,7 @@ class Auth {
     }
   }
 
+  /// Create an account with the given email and password in Firebase
   Future<String?> signUp(String email, String password) async {
     try {
       if (!validEmail(email)) {
@@ -194,6 +190,7 @@ class Auth {
     }
   }
 
+  /// Log the user in with the given credential
   Future<String?> signIn(String email, String password) async {
     try {
       if (!validEmail(email)) {
@@ -209,6 +206,7 @@ class Auth {
     }
   }
 
+  /// Log the user out
   Future<String?> signOut() async {
     try {
       await auth.signOut();
@@ -220,9 +218,10 @@ class Auth {
     }
   }
 
-  bool validEmail(String email) {
+  /// Return true if the given string is a valid email
+  bool validEmail(String str) {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
+        .hasMatch(str);
   }
 }

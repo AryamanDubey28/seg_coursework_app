@@ -19,12 +19,9 @@ import 'package:seg_coursework_app/pages/child/customizable_row.dart';
 import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-import 'package:seg_coursework_app/widgets/child_view/category_image_row.dart';
 import 'package:seg_coursework_app/widgets/child_view/category_title.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
 import 'package:mockito/mockito.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-
 import '../auth/edit_account_widget_test.dart';
 
 // Test ensures that column of rows (categories) is displayed on screen
@@ -91,14 +88,10 @@ void main() {
     final MockFirebaseAuth _mockAuth = MockFirebaseAuth();
     final MockFirebaseStorage _mockStorage = MockFirebaseStorage();
     final FakeFirebaseFirestore fakeFirebaseFirestore = FakeFirebaseFirestore();
-    FirebaseFunctions firebaseFunctions = FirebaseFunctions(
-        auth: _mockAuth,
-        firestore: fakeFirebaseFirestore,
-        storage: _mockStorage);
     authenticationHelper =
         Auth(auth: _mockAuth, firestore: fakeFirebaseFirestore);
-    toastItem = myTestCategories.getList().first.items.first;
-    breakfastCategory = myTestCategories.getList().first;
+    toastItem = testCategories.getList().first.items.first;
+    breakfastCategory = testCategories.getList().first;
     mockUser = MockUser(uid: "user1");
     mockAuth = MockFirebaseAuthentication();
     mockFirestore = FakeFirebaseFirestore();
@@ -182,23 +175,6 @@ void main() {
     expect(find.byType(ChildMenuCategoryRow), findsNothing);
   });
 
-  // testWidgets("ChildMainMenu makes a database request every 5-6 seconds",
-  //     (tester) async {
-  //   await tester.pumpWidget(ThemeProvider(
-  //       themeNotifier: CustomTheme(),
-  //       child: MaterialApp(
-  //           home: ChildMainMenu(
-  //         mock: true,
-  //         auth: mockAuth,
-  //         firebaseFirestore: mockFirestore,
-  //       ))));
-  //   int initialValue = ChildMainMenu.customizableColumnRequestCounter;
-  //   await tester.pump(Duration(seconds: 5));
-  //   int latestValue = ChildMainMenu.customizableColumnRequestCounter;
-  //   bool greater = latestValue > initialValue;
-  //   expect(greater, true); //value has increased
-  // });
-
   testWidgets("Child logging out and entering PIN routes to Admin page",
       (tester) async {
     final myMockFirestore = MyMockFirebaseFirestore(userId: _uid);
@@ -220,23 +196,22 @@ void main() {
     String currentPin = await authHelper.getCurrentUserPIN();
     await tester.pumpAndSettle();
 
-    final Finder logoutButton = find.byKey(Key("logoutButton"));
+    final Finder logoutButton = find.byKey(const Key("logoutButton"));
     await tester.tap(logoutButton);
     await tester.pumpAndSettle();
     //dialog shows up
-    final Finder passwordTextField = find.byKey(Key("logoutButtonTextField"));
+    final Finder passwordTextField =
+        find.byKey(const Key("logoutButtonTextField"));
 
     await tester.tap(passwordTextField);
     await tester.pumpAndSettle();
     await tester.enterText(passwordTextField, currentPin);
     await tester.pumpAndSettle();
 
-    final Finder submitButton = find.byKey(Key("submitButton"));
+    final Finder submitButton = find.byKey(const Key("submitButton"));
     await tester.tap(submitButton);
-    // await tester.pumpAndSettle();
     for (int i = 0; i < 5; i++) {
-      // because pumpAndSettle doesn't work for some reason
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
     }
     expect(find.byType(AdminChoiceBoards), findsOneWidget);
   });
@@ -259,22 +234,23 @@ void main() {
           testCategories: testCategories,
         ))));
     await authHelper.signIn(_email, _password);
-    String currentPin = await authHelper.getCurrentUserPIN();
+    await authHelper.getCurrentUserPIN();
     await tester.pumpAndSettle();
 
-    final Finder logoutButton = find.byKey(Key("logoutButton"));
+    final Finder logoutButton = find.byKey(const Key("logoutButton"));
     await tester.tap(logoutButton);
     await tester.pumpAndSettle();
 
     // Dialog to enter PIN appears.
-    final Finder passwordTextField = find.byKey(Key("logoutButtonTextField"));
+    final Finder passwordTextField =
+        find.byKey(const Key("logoutButtonTextField"));
 
     await tester.tap(passwordTextField);
     await tester.pumpAndSettle();
     await tester.enterText(passwordTextField, "9999");
     await tester.pumpAndSettle();
 
-    final Finder submitButton = find.byKey(Key("submitButton"));
+    final Finder submitButton = find.byKey(const Key("submitButton"));
     await tester.tap(submitButton);
     await tester.pumpAndSettle();
 

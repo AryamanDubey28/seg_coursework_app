@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//This widget returns a search bar to be used in the picture grid.
+/// This widget returns a search bar to be used in the picture grid.
 class SearchBar extends StatefulWidget {
   const SearchBar({super.key, required this.onTextChanged});
 

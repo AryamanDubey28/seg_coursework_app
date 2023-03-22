@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -115,7 +114,7 @@ void main() {
 
       await _createData();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(const ValueKey("editItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -138,11 +137,11 @@ void main() {
 
       await _createData();
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
+      final nameField = find.byKey(const ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(const ValueKey("editItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -167,11 +166,11 @@ void main() {
 
       await _createData();
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
+      final nameField = find.byKey(const ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(const ValueKey("editItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -195,7 +194,7 @@ void main() {
 
       await _createData();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(const ValueKey("editItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });
@@ -217,11 +216,11 @@ void main() {
             storage: mockStorage,
           ))));
 
-      final nameField = find.byKey(ValueKey("itemNameField"));
+      final nameField = find.byKey(const ValueKey("itemNameField"));
       await tester.enterText(nameField, "Eggs");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("editItemButton")));
+      await tester.tap(find.byKey(const ValueKey("editItemButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });

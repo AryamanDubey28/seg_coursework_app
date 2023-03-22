@@ -14,8 +14,8 @@ void main() {
   testWidgets("Menu has all the buttons", (WidgetTester tester) async {
     await tester.pumpWidget(ThemeProvider(
         themeNotifier: CustomTheme(),
-        child: MaterialApp(
-          home: AdminSideMenu(),
+        child: const MaterialApp(
+          home: AdminSideMenu(mock: true),
         )));
 
     expect(find.byKey(const ValueKey("choiceBoards")), findsOneWidget);
@@ -31,7 +31,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: AdminSideMenu(
               mock: true,
             ),
@@ -48,7 +48,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: AdminSideMenu(
               mock: true,
             ),
@@ -65,12 +65,12 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: AdminSideMenu(
               mock: true,
             ),
           )));
-      final Finder childModeButton = find.byKey(Key("childMode"));
+      final Finder childModeButton = find.byKey(const Key("childMode"));
       await tester.tap(childModeButton);
       await tester.pumpAndSettle();
       expect(find.byType(ChildMainMenu), findsOneWidget);
@@ -82,7 +82,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: AdminSideMenu(),
           )));
       await tester.tap(find.byKey(const ValueKey("appColours")));
@@ -97,7 +97,7 @@ void main() {
     mockNetworkImagesFor(() async {
       await tester.pumpWidget(ThemeProvider(
           themeNotifier: CustomTheme(),
-          child: MaterialApp(
+          child: const MaterialApp(
             home: AdminSideMenu(
               mock: true,
             ),

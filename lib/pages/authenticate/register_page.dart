@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import '../../widgets/general/my_text_field.dart';
 
+/// Page for users to create a new account
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLoginPage;
   late final bool isTestMode;
@@ -26,6 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
 
+  /// Create a new account for the user
   Future signUp() async {
     if (_passwordController.text.trim() != "" &&
         _passwordConfirmationController.text.trim() != "" &&
@@ -50,14 +52,14 @@ class _RegisterPageState extends State<RegisterPage> {
         } on FirebaseAuthException catch (e) {
           Navigator.of(context).pop();
           ErrorDialogHelper(context: context)
-              .show_alert_dialog(e.message.toString());
+              .showAlertDialog(e.message.toString());
         }
       } else {
-        ErrorDialogHelper(context: context).show_alert_dialog(
+        ErrorDialogHelper(context: context).showAlertDialog(
             'Password confirmation did not match. Please try again.');
       }
     } else {
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           'One or more field was not filled. Please try again.');
     }
   }

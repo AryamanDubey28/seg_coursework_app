@@ -24,7 +24,6 @@ void main() {
   late MockUser mockUser;
   late CategoryItem toastItem;
   late Category breakfastCategory;
-  late FirebaseFunctions firebaseFunctions;
 
   Future<void> _createData() async {
     FirebaseFunctions firebaseFunctions = FirebaseFunctions(
@@ -62,8 +61,6 @@ void main() {
     mockFirestore = FakeFirebaseFirestore();
     mockStorage = MockFirebaseStorage();
     when(mockAuth.currentUser).thenReturn(mockUser);
-    firebaseFunctions = FirebaseFunctions(
-        auth: mockAuth, firestore: mockFirestore, storage: mockStorage);
   });
 
   testWidgets("Category header has all components",

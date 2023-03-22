@@ -5,7 +5,6 @@ import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/widgets/edit_account/edit_email_section.dart';
 import 'package:seg_coursework_app/widgets/edit_account/edit_password_section.dart';
 import 'package:seg_coursework_app/widgets/edit_account/edit_pin_section.dart';
-
 import '../admin/admin_side_menu.dart';
 
 // Creates a screen and related functionalities for the user to be able to edit their email and password informations.
@@ -22,12 +21,11 @@ class EditAccountPage extends StatefulWidget {
       FirebaseFirestore? firestore}) {
     this.auth = auth ?? FirebaseAuth.instance;
     this.isTestMode = isTestMode ?? false;
-    this.firebaseFirestore = firestore ?? FirebaseFirestore.instance;
+    firebaseFirestore = firestore ?? FirebaseFirestore.instance;
   }
 
   @override
-  State<EditAccountPage> createState() =>
-      EditAccountPageState(auth, firebaseFirestore);
+  State<EditAccountPage> createState() => EditAccountPageState();
 }
 
 class EditAccountPageState extends State<EditAccountPage> {
@@ -36,15 +34,14 @@ class EditAccountPageState extends State<EditAccountPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   late final Auth authentitcationHelper;
-  late FirebaseAuth auth;
-  late FirebaseFirestore firebaseFirestore;
 
-  EditAccountPageState(this.auth, this.firebaseFirestore);
+  EditAccountPageState();
 
   @override
   void initState() {
     super.initState();
-    authentitcationHelper = Auth(auth: auth, firestore: firebaseFirestore);
+    authentitcationHelper =
+        Auth(auth: widget.auth, firestore: widget.firebaseFirestore);
   }
 
   @override
@@ -64,7 +61,7 @@ class EditAccountPageState extends State<EditAccountPage> {
         key: const Key('app_bar'),
         title: const Text('Edit Account'),
       ),
-      drawer: AdminSideMenu(),
+      drawer: const AdminSideMenu(),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

@@ -67,7 +67,7 @@ void main() {
             ),
           )));
 
-      await tester.tap(find.byKey(ValueKey("createCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("createCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
@@ -86,11 +86,11 @@ void main() {
             ),
           )));
 
-      final nameField = find.byKey(ValueKey("categoryNameField"));
+      final nameField = find.byKey(const ValueKey("categoryNameField"));
       await tester.enterText(nameField, "Category");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("createCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("createCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
@@ -109,7 +109,7 @@ void main() {
             ),
           )));
 
-      await tester.tap(find.byKey(ValueKey("createCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("createCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AlertDialog), findsOneWidget);
     });
@@ -130,11 +130,11 @@ void main() {
             ),
           )));
 
-      final nameField = find.byKey(ValueKey("categoryNameField"));
+      final nameField = find.byKey(const ValueKey("categoryNameField"));
       await tester.enterText(nameField, "Breakfast");
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(ValueKey("createCategoryButton")));
+      await tester.tap(find.byKey(const ValueKey("createCategoryButton")));
       await tester.pumpAndSettle();
       expect(find.byType(AdminChoiceBoards), findsOneWidget);
     });

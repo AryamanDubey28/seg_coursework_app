@@ -1,6 +1,6 @@
-// Category title that appears under main category image
 import 'package:flutter/material.dart';
 
+/// Category title that appears under main category image
 class CategoryTitle extends StatelessWidget {
   final String title;
 

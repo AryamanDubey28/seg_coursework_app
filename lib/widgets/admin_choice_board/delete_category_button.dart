@@ -49,7 +49,7 @@ class _DeleteCategoryButtonState extends State<DeleteCategoryButton> {
       onPressed: () {
         if (!widget.mock && !CheckConnection.isDeviceConnected) {
           // User has no internet connection
-          ErrorDialogHelper(context: context).show_alert_dialog(
+          ErrorDialogHelper(context: context).showAlertDialog(
               "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
         } else {
           showDialog(

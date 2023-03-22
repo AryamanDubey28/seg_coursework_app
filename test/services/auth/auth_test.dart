@@ -10,8 +10,6 @@ import 'auth_test.mocks.dart';
 
 class MockUser extends Mock implements User {}
 
-final MockUser _mockUser = MockUser();
-
 void main() {
   final mockFirebaseAuth = MockFirebaseAuth();
   final mockFirestore = FakeFirebaseFirestore();
@@ -22,17 +20,14 @@ void main() {
   tearDown(() {});
 
   test("create account", () async {
-    print("creating dummy account");
-    expect(await auth.createAccount("test@test.com", "Password123"), "Success");
+    expect(await auth.signUp("test@test.com", "Password123"), "Success");
   });
 
   test("sign in", () async {
-    print("signing in account");
     expect(await auth.signIn("test@test.com", "Password123"), "Success");
   });
 
   test("incorrect email", () async {
-    print("signing in account should fail");
     expect(await auth.signIn("test.com", "Password123"), "Unsuccessful");
   });
 }

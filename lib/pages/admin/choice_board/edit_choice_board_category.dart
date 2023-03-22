@@ -270,7 +270,7 @@ class _EditChoiceBoardCategory extends State<EditChoiceBoardCategory> {
         if (!widget.mock) {
           LoadingIndicatorDialog().dismiss();
         }
-        ErrorDialogHelper(context: context).show_alert_dialog(
+        ErrorDialogHelper(context: context).showAlertDialog(
             "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
       }
     }

@@ -205,7 +205,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
       {required File? image, required String? itemName}) async {
     if (itemName!.isEmpty || image == null) {
       ErrorDialogHelper(context: context)
-          .show_alert_dialog("A field or more are missing!");
+          .showAlertDialog("A field or more are missing!");
     } else {
       if (!widget.mock) {
         LoadingIndicatorDialog().show(context);
@@ -248,7 +248,7 @@ class _AddChoiceBoardItem extends State<AddChoiceBoardItem> {
           if (!widget.mock) {
             LoadingIndicatorDialog().dismiss();
           }
-          ErrorDialogHelper(context: context).show_alert_dialog(
+          ErrorDialogHelper(context: context).showAlertDialog(
               "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
         }
       }

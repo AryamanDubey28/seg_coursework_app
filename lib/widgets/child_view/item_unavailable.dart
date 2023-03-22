@@ -1,11 +1,9 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 
-// Widget created when an item is unavailable
-
-//Blur image and display unavailable red icon
+/// Widget created when an item is unavailable.
+/// Blur image and display unavailable red icon
 Stack makeUnavailable() {
   return Stack(
     key: const Key("unavailableImage"),
@@ -22,9 +20,7 @@ Stack makeUnavailable() {
                 color: Colors.red,
                 size: 100,
               ),
-              decoration: IconDecoration(
-                border: IconBorder(width: 5) 
-              ),
+              decoration: IconDecoration(border: IconBorder(width: 5)),
             ),
           ),
         ),

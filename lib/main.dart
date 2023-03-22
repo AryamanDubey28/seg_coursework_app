@@ -1,11 +1,5 @@
-// ignore_for_file: unused_import
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:seg_coursework_app/pages/child/category_details_display.dart';
-import 'package:seg_coursework_app/services/auth.dart';
 import 'package:seg_coursework_app/services/check_connection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +15,6 @@ Future main() async {
       .startMonitoring(); // listener for user's internet connection status
 
   final pref = await SharedPreferences.getInstance();
-  final auth = Auth();
   final isInChildMode = pref.getBool('isInChildMode') ??
       false; //will return true if in child mode, else false
   runApp(ThemeProvider(

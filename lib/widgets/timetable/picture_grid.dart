@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/widgets/categoryItem/image_square.dart';
-
 import '../general/search_bar.dart';
 
 /// This widget is the bottom half of the visual timetable interface

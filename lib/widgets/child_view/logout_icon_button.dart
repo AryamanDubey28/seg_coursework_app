@@ -2,51 +2,51 @@ import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../pages/admin/choice_board/admin_choice_boards.dart';
 import '../../services/auth.dart';
 
 class LogoutIconButton extends StatelessWidget {
-  TextEditingController pin_controller;
+  TextEditingController pinController;
   late Auth authenticationHelper;
   bool mock;
-  Key key;
   LogoutIconButton(
-      {required this.pin_controller,
+      {required this.pinController,
       required this.authenticationHelper,
       this.mock = false,
-      required this.key}) {
-    this.pin_controller = pin_controller;
-    this.authenticationHelper = authenticationHelper;
+      super.key}) {
+    pinController = pinController;
+    authenticationHelper = authenticationHelper;
   }
 
-  ///Opens a dialog with a text field to enter a PIN that pops up when the user holds the logout button
+  /// Opens a dialog with a text field to enter a PIN
+  /// that pops up when the user holds the logout button
   Future openLogoutDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text("Enter your PIN to go back to the Admin Home"),
+            title: const Text("Enter your PIN to go back to the Admin Home"),
             content: TextField(
-              key: Key("logoutButtonTextField"),
+              key: const Key("logoutButtonTextField"),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                 FilteringTextInputFormatter.digitsOnly
               ],
               autofocus: true,
-              controller: pin_controller,
+              controller: pinController,
             ),
             actions: [
               TextButton(
-                  key: Key("submitButton"),
+                  key: const Key("submitButton"),
                   onPressed: () => submitPin(context),
-                  child: Text("SUBMIT"))
+                  child: const Text("SUBMIT"))
             ],
           ));
 
-  ///verifys password is correct, if so then navigates back. otherwise says incorrect
+  /// verify password is correct, if so then navigates back.
+  /// otherwise show error message
   Future<void> submitPin(BuildContext context) async {
     String currentPin = await authenticationHelper.getCurrentUserPIN();
-    if (pin_controller.text.trim() == currentPin) {
+    if (pinController.text.trim() == currentPin) {
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
@@ -66,7 +66,7 @@ class LogoutIconButton extends StatelessWidget {
       showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
+            return const AlertDialog(
               content: Text(
                 "Incorrect PIN Provided",
                 textAlign: TextAlign.center,
@@ -74,21 +74,21 @@ class LogoutIconButton extends StatelessWidget {
             );
           });
     }
-    pin_controller.clear();
+    pinController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        key: Key("logoutButton"),
+        key: const Key("logoutButton"),
         onLongPress: () async {
           openLogoutDialog(context);
         },
         onTap: () async {
           if (mock) {
-            openLogoutDialog(context); //widget tester can only tap
+            openLogoutDialog(context);
           }
         },
-        child: Icon(Icons.exit_to_app));
+        child: const Icon(Icons.exit_to_app));
   }
 }

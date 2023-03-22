@@ -129,8 +129,9 @@ class _AdminChoiceBoards extends State<AdminChoiceBoards>
                 borderRadius: BorderRadius.circular(20)),
             children: categories,
             contentsWhenEmpty: const Text(
-                "Welcome! Click on \"Add a category\" to start",
-                style: TextStyle(fontSize: 30)),
+                "Welcome! Click on \"Add a category\" to start. \nIf you think there is something wrong, then check your internet connection.",
+                style: TextStyle(fontSize: 30),
+                textAlign: TextAlign.center),
             itemDivider: const Divider(
               thickness: 4,
               height: 4,

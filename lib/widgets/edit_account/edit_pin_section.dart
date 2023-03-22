@@ -30,7 +30,7 @@ class EditPINSection extends StatelessWidget {
   }
 
   // Verify the validity of fields and execute the change of a user's email.
-  Future commit_pin_edit() async {
+  Future commitPinEdit() async {
     String response = "";
     String pin = _pinEditController.text.trim();
     if (pin != "" && validatePin(pin)) {
@@ -46,7 +46,7 @@ class EditPINSection extends StatelessWidget {
       response =
           'You did not input a valid PIN so the change could not be made. Please try again. \nValid PINs are made up of 4 digits';
     }
-    ErrorDialogHelper(context: context).show_alert_dialog(response);
+    ErrorDialogHelper(context: context).showAlertDialog(response);
   }
 
   Future makePin(BuildContext context) {
@@ -72,7 +72,7 @@ class EditPINSection extends StatelessWidget {
                     onPressed: () async {
                       await submit(context);
                       if (!isTestMode) {
-                        Timer(Duration(seconds: 2), () {
+                        Timer(const Duration(seconds: 2), () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -93,7 +93,7 @@ class EditPINSection extends StatelessWidget {
   Future<void> submit(BuildContext context) async {
     String result =
         await authentitcationHelper.createPin(_pinEditController.text.trim());
-    ErrorDialogHelper(context: context).show_alert_dialog(result);
+    ErrorDialogHelper(context: context).showAlertDialog(result);
     _pinEditController.clear();
   }
 
@@ -172,9 +172,9 @@ class EditPINSection extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            await commit_pin_edit();
+                            await commitPinEdit();
                             if (!isTestMode) {
-                              Timer(Duration(seconds: 2), () {
+                              Timer(const Duration(seconds: 2), () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

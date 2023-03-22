@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// A custom text field, which allows numeric only input
+/// or password input
 class MyTextField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
   final bool isPassword;
-  final isNumericKeyboard;
+  final bool isNumericKeyboard;
 
   const MyTextField({
     super.key,

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
-
 import '../../widgets/general/my_text_field.dart';
 
 // This is the screen where the user can request for their password to get changed via email after they forgot it
@@ -32,7 +31,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } on FirebaseAuthException catch (e) {
       text = e.message.toString();
     }
-    ErrorDialogHelper(context: context).show_alert_dialog(text);
+    ErrorDialogHelper(context: context).showAlertDialog(text);
   }
 
   @override

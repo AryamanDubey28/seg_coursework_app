@@ -10,70 +10,42 @@ void main() {
       app.main();
       await tester.pumpAndSettle();
 
-      // final createAccountButton = find.byKey(Key('create_account'));
-      // await Future.delayed(Duration(seconds: 2));
-
-      // await tester.tap(createAccountButton);
-      // await tester.pumpAndSettle();
-      // await Future.delayed(Duration(seconds: 2));
-
-      // final emailField = find.byKey(Key('email_text_field'));
-      // final passwordField = find.byKey(Key('pass_text_field'));
-      // final passConfField = find.byKey(Key('pass_conf_text_field'));
-      // final signUpButton = find.byKey(Key('sign_up_button'));
-
-      // await tester.enterText(emailField, "noPINAccount@gmail.com");
-      // await Future.delayed(Duration(seconds: 2));
-      // await tester.pumpAndSettle();
-
-      // await tester.enterText(passwordField, "Password123");
-      // await Future.delayed(Duration(seconds: 2));
-      // await tester.pumpAndSettle();
-
-      // await tester.enterText(passConfField, "Password123");
-      // await Future.delayed(Duration(seconds: 2));
-      // await tester.pumpAndSettle();
-
-      // await tester.tap(signUpButton);
-      // await tester.pumpAndSettle();
-      // await Future.delayed(Duration(seconds: 2));
-
-      final Finder emailField = find.byKey(Key('email_text_field'));
-      final Finder passwordField = find.byKey(Key('password_text_field'));
-      final Finder signInButton = find.byKey(Key('sign_in_button'));
+      final Finder emailField = find.byKey(const Key('email_text_field'));
+      final Finder passwordField = find.byKey(const Key('password_text_field'));
+      final Finder signInButton = find.byKey(const Key('sign_in_button'));
 
       await tester.enterText(emailField, 'noPINAccount@gmail.com');
       await tester.pumpAndSettle();
       await tester.enterText(passwordField, "Password123");
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       await tester.tap(signInButton);
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
 
       final ScaffoldState state =
-          tester.firstState(find.byKey(Key("admin_boards_scaffold")));
+          tester.firstState(find.byKey(const Key("admin_boards_scaffold")));
       state.openDrawer();
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
-      final Finder childModeButton = find.byKey(Key('childMode'));
+      final Finder childModeButton = find.byKey(const Key('childMode'));
       await tester.tap(childModeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 5));
-      await tester.tapAt(Offset(200, 200));
+      await Future.delayed(const Duration(seconds: 5));
+      await tester.tapAt(const Offset(200, 200));
       expect(find.byType(ChildMainMenu), findsNothing);
 
-      await Future.delayed(Duration(seconds: 3));
-      await tester.tapAt(Offset(200, 200));
+      await Future.delayed(const Duration(seconds: 3));
+      await tester.tapAt(const Offset(200, 200));
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
-      final Finder logoutButton = find.byKey(Key("logout"));
+      final Finder logoutButton = find.byKey(const Key("logout"));
       await tester.tap(logoutButton);
       await tester.pumpAndSettle();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
     });
   });
 }

@@ -72,7 +72,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   Future<void> _showAlertDialog(BuildContext context) async {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }
@@ -119,7 +119,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
   void showDeleteEverywhereConfirmation() async {
     if (!widget.mock && !CheckConnection.isDeviceConnected) {
       // User has no internet connection
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "Cannot change data without an internet connection! \nPlease make sure you are connected to the internet.");
       return;
     }
@@ -197,7 +197,7 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       if (!widget.mock) {
         LoadingIndicatorDialog().dismiss();
       }
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           'An error occurred while communicating with the database');
     }
   }
@@ -246,10 +246,10 @@ class _DeleteItemButtonState extends State<DeleteItemButton> {
       if (!widget.mock) {
         LoadingIndicatorDialog().dismiss();
       }
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           'An error occurred while communicating with the database');
       print(e);
-      ErrorDialogHelper(context: context).show_alert_dialog(
+      ErrorDialogHelper(context: context).showAlertDialog(
           "An error occurred while communicating with the database. \nPlease make sure you are connected to the internet.");
     }
   }

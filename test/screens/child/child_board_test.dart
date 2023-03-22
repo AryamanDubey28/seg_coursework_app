@@ -7,7 +7,6 @@ import 'package:seg_coursework_app/pages/child/category_details_display.dart';
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
 import 'package:seg_coursework_app/themes/theme_provider.dart';
 import 'package:seg_coursework_app/themes/themes.dart';
-
 import '../admin/choice_board/delete_choice_board_category_test.dart';
 import '../auth/forgot_password_test.dart';
 
@@ -21,7 +20,7 @@ void main() {
               categoryTitle: "",
               categoryImage:
                   "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-              images: [],
+              images: const [],
             ),
           )));
 

@@ -5,7 +5,6 @@ import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
 import 'dart:async';
-
 import '../../services/auth.dart';
 import '../loading_indicators/loading_indicator.dart';
 
@@ -26,7 +25,7 @@ class EditEmailSection extends StatelessWidget {
       required this.firebaseFirestore});
 
   // Verify the validity of fields and execute the change of a user's email.
-  Future commit_email_edit() async {
+  Future commitEmailEdit() async {
     String response;
     if (_emailEditController.text.trim() != "" &&
         authentitcationHelper.validEmail(_emailEditController.text.trim())) {
@@ -42,7 +41,7 @@ class EditEmailSection extends StatelessWidget {
       response =
           'You did not input a valid email address so the change could not be made. Please try again.';
     }
-    ErrorDialogHelper(context: context).show_alert_dialog(response);
+    ErrorDialogHelper(context: context).showAlertDialog(response);
   }
 
   @override
@@ -65,7 +64,7 @@ class EditEmailSection extends StatelessWidget {
               children: [
                 const Align(
                     alignment: Alignment.centerLeft,
-                    key: const Key("edit_email_prompt"),
+                    key: Key("edit_email_prompt"),
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text("Edit your email:",
@@ -103,9 +102,9 @@ class EditEmailSection extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            await commit_email_edit();
+                            await commitEmailEdit();
                             if (!isTestMode) {
-                              Timer(Duration(seconds: 2), () {
+                              Timer(const Duration(seconds: 2), () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

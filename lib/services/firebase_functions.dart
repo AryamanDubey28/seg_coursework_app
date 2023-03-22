@@ -1,20 +1,13 @@
-
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/models/image_details.dart';
 import 'package:seg_coursework_app/models/list_of_timetables.dart';
 import 'package:seg_coursework_app/models/categories.dart';
 import 'package:seg_coursework_app/models/category_item.dart';
 import 'dart:io';
 import 'package:seg_coursework_app/models/category.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:seg_coursework_app/models/category.dart';
-import 'package:seg_coursework_app/services/check_connection.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:seg_coursework_app/models/timetable.dart';
 
 /// A class which holds methods to manipulate the Firebase database

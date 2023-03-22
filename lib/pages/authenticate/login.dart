@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:seg_coursework_app/helpers/error_dialog_helper.dart';
 import 'package:seg_coursework_app/services/auth.dart';
@@ -10,19 +8,15 @@ import 'package:seg_coursework_app/widgets/general/my_text_field.dart';
 class LogIn extends StatefulWidget {
   final VoidCallback showRegisterPage;
   final FirebaseAuth auth;
-  late FirebaseFirestore firebaseFirestore;
 
   LogIn({
     Key? key,
     required this.showRegisterPage,
     required this.auth,
-    FirebaseFirestore? firebaseFirestore,
-  }) {
-    this.firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
-  }
+  });
 
   @override
-  State<LogIn> createState() => _LogInState(auth, firebaseFirestore);
+  State<LogIn> createState() => _LogInState();
 }
 
 class _LogInState extends State<LogIn> {
@@ -30,17 +24,15 @@ class _LogInState extends State<LogIn> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   late final Auth authentitcationHelper;
-  late FirebaseFirestore firebaseFirestore;
-  late FirebaseAuth auth;
   late ErrorDialogHelper errorDialogHelper;
 
-  _LogInState(this.auth, this.firebaseFirestore);
+  _LogInState();
 
   @override
   void initState() {
     super.initState();
 
-    authentitcationHelper = Auth(auth: auth);
+    authentitcationHelper = Auth(auth: widget.auth);
     errorDialogHelper = ErrorDialogHelper(context: context);
   }
 
@@ -49,7 +41,7 @@ class _LogInState extends State<LogIn> {
     final result = await authentitcationHelper.signIn(
         _emailController.text.trim(), _passwordController.text.trim());
     if (result != "Success") {
-      errorDialogHelper.show_alert_dialog(
+      errorDialogHelper.showAlertDialog(
           'This user either does not exist or the password is incorrect. Try again or click Forgot Password or register again');
     }
   }

@@ -12,7 +12,6 @@ import 'package:seg_coursework_app/pages/authenticate/wrapper.dart';
 import 'package:seg_coursework_app/pages/authenticate/edit_account.dart';
 import 'package:seg_coursework_app/pages/admin/theme_page/theme_page.dart';
 import 'package:seg_coursework_app/services/auth.dart';
-import '../../helpers/error_dialog_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'visual_timetable/visual_timetable.dart';
 import 'package:seg_coursework_app/pages/child/child_main_menu.dart';
@@ -140,7 +139,7 @@ class AdminSideMenu extends StatelessWidget {
                       true); //isInChildMode boolean set to true as we are entering
                 } else {
                   var dialog = ErrorDialogHelper(context: context);
-                  dialog.show_alert_dialog(
+                  dialog.showAlertDialog(
                       "Please first create a PIN in the 'Edit Account Details' section");
                 }
               }),
@@ -154,7 +153,7 @@ class AdminSideMenu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ThemePage(),
+                  builder: (context) => const ThemePage(),
                 ),
               );
             },
@@ -199,7 +198,7 @@ class AdminSideMenu extends StatelessWidget {
                     auth: MockFirebaseAuth(),
                     firestore: FakeFirebaseFirestore());
               }
-              final String pin = await authenticationHelper.getCurrentUserPIN();
+              await authenticationHelper.getCurrentUserPIN();
               final isInChildMode = pref.getBool('isInChildMode') ?? false;
               Navigator.pushReplacement(
                   context,
