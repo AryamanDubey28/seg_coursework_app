@@ -55,3 +55,6 @@ The software is deployed as an apk file, but can be created into a .app file, a 
 - The app is designed to be used in landscape mode (however it does work in portrait mode)
 - To switch from child mode to admin mode, you need to press and hold the button on the top right (not tap)
 - In the child mode, data will be loaded from the database automatically every 2 minutes, or if the user navigates back and forth between screens
+- About Flutter, the two relevant folders that hold our code are `lib` and `test`. The others are auto generated
+- About testing, Flutter integration tests are not caught by the test coverage tool
+- Flutter widget and unit tests do not allow testing any command that connects to the internet, which explains why you'd see "mock" fields somewhere in the code
